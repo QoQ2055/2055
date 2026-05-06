@@ -145,6 +145,48 @@ Cascade 看到品牌咨询场景才读 examples-curated；audit 时才读 selfch
 
 ---
 
+## Loading Procedure · 决议→落地路径
+
+vetting 完成后（决议 = "可借鉴" 或 "可装载"），按下表选 Tier 落地，**不要把所有内容塞同一个文件**。
+
+| Tier | 适用决议 | 文件操作 | 触发方式 | 本仓示例 |
+|:---:|---|---|---|---|
+| **L0** | 仅参考 / 一次性灵感 | 0 文件 | 不装载 | 已拒绝的 5 个 skill |
+| **L1** | 1-3 句心法 | 编辑现有 always_on rule（追加段落）| 每次对话生效 | VFM/ADL → `rules/coding-standards.md` |
+| **L2** | 100-300 行方法论 / 按需读 | 新建 `skills/X/SKILL.md` | 仅 Cascade explicit `read_file` 时加载 | 早期 `skill-authoring` |
+| **L3** | 用户主动触发的领域方法 | L2 + 新建 `rules/X.md` 配 `model_decision` + trigger 词 | 用户说出 trigger 词时唤醒 | `bmad-method` / `design-md` / **本 skill** |
+| **L4** | 项目永久原则 | 新建 `rules/X.md` 配 `always_on` | 每次对话强制加载 | `coding-standards` / `karpathy-guidelines` |
+| **L5** | 一键执行型流程 | 新建 `workflows/X.md` | 用户跑 `/X` slash command | `init.md` / `memory.md` |
+
+### 选 Tier 决策树
+
+```
+判定 skill 有用
+    │
+    ├─ 1 句心法？  → L1 (并入现有 always_on rule)
+    │
+    ├─ 用户主动触发的方法论？
+    │       └→ L3 (skills/X/SKILL.md + rules/X.md model_decision + 触发词清单 + 反触发边界)
+    │
+    ├─ 项目永久原则（每次对话都要应用）？
+    │       └→ L4 (rules/X.md always_on, KEEP IT SHORT < 30 lines)
+    │
+    ├─ 可执行流程？
+    │       └→ L5 (workflows/X.md)
+    │
+    └─ 暂时不确定 → L2 (skills/X/SKILL.md, 显式 read_file 加载)
+```
+
+### Tier 选择红线
+
+- **`always_on` 是奢侈品**：所有 always_on rules 加起来 ≤ 1000 行（当前 ~80 行，余量充足）
+- **`model_decision` 必须有反触发边界**：例如 `bmad-method.md` 写"用户只是问技术问题或写普通代码时不要激活" —— 防误触发
+- **触发词清单 ≥ 5 个**：覆盖中英文 + 简称 + slash 形式（参考 `design-md.md`）
+- **L1 不许复读**：要加进 `coding-standards` 的内容必须是仓里**完全没有的**新原则
+- **不许在 L1 里塞表格 / 长例子**：那些应该走 L2-L3
+
+---
+
 ## 反模式（**禁止入 skill**）
 
 | ❌ 反模式 | 为什么禁 | 替代方案 |
