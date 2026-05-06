@@ -223,6 +223,25 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 - `/init` — 刷新本文件（`@.windsurf\workflows\init.md`）
 - `/simplify` — 全仓 dead-code 扫描 + 清理（`@.windsurf\workflows\simplify.md`）
 
+### Rules / Skills 索引（`.windsurf/rules/`）
+
+每条规则一个文件，前置 `trigger:` 决定激活档位。新增/修改前先读
+`@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\` 目录全文。
+
+| 文件 | trigger | 来源 / 类别 | 一句话摘要 |
+|---|---|---|---|
+| `karpathy-guidelines.md` | `always_on` | Skill · `andrej-karpathy-skills` | Think Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution（每会话注入，trivial 任务可放宽） |
+| `coding-standards.md` | `always_on` | 项目自有 | TS strict / 中文注释 / 路径引用规范 / 单文件 ≤ 800 行 |
+| `design-md.md` | `model_decision` | Skill · `design-md`（Google Labs 蒸馏） | DESIGN.md 设计系统专家入口；显式触发（`/design-md`、「写设计系统」等）后读 `@.windsurf\skills\design-md\SKILL.md` 全文 |
+| `bmad-method.md` | `model_decision` | Skill · `bmad-method`（v0 蒸馏，**非官方**） | BMAD 4 阶段 30+ workflow 入口；显式触发（`bmad-help`、「写 PRD」、「DP/GPC/CP/CA」等代号）后读 `@.windsurf\skills\bmad-method\SKILL.md` |
+
+> **接入新 skill 流程**：
+> - **行为/纪律类（高频通用）**：原文写入 `.windsurf/rules/<id>.md`，`trigger: always_on`，
+>   总数 ≤ 3 条（system 头预算线）。
+> - **方法论/工作流类（低频专项，文件大）**：完整内容放 `.windsurf/skills/<id>/`（含 references/assets），
+>   `.windsurf/rules/<id>.md` 只写一份 ≤ 1 KB 的触发器（`trigger: model_decision`，描述里写明触发关键词），
+>   agent 命中后再去读 skills 目录下的 SKILL.md 全文。本表每加一条新增一行。
+
 ---
 
 ## 当前阶段（v2 资料库 + DeepSeek V4 升级）
