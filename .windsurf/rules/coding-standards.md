@@ -31,3 +31,18 @@ description: fili-web 项目通用编程规范与协作约定
 - 优先在源头修复问题，避免下游 workaround。
 - 改动保持最小化、聚焦，不顺手重构无关代码。
 - 注释与文档：除非用户要求，否则不主动新增/删除注释。
+
+# 决策心法（VFM / ADL）
+
+> 来源：openclaw `proactive-agent` skill 评估（2026-05-06）借鉴的 2 个真实有用框架，**仅作为变更前心法**，与本仓 surgical-change 原则一致。
+
+- **VFM 金规则**（动手前问自己）：
+  - "这个变更能否让 future-me 用更少成本解决更多问题？"
+  - 答 No → **跳过，不要做**。优化的目标是 compounding leverage，不是 marginal improvement。
+- **ADL 优先序**（取舍冲突时按此排序）：
+  - **Stability > Explainability > Reusability > Scalability > Novelty**
+  - 稳定性永远第一；新颖性永远最后。"看起来更聪明" 的方案如果不能验证有效就拒绝。
+- **禁止 evolution**：
+  - ❌ 用 "直觉 / 感觉" 替代论证
+  - ❌ 加复杂度只为 "显得高级"
+  - ❌ 牺牲稳定性换新潮特性
