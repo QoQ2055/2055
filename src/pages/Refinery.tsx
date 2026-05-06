@@ -58,7 +58,7 @@ export function Refinery() {
             <button
               type="button"
               onClick={undo}
-              className="px-2.5 py-1.5 text-xs rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+              className="px-2.5 py-1.5 text-xs rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
               title={`撤销最近一次"应用"（共 ${history.length} 步可撤销）`}
             >
               <RotateCcw className="size-3.5" /> 撤销 ({history.length})
@@ -67,7 +67,7 @@ export function Refinery() {
           <button
             type="button"
             onClick={loadSample}
-            className="px-2.5 py-1.5 text-xs rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary"
+            className="px-2.5 py-1.5 text-xs rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary"
           >
             加载示例
           </button>
@@ -86,7 +86,7 @@ export function Refinery() {
             >
               <div className="text-base">{t.emoji}</div>
               <div className="text-xs font-medium text-fg-secondary mt-0.5">{t.label}</div>
-              <div className="text-[10px] text-fg-muted mt-1 leading-snug line-clamp-2">
+              <div className="text-tight-xs text-fg-muted mt-1 leading-snug line-clamp-2">
                 {t.description}
               </div>
             </div>
@@ -98,7 +98,7 @@ export function Refinery() {
       <div>
         <div className="flex items-center justify-between mb-1.5">
           <label className="text-xs text-fg-secondary font-medium">原文（待润色）</label>
-          <span className="text-[10px] text-fg-muted font-mono">{text.length} 字</span>
+          <span className="text-tight-xs text-fg-muted font-mono">{text.length} 字</span>
         </div>
         <textarea
           value={text}
@@ -114,7 +114,7 @@ export function Refinery() {
       <RefinementToolPanel inputText={text} onApply={handleApply} />
 
       {/* Footer hint */}
-      <div className="text-[11px] text-fg-muted leading-relaxed border-t border-border-subtle pt-3">
+      <div className="text-tight-sm text-fg-muted leading-relaxed border-t border-border-subtle pt-3">
         <p className="mb-1">
           <span className="text-fg-secondary">💡 使用提示：</span>
           每个工具单一职责，可链式调用（先<span className="text-fg-secondary">文字精炼</span>压缩冗余 →

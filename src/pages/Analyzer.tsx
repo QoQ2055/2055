@@ -353,7 +353,7 @@ export function Analyzer() {
             type="button"
             onClick={addChapter}
             disabled={chapters.length >= 8}
-            className="px-2 py-1 text-xs rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-40"
+            className="px-2 py-1 text-xs rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-40"
           >
             <Plus className="size-3" /> 添加章节
           </button>
@@ -386,7 +386,7 @@ export function Analyzer() {
                   onChange={(e) => updateChapter(ch.uid, { title: e.target.value })}
                   className="flex-1 min-w-[150px] bg-surface border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
                 />
-                <span className="text-[10px] text-fg-muted">
+                <span className="text-tight-xs text-fg-muted">
                   {ch.text.length} 字
                   {ch.text.trim().length < 50 && (
                     <span className="text-warning ml-1">· 太短</span>
@@ -402,7 +402,7 @@ export function Analyzer() {
                   <Trash2 className="size-3.5" />
                 </button>
               </div>
-              <div className="text-[10px] text-fg-muted leading-snug">
+              <div className="text-tight-xs text-fg-muted leading-snug">
                 <span className="text-fg-secondary">分析重点：</span>
                 {tag.analysisFocus}
               </div>
@@ -444,7 +444,7 @@ export function Analyzer() {
           />
           <span className={analysisMode === 'two-stage' ? 'text-fg-primary' : 'text-fg-muted'}>两阶段法（推荐）</span>
         </label>
-        <span className="text-[10px] text-fg-muted">
+        <span className="text-tight-xs text-fg-muted">
           {analysisMode === 'two-stage'
             ? '先扫框架 → 人工复核 → 再深挖方法论，在同一 token 预算下质量更高'
             : '一次调用输出完整结果'}
@@ -498,7 +498,7 @@ export function Analyzer() {
               <button
                 type="button"
                 onClick={runStage2}
-                className="px-4 py-2 text-sm rounded-md border border-success/40 bg-success/15 hover:bg-success/25 text-emerald-200 font-medium inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-sm rounded-md border border-success/40 bg-success/15 hover:bg-success/25 text-success-200 font-medium inline-flex items-center gap-1.5"
               >
                 <Play className="size-4" /> 运行 Stage 2：深度方法论
               </button>
@@ -518,7 +518,7 @@ export function Analyzer() {
           </span>
         )}
         {!canRun && !running && (
-          <span className="text-[11px] text-warning">
+          <span className="text-tight-sm text-warning">
             {chapters.some((c) => c.text.trim().length < 50)
               ? '每章正文需 ≥ 50 字'
               : '请先在「设置」中配置 API'}
@@ -536,7 +536,7 @@ export function Analyzer() {
             <button
               type="button"
               onClick={() => setStage1Result(null)}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
+              className="text-tight-xs px-1.5 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
             >
               丢弃
             </button>
@@ -571,15 +571,15 @@ export function Analyzer() {
                   {stage1Result.chapterFunctions.map((cf, i) => {
                     const tag = findChapterTag(cf.tag);
                     return (
-                      <div key={i} className="flex items-start gap-2 text-[11px]">
-                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300 text-[9px]">
+                      <div key={i} className="flex items-start gap-2 text-tight-sm">
+                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300 text-tight-2xs">
                           {tag?.label ?? cf.tag}
                         </span>
                         <input
                           type="text"
                           value={cf.structuralFunction}
                           onChange={(e) => updateStage1ChapterFn(i, e.target.value)}
-                          className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
+                          className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-tight-sm text-fg-primary focus:outline-none focus:border-brand-500"
                         />
                       </div>
                     );
@@ -592,13 +592,13 @@ export function Analyzer() {
                 <div className="text-xs text-fg-secondary mb-1">Stage 2 重点深挖问题</div>
                 <div className="space-y-1">
                   {stage1Result.stage2Focus.map((q, i) => (
-                    <div key={i} className="flex items-start gap-1.5 text-[11px]">
+                    <div key={i} className="flex items-start gap-1.5 text-tight-sm">
                       <span className="text-fg-muted shrink-0">{i + 1}.</span>
                       <input
                         type="text"
                         value={q}
                         onChange={(e) => updateStage1Focus(i, e.target.value)}
-                        className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
+                        className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-tight-sm text-fg-primary focus:outline-none focus:border-brand-500"
                       />
                     </div>
                   ))}
@@ -606,7 +606,7 @@ export function Analyzer() {
               </div>
             )}
           </div>
-          <p className="text-[10px] text-fg-muted leading-snug">
+          <p className="text-tight-xs text-fg-muted leading-snug">
             💡 人工复核后点击「运行 Stage 2」，会将以上框架作为已确定背景交给深度分析。
           </p>
         </div>
@@ -634,7 +634,7 @@ export function Analyzer() {
             )}
             <span className="text-fg-muted font-normal">（{reasoningStream.length} 字）</span>
           </summary>
-          <div className="mt-2 max-h-[300px] overflow-y-auto text-[11px] text-fg-secondary whitespace-pre-wrap leading-snug border-t border-border-subtle pt-2">
+          <div className="mt-2 max-h-[300px] overflow-y-auto text-tight-sm text-fg-secondary whitespace-pre-wrap leading-snug border-t border-border-subtle pt-2">
             {reasoningStream || '（思维链尚未流式返回...）'}
           </div>
         </details>
@@ -649,7 +649,7 @@ export function Analyzer() {
             <FileJson className="size-3.5" />
             实时输出（流式 JSON · {streamingJson.length} 字）
           </summary>
-          <pre className="mt-2 max-h-[300px] overflow-y-auto text-[10px] text-fg-muted whitespace-pre-wrap font-mono">
+          <pre className="mt-2 max-h-[300px] overflow-y-auto text-tight-xs text-fg-muted whitespace-pre-wrap font-mono">
             {streamingJson}
           </pre>
         </details>
@@ -667,9 +667,9 @@ export function Analyzer() {
                 disabled={savingKb || savedKbId !== null}
                 title="保存为拆书资料后，可在项目设置中绑定此资料。将被注入到 N1.* / N2.* 规划节点。"
                 className={
-                  'px-2 py-1 text-[11px] rounded border inline-flex items-center gap-1 disabled:opacity-60 ' +
+                  'px-2 py-1 text-tight-sm rounded border inline-flex items-center gap-1 disabled:opacity-60 ' +
                   (savedKbId !== null
-                    ? 'border-success/40 bg-success/15 text-emerald-200'
+                    ? 'border-success/40 bg-success/15 text-success-200'
                     : 'border-brand-500/40 bg-primary-500/10 hover:bg-primary-500/20 text-brand-200')
                 }
               >
@@ -685,14 +685,14 @@ export function Analyzer() {
               <button
                 type="button"
                 onClick={() => setShowRawJson((v) => !v)}
-                className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+                className="px-2 py-1 text-tight-sm rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
               >
                 <FileJson className="size-3" /> {showRawJson ? '隐藏' : '查看'} JSON
               </button>
               <button
                 type="button"
                 onClick={copyJson}
-                className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+                className="px-2 py-1 text-tight-sm rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
               >
                 {copied ? <Check className="size-3 text-success" /> : <Copy className="size-3" />}
                 {copied ? '已复制' : '复制 JSON'}
@@ -706,7 +706,7 @@ export function Analyzer() {
             </div>
           )}
           {savedKbId !== null && (
-            <div className="rounded-md border border-success/40 bg-success/10 px-3 py-1.5 text-xs text-emerald-200">
+            <div className="rounded-md border border-success/40 bg-success/10 px-3 py-1.5 text-xs text-success-200">
               ✓ 已保存为拆书资料 #{savedKbId}。可在项目「资料库」面板中查看并绑定到当前项目。
             </div>
           )}
@@ -781,7 +781,7 @@ export function Analyzer() {
                       key={i}
                       className="rounded border border-border-subtle bg-surface/30 p-2 space-y-1"
                     >
-                      <div className="flex items-center gap-2 flex-wrap text-[11px]">
+                      <div className="flex items-center gap-2 flex-wrap text-tight-sm">
                         <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300">
                           {tag.label}
                         </span>
@@ -802,7 +802,7 @@ export function Analyzer() {
           {/* Raw JSON viewer */}
           {showRawJson && (
             <Section title="📄 原始 JSON 输出">
-              <pre className="text-[10px] text-fg-secondary font-mono whitespace-pre-wrap max-h-[400px] overflow-y-auto bg-canvas border border-border-subtle rounded p-2">
+              <pre className="text-tight-xs text-fg-secondary font-mono whitespace-pre-wrap max-h-[400px] overflow-y-auto bg-canvas border border-border-subtle rounded p-2">
                 {JSON.stringify(result, null, 2)}
               </pre>
             </Section>
@@ -811,7 +811,7 @@ export function Analyzer() {
       )}
 
       {/* Footer hint */}
-      <div className="text-[11px] text-fg-muted leading-relaxed border-t border-border-subtle pt-3">
+      <div className="text-tight-sm text-fg-muted leading-relaxed border-t border-border-subtle pt-3">
         <p className="mb-1">
           <span className="text-fg-secondary">💡 使用提示：</span>
           建议至少提供 <span className="text-fg-secondary">黄金章 + 中段 50% + 高潮 80%</span> 三个位置以覆盖核心结构。每章正文 ≥ 500 字效果最佳。
@@ -839,20 +839,20 @@ function Section(props: { title: string; children: React.ReactNode }) {
 function Stage1Field(props: { label: string; value: string; rows?: number; onChange: (v: string) => void }) {
   return (
     <div>
-      <div className="text-[10px] text-fg-secondary mb-0.5">{props.label}</div>
+      <div className="text-tight-xs text-fg-secondary mb-0.5">{props.label}</div>
       {props.rows && props.rows > 1 ? (
         <textarea
           value={props.value}
           rows={props.rows}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-[11px] text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-tight-sm text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500"
         />
       ) : (
         <input
           type="text"
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-tight-sm text-fg-primary focus:outline-none focus:border-brand-500"
         />
       )}
     </div>
@@ -862,12 +862,12 @@ function Stage1Field(props: { label: string; value: string; rows?: number; onCha
 function Field(props: { label: string; value: string; small?: boolean }) {
   return (
     <div>
-      <div className={(props.small ? 'text-[10px]' : 'text-xs') + ' text-fg-muted mb-0.5'}>
+      <div className={(props.small ? 'text-tight-xs' : 'text-xs') + ' text-fg-muted mb-0.5'}>
         {props.label}
       </div>
       <div
         className={
-          (props.small ? 'text-[11px]' : 'text-xs') +
+          (props.small ? 'text-tight-sm' : 'text-xs') +
           ' text-fg-secondary leading-relaxed whitespace-pre-wrap'
         }
       >

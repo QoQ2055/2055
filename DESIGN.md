@@ -1,5 +1,5 @@
 ---
-version: 1.0.0-alpha
+version: 0.2.0-alpha
 name: CineForge Web
 description: AI 辅助剧本与小说工作台 · 暖橙 + warm stone 中性色 · 创作工具温度
 status: alpha
@@ -41,15 +41,25 @@ colors:
     950: '#0c0a09'
 
   semantic:
+    # 全色（V0.2 补齐 50/100/200 浅色阶供背景 / 轻提示场景使用）
     success:        '#10b981'
     successHover:   '#059669'
     successActive:  '#047857'
+    success50:      '#ecfdf5'
+    success100:     '#d1fae5'
+    success200:     '#a7f3d0'
     warning:        '#f59e0b'
     warningHover:   '#d97706'
     warningActive:  '#b45309'
+    warning50:      '#fffbeb'
+    warning100:     '#fef3c7'
+    warning200:     '#fde68a'
     danger:         '#e11d48'
     dangerHover:    '#be123c'
     dangerActive:   '#9f1239'
+    danger50:       '#fff1f2'
+    danger100:      '#ffe4e6'
+    danger200:      '#fecdd3'
     info:           '#3b82f6'
     infoHover:      '#2563eb'
     infoActive:     '#1d4ed8'
@@ -168,6 +178,29 @@ typography:
       fontSize:   '13px'
       fontWeight: 400
       lineHeight: '1.55'
+
+    # ── V0.2 新增 · 紧凑字号三档 (非 uppercase, 补 captionM/labelM 不能覆盖的密集信息场景) ──
+    # 与 labelM 的区别：labelM 11px 自带 UPPERCASE + 0.08em tracking，
+    # 仅用于表单 label / nav 分组标题两种场景。
+    # tight* 是自然字体 + 正常字重，给 metadata / chip / 密集表格。
+    tight2xs:
+      fontFamily: '{typography.fontFamilies.sans}'
+      fontSize:   '9px'
+      fontWeight: 500
+      lineHeight: '1.3'
+      letterSpacing: '0'
+    tightXs:
+      fontFamily: '{typography.fontFamilies.sans}'
+      fontSize:   '10px'
+      fontWeight: 500
+      lineHeight: '1.35'
+      letterSpacing: '0'
+    tightSm:
+      fontFamily: '{typography.fontFamilies.sans}'
+      fontSize:   '11px'
+      fontWeight: 500
+      lineHeight: '1.4'
+      letterSpacing: '0'
 
 # ════════════════════════════════════════════════
 #  SPACING

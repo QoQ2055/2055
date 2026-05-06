@@ -179,30 +179,30 @@ export function ChapterValidationPanel({
         <span className="text-fg-secondary">章节自动校验</span>
 
         {isClean ? (
-          <span className="text-[10px] px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
+          <span className="text-tight-xs px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
             ✓ 无明显问题
           </span>
         ) : (
           <>
             {summary.error > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-danger/40 bg-danger/10 text-danger">
+              <span className="text-tight-xs px-1.5 py-0.5 rounded border border-danger/40 bg-danger/10 text-danger">
                 {summary.error} 错误
               </span>
             )}
             {summary.warning > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-warning/40 bg-warning/10 text-warning">
+              <span className="text-tight-xs px-1.5 py-0.5 rounded border border-warning/40 bg-warning/10 text-warning">
                 {summary.warning} 警告
               </span>
             )}
             {summary.info > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-blue-500/40 bg-blue-500/10 text-blue-300">
+              <span className="text-tight-xs px-1.5 py-0.5 rounded border border-blue-500/40 bg-blue-500/10 text-blue-300">
                 {summary.info} 提示
               </span>
             )}
           </>
         )}
 
-        <span className="ml-auto text-[10px] text-fg-muted">点击展开 / 收起</span>
+        <span className="ml-auto text-tight-xs text-fg-muted">点击展开 / 收起</span>
       </summary>
 
       {canAiFix && (
@@ -211,7 +211,7 @@ export function ChapterValidationPanel({
             <button
               type="button"
               onClick={startAiFix}
-              className="text-[11px] px-2 py-1 rounded border border-violet-500/40 bg-violet-500/10 hover:bg-violet-500/20 text-violet-200 inline-flex items-center gap-1"
+              className="text-tight-sm px-2 py-1 rounded border border-violet-500/40 bg-violet-500/10 hover:bg-violet-500/20 text-violet-200 inline-flex items-center gap-1"
               title="把上面所有问题打包交给 LLM，结合题材锚点 / KB / 方法论一键修订；修订结果写回当前章节并入撤销栈"
             >
               <Wand2 className="size-3" /> AI 一键修订（{summary.error + summary.warning} 项）
@@ -219,14 +219,14 @@ export function ChapterValidationPanel({
           )}
           {aiFix.kind === 'streaming' && (
             <>
-              <span className="text-[11px] inline-flex items-center gap-1 text-violet-200">
+              <span className="text-tight-sm inline-flex items-center gap-1 text-violet-200">
                 <Loader2 className="size-3 animate-spin" />
                 AI 修订中… 已输出 {aiFix.previewLen} 字
               </span>
               <button
                 type="button"
                 onClick={cancelAiFix}
-                className="text-[11px] px-2 py-1 rounded border border-border-default bg-elevated hover:bg-zinc-700 text-fg-secondary inline-flex items-center gap-1"
+                className="text-tight-sm px-2 py-1 rounded border border-border-default bg-elevated hover:bg-neutral-700 text-fg-secondary inline-flex items-center gap-1"
               >
                 <X className="size-3" /> 取消
               </button>
@@ -234,11 +234,11 @@ export function ChapterValidationPanel({
           )}
           {aiFix.kind === 'error' && (
             <>
-              <span className="text-[11px] text-danger">AI 修订失败：{aiFix.msg}</span>
+              <span className="text-tight-sm text-danger">AI 修订失败：{aiFix.msg}</span>
               <button
                 type="button"
                 onClick={() => setAiFix({ kind: 'idle' })}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary"
+                className="text-tight-xs px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary"
               >
                 关闭
               </button>
@@ -256,7 +256,7 @@ export function ChapterValidationPanel({
               <div
                 key={idx}
                 className={clsx(
-                  'rounded border px-2.5 py-1.5 text-[11px] leading-relaxed',
+                  'rounded border px-2.5 py-1.5 text-tight-sm leading-relaxed',
                   meta.rowClass,
                 )}
               >
@@ -266,13 +266,13 @@ export function ChapterValidationPanel({
                     <div className="flex items-center gap-1.5 flex-wrap">
                       <span
                         className={clsx(
-                          'text-[9px] px-1 py-0 rounded border',
+                          'text-tight-2xs px-1 py-0 rounded border',
                           meta.badgeClass,
                         )}
                       >
                         {meta.label}
                       </span>
-                      <span className="text-[9px] px-1 py-0 rounded border border-border-default text-fg-secondary font-mono">
+                      <span className="text-tight-2xs px-1 py-0 rounded border border-border-default text-fg-secondary font-mono">
                         {it.kind}
                       </span>
                       <span className="text-fg-primary">{it.message}</span>
@@ -282,7 +282,7 @@ export function ChapterValidationPanel({
                         {it.evidence.map((ev, i) => (
                           <span
                             key={i}
-                            className="text-[10px] px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate"
+                            className="text-tight-xs px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate"
                             title={ev}
                           >
                             {ev}
@@ -291,7 +291,7 @@ export function ChapterValidationPanel({
                       </div>
                     )}
                     {it.fixHint && (
-                      <div className="text-[10px] text-fg-secondary mt-0.5 italic">
+                      <div className="text-tight-xs text-fg-secondary mt-0.5 italic">
                         » {it.fixHint}
                       </div>
                     )}
@@ -300,7 +300,7 @@ export function ChapterValidationPanel({
               </div>
             );
           })}
-          <p className="text-[10px] text-fg-muted italic mt-1">
+          <p className="text-tight-xs text-fg-muted italic mt-1">
             💡 这是一组纯前端的轻量检查，不调用 LLM。错误通常需要立刻处理；警告 / 提示可结合调性自行取舍。
           </p>
         </div>

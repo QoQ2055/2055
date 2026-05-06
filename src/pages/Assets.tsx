@@ -232,7 +232,7 @@ export function Assets() {
               <Icon className={clsx('size-4', isActive ? meta.color : 'text-fg-muted')} />
               {meta.label}
               {count > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">{count}</span>
+                <span className="text-tight-xs px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">{count}</span>
               )}
               {(statuses[`assets.${idx}`] === 'running') && (
                 <Loader2 className="size-3 animate-spin text-primary-400" />
@@ -461,13 +461,13 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
           <Icon className={clsx('size-4 shrink-0', meta.color)} />
           <h3 className="text-sm font-semibold truncate flex-1" title={name}>{name}</h3>
           {category && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary shrink-0">
+            <span className="text-tight-xs px-1.5 py-0.5 rounded bg-elevated text-fg-secondary shrink-0">
               {category}
             </span>
           )}
         </div>
         {(belongsTo || era) && (
-          <div className="text-[11px] text-fg-muted mt-1 truncate">
+          <div className="text-tight-sm text-fg-muted mt-1 truncate">
             {belongsTo}{belongsTo && era ? ' · ' : ''}{era}
           </div>
         )}
@@ -482,7 +482,7 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
         )}
         {aiPrompt && (
           <div className="rounded bg-canvas/60 border border-border-subtle p-2 max-h-32 overflow-auto">
-            <pre className="text-[11px] whitespace-pre-wrap break-words font-mono text-fg-secondary">
+            <pre className="text-tight-sm whitespace-pre-wrap break-words font-mono text-fg-secondary">
               {aiPrompt.length > 400 ? aiPrompt.slice(0, 400) + '…' : aiPrompt}
             </pre>
           </div>
@@ -535,12 +535,12 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
 
 function StatusBadge({ status, stale, hasArtifact }: { status: NodeStatus; stale?: boolean; hasArtifact: boolean }) {
   if (status === 'running')
-    return <span className="inline-flex items-center gap-1 text-[10px] text-brand-300"><Loader2 className="size-3 animate-spin" /> 运行中</span>;
+    return <span className="inline-flex items-center gap-1 text-tight-xs text-brand-300"><Loader2 className="size-3 animate-spin" /> 运行中</span>;
   if (status === 'error')
-    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">错误</span>;
+    return <span className="text-tight-xs px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">错误</span>;
   if (stale && hasArtifact)
-    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">stale</span>;
+    return <span className="text-tight-xs px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">stale</span>;
   if (hasArtifact)
-    return <span className="inline-flex items-center gap-1 text-[10px] text-success"><CheckCircle2 className="size-3" /> 完成</span>;
+    return <span className="inline-flex items-center gap-1 text-tight-xs text-success"><CheckCircle2 className="size-3" /> 完成</span>;
   return null;
 }

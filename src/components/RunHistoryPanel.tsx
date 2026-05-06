@@ -178,7 +178,7 @@ function RecordRow({ r }: { r: RunRecord }) {
         {r.cost != null && r.cost > 0 && <span className="text-fg-muted">${r.cost.toFixed(3)}</span>}
       </div>
       {open && (
-        <div className="px-2 pb-2 border-t border-border-subtle text-[11px] space-y-1.5 bg-canvas/40">
+        <div className="px-2 pb-2 border-t border-border-subtle text-tight-sm space-y-1.5 bg-canvas/40">
           <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-fg-secondary pt-2">
             <span>stage: <span className="text-fg-secondary">{r.stageId}</span></span>
             <span>step: <span className="text-fg-secondary">{r.stepIndex}</span></span>

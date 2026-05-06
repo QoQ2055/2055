@@ -449,7 +449,7 @@ export function Novel() {
                 value={bestOfNCount}
                 onChange={(e) => setBestOfNCount(parseInt(e.target.value, 10))}
                 disabled={chainBusy}
-                className="bg-surface border border-border-subtle rounded px-1 py-0.5 text-[11px]"
+                className="bg-surface border border-border-subtle rounded px-1 py-0.5 text-tight-sm"
               >
                 <option value={2}>×2</option>
                 <option value={3}>×3</option>
@@ -459,7 +459,7 @@ export function Novel() {
             )}
             {useBestOfN && (
               <label
-                className="flex items-center gap-1 cursor-pointer text-[11px] pl-1 border-l border-warning/30"
+                className="flex items-center gap-1 cursor-pointer text-tight-sm pl-1 border-l border-warning/30"
                 title="反思模式：裁判在打分前先写出维度级批评（提高选择准确度，裁判 token × ~2.5）"
               >
                 <input
@@ -892,7 +892,7 @@ function ProjectSettingsCard({
       <div className="flex items-center gap-2 text-xs font-medium text-fg-secondary">
         <Sparkles className="size-3.5" style={{ color: accentHex }} />
         项目设定（注入到所有小说 prompt）
-        <button className="ml-auto btn-ghost text-[11px] py-0.5 px-1.5" onClick={onEdit}>
+        <button className="ml-auto btn-ghost text-tight-sm py-0.5 px-1.5" onClick={onEdit}>
           编辑
         </button>
       </div>
@@ -939,7 +939,7 @@ function ProjectSettingsCard({
             <div>
               <span className="text-fg-muted">📚 知识库绑定：</span>
               <span className="text-fg-secondary">{ctx.userKbDocIds.length} 条资料</span>
-              <Link to="/kb" className="ml-2 text-[11px] text-brand-300 hover:text-brand-200">
+              <Link to="/kb" className="ml-2 text-tight-sm text-brand-300 hover:text-brand-200">
                 管理 →
               </Link>
             </div>
@@ -948,7 +948,7 @@ function ProjectSettingsCard({
             <div>
               <span className="text-fg-muted">📐 方法论：</span>
               <span className="text-fg-secondary">{ctx.methodModuleIds.length} 个已启用</span>
-              <span className="ml-1 text-fg-muted text-[10px]">({ctx.methodModuleIds.join(', ')})</span>
+              <span className="ml-1 text-fg-muted text-tight-xs">({ctx.methodModuleIds.join(', ')})</span>
             </div>
           )}
         </div>
@@ -960,9 +960,9 @@ function ProjectSettingsCard({
 function SettingItem({ label, value, sub }: { label: string; value?: string; sub?: string }) {
   return (
     <div>
-      <div className="text-[10px] text-fg-muted uppercase tracking-wider">{label}</div>
+      <div className="text-tight-xs text-fg-muted uppercase tracking-wider">{label}</div>
       <div className="text-fg-primary truncate" title={value ?? '—'}>{value ?? <span className="text-fg-muted">—</span>}</div>
-      {sub && <div className="text-[10px] text-fg-muted">{sub}</div>}
+      {sub && <div className="text-tight-xs text-fg-muted">{sub}</div>}
     </div>
   );
 }
@@ -1042,13 +1042,13 @@ function StepCard({
         <div className="text-sm font-medium leading-tight flex items-center gap-1.5 flex-wrap">
           {NOVEL_STEP_TITLES[step.id] ?? step.title}
           {bestOfNActive && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">
+            <span className="text-tight-xs px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">
               🎯 Best-of-N
             </span>
           )}
           {bnMeta && (
             <span
-              className="text-[10px] px-1.5 py-0.5 rounded bg-success/15 text-success border border-success/30"
+              className="text-tight-xs px-1.5 py-0.5 rounded bg-success/15 text-success border border-success/30"
               title={`Best-of-${bnMeta.candidateCount} 选中候选 #${bnMeta.chosenIndex + 1}`}
             >
               ✓ {bnMeta.candidateCount}选1
@@ -1056,14 +1056,14 @@ function StepCard({
           )}
           {approved && (
             <span
-              className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-600/20 text-success border border-success/40 flex items-center gap-1"
+              className="text-tight-xs px-1.5 py-0.5 rounded bg-emerald-600/20 text-success border border-success/40 flex items-center gap-1"
               title={approvedAt ? `已于 ${new Date(approvedAt).toLocaleString()} 批准` : '已批准'}
             >
               <ShieldCheck className="size-3" /> 已批准
             </span>
           )}
           {!approved && artifact && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/10 text-warning/90 border border-warning/30" title="产出已生成，但未被批准。下游可运行，但会提示软警告。">
+            <span className="text-tight-xs px-1.5 py-0.5 rounded bg-warning/10 text-warning/90 border border-warning/30" title="产出已生成，但未被批准。下游可运行，但会提示软警告。">
               🛡 待批准
             </span>
           )}
@@ -1074,7 +1074,7 @@ function StepCard({
       {unapprovedUpstream && unapprovedUpstream.length > 0 && (
         <div
           className={clsx(
-            'text-[11px] flex items-center gap-1',
+            'text-tight-sm flex items-center gap-1',
             gateBlocked ? 'text-red-400' : 'text-warning/90',
           )}
           title={gateBlocked
@@ -1494,9 +1494,9 @@ function PreviewModal({
               🎯 Best-of-{bestOfNInfo.candidateCount} 裁判结果
               <span className="text-success/80">· 已选候选 #{bestOfNInfo.chosenIndex + 1}</span>
               {bestOfNInfo.reflection && (
-                <span className="text-blue-300 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30">🔍 反思模式</span>
+                <span className="text-blue-300 text-tight-xs px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30">🔍 反思模式</span>
               )}
-              <span className="ml-auto text-fg-muted text-[10px]">点击展开 / 收起</span>
+              <span className="ml-auto text-fg-muted text-tight-xs">点击展开 / 收起</span>
             </summary>
             <div className="mt-2 space-y-2 pl-1">
               {bestOfNInfo.scores && bestOfNInfo.scores.length > 0 && (
@@ -1506,7 +1506,7 @@ function PreviewModal({
                     <span
                       key={i}
                       className={clsx(
-                        'px-1.5 py-0.5 rounded border font-mono text-[11px]',
+                        'px-1.5 py-0.5 rounded border font-mono text-tight-sm',
                         i === bestOfNInfo!.chosenIndex
                           ? 'border-success/60 bg-success/10 text-success'
                           : 'border-border-default text-fg-secondary',
@@ -1530,7 +1530,7 @@ function PreviewModal({
                   <div className="text-fg-muted mb-0.5 flex items-center gap-1">
                     <span>维度批评（反思模式）：</span>
                   </div>
-                  <pre className="text-fg-secondary text-[11px] leading-relaxed bg-surface/50 rounded p-2 whitespace-pre-wrap font-mono max-h-72 overflow-auto">
+                  <pre className="text-fg-secondary text-tight-sm leading-relaxed bg-surface/50 rounded p-2 whitespace-pre-wrap font-mono max-h-72 overflow-auto">
                     {bestOfNInfo.critique}
                   </pre>
                 </div>
@@ -1539,7 +1539,10 @@ function PreviewModal({
           </details>
         )}
         <pre
-          className="flex-1 overflow-auto p-4 text-sm text-fg-primary whitespace-pre-wrap font-mono leading-relaxed select-text min-h-0"
+          className={isChapterPreview
+            ? "flex-1 overflow-auto p-6 prose-reading whitespace-pre-wrap select-text min-h-0"
+            : "flex-1 overflow-auto p-4 text-sm text-fg-primary whitespace-pre-wrap font-mono leading-relaxed select-text min-h-0"
+          }
           onMouseUp={handlePreMouseUp}
         >
           {displayBody}
@@ -1570,20 +1573,20 @@ function PreviewModal({
               <Wand2 className="size-3.5 text-primary-400" />
               <span>润色工具（6 个单一职责工具）</span>
               {selection ? (
-                <span className="text-[10px] px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
+                <span className="text-tight-xs px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
                   选区润色 · {selection.length} 字
                 </span>
               ) : (
-                <span className="text-[10px] text-fg-muted">
+                <span className="text-tight-xs text-fg-muted">
                   未选区 · 将对全章 ({displayBody.length} 字) 润色
                 </span>
               )}
               {refineUndoStack.length > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded border border-warning/30 bg-warning/5 text-warning/80">
+                <span className="text-tight-xs px-1.5 py-0.5 rounded border border-warning/30 bg-warning/5 text-warning/80">
                   已应用 {refineUndoStack.length} 次
                 </span>
               )}
-              <span className="ml-auto text-[10px] text-fg-muted">点击展开 / 收起</span>
+              <span className="ml-auto text-tight-xs text-fg-muted">点击展开 / 收起</span>
             </summary>
             <div className="mt-2">
               <RefinementToolPanel
@@ -1591,7 +1594,7 @@ function PreviewModal({
                 onApply={handleRefineApply}
                 compact
               />
-              <p className="mt-2 text-[10px] text-fg-muted leading-snug">
+              <p className="mt-2 text-tight-xs text-fg-muted leading-snug">
                 💡 点「应用」后会{selection ? '替换选区文本' : '覆写全章内容'}。顺安全起见，顶栏「撤销润色」按钮可逐步回退。
                 多工具可链式使用（先精炼→再润色→再调节奏）；不同于 cineforge 的 N3.2 批量润色节点。
               </p>
@@ -1730,7 +1733,7 @@ function NovelSettingsDialog({
                     className={clsx(
                       'flex-1 px-2 py-1.5 rounded border',
                       novelAudience === a.value
-                        ? 'border-success/60 bg-success/15 text-emerald-200'
+                        ? 'border-success/60 bg-success/15 text-success-200'
                         : 'border-border-subtle hover:border-border-default',
                     )}
                   >{a.label}</button>
@@ -1750,12 +1753,12 @@ function NovelSettingsDialog({
                   className={clsx(
                     'px-2 py-1.5 rounded border text-center',
                     novelScale === s.value
-                      ? 'border-success/60 bg-success/15 text-emerald-200'
+                      ? 'border-success/60 bg-success/15 text-success-200'
                       : 'border-border-subtle hover:border-border-default',
                   )}
                 >
                   <div className="font-medium">{s.label}</div>
-                  <div className="text-[10px] text-fg-muted">{s.totalWordsK}万</div>
+                  <div className="text-tight-xs text-fg-muted">{s.totalWordsK}万</div>
                 </button>
               ))}
             </div>
@@ -1828,9 +1831,9 @@ function NovelSettingsDialog({
                     onClick={() => toggleGenre(g.value)}
                     title={g.hint}
                     className={clsx(
-                      'px-2 py-0.5 text-[11px] rounded border',
+                      'px-2 py-0.5 text-tight-sm rounded border',
                       picked
-                        ? 'border-success/60 bg-success/15 text-emerald-200'
+                        ? 'border-success/60 bg-success/15 text-success-200'
                         : capped
                           ? 'border-border-subtle text-fg-muted cursor-not-allowed'
                           : 'border-border-subtle hover:border-border-default',
@@ -1852,7 +1855,7 @@ function NovelSettingsDialog({
                   className={clsx(
                     'px-2 py-1.5 rounded border',
                     protagonistGender === opt.value
-                      ? 'border-success/60 bg-success/15 text-emerald-200'
+                      ? 'border-success/60 bg-success/15 text-success-200'
                       : 'border-border-subtle hover:border-border-default',
                   )}
                 >{opt.label}</button>

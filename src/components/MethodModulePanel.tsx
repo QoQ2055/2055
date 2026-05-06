@@ -179,7 +179,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
           <BookMarked className="size-4 text-warning shrink-0" />
           <div className="flex-1">
             <div className="font-medium text-fg-primary">方法论模块</div>
-            <div className="text-[11px] text-fg-muted mt-0.5">
+            <div className="text-tight-sm text-fg-muted mt-0.5">
               {loading ? '加载中…' : (
                 modules.length === 0
                   ? '暂无可用方法论模块'
@@ -194,7 +194,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
           <button
             onClick={runLlmRecommend}
             disabled={llmRunning}
-            className="text-[10px] px-2 my-1.5 mr-1 rounded border border-blue-500/40 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 flex items-center gap-1 disabled:opacity-60"
+            className="text-tight-xs px-2 my-1.5 mr-1 rounded border border-blue-500/40 bg-blue-500/10 text-blue-300 hover:bg-blue-500/20 flex items-center gap-1 disabled:opacity-60"
             title="调用 LLM 读取「核心冲突 / logline」等自由文本后给出补充推荐（~ 800 token）"
           >
             {llmRunning ? <Loader2 className="size-3 animate-spin" /> : <Bot className="size-3" />}
@@ -205,7 +205,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
         {recommendations.some((r) => r.score >= 65) && (
           <button
             onClick={applyRecommended}
-            className="text-[10px] px-2 my-1.5 mr-1.5 rounded border border-warning/40 bg-warning/10 text-warning hover:bg-warning/20 flex items-center gap-1"
+            className="text-tight-xs px-2 my-1.5 mr-1.5 rounded border border-warning/40 bg-warning/10 text-warning hover:bg-warning/20 flex items-center gap-1"
             title="一键应用推荐：取推荐分≥ 65 的前 3 个模块，自动处理互斥"
           >
             <Sparkles className="size-3" /> 一键应用推荐
@@ -213,7 +213,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
         )}
       </div>
       {llmError && (
-        <div className="px-3 py-1.5 text-[11px] text-danger border-t border-border-subtle/50 flex items-center gap-1">
+        <div className="px-3 py-1.5 text-tight-sm text-danger border-t border-border-subtle/50 flex items-center gap-1">
           <AlertTriangle className="size-3" /> {llmError}
         </div>
       )}
@@ -228,7 +228,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
               <div
                 key={it.moduleId}
                 className={clsx(
-                  'text-[11px] px-2 py-1 rounded flex items-start gap-1.5 border',
+                  'text-tight-sm px-2 py-1 rounded flex items-start gap-1.5 border',
                   isRed
                     ? 'bg-danger/10 border-danger/40 text-danger'
                     : 'bg-warning/10 border-warning/40 text-warning',
@@ -249,7 +249,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                 </div>
                 <button
                   onClick={() => onChange(value.filter((v) => v !== it.moduleId))}
-                  className="text-[10px] px-1.5 py-0.5 rounded border border-current/40 hover:bg-current/10 shrink-0"
+                  className="text-tight-xs px-1.5 py-0.5 rounded border border-current/40 hover:bg-current/10 shrink-0"
                   title="取消启用该模块"
                 >
                   关闭
@@ -262,10 +262,10 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
 
       {expanded && (
         <div className="px-3 pb-3 pt-1 border-t border-border-subtle/50 space-y-1.5">
-          {loading && <div className="text-[11px] text-fg-muted">加载中…</div>}
+          {loading && <div className="text-tight-sm text-fg-muted">加载中…</div>}
 
           {!loading && modules.length === 0 && (
-            <div className="text-[11px] text-fg-muted italic py-2">
+            <div className="text-tight-sm text-fg-muted italic py-2">
               暂无方法论模块（请检查 public/methods/manifest.json 是否存在）
             </div>
           )}
@@ -291,14 +291,14 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                   onClick={() => !isFull && toggle(mod.id)}
                   disabled={isFull && !checked}
                   className={clsx(
-                    'w-full text-left px-2.5 py-2 rounded text-[11px] transition-colors',
+                    'w-full text-left px-2.5 py-2 rounded text-tight-sm transition-colors',
                     // 已启用 + 题材冲突 → 红框；已启用 + 题材弱兼容 → 黄框
                     checked && compat.level === 'incompatible'
-                      ? 'bg-danger/15 border border-danger/50 text-rose-100'
+                      ? 'bg-danger/15 border border-danger/50 text-danger-100'
                       : checked && compat.level === 'warning'
-                        ? 'bg-warning/15 border border-warning/60 text-amber-100'
+                        ? 'bg-warning/15 border border-warning/60 text-warning-100'
                         : checked
-                          ? 'bg-warning/15 border border-warning/40 text-amber-100'
+                          ? 'bg-warning/15 border border-warning/40 text-warning-100'
                           : compat.level === 'incompatible'
                             ? 'border border-danger/30 bg-danger/5 hover:bg-danger/10'
                             : strength === 'strong'
@@ -320,48 +320,48 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                         <span>{mod.title}</span>
                         {strength === 'strong' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-warning/20 text-warning border border-warning/40"
+                            className="text-tight-2xs px-1 py-0 rounded bg-warning/20 text-warning border border-warning/40"
                             title={rec?.reason}
                           >💡 强推荐 {rec!.score}</span>
                         )}
                         {strength === 'mild' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-zinc-700/40 text-fg-secondary border border-zinc-600/40"
+                            className="text-tight-2xs px-1 py-0 rounded bg-neutral-700/40 text-fg-secondary border border-neutral-600/40"
                             title={rec?.reason}
                           >💡 推荐 {rec!.score}</span>
                         )}
                         {/* P9-F LLM 来源徐章 */}
                         {rec?.source === 'llm' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-blue-500/15 text-blue-300 border border-blue-500/40 flex items-center gap-0.5"
+                            className="text-tight-2xs px-1 py-0 rounded bg-blue-500/15 text-blue-300 border border-blue-500/40 flex items-center gap-0.5"
                             title="LLM 背书推荐"
                           ><Bot className="size-2.5" /> AI</span>
                         )}
                         {/* v2 阶段 2.3 · 题材兼容性徐章 */}
                         {compat.level === 'incompatible' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-danger/15 text-danger border border-danger/40 flex items-center gap-0.5"
+                            className="text-tight-2xs px-1 py-0 rounded bg-danger/15 text-danger border border-danger/40 flex items-center gap-0.5"
                             title={`与题材 [${genresToLabels(compat.hits)}] 语义冲突；启用后产出可能严重违和`}
                           ><Ban className="size-2.5" /> 题材冲突</span>
                         )}
                         {compat.level === 'warning' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-warning/10 text-warning border border-warning/30 flex items-center gap-0.5"
+                            className="text-tight-2xs px-1 py-0 rounded bg-warning/10 text-warning border border-warning/30 flex items-center gap-0.5"
                             title={`在题材 [${genresToLabels(compat.hits)}] 下兼容性较弱，可继续使用但需注意`}
                           ><ShieldAlert className="size-2.5" /> 兼容弱</span>
                         )}
                         {compat.level === 'recommended' && (
                           <span
-                            className="text-[9px] px-1 py-0 rounded bg-success/10 text-success border border-success/30 flex items-center gap-0.5"
+                            className="text-tight-2xs px-1 py-0 rounded bg-success/10 text-success border border-success/30 flex items-center gap-0.5"
                             title={`与题材 [${genresToLabels(compat.hits)}] 高度契合`}
                           ><CheckCircle2 className="size-2.5" /> 题材契合</span>
                         )}
                       </div>
-                      <div className="text-[10px] text-fg-secondary mt-0.5">{mod.summary}</div>
+                      <div className="text-tight-xs text-fg-secondary mt-0.5">{mod.summary}</div>
                       {rec && rec.score >= 65 && (
-                        <div className="text-[10px] text-warning/90 mt-0.5 italic">» {rec.reason}</div>
+                        <div className="text-tight-xs text-warning/90 mt-0.5 italic">» {rec.reason}</div>
                       )}
-                      <div className="text-[10px] text-fg-muted mt-1 flex items-center gap-2">
+                      <div className="text-tight-xs text-fg-muted mt-1 flex items-center gap-2">
                         <span>📍 注入到 {mod.injectsTo.join(', ')}</span>
                         <span>· ~{mod.estimatedTokens} tokens</span>
                         {conflictsActive && !checked && (
@@ -377,7 +377,7 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
             })}
 
           {value.length >= MAX_ENABLED && (
-            <div className="text-[10px] text-warning/80 italic mt-2">
+            <div className="text-tight-xs text-warning/80 italic mt-2">
               已达启用上限（{MAX_ENABLED} 个）。继续启用前请先取消勾选其他模块。
             </div>
           )}

@@ -146,11 +146,11 @@ export function RefinementToolPanel({
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div>
             <div className="text-sm font-medium text-fg-primary">章节润色工具集</div>
-            <div className="text-[11px] text-fg-muted">
+            <div className="text-tight-sm text-fg-muted">
               选区或全文 · 6 个独立工具 · 单一职责（每个工具只动一件事）
             </div>
           </div>
-          <div className="text-[10px] text-fg-muted">
+          <div className="text-tight-xs text-fg-muted">
             输入字数：<span className="text-fg-secondary font-mono">{(inputText ?? '').length}</span>
           </div>
         </div>
@@ -200,7 +200,7 @@ export function RefinementToolPanel({
 
       {/* Description of active tool */}
       {activeTool && !compact && (
-        <div className="rounded-md border border-border-subtle bg-surface/40 px-2 py-1.5 text-[11px] text-fg-secondary">
+        <div className="rounded-md border border-border-subtle bg-surface/40 px-2 py-1.5 text-tight-sm text-fg-secondary">
           <span className="text-fg-secondary">{activeTool.emoji} {activeTool.label}：</span>
           {activeTool.description}
         </div>
@@ -217,7 +217,7 @@ export function RefinementToolPanel({
       {(state.running || state.output) && (
         <div className="rounded-md border border-border-subtle bg-surface/30">
           <div className="flex items-center justify-between px-2 py-1.5 border-b border-border-subtle">
-            <div className="flex items-center gap-2 text-[11px] text-fg-secondary">
+            <div className="flex items-center gap-2 text-tight-sm text-fg-secondary">
               <span className="text-fg-primary">{activeTool?.emoji} {activeTool?.label}</span>
               {state.running && (
                 <span className="flex items-center gap-1">
@@ -237,7 +237,7 @@ export function RefinementToolPanel({
                 <button
                   type="button"
                   onClick={stop}
-                  className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+                  className="px-2 py-1 text-tight-sm rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
                 >
                   <Square className="size-3" /> 停止
                 </button>
@@ -247,7 +247,7 @@ export function RefinementToolPanel({
                     type="button"
                     onClick={copyOut}
                     disabled={!state.output}
-                    className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-50"
+                    className="px-2 py-1 text-tight-sm rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-50"
                     title="复制到剪贴板"
                   >
                     {copied ? <Check className="size-3 text-success" /> : <Copy className="size-3" />}
@@ -258,7 +258,7 @@ export function RefinementToolPanel({
                       type="button"
                       onClick={apply}
                       disabled={!state.output}
-                      className="px-2 py-1 text-[11px] rounded border border-success/40 bg-success/10 hover:bg-success/20 text-emerald-200 inline-flex items-center gap-1 disabled:opacity-50"
+                      className="px-2 py-1 text-tight-sm rounded border border-success/40 bg-success/10 hover:bg-success/20 text-success-200 inline-flex items-center gap-1 disabled:opacity-50"
                     >
                       <Check className="size-3" /> 应用
                     </button>
@@ -266,7 +266,7 @@ export function RefinementToolPanel({
                   <button
                     type="button"
                     onClick={discard}
-                    className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+                    className="px-2 py-1 text-tight-sm rounded border border-border-default hover:border-neutral-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
                     title="丢弃本次结果"
                   >
                     <X className="size-3" /> 丢弃

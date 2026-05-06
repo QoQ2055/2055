@@ -419,7 +419,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
               passed ? 'bg-emerald-500' :
               a && stale ? 'bg-amber-500' :
               a ? 'bg-sky-500' :
-              'bg-zinc-700';
+              'bg-neutral-700';
             return (
               <li key={s.id} className="flex items-center">
                 <button
@@ -742,7 +742,7 @@ function Badge({ tone, children }: { tone: 'emerald' | 'amber' | 'rose' | 'sky';
     rose:    'bg-danger/15 text-danger border-danger/30',
     sky:     'bg-sky-500/15 text-sky-300 border-sky-500/30',
   };
-  return <span className={clsx('px-2 py-0.5 rounded-full text-[11px] border', map[tone])}>{children}</span>;
+  return <span className={clsx('px-2 py-0.5 rounded-full text-tight-sm border', map[tone])}>{children}</span>;
 }
 
 function ConstraintChip({ c }: { c: Constraint }) {
@@ -792,7 +792,7 @@ function DagPill(p: DagPillProps) {
     p.status === 'error' ? 'bg-rose-500' :
     p.hasArtifact && !p.stale ? 'bg-emerald-500' :
     p.hasArtifact && p.stale ? 'bg-amber-500' :
-    'bg-zinc-700';
+    'bg-neutral-700';
   return (
     <li className="flex items-center">
       <button
@@ -906,7 +906,7 @@ function R1Pane(p: R1PaneProps) {
               <ul className="text-sm space-y-1.5">
                 {parsed.riskList.map((r: any, i: number) => (
                   <li key={i} className="text-fg-secondary">
-                    <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30 mr-1.5">
+                    <span className="px-1 py-0.5 rounded text-tight-xs bg-danger/15 text-danger border border-danger/30 mr-1.5">
                       {r.kind}
                     </span>
                     {r.issue}
@@ -1119,7 +1119,7 @@ function ScoreCard({ label, v }: { label: string; v?: number }) {
     <div className="card p-3 text-center">
       <div className="label">{label}</div>
       <div className={clsx('text-3xl font-bold mt-1', colorMap[tone])}>{score}</div>
-      <div className="text-[10px] text-fg-muted">/ 10</div>
+      <div className="text-tight-xs text-fg-muted">/ 10</div>
     </div>
   );
 }

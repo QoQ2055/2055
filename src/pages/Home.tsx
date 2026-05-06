@@ -322,7 +322,7 @@ function ModeTag({ ctx }: { ctx: { projectMode?: any; projectType?: any; createM
   const meta = getModeMeta(getProjectMode(ctx as any));
   return (
     <span
-      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium shrink-0"
+      className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-tight-xs font-medium shrink-0"
       style={{
         color: meta.accentHex,
         backgroundColor: `${meta.accentHex}18`,

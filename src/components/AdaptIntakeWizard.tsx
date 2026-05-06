@@ -134,7 +134,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                     )}
                   />
                 ))}
-                <span className="text-[10px] text-fg-muted ml-1.5">Step {step} / {TOTAL}</span>
+                <span className="text-tight-xs text-fg-muted ml-1.5">Step {step} / {TOTAL}</span>
               </div>
             </div>
           </div>
@@ -162,11 +162,11 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                     )}
                   >
                     <div className="text-sm font-medium">{opt.label}</div>
-                    <div className="text-[11px] text-fg-muted mt-1">{opt.hint}</div>
+                    <div className="text-tight-sm text-fg-muted mt-1">{opt.hint}</div>
                   </button>
                 ))}
               </div>
-              <div className="text-[11px] text-fg-muted mt-2">
+              <div className="text-tight-sm text-fg-muted mt-2">
                 这一步决定 <span className="text-warning">KB 注入策略</span>（如长篇网文走压缩 5 策略，真实事件加合规审查）和后续 R1' 改编战略
               </div>
             </>
@@ -176,7 +176,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
             <>
               <div className="flex items-center justify-between">
                 <div className="label">投喂原作章节</div>
-                <div className="text-[11px] text-fg-muted">
+                <div className="text-tight-sm text-fg-muted">
                   共 <span className="font-mono text-fg-secondary">{chunks.length}</span> 块 · {totalChars.toLocaleString()} 字 · 有效块 <span className={clsx('font-mono', validChunks.length >= 1 ? 'text-success' : 'text-fg-muted')}>{validChunks.length}</span>
                 </div>
               </div>
@@ -208,7 +208,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                       placeholder="粘贴本章原文（≥ 50 字）"
                       className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-xs font-mono focus:outline-none focus:border-brand-500"
                     />
-                    <div className="text-[10px] text-fg-muted">
+                    <div className="text-tight-xs text-fg-muted">
                       字数 <span className={clsx('font-mono', c.raw.length >= 50 ? 'text-success' : 'text-warning')}>{c.raw.length}</span>
                       {c.raw.length < 50 && c.raw.length > 0 && <span className="text-warning ml-2">（需 ≥ 50 字才算有效）</span>}
                     </div>
@@ -221,7 +221,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
               >
                 <Plus className="size-4" /> 添加章节
               </button>
-              <div className="text-[11px] text-fg-muted mt-2">
+              <div className="text-tight-sm text-fg-muted mt-2">
                 创建项目后还可在 <span className="font-mono text-fg-secondary">/intake</span> 页继续追加章节、跑摘要
               </div>
             </>
@@ -269,7 +269,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         )}
                       >
                         <div className="text-xs font-medium">{pl.label}</div>
-                        <div className="text-[10px] text-fg-muted mt-0.5">{pl.hint}</div>
+                        <div className="text-tight-xs text-fg-muted mt-0.5">{pl.hint}</div>
                       </button>
                     ))}
                   </div>
@@ -313,19 +313,19 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
               {suggestedName && name !== suggestedName && (
                 <button
                   type="button"
-                  className="btn-ghost text-[11px] mt-1 text-brand-300 hover:bg-primary-500/10"
+                  className="btn-ghost text-tight-sm mt-1 text-brand-300 hover:bg-primary-500/10"
                   onClick={() => setName(suggestedName)}
                 >
                   使用建议名「{suggestedName}」
                 </button>
               )}
               <div className="card bg-canvas border-border-subtle p-3 mt-3 space-y-2">
-                <div className="text-[10px] text-fg-muted">即将创建的项目预览</div>
+                <div className="text-tight-xs text-fg-muted">即将创建的项目预览</div>
                 <SummaryRow icon={<BookCopy className="size-3.5 text-sky-300" />} label="原作类型" value={ADAPT_SOURCE_TYPES.find((t) => t.value === adaptSourceType)?.label ?? adaptSourceType} />
                 <SummaryRow icon={<FileText className="size-3.5 text-warning" />} label="原作章节" value={`${validChunks.length} 章 / ${totalChars.toLocaleString()} 字`} />
                 <SummaryRow label="目标规格" value={`${durationMin} 分钟 · ${PLATFORMS.find((p) => p.value === platform)?.label ?? platform} · ${PROTAGONISTS.find((g) => g.value === protagonistGender)?.label ?? protagonistGender}`} />
               </div>
-              <div className="text-[11px] text-fg-muted mt-2">
+              <div className="text-tight-sm text-fg-muted mt-2">
                 创建后会自动跳转 <span className="font-mono text-fg-secondary">/intake</span> 页 → 一键摘要 + 合成 S0 总档案 → 进入 R1' 改编指令书
               </div>
             </>

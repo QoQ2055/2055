@@ -123,7 +123,7 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
           <span className="ml-1.5 text-fg-muted font-normal">{merged.labels.join(' + ')}</span>
         </div>
         {merged.unconfiguredCount > 0 && (
-          <span className="text-[10px] text-warning/80">
+          <span className="text-tight-xs text-warning/80">
             {merged.unconfiguredCount} 个题材暂无锚点配置
           </span>
         )}
@@ -132,14 +132,14 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
       {/* 必须包含 */}
       {merged.mustInclude.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-success/80 mb-1">
+          <div className="text-tight-xs uppercase tracking-wider text-success/80 mb-1">
             ✓ 必须包含（题材必备元素）
           </div>
           <div className="flex flex-wrap gap-1">
             {merged.mustInclude.map((s, i) => (
               <span
                 key={i}
-                className="px-1.5 py-0.5 text-[11px] rounded border border-success/30 bg-success/10 text-emerald-200"
+                className="px-1.5 py-0.5 text-tight-sm rounded border border-success/30 bg-success/10 text-success-200"
               >
                 {s}
               </span>
@@ -151,14 +151,14 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
       {/* 必须避免 */}
       {merged.mustAvoid.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-danger/80 mb-1">
+          <div className="text-tight-xs uppercase tracking-wider text-danger/80 mb-1">
             ✗ 必须避免（题材污染清单）
           </div>
           <div className="flex flex-wrap gap-1">
             {merged.mustAvoid.map((s, i) => (
               <span
                 key={i}
-                className="px-1.5 py-0.5 text-[11px] rounded border border-danger/30 bg-danger/10 text-danger"
+                className="px-1.5 py-0.5 text-tight-sm rounded border border-danger/30 bg-danger/10 text-danger"
               >
                 {s}
               </span>
@@ -172,12 +172,12 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
         <>
           {merged.worldRules.length > 0 && (
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-1">
+              <div className="text-tight-xs uppercase tracking-wider text-fg-muted mb-1">
                 🌍 世界观核心规则
               </div>
               <ul className="space-y-1">
                 {merged.worldRules.map((r, i) => (
-                  <li key={i} className="text-[11px] text-fg-secondary leading-snug">
+                  <li key={i} className="text-tight-sm text-fg-secondary leading-snug">
                     <span className="text-fg-secondary font-medium">[{r.label}]</span> {r.text}
                   </li>
                 ))}
@@ -186,7 +186,7 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
           )}
 
           {(merged.paragraphLength !== null || merged.dialogueRatio !== null) && (
-            <div className="flex gap-3 flex-wrap text-[11px] text-fg-secondary">
+            <div className="flex gap-3 flex-wrap text-tight-sm text-fg-secondary">
               {merged.paragraphLength !== null && (
                 <span>
                   📐 段落长度参考 <span className="text-fg-primary font-mono">{merged.paragraphLength}</span> 字

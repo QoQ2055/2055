@@ -261,7 +261,7 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
                 <Sparkles className="size-4 text-primary-500" />
                 {activeMeta ? `新建项目 · ${activeMeta.longLabel}` : '新建项目'}
               </h2>
-              <p className="text-[11px] text-fg-muted mt-0.5">
+              <p className="text-tight-sm text-fg-muted mt-0.5">
                 {activeMeta
                   ? activeMeta.workflow
                   : '第一步：选择创作模式'}
@@ -366,7 +366,7 @@ function ModeBigCard({ meta, onClick }: { meta: ProjectModeMeta; onClick: () => 
       onClick={onClick}
       className={clsx(
         'text-left rounded-lg border p-4 transition-all relative overflow-hidden',
-        'border-border-subtle hover:border-zinc-600 hover:bg-surface/60',
+        'border-border-subtle hover:border-neutral-600 hover:bg-surface/60',
         isPlaceholder && 'opacity-80',
       )}
     >
@@ -379,13 +379,13 @@ function ModeBigCard({ meta, onClick }: { meta: ProjectModeMeta; onClick: () => 
         <Icon className="size-5" style={{ color: meta.accentHex }} />
         <div className="text-base font-semibold">{meta.longLabel}</div>
         {isPlaceholder && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
+          <span className="text-tight-xs px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
             开发中
           </span>
         )}
       </div>
       <div className="text-xs text-fg-secondary mt-2 leading-relaxed">{meta.tagline}</div>
-      <div className="text-[10px] text-fg-muted mt-3 font-mono tracking-tight">
+      <div className="text-tight-xs text-fg-muted mt-3 font-mono tracking-tight">
         {meta.workflow}
       </div>
     </button>
@@ -438,7 +438,7 @@ function OriginalForm(f: OriginalFormProps) {
             const items = GENRES.filter((g) => g.group === group);
             return (
               <div key={group}>
-                <div className="text-[10px] text-fg-muted uppercase tracking-wider mb-1">{group}</div>
+                <div className="text-tight-xs text-fg-muted uppercase tracking-wider mb-1">{group}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((g) => {
                     const picked = f.genres.includes(g.value);
@@ -538,7 +538,7 @@ function OriginalForm(f: OriginalFormProps) {
       </Field>
 
       <div className="card bg-canvas border-border-subtle p-3">
-        <div className="text-[10px] text-fg-muted mb-1">派生 concept (将注入到所有 prompt)</div>
+        <div className="text-tight-xs text-fg-muted mb-1">派生 concept (将注入到所有 prompt)</div>
         <div className="text-xs text-fg-secondary font-mono break-all">
           {f.previewConcept || <span className="text-fg-muted">填写题材和冲突后自动生成…</span>}
         </div>
@@ -641,7 +641,7 @@ function NovelForm(f: NovelFormProps) {
 
   return (
     <>
-      <div className="card border-success/30 bg-success/5 p-3 text-xs text-emerald-200 flex items-start gap-2">
+      <div className="card border-success/30 bg-success/5 p-3 text-xs text-success-200 flex items-start gap-2">
         <Edit3 className="size-4 shrink-0 mt-0.5" />
         <div>
           <div className="font-medium">小说创作模式</div>
@@ -677,7 +677,7 @@ function NovelForm(f: NovelFormProps) {
               </option>
             ))}
           </select>
-          <div className="text-[11px] text-fg-muted mt-1">{platform?.hint}</div>
+          <div className="text-tight-sm text-fg-muted mt-1">{platform?.hint}</div>
         </Field>
 
         <Field label="读者群" required hint="影响题材交集 / 爽点配方 / 敏感线">
@@ -716,7 +716,7 @@ function NovelForm(f: NovelFormProps) {
               )}
             >
               <div className="font-medium">{s.label}</div>
-              <div className="text-[10px] text-fg-muted">{s.totalWordsK}万</div>
+              <div className="text-tight-xs text-fg-muted">{s.totalWordsK}万</div>
             </button>
           ))}
         </div>
@@ -756,7 +756,7 @@ function NovelForm(f: NovelFormProps) {
         </Field>
       </div>
 
-      <div className="text-[11px] text-fg-muted -mt-2">
+      <div className="text-tight-sm text-fg-muted -mt-2">
         派生：每章约 <b className="text-fg-secondary">{derivedWpc}</b> 字（平台推荐 {wpc} 字 · ±10% 浮动是 chapter_writer 的硬律）
       </div>
 
@@ -772,7 +772,7 @@ function NovelForm(f: NovelFormProps) {
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
-          <div className="text-[11px] text-fg-muted mt-1">
+          <div className="text-tight-sm text-fg-muted mt-1">
             {NOVEL_POVS.find((o) => o.value === f.novelPov)?.hint}
           </div>
         </Field>
@@ -787,7 +787,7 @@ function NovelForm(f: NovelFormProps) {
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
-          <div className="text-[11px] text-fg-muted mt-1">
+          <div className="text-tight-sm text-fg-muted mt-1">
             {NOVEL_TONES.find((o) => o.value === f.novelTone)?.hint}
           </div>
         </Field>
@@ -804,7 +804,7 @@ function NovelForm(f: NovelFormProps) {
             const items = GENRES.filter((g) => g.group === group);
             return (
               <div key={group}>
-                <div className="text-[10px] text-fg-muted uppercase tracking-wider mb-1">{group}</div>
+                <div className="text-tight-xs text-fg-muted uppercase tracking-wider mb-1">{group}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((g) => {
                     const picked = f.genres.includes(g.value);
@@ -892,7 +892,7 @@ function NovelForm(f: NovelFormProps) {
       </Field>
 
       <div className="card bg-canvas border-border-subtle p-3">
-        <div className="text-[10px] text-fg-muted mb-1">将注入所有小说 prompt 的项目设定摘要</div>
+        <div className="text-tight-xs text-fg-muted mb-1">将注入所有小说 prompt 的项目设定摘要</div>
         <div className="text-xs text-fg-secondary font-mono break-words leading-relaxed">
           {[
             f.genres.map((v) => GENRES.find((g) => g.value === v)?.label).filter(Boolean).join('+'),
@@ -934,7 +934,7 @@ function SmallCard({
         {icon}
         {title}
       </div>
-      <div className="text-[11px] text-fg-muted mt-1 leading-snug">{desc}</div>
+      <div className="text-tight-sm text-fg-muted mt-1 leading-snug">{desc}</div>
     </button>
   );
 }
@@ -947,7 +947,7 @@ function Field({ label, required, hint, children }:
         {label}{required && <span className="text-danger ml-0.5">*</span>}
       </div>
       {children}
-      {hint && <div className="text-[11px] text-fg-muted mt-1">{hint}</div>}
+      {hint && <div className="text-tight-sm text-fg-muted mt-1">{hint}</div>}
     </div>
   );
 }

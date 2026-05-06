@@ -29,16 +29,35 @@ export default {
           400: '#2dd4bf', 500: '#14b8a6', 600: '#0d9488',
           DEFAULT: '#14b8a6',
         },
+        // V0.2 新增：暴露 neutral (warm stone) 全 11 段，补充 hover 强调态边缘色阶
+        // 原本只靠 canvas/surface/elevated 语义 token，neutral-600/700 诸如这种中段色无对应
+        neutral: {
+          50:  '#fafaf9', 100: '#f5f5f4', 200: '#e7e5e4', 300: '#d6d3d1',
+          400: '#a8a29e', 500: '#78716c', 600: '#57534e', 700: '#44403c',
+          800: '#292524', 900: '#1c1917', 950: '#0c0a09',
+        },
         // 向后兼容别名：现存 173 处 bg-brand-X 不动
         brand: {
           50:  '#fff7ed', 100: '#ffedd5', 400: '#fb923c',
           500: '#f97316', 600: '#ea580c', 700: '#c2410c',
         },
         // ── 语义色 (DESIGN.md colors.semantic.{success,warning,danger,info}) ──
-        success: { DEFAULT: '#10b981', hover: '#059669', active: '#047857' },
-        warning: { DEFAULT: '#f59e0b', hover: '#d97706', active: '#b45309' },
-        danger:  { DEFAULT: '#e11d48', hover: '#be123c', active: '#9f1239' },
-        info:    { DEFAULT: '#3b82f6', hover: '#2563eb', active: '#1d4ed8' },
+        success: {
+          DEFAULT: '#10b981', hover: '#059669', active: '#047857',
+          50: '#ecfdf5', 100: '#d1fae5', 200: '#a7f3d0',
+        },
+        warning: {
+          DEFAULT: '#f59e0b', hover: '#d97706', active: '#b45309',
+          50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a',
+        },
+        danger: {
+          DEFAULT: '#e11d48', hover: '#be123c', active: '#9f1239',
+          50: '#fff1f2', 100: '#ffe4e6', 200: '#fecdd3',
+        },
+        info: {
+          DEFAULT: '#3b82f6', hover: '#2563eb', active: '#1d4ed8',
+          50: '#eff6ff', 100: '#dbeafe', 200: '#bfdbfe',
+        },
         // ── 主题感知 token (src/index.css 注入 CSS 变量；<html class="dark"> 切换) ──
         canvas:    'rgb(var(--cf-bg-canvas)        / <alpha-value>)',
         surface:   'rgb(var(--cf-bg-surface)       / <alpha-value>)',
@@ -55,7 +74,7 @@ export default {
         'action-primary-hover':   'rgb(var(--cf-action-primary-hover)  / <alpha-value>)',
         'action-primary-active':  'rgb(var(--cf-action-primary-active) / <alpha-value>)',
       },
-      // DESIGN.md typography.scales · 11 级 + reading
+      // DESIGN.md typography.scales · 11 级 + reading + V0.2 tight 3 档
       fontSize: {
         'display-l':    ['40px', { lineHeight: '1.15', letterSpacing: '-0.02em',  fontWeight: '700' }],
         'heading-xl':   ['28px', { lineHeight: '1.2',  letterSpacing: '-0.015em', fontWeight: '700' }],
@@ -69,6 +88,10 @@ export default {
         'caption-m':    ['12px', { lineHeight: '1.4',  letterSpacing: '0.01em', fontWeight: '500' }],
         'label-m':      ['11px', { lineHeight: '1.3',  letterSpacing: '0.08em', fontWeight: '600' }],
         'code-m':       ['13px', { lineHeight: '1.55' }],
+        // V0.2 新增 · 紧凑字号（非 uppercase）
+        'tight-2xs':    ['9px',  { lineHeight: '1.3',  fontWeight: '500' }],
+        'tight-xs':     ['10px', { lineHeight: '1.35', fontWeight: '500' }],
+        'tight-sm':     ['11px', { lineHeight: '1.4',  fontWeight: '500' }],
       },
       // DESIGN.md spacing.roles 中页面级别 · 不动 atomic 0/1/2/...
       spacing: {

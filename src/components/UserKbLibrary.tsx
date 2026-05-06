@@ -109,7 +109,7 @@ export function UserKbLibrary() {
             >
               <Plus className="size-3" /> 上传文档
             </button>
-            <span className="text-[11px] text-fg-muted ml-auto">
+            <span className="text-tight-sm text-fg-muted ml-auto">
               共 {docs.length} 条 · 启用 {docs.filter((d) => d.enabled).length}
             </span>
           </header>
@@ -124,7 +124,7 @@ export function UserKbLibrary() {
                   key={opt.value}
                   onClick={() => setFilter(opt.value)}
                   className={clsx(
-                    'text-[11px] px-2 py-0.5 rounded border transition-colors',
+                    'text-tight-sm px-2 py-0.5 rounded border transition-colors',
                     filter === opt.value
                       ? 'border-brand-500 bg-primary-500/15 text-brand-300'
                       : 'border-border-default text-fg-secondary hover:text-fg-primary',
@@ -157,7 +157,7 @@ export function UserKbLibrary() {
                       <button
                         key={t}
                         onClick={() => openUpload(t)}
-                        className="text-[11px] px-2 py-0.5 rounded bg-elevated hover:bg-zinc-700"
+                        className="text-tight-sm px-2 py-0.5 rounded bg-elevated hover:bg-neutral-700"
                       >
                         + {USER_KB_TYPE_META[t].shortLabel}
                       </button>
@@ -180,7 +180,7 @@ export function UserKbLibrary() {
                     <span className="text-base shrink-0">{USER_KB_TYPE_META[d.type].label.split(' ')[0]}</span>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium truncate">{d.title}</div>
-                      <div className="text-[10px] text-fg-muted mt-0.5 truncate">
+                      <div className="text-tight-xs text-fg-muted mt-0.5 truncate">
                         {USER_KB_TYPE_META[d.type].shortLabel}
                         {d.tags.length > 0 && <span className="ml-1">· {d.tags.join('/')}</span>}
                         <span className="ml-1">· {new Date(d.createdAt).toLocaleDateString()}</span>
@@ -267,7 +267,7 @@ function DocDetail({
                 <>
                   <span className="mx-1.5">·</span>
                   {doc.tags.map((t) => (
-                    <span key={t} className="text-[10px] px-1.5 py-0.5 mr-1 rounded bg-elevated">{t}</span>
+                    <span key={t} className="text-tight-xs px-1.5 py-0.5 mr-1 rounded bg-elevated">{t}</span>
                   ))}
                 </>
               )}
@@ -339,7 +339,7 @@ function DocDetail({
 
             <details className="mt-4">
               <summary className="cursor-pointer text-fg-secondary hover:text-fg-primary">查看原始上传内容（rawContent）</summary>
-              <pre className="text-[11px] font-mono whitespace-pre-wrap break-all bg-surface rounded p-3 mt-2 max-h-96 overflow-auto">
+              <pre className="text-tight-sm font-mono whitespace-pre-wrap break-all bg-surface rounded p-3 mt-2 max-h-96 overflow-auto">
                 {doc.rawContent || '(空)'}
               </pre>
             </details>

@@ -69,7 +69,7 @@ function MiniDimBar({
   return (
     <span
       className={clsx(
-        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 border text-[10px]',
+        'inline-flex items-center gap-1 rounded px-1.5 py-0.5 border text-tight-xs',
         c.border, c.bg,
       )}
       title={`${SCORE_DIMENSION_LONG_LABELS[d]}：${ds.score}${ds.inactive ? '（不适用）' : ''}${delta != null && Math.abs(delta) >= 1 ? ` · 变化 ${deltaText(delta)}` : ''}`}
@@ -115,38 +115,38 @@ function DimensionDetail({
   const c = scoreColor(ds.score);
   return (
     <div className={clsx('rounded border px-2.5 py-1.5', c.border, c.bg)}>
-      <div className="flex items-center gap-2 text-[12px]">
+      <div className="flex items-center gap-2 text-caption-m">
         <span className="font-medium text-fg-primary">{SCORE_DIMENSION_LONG_LABELS[d]}</span>
         <span className={clsx('font-mono', c.fg)}>
           {ds.inactive ? '—' : ds.score}
         </span>
         {!ds.inactive && delta != null && Math.abs(delta) >= 1 && (
-          <span className={clsx('font-mono text-[11px] inline-flex items-center gap-0.5',
+          <span className={clsx('font-mono text-tight-sm inline-flex items-center gap-0.5',
             delta > 0 ? 'text-success' : 'text-danger')}>
             {deltaIcon(delta)} {deltaText(delta)}
           </span>
         )}
         {ds.inactive && (
-          <span className="text-[10px] text-fg-muted">（不适用 / 无数据）</span>
+          <span className="text-tight-xs text-fg-muted">（不适用 / 无数据）</span>
         )}
       </div>
       {ds.summary && (
-        <div className="mt-1 text-[11px] text-fg-secondary">{ds.summary}</div>
+        <div className="mt-1 text-tight-sm text-fg-secondary">{ds.summary}</div>
       )}
       {ds.issues.length > 0 && (
         <ul className="mt-1.5 space-y-1">
           {ds.issues.map((iss, i) => (
-            <li key={i} className="flex items-start gap-1.5 text-[11px] text-fg-secondary">
+            <li key={i} className="flex items-start gap-1.5 text-tight-sm text-fg-secondary">
               <span className="mt-0.5">{severityIcon(iss.severity)}</span>
               <div className="flex-1 min-w-0">
                 <div>
                   {iss.message}
-                  <span className="ml-2 text-[10px] text-fg-muted font-mono">−{iss.penalty}</span>
+                  <span className="ml-2 text-tight-xs text-fg-muted font-mono">−{iss.penalty}</span>
                 </div>
                 {iss.evidence && iss.evidence.length > 0 && (
                   <div className="mt-0.5 flex flex-wrap gap-1">
                     {iss.evidence.map((ev, j) => (
-                      <span key={j} className="text-[10px] px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate" title={ev}>
+                      <span key={j} className="text-tight-xs px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate" title={ev}>
                         {ev}
                       </span>
                     ))}
@@ -181,7 +181,7 @@ export function ScoreCardBadge({
   if (!card) {
     // 没评分过：只显示一个触发按钮
     return (
-      <div className="rounded-md border border-border-subtle bg-surface/30 px-3 py-1.5 flex items-center gap-2 text-[11px]">
+      <div className="rounded-md border border-border-subtle bg-surface/30 px-3 py-1.5 flex items-center gap-2 text-tight-sm">
         <Gauge className="size-3.5 text-fg-muted" />
         <span className="text-fg-secondary">尚未评分</span>
         {onRecompute && (
@@ -189,7 +189,7 @@ export function ScoreCardBadge({
             type="button"
             onClick={() => onRecompute({})}
             disabled={busy}
-            className="ml-auto text-[11px] px-2 py-0.5 rounded border border-violet-500/40 bg-violet-500/10 hover:bg-violet-500/20 text-violet-200 inline-flex items-center gap-1 disabled:opacity-50"
+            className="ml-auto text-tight-sm px-2 py-0.5 rounded border border-violet-500/40 bg-violet-500/10 hover:bg-violet-500/20 text-violet-200 inline-flex items-center gap-1 disabled:opacity-50"
             title="计算评分（含 LLM 维度）"
           >
             {busy ? <Loader2 className="size-3 animate-spin" /> : <Gauge className="size-3" />}
@@ -197,7 +197,7 @@ export function ScoreCardBadge({
           </button>
         )}
         {error && (
-          <span className="text-[11px] text-danger ml-2">{error}</span>
+          <span className="text-tight-sm text-danger ml-2">{error}</span>
         )}
       </div>
     );
@@ -211,15 +211,15 @@ export function ScoreCardBadge({
       {/* ── 紧凑横条 ───────────────────────────────────────── */}
       <div className="flex items-center gap-2 flex-wrap">
         <Gauge className={clsx('size-4', totalC?.fg)} />
-        <span className="text-[12px] font-medium text-fg-primary">综合评分</span>
-        <span className={clsx('text-[18px] font-mono font-bold', totalC?.fg)}>
+        <span className="text-caption-m font-medium text-fg-primary">综合评分</span>
+        <span className={clsx('text-heading-m font-mono font-bold', totalC?.fg)}>
           {card.total}
         </span>
-        <span className="text-[11px] text-fg-muted">/ 100</span>
+        <span className="text-tight-sm text-fg-muted">/ 100</span>
 
         {delta.total != null && Math.abs(delta.total) >= 1 && (
           <span className={clsx(
-            'text-[11px] font-mono inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded',
+            'text-tight-sm font-mono inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded',
             delta.total > 0
               ? 'text-success bg-success/10 border border-success/30'
               : 'text-danger bg-danger/10 border border-danger/30',
@@ -230,7 +230,7 @@ export function ScoreCardBadge({
         )}
 
         {!card.llmEvaluated && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded border border-border-default bg-elevated/50 text-fg-secondary">
+          <span className="text-tight-xs px-1.5 py-0.5 rounded border border-border-default bg-elevated/50 text-fg-secondary">
             仅前 4 维（LLM 待评）
           </span>
         )}
@@ -247,7 +247,7 @@ export function ScoreCardBadge({
               type="button"
               onClick={() => onRecompute({})}
               disabled={busy}
-              className="text-[11px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-50"
+              className="text-tight-sm px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-50"
               title="重新评分（含 LLM 维度）"
             >
               {busy ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />}
@@ -257,7 +257,7 @@ export function ScoreCardBadge({
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
-            className="text-[11px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
+            className="text-tight-sm px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
             title={expanded ? '折叠' : '展开详情'}
           >
             {expanded ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
@@ -280,7 +280,7 @@ export function ScoreCardBadge({
 
       {/* ── 错误提示 ──────────────────────────────────────── */}
       {error && (
-        <div className="text-[11px] text-danger px-2 py-1 rounded bg-danger/5 border border-danger/30">
+        <div className="text-tight-sm text-danger px-2 py-1 rounded bg-danger/5 border border-danger/30">
           {error}
         </div>
       )}
@@ -296,7 +296,7 @@ export function ScoreCardBadge({
               delta={delta.byDimension[d]}
             />
           ))}
-          <div className="text-[10px] text-fg-muted italic mt-1">
+          <div className="text-tight-xs text-fg-muted italic mt-1">
             综合分 = 6 维加权平均（默认等权）。延后维度 = 不计入分母。前 4 维纯前端规则；R1 / 风格由 LLM 评判，未配置数据时显示「不适用」。
           </div>
         </div>

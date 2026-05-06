@@ -76,7 +76,7 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
               </>}
             </div>
             {subtitle && (
-              <div className="text-[11px] text-fg-muted truncate mt-0.5">{subtitle}</div>
+              <div className="text-tight-sm text-fg-muted truncate mt-0.5">{subtitle}</div>
             )}
           </div>
         </div>
@@ -112,7 +112,7 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
                     }}
                   />
                 </div>
-                <div className="flex items-center justify-between mt-1 text-[10px] text-fg-muted group-hover:text-fg-secondary transition-colors">
+                <div className="flex items-center justify-between mt-1 text-tight-xs text-fg-muted group-hover:text-fg-secondary transition-colors">
                   <span>{seg.label}</span>
                   <span className="font-mono">{seg.done}/{seg.total}</span>
                 </div>

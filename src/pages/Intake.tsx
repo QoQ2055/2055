@@ -314,8 +314,8 @@ export function Intake() {
               <pre className="text-xs whitespace-pre-wrap font-mono text-fg-secondary">{masterArt.content}</pre>
             ) : null}
             {masterArt && !compiling && (
-              <div className="text-[11px] text-fg-muted flex items-center gap-2">
-                <button className="btn-ghost text-[11px] px-1.5 py-0.5"
+              <div className="text-tight-sm text-fg-muted flex items-center gap-2">
+                <button className="btn-ghost text-tight-sm px-1.5 py-0.5"
                         onClick={() => navigator.clipboard.writeText(masterArt.content)}>
                   <Copy className="size-3" /> 复制 JSON
                 </button>
@@ -345,7 +345,7 @@ function ChunkListItem({
   const dot = busy ? 'bg-primary-500 animate-pulse'
             : err ? 'bg-rose-500'
             : hasSum ? 'bg-emerald-500'
-            : 'bg-zinc-700';
+            : 'bg-neutral-700';
   return (
     <li>
       <div className={clsx(
@@ -355,7 +355,7 @@ function ChunkListItem({
         <span className={clsx('size-2 rounded-full shrink-0', dot)} />
         <button onClick={onClick} className="flex-1 min-w-0 text-left">
           <div className="truncate font-medium text-fg-primary">{chunk.title || '(未命名)'}</div>
-          <div className="truncate text-[10px] text-fg-muted">
+          <div className="truncate text-tight-xs text-fg-muted">
             {chunk.raw.length > 0 ? `${chunk.raw.length} 字` : '空'}
             {hasSum && <span className="text-success"> · 已摘要</span>}
             {err && <span className="text-danger"> · 出错</span>}
@@ -407,7 +407,7 @@ function ChunkEditor({
         <div>
           <div className="label mb-1.5 flex items-center justify-between">
             <span>原文</span>
-            <span className="text-fg-muted text-[10px]">建议每章 ≤8000 字（更长会被截断）</span>
+            <span className="text-fg-muted text-tight-xs">建议每章 ≤8000 字（更长会被截断）</span>
           </div>
           <textarea
             className="input w-full font-mono text-xs"
@@ -427,11 +427,11 @@ function ChunkEditor({
                 结构化摘要 (JSON)
               </button>
               <div className="flex items-center gap-1">
-                <button className="btn-ghost text-[11px] px-1.5 py-0.5"
+                <button className="btn-ghost text-tight-sm px-1.5 py-0.5"
                         onClick={() => navigator.clipboard.writeText(chunk.summary as string)}>
                   <Copy className="size-3" />
                 </button>
-                <button className="btn-ghost text-[11px] px-1.5 py-0.5" onClick={onClearSummary}>
+                <button className="btn-ghost text-tight-sm px-1.5 py-0.5" onClick={onClearSummary}>
                   <RotateCcw className="size-3" />
                 </button>
               </div>
@@ -488,7 +488,7 @@ function ChunkSummaryView({ j }: { j: any }) {
           <ul className="mt-0.5 space-y-0.5">
             {j.emotionalHooks.map((h: any, i: number) => (
               <li key={i} className="text-fg-secondary">
-                <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30 mr-1">
+                <span className="px-1 py-0.5 rounded text-tight-xs bg-danger/15 text-danger border border-danger/30 mr-1">
                   {h.kind}
                 </span>
                 <span className="text-warning font-mono">[✨{h.intensity ?? '-'}]</span>
@@ -625,7 +625,7 @@ function MasterPreview({
           <ul className="space-y-1">
             {master.adaptationRisks.map((r, i) => (
               <li key={i}>
-                <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30">
+                <span className="px-1 py-0.5 rounded text-tight-xs bg-danger/15 text-danger border border-danger/30">
                   {r.kind}
                 </span>
                 <span className="text-fg-secondary ml-1.5">{r.issue}</span>

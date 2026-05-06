@@ -63,7 +63,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
         <Library className="size-4 text-primary-500 shrink-0" />
         <div className="flex-1">
           <div className="font-medium text-fg-primary">知识库绑定</div>
-          <div className="text-[11px] text-fg-muted mt-0.5">
+          <div className="text-tight-sm text-fg-muted mt-0.5">
             {loading ? '加载中…' : (
               docs.length === 0
                 ? '资料库为空。'
@@ -76,7 +76,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-[11px] text-brand-300 hover:text-brand-200 flex items-center gap-0.5"
+          className="text-tight-sm text-brand-300 hover:text-brand-200 flex items-center gap-0.5"
         >
           管理 <ExternalLink className="size-3" />
         </a>
@@ -85,10 +85,10 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
 
       {expanded && (
         <div className="px-3 pb-3 pt-1 border-t border-border-subtle/50 space-y-2">
-          {loading && <div className="text-[11px] text-fg-muted">加载中…</div>}
+          {loading && <div className="text-tight-sm text-fg-muted">加载中…</div>}
 
           {!loading && docs.length === 0 && (
-            <div className="text-[11px] text-fg-muted italic py-2">
+            <div className="text-tight-sm text-fg-muted italic py-2">
               还没上传过任何资料。前往「
               <a href="#/kb" target="_blank" rel="noreferrer" className="text-brand-300 underline">
                 知识库 → 我的资料库
@@ -101,7 +101,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
             const meta = USER_KB_TYPE_META[type];
             return (
               <div key={type} className="space-y-1">
-                <div className="text-[10px] uppercase tracking-wide text-fg-muted font-semibold">
+                <div className="text-tight-xs uppercase tracking-wide text-fg-muted font-semibold">
                   {meta.label} <span className="opacity-60">→ {meta.injectsTo.join(' · ')}</span>
                 </div>
                 <ul className="space-y-0.5">
@@ -114,7 +114,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
                           type="button"
                           onClick={() => toggle(id)}
                           className={clsx(
-                            'w-full text-left px-2 py-1 rounded text-[11px] flex items-center gap-2 transition-colors',
+                            'w-full text-left px-2 py-1 rounded text-tight-sm flex items-center gap-2 transition-colors',
                             checked
                               ? 'bg-primary-500/15 text-brand-200 border border-brand-500/40'
                               : 'border border-transparent hover:bg-surface',
@@ -127,7 +127,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
                           )}
                           <span className="truncate flex-1">{d.title}</span>
                           {d.tags.length > 0 && (
-                            <span className="text-[10px] text-fg-muted shrink-0">{d.tags.join('/')}</span>
+                            <span className="text-tight-xs text-fg-muted shrink-0">{d.tags.join('/')}</span>
                           )}
                         </button>
                       </li>
@@ -139,7 +139,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
           })}
 
           {orphanCount > 0 && (
-            <div className="text-[10px] text-warning/80 italic mt-2">
+            <div className="text-tight-xs text-warning/80 italic mt-2">
               注：{orphanCount} 条已绑定的资料已被删除或禁用，注入时会自动跳过；可点
               <button
                 type="button"

@@ -180,20 +180,20 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                       <label className="block text-fg-secondary">负样本片段（可选）</label>
                       <button
                         onClick={captureSelection}
-                        className="btn-ghost text-[11px] text-brand-300 hover:text-brand-200"
+                        className="btn-ghost text-tight-sm text-brand-300 hover:text-brand-200"
                         title="先在章节正文里用鼠标高亮一段，再点这里抓取"
                       >
                         🖍 抓取选中文字
                       </button>
                     </div>
                     <textarea
-                      className="input w-full font-mono text-[11px]"
+                      className="input w-full font-mono text-tight-sm"
                       rows={4}
                       placeholder="把章节里最尴尬 / 最 AI 味的片段贴在这里，会作为「具体例证」沉淀"
                       value={highlightedExcerpt}
                       onChange={(e) => setHighlightedExcerpt(e.target.value)}
                     />
-                    <p className="text-[10px] text-fg-muted mt-1">
+                    <p className="text-tight-xs text-fg-muted mt-1">
                       {highlightedExcerpt.length} / 2000 字符
                     </p>
                   </div>
@@ -203,7 +203,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
 
             {!submitted && (
               <footer className="px-4 py-3 border-t border-border-subtle flex items-center justify-between gap-2">
-                <span className="text-[11px] text-fg-muted">
+                <span className="text-tight-sm text-fg-muted">
                   {issues.length > 0 && `已选 ${issues.length} 个问题`}
                 </span>
                 <div className="flex gap-2">

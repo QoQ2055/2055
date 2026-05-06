@@ -14,7 +14,7 @@ const CATEGORY_META: Record<string, { label: string; color: string }> = {
   asset:      { label: '资产方法论',   color: 'bg-success/20 text-success border-success/40' },
   adaptation: { label: '改编',         color: 'bg-orange-500/20 text-orange-300 border-orange-500/40' },
   audio:      { label: '音频',         color: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40' },
-  workflow:   { label: '工作流',       color: 'bg-zinc-500/20 text-fg-secondary border-zinc-500/40' },
+  workflow:   { label: '工作流',       color: 'bg-neutral-500/20 text-fg-secondary border-zinc-500/40' },
 };
 
 type KbTab = 'builtin' | 'user' | 'feedback';
@@ -34,7 +34,7 @@ export function KnowledgeBase() {
       <nav className="border-b border-border-subtle px-4 flex items-center gap-1 shrink-0">
         <TabButton active={tab === 'user'} onClick={() => setTab('user')}>
           <Upload className="size-3.5" /> 我的资料库
-          <span className="text-[10px] text-fg-muted ml-1">v2</span>
+          <span className="text-tight-xs text-fg-muted ml-1">v2</span>
         </TabButton>
         <TabButton active={tab === 'feedback'} onClick={() => setTab('feedback')}>
           <ThumbsDown className="size-3.5" /> 章节反馈
@@ -42,7 +42,7 @@ export function KnowledgeBase() {
         <TabButton active={tab === 'builtin'} onClick={() => setTab('builtin')}>
           <Library className="size-3.5" /> 内置 KB
         </TabButton>
-        <div className="ml-auto text-[11px] text-fg-muted py-2 truncate">
+        <div className="ml-auto text-tight-sm text-fg-muted py-2 truncate">
           {TAB_HINTS[tab]}
         </div>
       </nav>
@@ -120,7 +120,7 @@ function BuiltinKbView() {
           <h1 className="text-sm font-semibold flex items-center gap-2">
             <BookOpen className="size-4 text-primary-500" /> 内置知识库
           </h1>
-          <p className="text-[11px] text-fg-muted mt-0.5">{manifest.source}</p>
+          <p className="text-tight-sm text-fg-muted mt-0.5">{manifest.source}</p>
         </header>
         <ul className="flex-1 overflow-auto p-2 space-y-0.5">
           {manifest.items.map((it) => (
@@ -128,7 +128,7 @@ function BuiltinKbView() {
                         onClick={() => setActiveId(it.id)} />
           ))}
         </ul>
-        <footer className="px-3 py-2 border-t border-border-subtle text-[11px] text-fg-muted">
+        <footer className="px-3 py-2 border-t border-border-subtle text-tight-sm text-fg-muted">
           共 {manifest.items.length} 篇
         </footer>
       </aside>
@@ -139,7 +139,7 @@ function BuiltinKbView() {
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-semibold">{activeItem.title}</h2>
               <CategoryBadge cat={activeItem.category} />
-              <code className="text-[11px] text-fg-muted font-mono">{activeItem.file}</code>
+              <code className="text-tight-sm text-fg-muted font-mono">{activeItem.file}</code>
             </div>
             <p className="text-xs text-fg-secondary mt-1">{activeItem.summary}</p>
           </header>
@@ -181,11 +181,11 @@ function CategoryBadge({ cat }: { cat: string }) {
   const m = CATEGORY_META[cat];
   if (!m) return null;
   return (
-    <span className={clsx('text-[10px] px-1.5 py-0.5 rounded border', m.color)}>{m.label}</span>
+    <span className={clsx('text-tight-xs px-1.5 py-0.5 rounded border', m.color)}>{m.label}</span>
   );
 }
 function CategoryDot({ cat }: { cat: string }) {
   const m = CATEGORY_META[cat];
   return <span className={clsx('size-1.5 rounded-full shrink-0',
-    m ? m.color.split(' ')[0] : 'bg-zinc-700')} />;
+    m ? m.color.split(' ')[0] : 'bg-neutral-700')} />;
 }

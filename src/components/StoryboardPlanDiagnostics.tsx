@@ -109,7 +109,7 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
             <Stat icon={<AlertCircle className="size-3.5" />} label="峰" value={String(plan.peaks.length)} />
           )}
         </div>
-        <span className="text-[10px] text-fg-muted font-mono">
+        <span className="text-tight-xs text-fg-muted font-mono">
           {warnings.length > 0 ? `${warnings.length} 警告` : '无警告'}
         </span>
       </div>
@@ -117,7 +117,7 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
       {/* 戏份分布 */}
       {distribution.length > 0 && (
         <div>
-          <div className="flex items-center justify-between text-[11px] text-fg-secondary mb-1">
+          <div className="flex items-center justify-between text-tight-sm text-fg-secondary mb-1">
             <span>戏份分布</span>
             {unknownCount > 0 && (
               <span className="text-warning">⚠ {unknownCount} 个 sceneType 不在标准枚举</span>
@@ -133,7 +133,7 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
               />
             ))}
           </div>
-          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-[11px]">
+          <div className="flex flex-wrap gap-x-3 gap-y-0.5 mt-1.5 text-tight-sm">
             {distribution.map((d) => (
               <span key={d.type} className={clsx('inline-flex items-center gap-1', SCENE_TYPE_TEXT[d.type])}>
                 <span className={clsx('inline-block size-2 rounded-sm', SCENE_TYPE_COLORS[d.type])} />
@@ -146,7 +146,7 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
 
       {/* 警告列表 */}
       {warnings.length > 0 && !compact && (
-        <details className="text-[11px]" open={warnSeverity === 'bad'}>
+        <details className="text-tight-sm" open={warnSeverity === 'bad'}>
           <summary
             className={clsx(
               'cursor-pointer select-none inline-flex items-center gap-1 font-medium',
@@ -171,7 +171,7 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
         </details>
       )}
       {warnings.length > 0 && compact && (
-        <div className={clsx('text-[10px] flex items-center gap-1', warnSeverity === 'bad' ? 'text-danger' : 'text-warning')}>
+        <div className={clsx('text-tight-xs flex items-center gap-1', warnSeverity === 'bad' ? 'text-danger' : 'text-warning')}>
           {warnSeverity === 'bad' ? <AlertCircle className="size-3" /> : <AlertTriangle className="size-3" />}
           {warnings.length} 条诊断（展开 storyboard.1 节点查看）
         </div>
@@ -185,14 +185,14 @@ export function StoryboardPlanDiagnostics({ artifact, targetDurationSec, compact
 function SourceBadge({ source }: { source?: 'json' | 'markdown' }) {
   if (source === 'json') {
     return (
-      <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border border-success/40 text-success bg-success/10 font-medium">
+      <span className="inline-flex items-center gap-1 text-tight-xs px-1.5 py-0.5 rounded border border-success/40 text-success bg-success/10 font-medium">
         <Database className="size-3" /> JSON 结构化
       </span>
     );
   }
   if (source === 'markdown') {
     return (
-      <span className="inline-flex items-center gap-1 text-[10px] px-1.5 py-0.5 rounded border border-warning/40 text-warning bg-warning/10 font-medium" title="storyboard.1 未输出 <plan-json> 块；建议重跑">
+      <span className="inline-flex items-center gap-1 text-tight-xs px-1.5 py-0.5 rounded border border-warning/40 text-warning bg-warning/10 font-medium" title="storyboard.1 未输出 <plan-json> 块；建议重跑">
         <AlertTriangle className="size-3" /> Markdown 兜底
       </span>
     );
@@ -211,7 +211,7 @@ function Stat(p: {
     : p.severity === 'warn' ? 'text-warning'
     : 'text-fg-primary';
   return (
-    <span className="inline-flex items-center gap-1 text-[11px] text-fg-muted">
+    <span className="inline-flex items-center gap-1 text-tight-sm text-fg-muted">
       {p.icon}
       <span>{p.label}</span>
       <span className={clsx('font-mono', tone)}>{p.value}</span>
@@ -229,7 +229,7 @@ export function StoryboardPlanBadge({ artifact }: { artifact?: NodeArtifact }) {
   const wlen = plan.warnings?.length ?? 0;
   const hasCritical = (plan.warnings ?? []).some((w) => /缺 sectionRefs|未声明/.test(w));
   return (
-    <span className="inline-flex items-center gap-1 text-[10px]">
+    <span className="inline-flex items-center gap-1 text-tight-xs">
       <SourceBadge source={plan.source} />
       <span className="text-fg-muted">{plan.units.length} 单元</span>
       {wlen > 0 && (

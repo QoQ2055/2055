@@ -218,6 +218,6 @@ export function severityColor(s: IssueSeverity): { dot: string; text: string; bg
     case 'mid':
       return { dot: 'bg-amber-500', text: 'text-warning', bg: 'bg-warning/5 border-warning/30' };
     case 'low':
-      return { dot: 'bg-zinc-500', text: 'text-fg-secondary', bg: 'bg-zinc-700/30 border-border-default' };
+      return { dot: 'bg-neutral-500', text: 'text-fg-secondary', bg: 'bg-neutral-700/30 border-border-default' };
   }
 }

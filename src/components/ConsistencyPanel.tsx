@@ -69,7 +69,7 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
           <div className="text-xs text-fg-secondary leading-relaxed">{report.summary}</div>
 
           {/* 三类计数条 */}
-          <div className="flex flex-wrap gap-1.5 text-[11px]">
+          <div className="flex flex-wrap gap-1.5 text-tight-sm">
             <KindChip kind="character" count={report.assetCount.character} />
             <KindChip kind="scene" count={report.assetCount.scene} />
             <KindChip kind="prop" count={report.assetCount.prop} />
@@ -91,7 +91,7 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
 
           {infos.length > 0 && (
             <button
-              className="text-[11px] text-fg-muted hover:text-fg-secondary underline-offset-2 hover:underline"
+              className="text-tight-sm text-fg-muted hover:text-fg-secondary underline-offset-2 hover:underline"
               onClick={() => setShowInfo((v) => !v)}
             >
               {showInfo ? '隐藏' : '显示'} {infos.length} 项 info（未被分镜引用的资产）
@@ -112,7 +112,7 @@ function VerdictBadge({ v }: { v: ConsistencyReport['verdict'] }) {
     fail: 'bg-danger/15 text-danger border-danger/30',
   } as const;
   return (
-    <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold uppercase ${map[v]}`}>
+    <span className={`text-tight-xs px-1.5 py-0.5 rounded border font-bold uppercase ${map[v]}`}>
       {v}
     </span>
   );
@@ -147,11 +147,11 @@ function IssueRow({ issue }: { issue: ConsistencyIssue }) {
     <li className={`text-xs rounded px-2 py-1.5 border ${sevStyle}`}>
       <div className="flex items-center gap-2">
         <Icon className={`size-3.5 ${sevText}`} />
-        <span className={`text-[10px] uppercase font-bold ${sevText}`}>{issue.severity}</span>
-        <span className="text-fg-muted text-[10px]">{kindLabel}</span>
+        <span className={`text-tight-xs uppercase font-bold ${sevText}`}>{issue.severity}</span>
+        <span className="text-fg-muted text-tight-xs">{kindLabel}</span>
         <span className="font-medium text-fg-primary">「{issue.name}」</span>
         {issue.unitIndex != null && (
-          <span className="text-fg-muted text-[10px]">@ UNIT {issue.unitIndex}{issue.count && issue.count > 1 ? ` ×${issue.count}` : ''}</span>
+          <span className="text-fg-muted text-tight-xs">@ UNIT {issue.unitIndex}{issue.count && issue.count > 1 ? ` ×${issue.count}` : ''}</span>
         )}
       </div>
       <div className="mt-1 text-fg-secondary leading-relaxed">{issue.detail}</div>

@@ -220,7 +220,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
             <h2 className="text-base font-semibold flex items-center gap-2">
               <Download className="size-4 text-success" /> {p.title}
             </h2>
-            {p.description && <p className="text-[11px] text-fg-muted mt-0.5">{p.description}</p>}
+            {p.description && <p className="text-tight-sm text-fg-muted mt-0.5">{p.description}</p>}
           </div>
           <button className="btn-ghost p-1.5" onClick={p.onCancel}>
             <X className="size-4" />
@@ -242,14 +242,14 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                   <label className="label flex items-center gap-2">
                     <FileText className="size-3.5 text-fg-muted" />
                     {f.label}
-                    <span className="text-[10px] font-mono text-fg-muted">[{f.nodeId}]</span>
+                    <span className="text-tight-xs font-mono text-fg-muted">[{f.nodeId}]</span>
                     {replacing && (
-                      <span className="text-[10px] text-warning bg-warning/10 px-1.5 py-0.5 rounded">
+                      <span className="text-tight-xs text-warning bg-warning/10 px-1.5 py-0.5 rounded">
                         将覆盖现有产物
                       </span>
                     )}
                     {wasApplied && (
-                      <span className="text-[10px] text-success bg-success/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
+                      <span className="text-tight-xs text-success bg-success/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
                         <Sparkles className="size-2.5" /> 已 AI 修复
                       </span>
                     )}
@@ -257,7 +257,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                   <div className="flex items-center gap-2">
                     {wasApplied && (
                       <button
-                        className="text-[11px] text-fg-secondary hover:text-fg-primary inline-flex items-center gap-1"
+                        className="text-tight-sm text-fg-secondary hover:text-fg-primary inline-flex items-center gap-1"
                         onClick={() => undoNormalize(f.nodeId)}
                         title="还原到 AI 修复前的内容"
                       >
@@ -266,7 +266,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                     )}
                     {canNormalize && !ns && (
                       <button
-                        className="text-[11px] px-2 py-1 rounded border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 inline-flex items-center gap-1 disabled:opacity-40"
+                        className="text-tight-sm px-2 py-1 rounded border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 inline-flex items-center gap-1 disabled:opacity-40"
                         onClick={() => startNormalize(f)}
                         disabled={!v.trim()}
                         title="调用 AI 把粘贴内容转换为下游期望的格式"
@@ -274,7 +274,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         <Sparkles className="size-3" /> AI 修复格式
                       </button>
                     )}
-                    <span className="text-[10px] text-fg-muted">{v.length.toLocaleString()} 字</span>
+                    <span className="text-tight-xs text-fg-muted">{v.length.toLocaleString()} 字</span>
                   </div>
                 </div>
                 <textarea
@@ -287,9 +287,9 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                     err ? 'border-danger/60' : 'border-border-subtle focus:border-brand-500',
                   )}
                 />
-                {f.hint && !err && !ns && <div className="text-[11px] text-fg-muted mt-1">{f.hint}</div>}
+                {f.hint && !err && !ns && <div className="text-tight-sm text-fg-muted mt-1">{f.hint}</div>}
                 {err && (
-                  <div className="text-[11px] text-danger mt-1 flex items-center gap-1">
+                  <div className="text-tight-sm text-danger mt-1 flex items-center gap-1">
                     <AlertTriangle className="size-3" /> {err}
                   </div>
                 )}
@@ -298,7 +298,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                 {ns && (
                   <div className="mt-2 border border-violet-500/30 bg-violet-500/5 rounded-md overflow-hidden">
                     <div className="px-3 py-2 border-b border-violet-500/20 flex items-center justify-between gap-2">
-                      <div className="text-[11px] text-violet-300 inline-flex items-center gap-1.5">
+                      <div className="text-tight-sm text-violet-300 inline-flex items-center gap-1.5">
                         {isStreaming ? (
                           <>
                             <Loader2 className="size-3 animate-spin" /> AI 正在修复格式…
@@ -326,7 +326,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                       <div className="flex items-center gap-1.5">
                         {isStreaming && (
                           <button
-                            className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
+                            className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
                             onClick={() => abortNormalize(f.nodeId)}
                           >
                             中止
@@ -335,20 +335,20 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         {!isStreaming && (
                           <>
                             <button
-                              className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
+                              className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
                               onClick={() => discardNormalize(f.nodeId)}
                             >
                               丢弃
                             </button>
                             <button
-                              className="text-[10px] px-2 py-0.5 rounded border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 inline-flex items-center gap-1"
+                              className="text-tight-xs px-2 py-0.5 rounded border border-violet-500/40 text-violet-300 hover:bg-violet-500/10 inline-flex items-center gap-1"
                               onClick={() => startNormalize(f)}
                             >
                               <Sparkles className="size-2.5" /> 重试
                             </button>
                             {ns.status === 'previewing' && (
                               <button
-                                className="text-[10px] px-2 py-0.5 rounded bg-success/20 text-success border border-success/40 hover:bg-success/30 inline-flex items-center gap-1"
+                                className="text-tight-xs px-2 py-0.5 rounded bg-success/20 text-success border border-success/40 hover:bg-success/30 inline-flex items-center gap-1"
                                 onClick={() => applyNormalize(f.nodeId)}
                               >
                                 <Check className="size-2.5" /> 替换原文
@@ -358,7 +358,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         )}
                       </div>
                     </div>
-                    <pre className="px-3 py-2 text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
+                    <pre className="px-3 py-2 text-tight-sm font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
                       {ns.preview || (isStreaming ? '…' : '(空)')}
                     </pre>
                   </div>

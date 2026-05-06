@@ -192,13 +192,13 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                         title={`${m.description}\n注入到：${m.injectsTo.join('、')}${supported ? '' : '\n⚠ 暂不支持 LLM 自动提炼，需手动填'}`}
                       >
                         {m.label}
-                        {!supported && <span className="ml-1 text-[10px] opacity-60">(手动)</span>}
+                        {!supported && <span className="ml-1 text-tight-xs opacity-60">(手动)</span>}
                       </button>
                     );
                   })}
                 </div>
-                <p className="text-[11px] text-fg-muted mt-1.5">{meta.description}</p>
-                <p className="text-[11px] text-fg-muted mt-0.5">
+                <p className="text-tight-sm text-fg-muted mt-1.5">{meta.description}</p>
+                <p className="text-tight-sm text-fg-muted mt-0.5">
                   注入到：<span className="text-fg-secondary">{meta.injectsTo.join(' · ')}</span>
                 </p>
               </Field>
@@ -243,7 +243,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                     <FileText className="size-3.5" /> 选择 .md / .txt 文件
                   </button>
                   {filename && <span className="text-xs text-fg-secondary">📁 {filename}</span>}
-                  <span className="ml-auto text-[11px] text-fg-muted">
+                  <span className="ml-auto text-tight-sm text-fg-muted">
                     {rawContent.length} 字符
                   </span>
                 </div>
@@ -291,9 +291,9 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
             <div className="py-8 flex flex-col items-center text-sm text-fg-secondary">
               <Loader2 className="size-8 animate-spin text-primary-500 mb-3" />
               <div>正在调用 LLM 提炼资料……</div>
-              <div className="text-[11px] text-fg-muted mt-1">使用 {useSettings.getState().modelLite || useSettings.getState().model}</div>
+              <div className="text-tight-sm text-fg-muted mt-1">使用 {useSettings.getState().modelLite || useSettings.getState().model}</div>
               {streamingText && (
-                <pre className="text-[10px] font-mono mt-4 max-h-48 overflow-auto w-full bg-canvas rounded p-2 leading-relaxed">
+                <pre className="text-tight-xs font-mono mt-4 max-h-48 overflow-auto w-full bg-canvas rounded p-2 leading-relaxed">
                   {streamingText.slice(-2000)}
                 </pre>
               )}
@@ -315,12 +315,12 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
 
               <Field label="结构化 JSON（可手动编辑）">
                 <textarea
-                  className="input w-full font-mono text-[11px]"
+                  className="input w-full font-mono text-tight-sm"
                   rows={20}
                   value={structuredJson}
                   onChange={(e) => setStructuredJson(e.target.value)}
                 />
-                <p className="text-[10px] text-fg-muted mt-1">
+                <p className="text-tight-xs text-fg-muted mt-1">
                   {structuredJson.length} 字符 · 注入到 prompt 时会按 type 渲染为简化 markdown，不会原样塞 JSON
                 </p>
               </Field>

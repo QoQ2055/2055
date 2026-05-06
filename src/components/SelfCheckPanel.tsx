@@ -391,7 +391,7 @@ export function SelfCheckPanel({
                 {/* 迭代中: 进度条 + 历史 pills + 中断 */}
                 {iter?.kind === 'running' && (
                   <div className="rounded border border-violet-500/30 bg-violet-500/5 px-2 py-1.5 space-y-1.5">
-                    <div className="flex items-center gap-2 text-[11px] text-violet-200">
+                    <div className="flex items-center gap-2 text-tight-sm text-violet-200">
                       <Loader2 className="size-3.5 animate-spin" />
                       <span className="font-medium">
                         第 {iter.round}/{MAX_ITERATIONS} 轮 · {iter.phase === 'fixing' ? 'AI 修复中' : '重新自检中'}
@@ -400,7 +400,7 @@ export function SelfCheckPanel({
                         <span className="text-fg-muted">{iter.previewLen} 字流入</span>
                       )}
                       <div className="flex-1" />
-                      <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={abortIteration}>
+                      <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={abortIteration}>
                         中断
                       </button>
                     </div>
@@ -413,7 +413,7 @@ export function SelfCheckPanel({
                 {/* 迭代结束: review 块 (有改善, 等待用户确认应用) */}
                 {iter?.kind === 'review' && (
                   <div className="rounded border border-success/40 bg-success/10 px-2 py-1.5 space-y-1.5">
-                    <div className="flex items-center gap-2 text-[11px] text-emerald-100">
+                    <div className="flex items-center gap-2 text-tight-sm text-success-100">
                       <ShieldCheck className="size-3.5 text-success" />
                       <span className="font-medium">
                         迭代完成 · {iter.originalCount} → {iter.bestCount} 项 ·
@@ -425,18 +425,18 @@ export function SelfCheckPanel({
                     </div>
                     <IterHistory rows={iter.history} />
                     {!iter.reviewConfirming ? (
-                      <div className="flex items-center gap-2 text-[11px]">
+                      <div className="flex items-center gap-2 text-tight-sm">
                         <span className="text-fg-secondary">已自动选取最佳轮次, 是否覆盖原产物?</span>
                         <div className="flex-1" />
                         <button
-                          className="btn-primary px-2 py-0.5 text-[11px]"
+                          className="btn-primary px-2 py-0.5 text-tight-sm"
                           onClick={requestReviewApply}
                           title="确认采用最佳轮次的修订内容"
                         >
                           <Check className="size-3" /> 应用
                         </button>
                         <button
-                          className="btn-ghost px-2 py-0.5 text-[11px]"
+                          className="btn-ghost px-2 py-0.5 text-tight-sm"
                           onClick={discardIteration}
                           title="放弃所有迭代结果, 维持原产物"
                         >
@@ -444,20 +444,20 @@ export function SelfCheckPanel({
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-2 py-1.5 text-[11px]">
+                      <div className="flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-2 py-1.5 text-tight-sm">
                         <ShieldAlert className="size-3.5 text-warning" />
-                        <span className="text-amber-100">
+                        <span className="text-warning-100">
                           确认用最佳轮次内容覆盖原产物? 原内容会被替换 (仍可通过下方"回滚"还原)。
                         </span>
                         <div className="flex-1" />
                         <button
-                          className="btn-primary px-2 py-0.5 text-[11px]"
+                          className="btn-primary px-2 py-0.5 text-tight-sm"
                           onClick={applyBest}
                         >
                           <Check className="size-3" /> 确认替换
                         </button>
                         <button
-                          className="btn-ghost px-2 py-0.5 text-[11px]"
+                          className="btn-ghost px-2 py-0.5 text-tight-sm"
                           onClick={cancelReviewConfirm}
                         >
                           <X className="size-3" /> 取消
@@ -469,12 +469,12 @@ export function SelfCheckPanel({
 
                 {/* 迭代结束: 无任何改善 */}
                 {iter?.kind === 'no-improvement' && (
-                  <div className="rounded border border-zinc-600/40 bg-elevated/30 px-2 py-1.5 space-y-1.5">
-                    <div className="flex items-center gap-2 text-[11px] text-fg-secondary">
+                  <div className="rounded border border-neutral-600/40 bg-elevated/30 px-2 py-1.5 space-y-1.5">
+                    <div className="flex items-center gap-2 text-tight-sm text-fg-secondary">
                       <ShieldX className="size-3.5 text-fg-secondary" />
                       <span>{iter.reason}</span>
                       <div className="flex-1" />
-                      <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={discardIteration}>
+                      <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={discardIteration}>
                         <X className="size-3" /> 关闭
                       </button>
                     </div>
@@ -484,15 +484,15 @@ export function SelfCheckPanel({
 
                 {/* 迭代过程出错 */}
                 {iter?.kind === 'error' && (
-                  <div className="rounded border border-danger/40 bg-danger/10 px-2 py-1.5 text-[11px] text-danger space-y-1.5">
+                  <div className="rounded border border-danger/40 bg-danger/10 px-2 py-1.5 text-tight-sm text-danger space-y-1.5">
                     <div className="flex items-center gap-2">
                       <ShieldAlert className="size-3.5 text-danger" />
                       <span className="font-medium">迭代失败</span>
                       <div className="flex-1" />
-                      <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={startIteration}>
+                      <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={startIteration}>
                         <RefreshCw className="size-3" /> 重试
                       </button>
-                      <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={discardIteration}>
+                      <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={discardIteration}>
                         <X className="size-3" />
                       </button>
                     </div>
@@ -508,10 +508,10 @@ export function SelfCheckPanel({
                   const regressed = newCount > snapshot.prevActionableCount;
                   return (
                     <div
-                      className={`flex items-center gap-2 text-[11px] rounded border px-2 py-1.5 ${
+                      className={`flex items-center gap-2 text-tight-sm rounded border px-2 py-1.5 ${
                         regressed
-                          ? 'text-rose-100 bg-danger/15 border-danger/40'
-                          : 'text-emerald-100 bg-success/10 border-success/30'
+                          ? 'text-danger-100 bg-danger/15 border-danger/40'
+                          : 'text-success-100 bg-success/10 border-success/30'
                       }`}
                     >
                       {regressed ? (
@@ -526,14 +526,14 @@ export function SelfCheckPanel({
                       </span>
                       <div className="flex-1" />
                       <button
-                        className={`px-2 py-0.5 text-[11px] ${regressed ? 'btn-primary bg-rose-600 hover:bg-rose-500 border-rose-500' : 'btn-outline'}`}
+                        className={`px-2 py-0.5 text-tight-sm ${regressed ? 'btn-primary bg-rose-600 hover:bg-rose-500 border-rose-500' : 'btn-outline'}`}
                         onClick={rollback}
                         title="还原为修订前的产物与报告"
                       >
                         <Undo2 className="size-3" /> 回滚
                       </button>
                       <button
-                        className="btn-ghost px-2 py-0.5 text-[11px]"
+                        className="btn-ghost px-2 py-0.5 text-tight-sm"
                         onClick={dismissSnapshot}
                         title="关闭提示 (快照会丢弃)"
                       >
@@ -549,12 +549,12 @@ export function SelfCheckPanel({
                       className={`text-xs rounded px-2 py-1.5 border ${severityStyle(issue.severity)}`}
                     >
                       <div className="flex items-center gap-2">
-                        <span className={`text-[10px] uppercase font-bold ${severityText(issue.severity)}`}>
+                        <span className={`text-tight-xs uppercase font-bold ${severityText(issue.severity)}`}>
                           {issue.severity}
                         </span>
                         <span className="font-medium text-fg-primary">{issue.tag}</span>
                         {issue.locator && (
-                          <span className="text-fg-muted text-[10px]">@ {issue.locator}</span>
+                          <span className="text-fg-muted text-tight-xs">@ {issue.locator}</span>
                         )}
                       </div>
                       <div className="mt-1 text-fg-secondary leading-relaxed">{issue.detail}</div>
@@ -596,10 +596,10 @@ function FixPreview({
         <div className="flex items-center gap-2">
           <span className="font-medium">修订失败</span>
           <div className="flex-1" />
-          <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={onRetry}>
+          <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={onRetry}>
             <RefreshCw className="size-3" /> 重试
           </button>
-          <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={onDismiss}>
+          <button className="btn-ghost px-2 py-0.5 text-tight-sm" onClick={onDismiss}>
             <X className="size-3" />
           </button>
         </div>
@@ -622,7 +622,7 @@ function FixPreview({
   const isHighRisk = changedRatio >= 0.25;
   return (
     <div className="mt-2 rounded border border-violet-500/30 bg-violet-500/5 px-2 py-1.5">
-      <div className="flex items-center gap-2 text-[11px]">
+      <div className="flex items-center gap-2 text-tight-sm">
         <Wand2 className="size-3 text-violet-300" />
         <span className="font-medium text-violet-200">
           {streaming ? '修订中…' : confirming ? '等待确认' : '修订预览'}
@@ -632,7 +632,7 @@ function FixPreview({
         </span>
         {!streaming && (
           <span
-            className={`px-1.5 py-0.5 rounded border text-[10px] font-mono ${ratioColor}`}
+            className={`px-1.5 py-0.5 rounded border text-tight-xs font-mono ${ratioColor}`}
             title="改动幅度 ≈ 1 - (前后缀共享长 / 总长). 越低越接近外科手术, 越高越可能有重写风险"
           >
             Δ {ratioLabel}
@@ -642,21 +642,21 @@ function FixPreview({
         {state.status === 'preview' && (
           <>
             <button
-              className="btn-primary px-2 py-0.5 text-[11px]"
+              className="btn-primary px-2 py-0.5 text-tight-sm"
               onClick={onRequestApply}
               title="点击后需要二次确认才会写回 artifact"
             >
               <Check className="size-3" /> 应用
             </button>
             <button
-              className="btn-ghost px-2 py-0.5 text-[11px]"
+              className="btn-ghost px-2 py-0.5 text-tight-sm"
               onClick={onRetry}
               title="重新生成"
             >
               <RefreshCw className="size-3" />
             </button>
             <button
-              className="btn-ghost px-2 py-0.5 text-[11px]"
+              className="btn-ghost px-2 py-0.5 text-tight-sm"
               onClick={onDismiss}
               title="放弃"
             >
@@ -668,12 +668,12 @@ function FixPreview({
           <span className="text-fg-muted animate-pulse">流式接收中…</span>
         )}
       </div>
-      <pre className="mt-1.5 max-h-64 overflow-auto whitespace-pre-wrap text-[11px] leading-relaxed text-fg-secondary bg-canvas/60 rounded px-2 py-1.5">
+      <pre className="mt-1.5 max-h-64 overflow-auto whitespace-pre-wrap text-tight-sm leading-relaxed text-fg-secondary bg-canvas/60 rounded px-2 py-1.5">
         {state.preview || '（等待 LLM 输出…）'}
       </pre>
       {confirming && (
         <div
-          className={`mt-2 rounded border px-2 py-1.5 text-[11px] ${
+          className={`mt-2 rounded border px-2 py-1.5 text-tight-sm ${
             isHighRisk
               ? 'border-danger/50 bg-danger/15'
               : 'border-warning/40 bg-warning/10'
@@ -681,21 +681,21 @@ function FixPreview({
         >
           <div className="flex items-center gap-2">
             <ShieldAlert className={`size-3.5 ${isHighRisk ? 'text-danger' : 'text-warning'}`} />
-            <span className={isHighRisk ? 'text-rose-100' : 'text-amber-100'}>
+            <span className={isHighRisk ? 'text-danger-100' : 'text-warning-100'}>
               {isHighRisk
                 ? `⚠️ 高风险修订 — 改动幅度 ${ratioLabel}, LLM 可能改写了无关区域. 建议先点「重试」或在预览区人工检查后再确认.`
                 : `确认用此修订版本替换原产物全文？原内容将被覆盖不可撤销。`}
             </span>
             <div className="flex-1" />
             <button
-              className={`px-2 py-0.5 text-[11px] ${isHighRisk ? 'btn-outline' : 'btn-primary'}`}
+              className={`px-2 py-0.5 text-tight-sm ${isHighRisk ? 'btn-outline' : 'btn-primary'}`}
               onClick={onConfirmApply}
               title="以修订全文覆盖原产物"
             >
               <Check className="size-3" /> 确认替换
             </button>
             <button
-              className="btn-ghost px-2 py-0.5 text-[11px]"
+              className="btn-ghost px-2 py-0.5 text-tight-sm"
               onClick={onCancelConfirm}
               title="取消确认，返回预览"
             >
@@ -713,11 +713,11 @@ function FixPreview({
 function IterHistory({ rows }: { rows: IterHistoryRow[] }) {
   if (!rows.length) return null;
   return (
-    <div className="flex flex-wrap items-center gap-1 text-[10px]">
+    <div className="flex flex-wrap items-center gap-1 text-tight-xs">
       {rows.map((r, i) => {
         const tone =
           r.verdict === 'pass'
-            ? 'bg-success/20 border-success/40 text-emerald-200'
+            ? 'bg-success/20 border-success/40 text-success-200'
             : r.verdict === 'warn'
             ? 'bg-warning/15 border-warning/35 text-warning'
             : 'bg-danger/15 border-danger/35 text-danger';

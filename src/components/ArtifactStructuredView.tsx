@@ -247,7 +247,7 @@ function CopyButton({
         });
       }}
       className={clsx(
-        'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] transition-colors',
+        'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-tight-xs transition-colors',
         copied
           ? 'border-success/50 text-success bg-success/10'
           : 'border-border-default text-fg-secondary hover:text-fg-primary hover:bg-elevated',
@@ -282,13 +282,13 @@ export function ArtifactStructuredView({
       <div className={className}>
         <div className="flex items-center gap-2 mb-2">
           <button
-            className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
+            className="text-tight-xs inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
             onClick={() => setView('cards')}
           >
             <LayoutGrid className="size-3" /> 卡片视图
           </button>
           <CopyButton text={content} label="全部" />
-          <span className="ml-auto text-[10px] text-fg-muted">
+          <span className="ml-auto text-tight-xs text-fg-muted">
             原始视图 · {content.length.toLocaleString()} 字
           </span>
         </div>
@@ -324,27 +324,27 @@ export function ArtifactStructuredView({
     <div className={className}>
       {/* 工具条 */}
       <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <span className="text-[10px] text-fg-muted mr-1">
+        <span className="text-tight-xs text-fg-muted mr-1">
           共 <strong className="text-fg-secondary">{sections.length}</strong> 段
           {q && ` · 匹配 ${filtered.length}`}
         </span>
         <CopyButton text={content} label="全部" />
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
+          className="text-tight-xs inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
           onClick={collapseAll}
           disabled={allCollapsed}
         >
           全部折叠
         </button>
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
+          className="text-tight-xs inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
           onClick={expandAll}
           disabled={noneCollapsed}
         >
           全部展开
         </button>
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
+          className="text-tight-xs inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
           onClick={() => setView('raw')}
         >
           <FileText className="size-3" /> 原始
@@ -356,7 +356,7 @@ export function ArtifactStructuredView({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索…"
-            className="text-[10px] bg-surface border border-border-subtle rounded pl-6 pr-5 py-0.5 w-32 focus:border-brand-500 focus:outline-none"
+            className="text-tight-xs bg-surface border border-border-subtle rounded pl-6 pr-5 py-0.5 w-32 focus:border-brand-500 focus:outline-none"
           />
           {search && (
             <button
@@ -372,7 +372,7 @@ export function ArtifactStructuredView({
       {/* 卡片网格（单列，每卡片独立滚动） */}
       <div className="space-y-2">
         {filtered.length === 0 ? (
-          <div className="text-[11px] text-fg-muted text-center py-4 border border-border-subtle rounded">
+          <div className="text-tight-sm text-fg-muted text-center py-4 border border-border-subtle rounded">
             无匹配段
           </div>
         ) : filtered.map((s) => {
@@ -394,19 +394,19 @@ export function ArtifactStructuredView({
                   ) : (
                     <ChevronDown className="size-3 text-fg-muted flex-none" />
                   )}
-                  <span className="text-[10px] font-mono text-fg-muted flex-none">#{i + 1}</span>
+                  <span className="text-tight-xs font-mono text-fg-muted flex-none">#{i + 1}</span>
                   <span className="text-xs text-fg-primary truncate flex-1">
                     {q ? <Highlight text={s.title} q={q} /> : s.title}
                   </span>
                 </button>
-                <span className="text-[10px] text-fg-muted flex-none">
+                <span className="text-tight-xs text-fg-muted flex-none">
                   {s.body.length.toLocaleString()} 字
                 </span>
                 <CopyButton text={s.body} className="flex-none" />
               </div>
               {!isCollapsed && (
                 <pre
-                  className="text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto px-3 py-2 border-t border-border-subtle/60 bg-canvas/60"
+                  className="text-tight-sm font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto px-3 py-2 border-t border-border-subtle/60 bg-canvas/60"
                   style={{ maxHeight: maxBodyHeight }}
                 >
                   {q ? <Highlight text={s.body} q={q} /> : s.body}
@@ -431,7 +431,7 @@ function RawView({
         <CopyButton text={content} label="复制" />
       </div>
       <pre
-        className="text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto bg-canvas/60 border border-border-subtle rounded px-3 py-2 pr-20"
+        className="text-tight-sm font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto bg-canvas/60 border border-border-subtle rounded px-3 py-2 pr-20"
         style={{ maxHeight }}
       >
         {content}
@@ -455,7 +455,7 @@ function Highlight({ text, q }: { text: string; q: string }) {
     }
     if (found > i) parts.push(text.slice(i, found));
     parts.push(
-      <mark key={found} className="bg-warning/40 text-amber-100 rounded px-0.5">
+      <mark key={found} className="bg-warning/40 text-warning-100 rounded px-0.5">
         {text.slice(found, found + q.length)}
       </mark>,
     );

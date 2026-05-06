@@ -185,19 +185,19 @@ export function ScreenplayDoctorPanel(p: Props) {
     <div className={wrapCls}>
       {/* ── Header ────────────────────────────────────────── */}
       <div className="px-3 py-2 border-b border-border-subtle/70 flex items-center justify-between gap-2">
-        <div className="text-[12px] inline-flex items-center gap-1.5 font-medium">
+        <div className="text-caption-m inline-flex items-center gap-1.5 font-medium">
           <Stethoscope className="size-3.5 text-cyan-400" />
           剧本医生质检
           {report && (
             <span className={clsx(
-              'ml-2 px-2 py-0.5 rounded text-[10px] border',
+              'ml-2 px-2 py-0.5 rounded text-tight-xs border',
               verdictColor(report.overall).cls,
             )}>
               {verdictColor(report.overall).label}
             </span>
           )}
           {report && (
-            <span className="ml-2 text-[10px] text-fg-muted">
+            <span className="ml-2 text-tight-xs text-fg-muted">
               共 {counts.total} 条问题（
               {counts.high > 0 && <span className="text-danger">高 {counts.high}</span>}
               {counts.high > 0 && (counts.mid > 0 || counts.low > 0) && ' · '}
@@ -211,12 +211,12 @@ export function ScreenplayDoctorPanel(p: Props) {
         </div>
         <div className="flex items-center gap-1.5">
           {(phase.kind === 'diagnosing' || phase.kind === 'rewriting') && (
-            <button className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={stop}>
+            <button className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={stop}>
               <X className="size-3 inline" /> 停止
             </button>
           )}
           {(phase.kind === 'diagnosed' || phase.kind === 'parse_failed' || phase.kind === 'rewritten' || phase.kind === 'error') && (
-            <button className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:text-fg-primary hover:bg-elevated" onClick={reset} title="重置面板">
+            <button className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:text-fg-primary hover:bg-elevated" onClick={reset} title="重置面板">
               <RotateCcw className="size-3 inline" />
             </button>
           )}
@@ -227,7 +227,7 @@ export function ScreenplayDoctorPanel(p: Props) {
 
       {phase.kind === 'idle' && (
         <div className="px-3 py-3 flex items-center justify-between gap-3">
-          <div className="text-[11px] text-fg-secondary">
+          <div className="text-tight-sm text-fg-secondary">
             将对剧本做 7 维度审阅（戏剧结构 / 人物动机 / 场次 / 台词 / 场景头 / 遗漏 / 节奏），输出问题清单与修改建议。
           </div>
           <button
@@ -242,10 +242,10 @@ export function ScreenplayDoctorPanel(p: Props) {
 
       {phase.kind === 'diagnosing' && (
         <div className="px-3 py-2">
-          <div className="text-[11px] text-cyan-300 inline-flex items-center gap-1.5 mb-1.5">
+          <div className="text-tight-sm text-cyan-300 inline-flex items-center gap-1.5 mb-1.5">
             <Loader2 className="size-3 animate-spin" /> 医生分析中… {phase.streamed.length} 字
           </div>
-          <pre className="text-[10px] font-mono text-fg-muted whitespace-pre-wrap break-words max-h-32 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
+          <pre className="text-tight-xs font-mono text-fg-muted whitespace-pre-wrap break-words max-h-32 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
             {phase.streamed || '…'}
           </pre>
         </div>
@@ -255,13 +255,13 @@ export function ScreenplayDoctorPanel(p: Props) {
         <div>
           {/* summary */}
           <div className="px-3 py-2 border-b border-border-subtle/70">
-            <div className="text-[10px] text-fg-muted mb-1">总评</div>
-            <div className="text-[11px] text-fg-primary leading-relaxed">{report.summary}</div>
+            <div className="text-tight-xs text-fg-muted mb-1">总评</div>
+            <div className="text-tight-sm text-fg-primary leading-relaxed">{report.summary}</div>
           </div>
 
           {/* filter */}
           {report.issues.length > 0 && (
-            <div className="px-3 py-1.5 border-b border-border-subtle/70 flex items-center gap-1.5 text-[10px]">
+            <div className="px-3 py-1.5 border-b border-border-subtle/70 flex items-center gap-1.5 text-tight-xs">
               <span className="text-fg-muted">过滤：</span>
               {(['all', 'high', 'mid', 'low'] as const).map((k) => (
                 <button
@@ -270,7 +270,7 @@ export function ScreenplayDoctorPanel(p: Props) {
                   className={clsx(
                     'px-1.5 py-0.5 rounded border transition-colors',
                     filter === k
-                      ? 'border-zinc-500 bg-zinc-700 text-fg-primary'
+                      ? 'border-zinc-500 bg-neutral-700 text-fg-primary'
                       : 'border-border-subtle text-fg-secondary hover:bg-elevated',
                   )}
                 >
@@ -287,7 +287,7 @@ export function ScreenplayDoctorPanel(p: Props) {
           {/* issues */}
           <div className="max-h-80 overflow-auto">
             {filteredIssues.length === 0 ? (
-              <div className="px-3 py-4 text-[11px] text-fg-muted text-center">
+              <div className="px-3 py-4 text-tight-sm text-fg-muted text-center">
                 {report.issues.length === 0
                   ? <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="size-3.5 text-success" /> 医生未发现明显问题</span>
                   : '当前过滤无匹配项目'}
@@ -307,13 +307,13 @@ export function ScreenplayDoctorPanel(p: Props) {
                   <div className="flex items-center gap-2">
                     {expanded ? <ChevronDown className="size-3 text-fg-muted flex-none" /> : <ChevronRight className="size-3 text-fg-muted flex-none" />}
                     <span className={clsx('inline-block size-2 rounded-full flex-none', c.dot)} />
-                    <span className={clsx('text-[10px] uppercase font-mono flex-none', c.text)}>{it.severity}</span>
-                    <span className="text-[11px] text-fg-secondary flex-none">{it.category}</span>
-                    <span className="text-[10px] text-fg-muted flex-none">@ {it.location}</span>
-                    <span className="text-[11px] text-fg-primary truncate ml-1">{it.description}</span>
+                    <span className={clsx('text-tight-xs uppercase font-mono flex-none', c.text)}>{it.severity}</span>
+                    <span className="text-tight-sm text-fg-secondary flex-none">{it.category}</span>
+                    <span className="text-tight-xs text-fg-muted flex-none">@ {it.location}</span>
+                    <span className="text-tight-sm text-fg-primary truncate ml-1">{it.description}</span>
                   </div>
                   {expanded && (
-                    <div className="mt-1.5 ml-7 space-y-1 text-[11px]">
+                    <div className="mt-1.5 ml-7 space-y-1 text-tight-sm">
                       <div className="text-fg-secondary"><span className="text-fg-muted">问题：</span>{it.description}</div>
                       <div className="text-success/90"><span className="text-fg-muted">建议：</span>{it.suggestion}</div>
                     </div>
@@ -339,18 +339,18 @@ export function ScreenplayDoctorPanel(p: Props) {
             >
               仅查看不改
             </button>
-            <span className="ml-auto text-[10px] text-fg-muted">
+            <span className="ml-auto text-tight-xs text-fg-muted">
               提示：改写不会自动覆盖，会先预览
             </span>
           </div>
 
           {/* parseError 警告（兜底解析成功但有问题） */}
           {phase.parseError && (
-            <div className="px-3 py-1.5 border-t border-warning/30 bg-warning/5 text-[10px] text-warning">
+            <div className="px-3 py-1.5 border-t border-warning/30 bg-warning/5 text-tight-xs text-warning">
               <AlertTriangle className="size-3 inline mr-1" /> 解析提示：{phase.parseError}（已使用兜底解析，建议核对原始输出）
               <button className="ml-2 underline" onClick={() => setShowRaw((v) => !v)}>{showRaw ? '隐藏' : '显示'}原始输出</button>
               {showRaw && (
-                <pre className="mt-1 text-[10px] font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-32 overflow-auto bg-canvas/50 rounded p-2 border border-warning/20">
+                <pre className="mt-1 text-tight-xs font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-32 overflow-auto bg-canvas/50 rounded p-2 border border-warning/20">
                   {phase.rawOutput}
                 </pre>
               )}
@@ -360,12 +360,12 @@ export function ScreenplayDoctorPanel(p: Props) {
       )}
 
       {phase.kind === 'parse_failed' && (
-        <div className="px-3 py-2 text-[11px]">
+        <div className="px-3 py-2 text-tight-sm">
           <div className="text-danger inline-flex items-center gap-1.5 mb-1">
             <AlertTriangle className="size-3.5" /> 医生输出无法解析为 JSON：{phase.parseError}
           </div>
           <div className="text-fg-secondary mb-1.5">原始输出（可重试）：</div>
-          <pre className="text-[10px] font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-40 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
+          <pre className="text-tight-xs font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-40 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
             {phase.rawOutput || '(空)'}
           </pre>
           <div className="mt-2 flex gap-2">
@@ -381,10 +381,10 @@ export function ScreenplayDoctorPanel(p: Props) {
 
       {phase.kind === 'rewriting' && (
         <div className="px-3 py-2">
-          <div className="text-[11px] text-violet-300 inline-flex items-center gap-1.5 mb-1.5">
+          <div className="text-tight-sm text-violet-300 inline-flex items-center gap-1.5 mb-1.5">
             <Loader2 className="size-3 animate-spin" /> 医生改写中… {phase.streamed.length} 字
           </div>
-          <pre className="text-[10px] font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-72 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
+          <pre className="text-tight-xs font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-72 overflow-auto bg-canvas/50 rounded p-2 border border-border-subtle">
             {phase.streamed || '…'}
           </pre>
         </div>
@@ -392,10 +392,10 @@ export function ScreenplayDoctorPanel(p: Props) {
 
       {phase.kind === 'rewritten' && (
         <div>
-          <div className="px-3 py-2 border-b border-border-subtle/70 text-[11px] text-success inline-flex items-center gap-1.5">
+          <div className="px-3 py-2 border-b border-border-subtle/70 text-tight-sm text-success inline-flex items-center gap-1.5">
             <CheckCircle2 className="size-3.5" /> 改写完成 · {phase.rewritten.length.toLocaleString()} 字（原 {p.script.length.toLocaleString()} 字）
           </div>
-          <pre className="px-3 py-2 text-[10px] font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
+          <pre className="px-3 py-2 text-tight-xs font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
             {phase.rewritten}
           </pre>
           <div className="px-3 py-2 border-t border-border-subtle/70 flex items-center gap-2">
@@ -408,7 +408,7 @@ export function ScreenplayDoctorPanel(p: Props) {
             <button className="text-xs px-2 py-1 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={reset}>
               丢弃改写
             </button>
-            <span className="ml-auto text-[10px] text-fg-muted">
+            <span className="ml-auto text-tight-xs text-fg-muted">
               将覆盖上方剧本输入框，原文不会保留
             </span>
           </div>
@@ -416,7 +416,7 @@ export function ScreenplayDoctorPanel(p: Props) {
       )}
 
       {phase.kind === 'error' && (
-        <div className="px-3 py-2 text-[11px] text-danger inline-flex items-center gap-1.5">
+        <div className="px-3 py-2 text-tight-sm text-danger inline-flex items-center gap-1.5">
           <AlertTriangle className="size-3.5" /> {phase.msg}
           <button className="ml-2 text-fg-secondary underline hover:text-fg-primary" onClick={reset}>关闭</button>
         </div>

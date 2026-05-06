@@ -291,7 +291,7 @@ export function FeedbackInsights() {
             <button
               onClick={() => setFilterIssue('all')}
               className={clsx(
-                'text-[11px] px-2 py-0.5 rounded border transition-colors',
+                'text-tight-sm px-2 py-0.5 rounded border transition-colors',
                 filterIssue === 'all'
                   ? 'border-brand-500 bg-primary-500/15 text-brand-300'
                   : 'border-border-default text-fg-secondary hover:text-fg-primary',
@@ -304,7 +304,7 @@ export function FeedbackInsights() {
                 key={k}
                 onClick={() => setFilterIssue(k)}
                 className={clsx(
-                  'text-[11px] px-2 py-0.5 rounded border transition-colors',
+                  'text-tight-sm px-2 py-0.5 rounded border transition-colors',
                   filterIssue === k
                     ? 'border-rose-500 bg-danger/15 text-danger'
                     : 'border-border-default text-fg-secondary hover:text-fg-primary',
@@ -442,14 +442,14 @@ function FeedbackCard({
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
             <span className="font-medium text-fg-primary">第 {fb.chapterIndex} 章</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
+            <span className="text-tight-xs px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
               {fb.nodeId === 'novel.3.1' ? '草稿' : fb.nodeId === 'novel.3.2' ? '润色' : fb.nodeId}
             </span>
-            <span className="text-[10px] text-fg-muted">{new Date(fb.createdAt).toLocaleString()}</span>
+            <span className="text-tight-xs text-fg-muted">{new Date(fb.createdAt).toLocaleString()}</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
             {fb.issues.map((k) => (
-              <span key={k} className="text-[10px] px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">
+              <span key={k} className="text-tight-xs px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">
                 {USER_KB_FEEDBACK_ISSUE_META[k]}
               </span>
             ))}
@@ -464,7 +464,7 @@ function FeedbackCard({
               <summary className="cursor-pointer text-fg-muted hover:text-fg-secondary">
                 负样本片段（{fb.highlightedExcerpt.length} 字）
               </summary>
-              <pre className="mt-1 p-2 bg-surface rounded text-[11px] font-mono whitespace-pre-wrap text-fg-secondary">
+              <pre className="mt-1 p-2 bg-surface rounded text-tight-sm font-mono whitespace-pre-wrap text-fg-secondary">
                 {fb.highlightedExcerpt}
               </pre>
             </details>
