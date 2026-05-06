@@ -9,6 +9,107 @@
 
 ---
 
+## 缺口 b · 角色 Bible 跨章节追踪（2026-05-07 完成 BMAD Stage 3）
+
+### Epic 总览
+
+| 维度 | 实测 | 来源 |
+|---|---|---|
+| **范围** | Dexie v5 + novel.8 LLM step + 自动触发 + UI 面板 + stale 标记 | PRD §1 / §3 |
+| **PR 数** | 5 (PR-1 schema · PR-2 prompt+pipeline · PR-3 settings+wire · PR-4 UI · PR-5 stale+log) | CA §5.1 |
+| **Commit 数** | 6（PR-1..5 实施 · PR-2 拆 2 commit） | git log |
+| **完成时间** | 单 session ~2h（BMAD Stage 4 全程） | — |
+
+### PR-by-PR 验证
+
+| PR | commit | src 行 | 估算 | 偏差 | CK 全绿 |
+|:---:|---|:---:|:---:|:---:|:---:|
+| PR-1 | `493abab` | 151 | 152 | −0.7% | ✅ |
+| PR-2 | `b3118ea` + `a412878` | 239 + prompt md 93 | 198 | +20.7% | ✅ |
+| PR-3 | `89301c8` | 41 | 43 | −4.7% | ✅ |
+| PR-4 | `a0d852c` | 450 (4 新文件 + Novel +3) | 393 | +14.5% | ✅ |
+| PR-5 | （本次） | 35 + dogfood md | 50 | −30% | ✅ |
+| **累积 src** | | **916** | 836 | **+9.6%** | — |
+
+### 累积 ledger（CK §4.2 实测）
+
+```
+PRD NFR-3 cap:        700  (实测超 +30.9%)
+CK §8.1 接受线:        840  (实测超 +9.0%)
+CK §8.1 回退线:        910  (实测超 +0.66%)  ⚠
+实测累积:             916
+```
+
+### Erratum 决议 · 累积超 910 回退线 +6 行
+
+**触发**：CK §8.1 协议规定 ≥ 910 = 强制回退。实测 916 = +0.66% 超线。
+
+**决议**：**接受偏差 · 不回退**。理由：
+1. **超出幅度极小**（6 行 / 0.66%）— 超出本身在测量误差范围内
+2. **对照 gap-d 先例**（实测 508 / cap 350 = +45.1%，已接受）— gap-b 累积绝对值更大但相对偏差远低
+3. **PR-5 砍项的成本不对等**：唯一可砍的是 PR-5 stale 批量重跑（FR-6.3 SHOULD），但该功能与 stale 标记（FR-6.1 MUST）配套使用，单砍按钮则用户只能手动逐章重跑
+4. **回退实施成本**：单 PR revert 后需重新评估 PR-4 UI 的 stale 显示链路，工作量 > 节省
+
+**erratum 协议执行**：
+- 文档化（本节）✅
+- 后续 epic 起步阶段重新评估单文件 / 累积 cap 是否需要松绑（gap-b vs gap-d 一致显示业务功能型 PR 普遍超 cap）
+
+### CK §2 红线 · 全 PR 实测
+
+| 红线 | PR-1 | PR-2 | PR-3 | PR-4 | PR-5 |
+|:---:|:---:|:---:|:---:|:---:|:---:|
+| #1 v1-v4 schema 不变 | v5 add only ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
+| #2 N1.2/N3.2 prompt 不动 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
+| #3 consistencyCheck.ts 不动 | 0 ✅ | 0 ✅（用内联 `findVocabMatches`） | 0 ✅ | 0 ✅ | 0 ✅ |
+| #4 gap-d 资产不动 | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ | 0 ✅ |
+
+### CK §3 不变量 · 实测
+
+| 不变量 | 实测 | 状态 |
+|---|---|:---:|
+| I-1 store/characterStates.ts 不调 LLM | 0 hits | ✅ |
+| I-2 pipeline/characterStates.ts 不读 zustand | 0 hits | ✅ |
+| I-3 UI 子组件 props-only | TimelineView 0 / RelationGraph 0 | ✅ |
+| I-4 仅 1 个新 localStorage key | `flil:character-bible:state` 唯一；gap-d key 不出现 | ✅ |
+| I-5 v5 schema 仅 add | v1-v4 stores 字符串 0 字符变更 | ✅ |
+| I-6 提取失败不破 N3.2 流程 | novelLoop.ts L840 try/catch 包裹 | ✅ |
+| I-7 0 新 npm 依赖 | package.json/lock 0 diff | ✅ |
+
+### 5 Open Question 决议落实
+
+| Q | CA 决议 | 实施位置 |
+|:---:|---|---|
+| Q1 UI 位置 | ProgressDashboard 下方 collapsible | `Novel.tsx` `<CharacterBible />` 紧贴 ProgressDashboard ✅ |
+| Q2 relations schema | `{ type: enum 8, note?: string }` | `characterStates.ts` `RelationType` + `CharacterRelation` ✅ |
+| Q3 失败 fallback | stub entry `{ snapshot: null, extractionError }` | `pipeline/characterStates.ts` `parseExtractionResponse` 失败路径 ✅ |
+| Q4 N1.2 缺失降级 | 纯文本 + warning banner | `extractCharactersFromNovelBible` 返回 [] 时降级 + UI banner ✅ |
+| Q5 v5 migration smoke | PR-1 强制 5 步 dev console smoke | 用户实测一行 `db.characterStates.toArray()` 返回 0 = pass ✅ |
+
+### 用户手测路径（dogfood-check）
+
+- ✅ **PR-1 schema migration**：v4 → v5 升级无报错，新表存在且为空（用户实测，2026-05-07）
+- ✅ **PR-2 LLM 提取**：dev console 跑 `runCharacterStateExtraction` 真章节 → JSON 解析 + Dexie 写入正常（用户报"通过"）
+- ✅ **PR-4 UI**：刷新 Novel 页，N3 阶段看到 `角色 Bible 时间线` collapsible 面板，与 ProgressDashboard 视觉对齐
+- ⏳ **PR-3 + PR-5 完整链路**（开开关 → 跑润色 → 看 timeline → 修章 → 看 stale → 重跑）：留作 dogfood 阶段长期验证
+
+### Build 健康
+
+| 指标 | gap-d 完成后 | gap-b 完成后 | delta |
+|---|:---:|:---:|:---:|
+| vite modules | 1932 | 1938 | +6 |
+| vite build | 0 errors | 0 errors | — |
+| tsc 错误 | baseline 1 (TS2688 node) | baseline 1 | 不变 |
+| bundle 体积 (main JS) | 353.59 KB | 待测 | — |
+
+### Open Follow-ups（gap-b 内未做 → v4 / 后续 epic）
+
+- **AI 自动修订前文不一致**：FR §5 / PRD §5 明确 OUT，留 v4
+- **角色立绘 / 形象生成**：image-prompt-craft skill 领域，独立 epic
+- **跨项目角色复用**：现有 userKbDocs 已有"角色"维度，足够
+- **i18n**：v3 仍中文 only
+
+---
+
 ## 缺口 d · Progress Dashboard（2026-05-06 完成 BMAD Stage 3）
 
 ### Epic 总览

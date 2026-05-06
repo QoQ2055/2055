@@ -18,6 +18,7 @@ import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
 import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
 import { ProgressDashboard } from '../components/ProgressDashboard';
 import { CharacterBible } from '../components/CharacterBible';
+import { markStateStale } from '../store/characterStates';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runStepBestOfN, isBestOfNRecommended } from '../pipeline/bestOfN';
@@ -1424,6 +1425,14 @@ function PreviewModal({
     } catch (e) {
       console.warn('[novel] persist undo entry failed; falling back to in-memory', e);
       setRefineUndoStack((stack) => [...stack, entry as LiveRefinementUndoEntry]);
+    }
+    // gap-b PR-5 · FR-6.1 用户修订后标记该章及下游状态过期
+    if (useSettings.getState().enableCharacterStateExtraction) {
+      try {
+        await markStateStale(0, chapterIndex);
+      } catch (e) {
+        console.warn('[gap-b] markStateStale 失败（不阻塞）:', e);
+      }
     }
     setDisplayBody(nextChapter);
     setSelection(''); // 应用后选区失效（内容变了）

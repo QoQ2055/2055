@@ -16,7 +16,7 @@ import { useProject } from '../store/project';
 import { useSettings } from '../store/settings';
 import { useCharacterBible } from '../store/characterBible';
 import { listCharacterTimeline, listChapterStates, type CharacterStateRecord } from '../store/characterStates';
-import { runCharacterStateExtraction } from '../pipeline/characterStates';
+import { runCharacterStateExtraction, rerunStaleStates } from '../pipeline/characterStates';
 import { CharacterTimelineView } from './character/CharacterTimelineView';
 import { CharacterRelationGraph } from './character/CharacterRelationGraph';
 import type { NovelChapterLoopMeta } from '../pipeline/novelLoop';
@@ -91,6 +91,21 @@ export function CharacterBible() {
     }
   }
 
+  // gap-b PR-5 · FR-6.3 批量重跑所有 stale 章节
+  async function handleBatchRerunStale() {
+    if (!project || !hasStale) return;
+    const firstStale = timeline.find((r) => r.stale)?.chapterIndex ?? 1;
+    setBusy(`rerun-stale-from-${firstStale}`);
+    try {
+      const r = await rerunStaleStates(PROJECT_ID, firstStale, { project, artifacts, settings, projectId: PROJECT_ID });
+      console.info('[gap-b] 批量重跑完成: ' + r.runs + ' 章 · ' + r.failures + ' 失败');
+    } catch (e) {
+      console.warn('[gap-b] 批量重跑异常:', e);
+    } finally {
+      setBusy(null);
+    }
+  }
+
   return (
     <section className="rounded border border-border-subtle bg-surface-1" aria-label="角色 Bible 跨章节追踪">
       <button
@@ -143,6 +158,19 @@ export function CharacterBible() {
                 <option key={n} value={n}>{n}</option>
               ))}
             </select>
+
+            {hasStale && (
+              <button
+                type="button"
+                onClick={handleBatchRerunStale}
+                disabled={!!busy || !settings.enableCharacterStateExtraction}
+                className="text-xs px-2 py-1 rounded bg-yellow-500/20 text-yellow-700 hover:bg-yellow-500/30 disabled:opacity-50 flex items-center gap-1"
+                aria-label="批量重跑过期章节"
+              >
+                <RefreshCw className={clsx('size-3', busy?.startsWith('rerun-stale') && 'animate-spin')} />
+                重跑过期
+              </button>
+            )}
 
             <div className="ml-auto flex items-center gap-1" role="tablist" aria-label="视图模式">
               <button
