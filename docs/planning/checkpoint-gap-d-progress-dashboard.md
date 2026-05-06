@@ -101,12 +101,14 @@ Write-Host "红线 #1: $r1 / #2: $r2 / #3: $r3 / #4: $r4 (全 0 = PASS)"
 
 ## §3 不变量 grep（**CA §2.5 的 5 条 · 编译时验证**）
 
-### I-1 · `projectAggregates.ts` 100% read-only
+### I-1 · `projectAggregates.ts` 不触 dexie（**纯函数** · 上游传 ArtifactMap）
 
 ```powershell
-Select-String -Path src/store/projectAggregates.ts -Pattern 'db\.\w+\.(?:put|add|update|delete|clear|bulkPut|bulkAdd)'
-# 期望：empty (零写操作)
+Select-String -Path src/store/projectAggregates.ts -Pattern 'db\.|Dexie|dexie|liveDb'
+# 期望：empty (无 dexie 引用 · 函数纯接受 ArtifactMap 参数)
 ```
+
+（CA v0.1 强 'db.chapters' 查询 · 实际本仓无 chapters 表 · v0.2 修正为纯函数，I-1 自动满足。）
 
 ### I-2 · 0 新依赖
 
@@ -240,14 +242,17 @@ Select-String -Path 'src/components/dashboard/*.tsx' -Pattern 'aria-label' | Mea
 
 ### PR-1 · projectAggregates.ts
 
-- [ ] 文件白名单：仅触碰 `src/store/projectAggregates.ts` + tests
+- [ ] 文件白名单：仅触碰 `src/store/projectAggregates.ts`
 - [ ] 行数 ≤ 150 (cap)
 - [ ] 红线 #1-#4 全 0
-- [ ] 不变量 I-1（read-only）✅
+- [ ] 不变量 I-1（不触 dexie）✅ · grep `db\.|Dexie` 在 projectAggregates.ts → 0
 - [ ] 不变量 I-2（0 新 deps）✅
 - [ ] tsc 0 新 error
-- [ ] vitest unit test 3 case (空 / 完整 / 部分) PASS
-- [ ] 性能：单次 `getProjectAggregates(50ch)` ≤ 100ms（手测 console.time）
+- [ ] **手测 smoke**（本仓无 vitest · NFR-3 0 新 deps · PRD/CA 原要求 vitest 是误判，以本 CK 为准）：
+  - dev console 运行 `getProjectAggregates({})` → 返回 totalChapters: 0 / matrix: null
+  - 运行 `getProjectAggregates({ 'novel.4': { content: 'mock outline...' } })` → chapter 解析正确
+  - 运行 `getProjectAggregates({ 'novel.4': ..., 'novel.6': { meta: { chapterContents: { 1: 'mock 1500 字' } } } })` → wordCount/status 正确
+- [ ] **性能（纯函数 cap 下调）**：`getProjectAggregates(50 章 mock)` ≤ 50ms（console.time，比 dexie 路径更快）
 - [ ] commit msg 含 `(gap-d FR-data)` tag
 
 ### PR-2 · 3 view components

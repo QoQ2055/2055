@@ -68,7 +68,7 @@ related:
 | Q | 答案（详见 §4） |
 |---|---|
 | Q1 位置 | **顶部 collapsible**（默认折叠 48px / 展开 ≤ 600px）|
-| Q2 完成度判定 | **chapter.body 字数 ≥ 1000 = 完成 / > 0 = 进行中 / = 0 = 未开始**（manifest 状态做次级辅助）|
+| Q2 完成度判定 | **润色>草稿 优先取 body / 字数 ≥ 1000 = 完成 / > 0 = 进行中 / = 0 = 未开始**（数据来自 `artifact.meta.chapterContents`，**非** `chapter.body`，本仓无 chapters 表）|
 | Q3 热力图维度 | **自适应行高 + 列向滚动**（≥ 30 章节启用）|
 | Q4 i18n | **中文硬编码**（与现有页面一致）|
 
@@ -80,7 +80,7 @@ related:
 
 | # | 文件 | 类型 | 估行数 | PR |
 |:---:|---|:---:|:---:|:---:|
-| 1 | `src/store/projectAggregates.ts` | A 新增 | ~110 | PR-1 |
+| 1 | `src/store/projectAggregates.ts` | A 新增 · **纯函数** · 吃 ArtifactMap | ~110 | PR-1 |
 | 2 | `src/components/dashboard/ChapterCompletionGrid.tsx` | A 新增 | ~70 | PR-2 |
 | 3 | `src/components/dashboard/WordCountTrend.tsx` | A 新增 | ~80 | PR-2 |
 | 4 | `src/components/dashboard/ScoreHeatmap.tsx` | A 新增 | ~90 | PR-2 |
@@ -115,35 +115,38 @@ src/components/ProgressDashboard.tsx  (A)
 #### `src/store/projectAggregates.ts`
 
 ```ts
+import type { ArtifactMap } from '../pipeline/types';
+import type { ChapterMeta, NovelChapterLoopMeta } from '../pipeline/novelLoop';
+
 export interface ProjectAggregates {
-  projectId: string;
   totalChapters: number;
   completedChapters: number;       // body.length >= 1000
   inProgressChapters: number;      // 0 < body.length < 1000
   notStartedChapters: number;      // body.length === 0
-  chapters: ChapterAggregate[];    // 按 chapterIndex 升序
-  scoreCardMatrix: ScoreCardMatrix | null;  // null = 无评分历史
+  chapters: ChapterAggregate[];    // 按 chapter.index 升序
+  scoreCardMatrix: ScoreCardMatrix | null;
   wordCountStats: { mean: number; median: number; min: number; max: number };
 }
 
 export interface ChapterAggregate {
-  chapterId: string;
-  chapterIndex: number;
+  chapterIndex: number;            // 1-based · 来自 ChapterMeta.index
   title: string;
-  wordCount: number;
+  wordCount: number;               // body.length（润色优先 > 草稿）
+  bodySource: 'polish' | 'draft' | 'none';
   status: 'completed' | 'in-progress' | 'not-started';
-  scoreCardAvg: number | null;     // 6+ 维度均分 / null = 无评分
-  scoreCardIssueCount: number;     // issue 数 / 0 = 健康
-  isOutlier: boolean;              // 字数 < 50% 均值 或 > 200% 均值
+  scoreCardAvg: number | null;     // 维度均分 / null = 无评分
+  scoreCardIssueCount: number;
+  isOutlier: boolean;
 }
 
 export interface ScoreCardMatrix {
-  dimensions: string[];                       // ['动机一致性', '对话自然度', ...]
-  values: (number | null)[][];                // [chapter][dimension] · null = 该章节无该维度
-  issueLists: (string[] | null)[][];          // hover 详情用
+  dimensions: string[];
+  values: (number | null)[][];     // [chapter][dimension]
+  issueLists: (string[] | null)[][];
 }
 
-export async function getProjectAggregates(projectId: string): Promise<ProjectAggregates>;
+/** 纯同步函数 · 不触 dexie · 输入 artifact map 直接计算 */
+export function getProjectAggregates(artifacts: ArtifactMap): ProjectAggregates;
 ```
 
 #### `src/store/dashboard.ts`
@@ -285,7 +288,7 @@ ProgressDashboard 触发现有 ScoreCardBadge 弹窗
 
 | ID | 不变量 | 验证 |
 |:---:|---|---|
-| I-1 | `getProjectAggregates` 永远 read-only（仅 .toArray / .where） | grep `db.put / db.add / db.update` → 在 projectAggregates.ts 应 0 hits |
+| I-1 · `projectAggregates.ts` 不触 dexie（**纯函数**） | grep `db\.|Dexie|dexie` 在 src/store/projectAggregates.ts → 0 |
 | I-2 | dashboard 不引入新 npm 包 | `package.json` diff = 0 |
 | I-3 | dashboard 不调用 LLM API | grep `runStep / runStepBestOfN / fetch.*api` 在 dashboard 文件 → 0 |
 | I-4 | localStorage key 恰好一个 (`flil:dashboard:state`) | grep `localStorage.setItem` 在 store/dashboard.ts → 1 |
@@ -295,64 +298,93 @@ ProgressDashboard 触发现有 ScoreCardBadge 弹窗
 
 ## §3 详细设计
 
-### 3.1 `getProjectAggregates` 算法
+### 3.1 `getProjectAggregates` 算法（**纯函数 · 不触 dexie**）
 
 ```ts
-export async function getProjectAggregates(projectId: string): Promise<ProjectAggregates> {
-  // 1. 一次查全章节（dexie .where + sortBy）
-  const chapters = await db.chapters
-    .where('projectId').equals(projectId)
-    .sortBy('chapterIndex');                     // ≤ 50ms
+import { parseChapterOutlines, type NovelChapterLoopMeta } from '../pipeline/novelLoop';
 
-  // 2. 一次查全 artifacts (含 scoreCardHistory)
-  const artifacts = await db.artifacts
-    .where('projectId').equals(projectId)
-    .toArray();                                   // ≤ 30ms
+export function getProjectAggregates(artifacts: ArtifactMap): ProjectAggregates {
+  // 1. 解析章节大纲（来自 novel.4）
+  const outlineArt = artifacts['novel.4'];
+  const chapters: ChapterMeta[] = outlineArt ? parseChapterOutlines(outlineArt.content) : [];
 
-  // 3. 内存聚合（O(n))
-  const wordCounts = chapters.map(c => c.body?.length ?? 0);
+  // 2. 取 draft / polish meta（chapterContents 在 meta 上）
+  const draftMeta = (artifacts['novel.6']?.meta ?? {}) as Partial<NovelChapterLoopMeta>;
+  const polishMeta = (artifacts['novel.7']?.meta ?? {}) as Partial<NovelChapterLoopMeta>;
+
+  // 3. 章节 body lookup（润色 > 草稿 > 空）
+  const lookupBody = (chapterIndex: number): { content: string; source: 'polish' | 'draft' | 'none' } => {
+    const polish = polishMeta.chapterContents?.[chapterIndex];
+    if (polish) return { content: polish, source: 'polish' };
+    const draft = draftMeta.chapterContents?.[chapterIndex];
+    if (draft) return { content: draft, source: 'draft' };
+    return { content: '', source: 'none' };
+  };
+
+  // 4. 字数统计
+  const wordCounts = chapters.map(c => lookupBody(c.index).content.length);
   const mean = wordCounts.reduce((a, b) => a + b, 0) / Math.max(wordCounts.length, 1);
   const sorted = [...wordCounts].sort((a, b) => a - b);
   const median = sorted[Math.floor(sorted.length / 2)] ?? 0;
 
-  // 4. 每章节聚合
-  const chapterAggs = chapters.map(c => buildChapterAggregate(c, artifacts, mean));
+  // 5. 每章节聚合
+  const chapterAggs = chapters.map(c => buildChapterAggregate(c, lookupBody(c.index), artifacts, mean));
 
-  // 5. ScoreCard 矩阵
+  // 6. ScoreCard 矩阵（数据源待 PR-1 实施时根据 ChapterScoreCardSlot 复用机制确定）
   const matrix = buildScoreCardMatrix(chapters, artifacts);
 
-  // 6. 完成度统计
+  // 7. 完成度统计
   const completed = chapterAggs.filter(c => c.status === 'completed').length;
   const inProgress = chapterAggs.filter(c => c.status === 'in-progress').length;
-  return { projectId, totalChapters: chapters.length, completedChapters: completed, ... };
+  const notStarted = chapterAggs.length - completed - inProgress;
+
+  return {
+    totalChapters: chapters.length,
+    completedChapters: completed, inProgressChapters: inProgress, notStartedChapters: notStarted,
+    chapters: chapterAggs, scoreCardMatrix: matrix,
+    wordCountStats: { mean, median, min: sorted[0] ?? 0, max: sorted[sorted.length - 1] ?? 0 },
+  };
 }
 ```
 
-**性能预期**：50 章 / 10 评分历史 / Chromium → ≤ 100ms（NFR-1 达标）。
+**性能预期**：50 章 / Chromium → ≤ 50ms（无 IO，纯内存计算 → 比 dexie 路径更快）。
 
 ### 3.2 `buildChapterAggregate` 完成度判定
 
 ```ts
-function buildChapterAggregate(c: Chapter, artifacts: Artifact[], mean: number): ChapterAggregate {
-  const wordCount = c.body?.length ?? 0;
+function buildChapterAggregate(
+  chapter: ChapterMeta,
+  body: { content: string; source: 'polish' | 'draft' | 'none' },
+  artifacts: ArtifactMap,
+  mean: number,
+): ChapterAggregate {
+  const wordCount = body.content.length;
 
   let status: 'completed' | 'in-progress' | 'not-started';
   if (wordCount === 0) status = 'not-started';
   else if (wordCount >= 1000) status = 'completed';     // §0.5 Q2 决议
   else status = 'in-progress';
 
-  // ScoreCard 取该章节最新评分（scoreCardHistory[0]）
-  const artifact = artifacts.find(a => a.chapterId === c.id && a.kind === 'chapter-final');
-  const latestScore = artifact?.meta?.scoreCard;
-  const scoreCardAvg = latestScore ? avgOfDimensions(latestScore.dimensions) : null;
-  const scoreCardIssueCount = latestScore?.issues?.length ?? 0;
+  // ScoreCard 数据源（PR-1 实施时根据 ChapterScoreCardSlot 实际机制对接 · 可能是 artifact.meta.scoreCardByChapter[idx] 或独立索引）
+  const { scoreCardAvg, scoreCardIssueCount } = lookupChapterScore(chapter.index, artifacts);
 
   // 字数离群判定
   const isOutlier = wordCount > 0 && (wordCount < mean * 0.5 || wordCount > mean * 2);
 
-  return { chapterId: c.id, chapterIndex: c.chapterIndex, ..., scoreCardAvg, scoreCardIssueCount, isOutlier };
+  return {
+    chapterIndex: chapter.index,
+    title: chapter.title,
+    wordCount,
+    bodySource: body.source,
+    status,
+    scoreCardAvg,
+    scoreCardIssueCount,
+    isOutlier,
+  };
 }
 ```
+
+⚠ **PR-1 实施时未决**：`lookupChapterScore` 的具体数据源依赖现有 `ChapterScoreCardSlot` / `useScoreCardController` 的存储位置。**PR-1 优先做 chapter aggregate（已确定），ScoreCard 矩阵留给 PR-2 ScoreHeatmap 实施时同步搞定**（届时 read 现有 hook）。
 
 ### 3.3 `ChapterCompletionGrid` 渲染算法
 
