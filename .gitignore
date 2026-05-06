@@ -1,0 +1,14 @@
+node_modules
+dist
+.vite
+.DS_Store
+*.log
+public/prompts/
+!public/prompts/.gitkeep
+
+# TS incremental build cache
+*.tsbuildinfo
+
+# Local scratch files (kept locally, not versioned)
+_tmp_*.txt
+scan.cjs

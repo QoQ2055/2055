@@ -1,0 +1,461 @@
+{
+  "version": "1.0",
+  "source": "cineforge-web 方法论模块库 v2",
+  "modules": [
+    {
+      "id": "mbti-5step",
+      "title": "MBTI 五步法 · 人物角色卡（简化版）",
+      "file": "mbti-5step.md",
+      "category": "character",
+      "summary": "用 MBTI 类型 + 主导/辅助/第三/劣势功能 + 剧情功能定位生成可服务剧情的人物角色卡。适合商业网文 / 快节奏项目。来源：小婳生成小说 SKILL 6.0。与 `mbti-cognitive-functions` 深度版互斥。",
+      "injectsTo": [
+        "novel.1.2"
+      ],
+      "estimatedTokens": 600,
+      "conflictsWith": [
+        "mbti-cognitive-functions"
+      ]
+    },
+    {
+      "id": "save-the-cat-15beats",
+      "title": "Save the Cat · 15 节拍法",
+      "file": "save-the-cat-15beats.md",
+      "category": "structure",
+      "summary": "Blake Snyder 的 15 节拍长篇结构。注入 N2.1 / N2.2，给分卷规划与分章明细一个可对齐的节拍骨架。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu"
+      ]
+    },
+    {
+      "id": "heros-journey-12stages",
+      "title": "英雄之旅 · 12 阶段法",
+      "file": "heros-journey-12stages.md",
+      "category": "structure",
+      "summary": "Vogler 简化版英雄之旅 12 阶段。适合主角成长弧光极强的题材，与 Save the Cat 互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "three-act-structure",
+        "kishotenketsu"
+      ]
+    },
+    {
+      "id": "seven-emotion-peaks",
+      "title": "七情节奏点 · 单章情绪曲线",
+      "file": "seven-emotion-peaks.md",
+      "category": "rhythm",
+      "summary": "7 类情绪触发点 + 单章 4 段节奏配方，强迫每章至少 2 个情绪锚点，挤掉 AI 套话。",
+      "injectsTo": [
+        "novel.3.1",
+        "novel.3.2",
+        "novel.6",
+        "novel.7"
+      ],
+      "estimatedTokens": 500,
+      "conflictsWith": []
+    },
+    {
+      "id": "three-act-structure",
+      "title": "三幕式结构 · 经典戏剧法",
+      "file": "three-act-structure.md",
+      "category": "structure",
+      "summary": "亚里士多德 → Syd Field 的三幕式骨架。颗粒度粗，比 Save the Cat 自由，比英雄之旅简单。与其他结构互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 600,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "kishotenketsu"
+      ]
+    },
+    {
+      "id": "kishotenketsu",
+      "title": "起承转合 · 东亚四段结构",
+      "file": "kishotenketsu.md",
+      "category": "structure",
+      "summary": "东亚不依赖冲突的四段结构。适合日常系 / 治愈系 / 散文化网络小说。与西方结构互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4",
+        "novel.6"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure"
+      ],
+      "genreCompat": {
+        "recommended": ["farming", "sweet", "campus", "youth", "romance", "era_drama"],
+        "warnOnEnable": ["xianxia", "xuanhuan", "system", "rebirth", "urban_super"]
+      }
+    },
+    {
+      "id": "pixar-22-rules",
+      "title": "Pixar 22 条故事法则",
+      "file": "pixar-22-rules.md",
+      "category": "craft",
+      "summary": "Emma Coats 总结的 Pixar 内部 22 条故事法则。管角色 / 共情 / 反套路，与任意结构法正交。",
+      "injectsTo": [
+        "novel.1.2",
+        "novel.2",
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4",
+        "novel.6"
+      ],
+      "estimatedTokens": 800,
+      "conflictsWith": []
+    },
+    {
+      "id": "visual-dehydration",
+      "title": "视听语言脱水法 · 镜头化写作",
+      "file": "visual-dehydration.md",
+      "category": "craft",
+      "summary": "用影视剧本'洗稿'规则的正向化版本约束章节生成：心理戏外化 / 情绪→肢体 / 空间动线 / 环境白描 / 对话推进。⚠ 仅适合冷峻 / 影视改编向项目，会牺牲心理描写厚度，不要在心流 / 治愈 / 后宫向项目启用。",
+      "injectsTo": [
+        "novel.3.1",
+        "novel.3.2"
+      ],
+      "estimatedTokens": 350,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["mystery", "thriller", "reasoning", "cyberpunk", "dark_fantasy"],
+        "warnOnEnable": ["romance", "sweet", "palace", "youth", "farming"]
+      }
+    },
+    {
+      "id": "atu-301-rescue-quest",
+      "title": "ATU 301 · 救援奇幻骨架（七功能簇）",
+      "file": "atu-301-rescue-quest.md",
+      "category": "structure",
+      "summary": "Aarne-Thompson-Uther 301 型「被盗公主救援」骨架 + Propp 功能映射。七功能簇（破局→试炼→探入→对决→归来→确认→圆满）+ 三重法则 + 假英雄反转。⚠ 仅适合西幻屠龙 / 神话重述 / 救援型系统文 / 寻回任务等题材，不要在都市 / 现实 / 硬科幻上启用。与其他结构骨架互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 800,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu"
+      ],
+      "genreCompat": {
+        "recommended": ["fantasy", "dark_fantasy", "dnd", "xianxia", "xuanhuan", "wuxia"],
+        "incompatible": ["scifi", "cyberpunk"],
+        "warnOnEnable": ["urban", "workplace", "ceo", "sweet", "farming", "esports"]
+      }
+    },
+    {
+      "id": "plot-coherence-scaffold",
+      "title": "情节连贯性脚手架 · 反散架守则",
+      "file": "plot-coherence-scaffold.md",
+      "category": "craft",
+      "summary": "骨架之上的元规则：因果链硬律 + 角色状态跨章一致 + 伏笔必有回收 + 一致性 5 条校验 + 波浪式密度分布。防止 AI 长文写到后半段就人设漂移 / 伏笔遗忘 / 设定冲突。与任意结构骨架正交叠加，长篇项目强烈建议启用。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.2.3",
+        "novel.3.1",
+        "novel.3.2"
+      ],
+      "estimatedTokens": 550,
+      "conflictsWith": []
+    },
+    {
+      "id": "mbti-cognitive-functions",
+      "title": "MBTI · 认知功能派角色设计法（Beebe 八功能模型）",
+      "file": "mbti-cognitive-functions.md",
+      "category": "character",
+      "summary": "基于 John Beebe 八功能原型 + Grip/Loop 压力反应 + 阴影四功能的深度 MBTI 方法论。含 16 型 Grip/Loop 速查、5 种关系配对模式、反派三范式、三种弧线类型。⚠ 仅适合严肃文学 / 多主角群像 / 明显成长弧线项目，不要在爽文 / 快节奏网文上启用。与 `mbti-5step` 简化版互斥。",
+      "injectsTo": [
+        "novel.1.2"
+      ],
+      "estimatedTokens": 900,
+      "conflictsWith": [
+        "mbti-5step"
+      ],
+      "genreCompat": {
+        "recommended": ["history", "alt_history", "palace", "intrigue", "wuxia", "dark_fantasy", "era_drama"],
+        "warnOnEnable": ["system", "rebirth", "sweet", "fast_wear", "esports", "farming"]
+      }
+    },
+    {
+      "id": "mbti-16-archetype-cards",
+      "title": "MBTI 16 型角色档案速查卡（工业化量产包）",
+      "file": "mbti-16-archetype-cards.md",
+      "category": "character",
+      "summary": "档案参考型模块：16 型每型 5 字段速查（核心恐惧 / 欲望 / 经典形象 / 进阶技巧）+ 万能主角团 5–7 人 & 经典反派团 4 人配置配方 + 黑化简化公式（阴影=最鄙视类型）+ 5 大反刻板避坑硬律。与 `mbti-5step` 或 `mbti-cognitive-functions` 任一方法论模块正交叠加使用，提供可直接抄用的档案。",
+      "injectsTo": [
+        "novel.1.2"
+      ],
+      "estimatedTokens": 600,
+      "conflictsWith": []
+    },
+    {
+      "id": "supernatural-webfiction-pack",
+      "title": "超自然网文综合包（ATU 编码 + 三大类型本土化)",
+      "file": "supernatural-webfiction-pack.md",
+      "category": "craft",
+      "summary": "超自然题材专用工艺层模块。含 ATU 300–749 编码速查、D/H/C/N 四类母题三元结构（魔法物品三维赋值 / 契约条款-代价-违约 / 变形四触发 / 生死情感权重）、东方玄幻修仙境界 × 魔法学校年级 × 都市异能渐进渗透五层级三大本土化映射表、冲突升级模型、斐波那契元素调用频率。与任意结构骨架正交叠加，超自然题材强烈推荐启用。",
+      "injectsTo": [
+        "novel.1",
+        "novel.1.2",
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3"
+      ],
+      "estimatedTokens": 800,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "fantasy", "urban_super", "dark_fantasy", "thriller", "infinite", "dnd"],
+        "incompatible": ["scifi", "history", "reasoning", "workplace"],
+        "warnOnEnable": ["urban", "ceo", "sweet", "campus", "farming", "era_drama"]
+      }
+    },
+    {
+      "id": "seven-points-romance",
+      "title": "林赛·多兰 · 七要点情感弧线法（言情专用）",
+      "file": "seven-points-romance.md",
+      "category": "structure",
+      "summary": "Lindsay Doran 言情弧线 7 步：情感缺陷 → 意外相遇 → 吸引力 → 希望时刻(假高潮) → 重大挫折(由缺陷引爆) → 自我转变 → 情感圆满(重建不是复合)。解决 AI 写言情'工业糖精、没 CP 感、情感转折生硬'的痛点。⚠ 仅适合言情主线项目，与其他结构骨架互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu",
+        "atu-301-rescue-quest",
+        "twelve-step-mystery",
+        "truby-22-steps",
+        "harmon-story-circle"
+      ],
+      "genreCompat": {
+        "recommended": ["romance", "sweet", "ceo", "campus", "youth"],
+        "incompatible": ["mystery", "reasoning", "thriller", "apocalypse", "cyberpunk"],
+        "warnOnEnable": ["xianxia", "xuanhuan", "scifi", "history", "intrigue", "esports", "farming"]
+      }
+    },
+    {
+      "id": "twelve-step-mystery",
+      "title": "三宅隆太 · 日式悬疑 12 步法（悬疑/灵异专用）",
+      "file": "twelve-step-mystery.md",
+      "category": "structure",
+      "summary": "《咒怨》编剧三宅隆太的悬疑结构法：日常崩坏 → 规则建立 → 规则反转 → 关键线索公平前置 → 真相揭露 → 伪结局 → 最终反转 → 闭环结局。核心公式：悬念强度 = 信息差 × 反转密度。⚠ 仅适合悬疑 / 推理 / 灵异 / 怪谈 / 惊悚 项目，与其他结构骨架互斥。",
+      "genreCompat": {
+        "recommended": ["mystery", "reasoning", "thriller"],
+        "incompatible": ["sweet", "farming", "campus", "youth"],
+        "warnOnEnable": ["xianxia", "xuanhuan", "history", "romance", "esports"]
+      },
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 800,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu",
+        "atu-301-rescue-quest",
+        "seven-points-romance",
+        "truby-22-steps",
+        "harmon-story-circle"
+      ]
+    },
+    {
+      "id": "truby-22-steps",
+      "title": "约翰·特鲁比 · 22 步故事结构（深度人物驱动）",
+      "file": "truby-22-steps.md",
+      "category": "structure",
+      "summary": "迪士尼/华纳御用导师 John Truby 的 22 步法。核心：需求 ≠ 欲望；对手与主角共享同一欲望；两次自我揭露（伪装 + 真实）；结局画面与开场押韵。完美适配权谋 / 复仇 / 救赎 / 堕落弧。⚠ 仅适合人物驱动型长篇（≥ 20 万字），爽文 / 快节奏不适用。与其他结构骨架互斥。",
+      "genreCompat": {
+        "recommended": ["history", "palace", "intrigue", "alt_history", "wuxia", "dark_fantasy", "era_drama"],
+        "warnOnEnable": ["system", "rebirth", "sweet", "fast_wear", "esports", "farming"]
+      },
+      "injectsTo": [
+        "novel.1.2",
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4"
+      ],
+      "estimatedTokens": 900,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu",
+        "atu-301-rescue-quest",
+        "seven-points-romance",
+        "twelve-step-mystery",
+        "harmon-story-circle"
+      ]
+    },
+    {
+      "id": "world-building-9-pillars",
+      "title": "世界观九柱法（World Building 9 Pillars）",
+      "file": "world-building-9-pillars.md",
+      "category": "craft",
+      "summary": "世界观构建骨架模块（注入 novel.1.1）。9 柱结构：故事类型 / 顶层设计(表里二分+硬规则三条) / 势力格局 / 阶层结构 / 能力体系 / 揭示节奏规范 / 未解悬念表 / 金手指七字段 / 世界观禁忌清单。核心防错：开篇说明书、临时加设定、能力表现矛盾、悬念时机混乱。含题材简化映射（不同题材的必填柱清单）。玄幻/仙侠/异能/科幻/悬疑/权谋项目强烈推荐。",
+      "injectsTo": [
+        "novel.1.1"
+      ],
+      "estimatedTokens": 750,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "scifi", "cyberpunk", "fantasy", "dnd", "dark_fantasy", "apocalypse", "infinite", "alt_history", "intrigue"],
+        "warnOnEnable": ["sweet", "campus", "farming"]
+      }
+    },
+    {
+      "id": "systems-analysis-six",
+      "title": "系统分析六子系统（Six Systems Analysis）",
+      "file": "systems-analysis-six.md",
+      "category": "craft",
+      "summary": "世界观细化模块（注入 novel.1.1，与 world-building-9-pillars 正交叠加：9 柱管宏观骨架，本模块管微观运转）。来源：SKILL-010 项目圣经模板节录。六子系统：政治（权力结构+流转方式）/ 军事（架构+战斗等级+开战规则）/ 经济（货币锚定+资源分配+阶级流动）/ 商业（垄断+黑市+政商勾结）/ 金融（工具+杠杆+危机机制）/ 魔法或科技（能量来源+代价+硬性限制）。共 14 条编号硬律（S1.1–S6.3）+ 题材→必填子系统数量映射表 + 6 项写作前自检清单。核心理念：每条传动失灵的地方就是剧情冲突爆发的地方。权谋/宫斗/商战/科幻/末世/架空历史项目刚需。",
+      "injectsTo": [
+        "novel.1.1"
+      ],
+      "estimatedTokens": 600,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["scifi", "cyberpunk", "apocalypse", "system", "urban_super", "infinite", "palace", "intrigue", "alt_history", "history"],
+        "warnOnEnable": ["sweet", "campus", "youth", "farming", "romance"]
+      }
+    },
+    {
+      "id": "snowflake-method-7steps",
+      "title": "雪花写作法 · 立项收紧七步（Snowflake Method）",
+      "file": "snowflake-method-7steps.md",
+      "category": "craft",
+      "summary": "立项阶段「先收紧再展开」硬律模块（注入 novel.1 立意 + novel.1.2 人物）。来源：Randy Ingermanson 1998 国际经典。核心：一句话故事≤25字硬律(主角+核心冲突+关键行动) / 五句话骨架(背景+冲突+灾难1+灾难2+最终危机)+灾难三作用(情绪刺激/逼决定/推新阶段) / 人物5问法(是谁/想要/阻碍/价值观/改变) / 4类冲突主轴 / 7步层层放大流程 / 立项前5项自检。在结构骨架(9选1)之前生效，正交叠加不冲突。与 character-three-elements-method 双开互补(5问法定方向，三要素法定细节)。新手项目/长篇连载/卷重启项目通用推荐。",
+      "injectsTo": [
+        "novel.1",
+        "novel.1.2"
+      ],
+      "estimatedTokens": 500,
+      "conflictsWith": []
+    },
+    {
+      "id": "webfiction-pacing-pack",
+      "title": "爽文/网文节奏全家桶（Webfiction Pacing Pack）",
+      "file": "webfiction-pacing-pack.md",
+      "category": "craft",
+      "summary": "爽文/网文专用节奏与爽点设计模块。注入 novel.2（结构分卷应用宏观五阶段）+ novel.3.1/3.2（章节草稿应用单章5段式）。核心：黄金前三章5必备+6禁忌 / 单章5段式爽点结构(开篇10%+蓄力30%+爆发35%+反应15%+钕10%) / 长篇5阶段宏观节奏(开篇立势→悬念铺陈→高潮密集→余韵收束→终章余波) / 情绪5类型频率管理 / 爽点3级优先级+4步公式(触发→蓄力→爆发→延伸) / 4类场景对话密度+5种钩子技巧 / 章节收尾4钩+4禁忌 / 11条爽文专属语言禁区 / 章末6项自检。爽文/网文/系统流/重生/穿越/修仙/都市异能/玄学捉鬼强烈推荐。",
+      "injectsTo": [
+        "novel.2",
+        "novel.3.1",
+        "novel.3.2"
+      ],
+      "estimatedTokens": 850,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "urban_super", "system", "rebirth", "fast_wear", "esports", "infinite", "wuxia"],
+        "warnOnEnable": ["history", "palace", "romance", "youth", "era_drama", "reasoning"]
+      }
+    },
+    {
+      "id": "three-density-review",
+      "title": "三密度审查法（孤岛/密室/封闭空间悬疑专用）",
+      "file": "three-density-review.md",
+      "category": "craft",
+      "summary": "来源：听花岛 v1.0 三密度标准化模版。单章审查硬律：剧情密度（每章≥1不可逆事件+≥2转折+结尾钩子+孤岛2章打破规则）+ 信息密度（台词双重含义+答案前置+线索100%回收+谎言必有破绰）+ 情绪密度（情绪积累不爆发+2种对立情绪+恐惧四层递进+余震处理）。三密度协同铁律：每关键事件必须同时推剧情+传信息+激情绪，缺一重写。章末 LLM 自动产出【本章密度自检】。与 `twelve-step-mystery` 极强互补（12步管宏观骨架，本模块管每章质量）。孤岛/密室/规则怪谈/本格推理强烈推荐。",
+      "injectsTo": [
+        "novel.3.1",
+        "novel.3.2"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [],
+      "genreCompat": {
+        "recommended": ["mystery", "reasoning", "thriller"],
+        "incompatible": ["sweet", "farming", "esports"],
+        "warnOnEnable": ["xianxia", "xuanhuan", "fantasy", "campus", "romance"]
+      }
+    },
+    {
+      "id": "anti-ai-flavor",
+      "title": "祛 AI 味 · 人类叙事黄金法则",
+      "file": "anti-ai-flavor.md",
+      "category": "craft",
+      "summary": "章节生成期的反 AI 文风硬律（加毛刺路线）。含 AI 文本 9 大特征诊断 + 8 大反 AI 技法（句式破壁 / 对话真实化 / 无意义细节 / 模糊语言 / 情绪回旋 / 叙述距离呼吸 / 高频句式黑名单 / 地域细节）+ 每千字使用频率量化表 + 7 条章节自检清单。与 `visual-dehydration`（减法路线）互为加减两路，可共存互补或某章择一。几乎所有小说项目都应启用。",
+      "injectsTo": [
+        "novel.3.1",
+        "novel.3.2"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": []
+    },
+    {
+      "id": "character-three-elements-method",
+      "title": "立体人物三要素法（外表+欲望+弱点 + 生长哲学 + 5 古风 demo）",
+      "file": "character-three-elements-method.md",
+      "category": "character",
+      "summary": "人物设计教学 + 范本型模块。核心公式=外表(反差+历史/处境/创伤) + 欲望(表层/中层/深层三层) + 弱点(模式不是标签)。含四级压力递进公式 + 一句话激活 logline + 三类冲突×角色暴露对照 + 故事弧线四阶段自发生成模型 + 5 古风完整 demo + 5 条避坑指南。心法：别把大纲当圣经，把角色当活人。与 MBTI 系列正交，与 `truby-22-steps` 强协同（本法=Truby 轻量版）。古风/武侠/权谋项目强烈推荐。",
+      "injectsTo": [
+        "novel.1.2"
+      ],
+      "estimatedTokens": 1050,
+      "conflictsWith": []
+    },
+    {
+      "id": "harmon-story-circle",
+      "title": "丹·哈蒙 · 故事圈 8 步闭环（单元剧/连载专用）",
+      "file": "harmon-story-circle.md",
+      "category": "structure",
+      "summary": "《瑞克和莫蒂》主创 Dan Harmon 的闭环结构。8 步 A→B→C→D→E→F→G→H 形成圆形叙事，上下半圈镜像对称（A↔H / B↔G / C↔F / D↔E）。每个单元（章/卷/集）都是完整闭环。长篇嵌套：大圈套小圈。⚠ 适合单元剧 / 日更网文 / 多案件 / 番剧式连载。与其他结构骨架互斥。",
+      "injectsTo": [
+        "novel.2.1",
+        "novel.2.2",
+        "novel.3",
+        "novel.4",
+        "novel.6"
+      ],
+      "estimatedTokens": 700,
+      "conflictsWith": [
+        "save-the-cat-15beats",
+        "heros-journey-12stages",
+        "three-act-structure",
+        "kishotenketsu",
+        "atu-301-rescue-quest",
+        "seven-points-romance",
+        "twelve-step-mystery",
+        "truby-22-steps"
+      ]
+    }
+  ]
+}

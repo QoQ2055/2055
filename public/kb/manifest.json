@@ -1,0 +1,149 @@
+{
+  "version": "1.0",
+  "source": "ShadowScript影语 (abandoned, 2026-04 snapshot)",
+  "items": [
+    {
+      "id": "anti_ai_flavor_registry",
+      "title": "去 AI 味注册表",
+      "file": "anti_ai_flavor_registry.md",
+      "category": "writing",
+      "summary": "中英 AI 体禁词表 + 散文工艺四则 + 对白 6 硬约束 + 11 项自检清单。剧本/台词/分镜画面文字必读。"
+    },
+    {
+      "id": "style_library",
+      "title": "视觉风格库（30 种）",
+      "file": "style_library.md",
+      "category": "visual",
+      "summary": "电影/吉卜力/赛博朋克 等 30 种预设，含中文描述 + 英文 Prompt 后缀；用于资产卡 aiPrompt 末尾追加。"
+    },
+    {
+      "id": "camera_motion_library",
+      "title": "运镜术语库（117 种）",
+      "file": "camera_motion_library.md",
+      "category": "shot",
+      "summary": "117 种运镜中英对照 + 情绪映射；分镜 prompt 工业化必备。"
+    },
+    {
+      "id": "combat_three_act_template",
+      "title": "打斗三幕式模板",
+      "file": "combat_three_act_template.md",
+      "category": "combat",
+      "summary": "Setup→Action→Reaction 三幕拆解 + 物理锚点 + 时长占比 + 慢快对比。武戏单元 prompt 强化用。"
+    },
+    {
+      "id": "combat_camera_lock",
+      "title": "打斗相机锁定铁律",
+      "file": "combat_camera_lock.md",
+      "category": "combat",
+      "summary": "动作匹配切镜 / 视线匹配 / 屏幕方向锁定 + 末尾矢量声明。打斗段连续性必读。"
+    },
+    {
+      "id": "quality_motion_boosters",
+      "title": "质量增强词库",
+      "file": "quality_motion_boosters.md",
+      "category": "shot",
+      "summary": "段落类型 × 质量增强词矩阵 + 6 类负面词。分镜 prompt 末尾自动注入。"
+    },
+    {
+      "id": "ai_emotion_expression_prompts",
+      "title": "情绪表情 FACS 三维对照",
+      "file": "ai_emotion_expression_prompts.md",
+      "category": "shot",
+      "summary": "14 种情绪 × 强度梯度 × FACS AU + 过渡序列 + 配套负面词。Seedance prompt 灵魂层。"
+    },
+    {
+      "id": "key_storyboard_engine",
+      "title": "关键分镜图引擎",
+      "file": "key_storyboard_engine.md",
+      "category": "shot",
+      "summary": "图→视频参考帧协议（双系统定位 / 数据结构 / 质检 / 打斗加速）。分镜阶段强化。"
+    },
+    {
+      "id": "prop_design_mastery",
+      "title": "道具设计方法论",
+      "file": "prop_design_mastery.md",
+      "category": "asset",
+      "summary": "道具三重身份 / 伏笔三步法 / 材质 8 类 / 状态演变。资产引擎深化。"
+    },
+    {
+      "id": "adaptation_genre_strategy",
+      "title": "类型化改编策略（6 类速查）",
+      "file": "adaptation_genre_strategy.md",
+      "category": "adaptation",
+      "summary": "玄幻/都市/言情/悬疑/科幻/重生 六类型的「必保留/必删除/必强化」清单 + 重生题材专属处理 + 5 大致命错误 + 5 大核心原则。仅改编模式注入。",
+      "adaptationOnly": true
+    },
+    {
+      "id": "adaptation_compression",
+      "title": "改编压缩 5 策略",
+      "file": "adaptation_compression.md",
+      "category": "adaptation",
+      "summary": "冲突合并 / 时间跳跃 / 信息前置 / 删繁就简 / 支线取舍 五策略 + 心理转动作三选一 + 必删/必留清单。仅改编模式注入。",
+      "adaptationOnly": true
+    },
+    {
+      "id": "adaptation_ip_risk",
+      "title": "IP / 合规风险扫描清单",
+      "file": "adaptation_ip_risk.md",
+      "category": "adaptation",
+      "summary": "UCR57 版权 / 肖像 / 涉政 / 未成年 / 平台 5 维度扫描 + ipRiskCheck PASS/WARN/FAIL 决策表。仅改编模式 R9' 注入。",
+      "adaptationOnly": true
+    },
+    {
+      "id": "audio_db_reference",
+      "title": "音频参考标准（dB / AUDIO_REFS）",
+      "file": "audio_db_reference.md",
+      "category": "audio",
+      "summary": "音类 10 层 dB 表 + 6 题材 AUDIO_REFS 模板 + 同步规则 + 主题铺底特许 + 强制音频声明模板。分镜单元音量数值有据可依。"
+    },
+    {
+      "id": "cinematography_terms",
+      "title": "摄影语言词典（景别 / 焦段 / 升格 / 轴线）",
+      "file": "cinematography_terms.md",
+      "category": "shot",
+      "summary": "9 标准景别 + 焦段-景别强匹配 + 慢动作场景库 + 微表情题材变体（含光比 / 光向 / 反光质感）+ 5 类轴线词典。与「运镜术语库」互补，聚焦数值化要素。"
+    },
+    {
+      "id": "genre_taxonomy_and_taboos",
+      "title": "题材体系与禁忌库",
+      "file": "genre_taxonomy_and_taboos.md",
+      "category": "writing",
+      "summary": "10 一级题材 + 9 子风格 + 5 维度落幅末状态变体表 + 9 题材专属禁忌 + 6 子风格技法库。题材锚点全栈参考。"
+    },
+    {
+      "id": "numerical_anchors",
+      "title": "数值规范与触发阈值",
+      "file": "numerical_anchors.md",
+      "category": "shot",
+      "summary": "身高 / 速度 / 距离 / 慢动作倍率 / 能量百分比上下界 + 拍数升级阈值（话轮 / 信息揭示 / 情绪转折）+ metrics 数据源 5 级优先级。防止离谱数值。"
+    },
+    {
+      "id": "storyboard_workflow_norms",
+      "title": "分镜工作流规范（TODO / 字数压缩）",
+      "file": "storyboard_workflow_norms.md",
+      "category": "workflow",
+      "summary": "13 类 @TODO_ 占位命名规范 + 8 步字数压缩优先级 + 5 角色版本输出表 + 字数分级自检状态。素材未就绪 / COPY 超字数时的标准操作。"
+    },
+    {
+      "id": "storyboard_pro_mode",
+      "title": "分镜进阶（高精度）模式参考",
+      "file": "storyboard_pro_mode.md",
+      "category": "shot",
+      "summary": "翻译器哲学下的两阶段流水线进阶约束：META / AUDIO_REFS / SCENE_HEADER / PARA.metrics / UNIT 字段扩展 + Must-not / 焦段 / 5 维度落幅 + 自检触发器 T21-T28。pro/standard 模式可热切换。"
+    },
+    {
+      "id": "genre_to_av_signature_mapping",
+      "title": "原子题材 → 视听签名 映射表",
+      "file": "genre_to_av_signature_mapping.md",
+      "category": "writing",
+      "summary": "30 原子题材（projectTaxonomy.ts.GENRES）→ 10 视听签名（audiovisualSignature）的默认映射表 + N→1 折叠优先级链 + 子风格反向触发规则。解决「用户输入维度」与「下游分镜维度」的对接。"
+    },
+    {
+      "id": "unit_copy_template",
+      "title": "单元 COPY 区字段排版模板（11 字段 + 多题材对照）",
+      "file": "unit_copy_template.md",
+      "category": "shot",
+      "summary": "Phase E-G 单元 prompt 的 11 字段固定排版（锚点/时序/Must-Show/Must-not/相机/微表情/音频/强制音频声明/强制声明（视觉）/起幅落幅/落幅末状态）+ @Audio1/@Audio2 双通道完整模板（O.S./V.O./拟声词/电话/群戏边界）+ 相机五行硬模板 + 强制声明（视觉）10 题材 + 子风格 8 项追加 + 13 条排版自检触发器 TPL-1~13。"
+    }
+  ]
+}
