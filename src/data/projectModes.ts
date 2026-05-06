@@ -60,9 +60,9 @@ export const MODE_ORIGINAL: ProjectModeMeta = {
   defaultRoute: '/screenplay',
   navItems: [
     { key: 'screenplay', to: '/screenplay', label: '剧本工作台 (S1-S8)', icon: 'FileText' },
-    { key: 'assets',     to: '/assets',     label: '资产工作台',          icon: 'Box' },
-    // 「流水线总览」入口已移除：其功能与「新建项目」向导里的完整流程重复，
-    // 用户在创建项目后会被引导到对应工作台。/pipeline 路由仍保留, 可通过 URL 访问。
+    // 「资产工作台」入口从侧栏移除：本身在剧本工作台内部的「镜像到 screenplay.7 跳资产」
+    // 按钮与 Express 页「资产工作台」入口中可达，不需侧栏重复提供。/assets 路由仍保留。
+    // 「流水线总览」入口已移除：其功能与「新建项目」向导里的完整流程重复。
   ],
 };
 
@@ -78,10 +78,10 @@ export const MODE_ADAPTATION: ProjectModeMeta = {
   stages: ['screenplay', 'adapt', 'assets', 'storyboard'],
   defaultRoute: '/intake',
   navItems: [
-    { key: 'intake',   to: '/intake',   label: '原作摄入 (S0)',     icon: 'BookCopy' },
-    { key: 'adapt',    to: '/adapt',    label: '改编工作台 (A1-A6)', icon: 'FileText' },
-    { key: 'assets',   to: '/assets',   label: '资产工作台',         icon: 'Box' },
-    // 「流水线总览」入口已移除 (同 MODE_ORIGINAL 注释)
+    // 原作摄入 (S0) / 改编工作台 (A1-A6) / 资产工作台 均本属于同一改编流水线，
+    // 依靠页面内部依次导航（defaultRoute=/intake → 摄入页「完成后进入改编」链接→
+    // 改编工作台内「镜像到 screenplay.7 跳资产」按钮），依赖在页面内已完备，所以侧栏
+    // 不重复列出三个独立条目。路由本身仍保留，可通过 URL / 席位跳转访问。
   ],
 };
 
