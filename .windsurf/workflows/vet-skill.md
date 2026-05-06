@@ -47,6 +47,24 @@ description: 评估 LobeHub / 任何外部 skill 的标准化 vetting 流程 —
 
 ---
 
+## Step 3.5 · Source reputation check · 客观信号
+
+借鉴 Vercel Labs `find-skills` SKILL.md (commit `eec87fd4`) 的客观质量标准。**这是辅助信号，不替代红旗扫描** —— 高信誉源也可能踩反模式（同 Anthropics 出 skill 也得 vet）。
+
+| 维度 | 阈值 / 信号 | 影响 |
+|---|---|---|
+| **Author 信誉** | 已知 org（vercel-labs / anthropics / microsoft / google / openai）→ +信任；个人 / 无名 org → 中性；与本仓 anti-pattern 列表里出现的 author（如 openclaw 主线）→ -信任 | VFM 总分 ±10 |
+| **Install count** | ≥ 1K → 信任 / 100-1K → 中性 / < 100 → skeptical | VFM 总分 ±5 |
+| **GitHub stars**（如可见） | ≥ 100 → 信任 / < 100 → skeptical（除非作者本身已知 org）| VFM 总分 ±5 |
+| **Pin commit / 版本** | 用户提供 pinned commit（如 `eec87fd4...`）→ +信任（防漂移意识）；URL 指 master / main → 中性 | 影响 fetch 的 reproducibility |
+
+**反模式提醒**：
+- ❌ **不要因为 "100K+ installs" 就跳过红旗扫描** —— 流行度不是安全凭证
+- ❌ **不要单凭信誉源就装载** —— Vercel/Anthropics 也可能给出引导你跑 `npx -y` 的 skill
+- ✅ 信誉源用于**调整 VFM 总分 ±20 分上限**，绝不让它决定生死
+
+---
+
 ## Step 4 · 内容质量评估（仅在无 🔴 时执行）
 
 读 1-3 个最相关 chunk（不超过 3 个，VFM 节省 token）：
