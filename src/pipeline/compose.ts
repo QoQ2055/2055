@@ -168,7 +168,7 @@ const ADAPTATION_SCREENPLAY_ADDENDUM = `
  * - 静态 KB 已覆盖的节点（screenplay / storyboard / assets / adapt），暂不重复注入
  *   用户 KB 即使绑定也只生效在 novel.* 节点（小说流程是 v2 主战场）
  */
-function userKbTypesForNode(nodeId: string): UserKbDocType[] {
+export function userKbTypesForNode(nodeId: string): UserKbDocType[] {
   // 仅对 novel.* 流程启用用户 KB 注入（v2 一期范围）
   if (!nodeId.startsWith('novel.')) return [];
 
@@ -257,7 +257,7 @@ function shouldInjectCreationConstraints(stageId: StageId, step: ManifestStep): 
  *   - 仅当 ctx.genres 非空且至少一个题材有 anchor 配置
  *   - 仅对叙事正文创作节点 + 创作规划节点（不含 JSON 输出与编辑部裁决）
  */
-function buildGenreAnchorPreamble(genres: string[] | undefined): string {
+export function buildGenreAnchorPreamble(genres: string[] | undefined): string {
   if (!genres || genres.length === 0) return '';
   const anchors = genres
     .map((v) => ({ value: v, label: findGenre(v)?.label ?? v, anchor: findGenreAnchor(v) }))

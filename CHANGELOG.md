@@ -10,6 +10,63 @@
 
 ## [Unreleased] · v2 阶段 2.x（2026-05）
 
+### 阶段 2.8 · 诊断 → 一键修改闭环（修复路径接入项目知识层）
+
+**动机**：之前 `runIssueFix` / `runFixAllIssues` / `runHybridFix` 三个修复函数都只看
+"产物原文 + issue 列表"，**完全不注入** KB / 题材锚点 / 方法论模块 / R1 指令书——
+跟生成阶段（compose.ts）走完整三层注入是**严重不对称**的，典型表现：修复后产物
+可能违反题材 mustAvoid，或丢失启用方法论模块要求的结构。同时 Screenplay 八步
+工作台只有诊断展示（DoctorVerdict）、缺一键修改入口；章节预览的纯前端校验也只
+展示问题，不触发 LLM 修订。
+
+**改动**：
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\fixContext.ts` — 新建。
+  导出 `buildFixContextPreamble(opts)`，按节点 + 项目状态拼装修复专用 system 前导：
+  R1' compact 指令书 → 静态 KB → 用户 KB → 题材锚点 → 方法论模块。复用 compose.ts
+  里既有的 `loadKbForNode` / `loadMethodModulesForNode` / `buildGenreAnchorPreamble` /
+  `userKbTypesForNode`（后两者本次顺手 export 出来），不重复造轮子。
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\selfCheck.ts` /
+  `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\hybridFix.ts` —
+  三个修复函数（`runIssueFix` / `runFixAllIssues` / `runHybridFix`）都新增可选
+  `extraSystemPreamble?: string` 参数；存在时拼接在原 system 之前。
+  **后向兼容**：参数可选，老调用方零改动。
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\SelfCheckPanel.tsx` —
+  迭代修复开始时一次性构建 preamble，全轮复用（项目上下文不变）；每轮 `runHybridFix`
+  调用都带上。任何用 SelfCheckPanel 的页面（Pipeline / Screenplay）都自动受益。
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx` —
+  把 doctor report 从本地 state（`doctorByNode`）迁到 `artifact.meta.selfCheck`
+  （与 Pipeline 页对齐），用 `<SelfCheckPanel>` **完全替代** `<DoctorVerdict>`。
+  收益：八步剧本工作台现在每一步都有完整的"诊断 → 多轮迭代修复 → 守门 → 预览 → 应用 → 回滚"闭环。
+  删除 deprecated `DoctorVerdict` 函数（约 40 行死代码）。
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ChapterValidationPanel.tsx` —
+  新增可选三件套 props：`nodeId` / `chapterTitle` / `onApplyRevised`。同时给齐时显示
+  "🪄 AI 一键修订（N 项）"按钮：内部把 `ValidationIssue[]` 转成 `SelfCheckIssue[]`，
+  构造临时 `NodeArtifact`，调 `buildFixContextPreamble + runFixAllIssues`，流式展示
+  字数进度，完成后通过回调写回章节。**纯前端规则 + LLM 修订**首次形成闭环。
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Novel.tsx` — 章节预览面板
+  调用上面新增的 props，复用现有 `handleRefineApply`（自动入 Dexie 撤销栈），
+  AI 修订与 6 件套润色共享同一份 undo 持久化机制。
+
+**未做（明确不在范围）**：
+
+- **Refinery 页面**：本身就是修复工具（6 件套润色），无独立的"诊断"环节，复用现有 UX 即可。
+- **Analyzer 页面**：拆书产出结构化报告，不是创作产物，没有"诊断 → 修复"的语义。
+- **Express 页面**：已有 `ScreenplayDoctorPanel` 闭环，不重复；后续可考虑统一到 fixContext。
+- **`runDoctorRewrite`（screenplayDoctor.ts）注入 fixContext**：剧本医生是独立的
+  二阶段工艺（diagnose + rewrite），与 selfCheck 的 patch 路径不重叠；下轮再统一。
+
+**验证**：`npx vite build` ✓ 1912 modules / 2.98s。
+TypeScript 严格类型通过；现有 6 处 pre-existing StageId 警告（`invalidateFrom` 参数
+类型窄于 StageId）不在本次范围，未顺手修。
+
+---
+
 ### 阶段 2.7 · 全仓 simplify 扫描（dead-code elimination）
 
 **动机**：一年多迭代下来，部分早期脚手架函数 / 调试工具 / 兼容映射已经没人调用，

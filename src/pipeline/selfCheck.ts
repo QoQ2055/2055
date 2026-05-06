@@ -255,6 +255,9 @@ export interface IssueFixOptions {
   settings: SettingsState;
   signal?: AbortSignal;
   onDelta?: (chunk: string, full: string) => void;
+  /** 可选：项目知识层 preamble（KB / 题材锚点 / 方法模块 / R1 指令书）。
+   *  存在则拼接在修复 system 之前，让 LLM 在最小化修订时也遵守项目硬律。 */
+  extraSystemPreamble?: string;
 }
 
 export interface IssueFixResult {
@@ -270,12 +273,12 @@ export interface IssueFixResult {
  * 关键约束: 返回完整产物原文, 仅在 locator 指向区域改动, 其它部分逐字保留.
  */
 export async function runIssueFix(opts: IssueFixOptions): Promise<IssueFixResult> {
-  const { artifact, issue, settings, signal, onDelta } = opts;
+  const { artifact, issue, settings, signal, onDelta, extraSystemPreamble } = opts;
 
   // 根据 issue 关键词推断改动范围, 给 LLM 更具体的边界提示
   const issueHint = inferIssueHint(issue, artifact.nodeId);
 
-  const sys = [
+  const sysCore = [
     '你是一名严谨的内容修订员, 对一份已有的产物按"单点诊断"做**外科手术式修订**.',
     '',
     '## 核心原则',
@@ -301,6 +304,7 @@ export async function runIssueFix(opts: IssueFixOptions): Promise<IssueFixResult
     '从产物第一字符到最后一字符的完整文本, 不带前后说明.',
     '**绝大多数字符应当与原文完全一致**, 仅 issue 指向区域有差异.',
   ].join('\n');
+  const sys = extraSystemPreamble ? extraSystemPreamble + '\n\n' + sysCore : sysCore;
 
   const issueLines = [
     `- 严重度: ${issue.severity}`,
@@ -360,6 +364,9 @@ export interface FixAllOptions {
   settings: SettingsState;
   signal?: AbortSignal;
   onDelta?: (chunk: string, full: string) => void;
+  /** 可选：项目知识层 preamble（KB / 题材锚点 / 方法模块 / R1 指令书）。
+   *  存在则拼接在修复 system 之前，让 LLM 在批量修订时也遵守项目硬律。 */
+  extraSystemPreamble?: string;
 }
 
 /**
@@ -367,12 +374,12 @@ export interface FixAllOptions {
  * 与 runIssueFix 的区别: 不再要求"只改一处", 而是要求"逐条对照, 一次修完".
  */
 export async function runFixAllIssues(opts: FixAllOptions): Promise<IssueFixResult> {
-  const { artifact, issues, settings, signal, onDelta } = opts;
+  const { artifact, issues, settings, signal, onDelta, extraSystemPreamble } = opts;
 
   // info 级一般是建议性提示, 不强制修
   const actionable = issues.filter((i) => i.severity !== 'info');
 
-  const sys = [
+  const sysCore = [
     '你是一名严谨的内容修订员, 一次性修复一份产物里的多条诊断 issue.',
     '',
     '## 核心原则',
@@ -388,6 +395,7 @@ export async function runFixAllIssues(opts: FixAllOptions): Promise<IssueFixResu
     '## 输出',
     '从产物第一字符到最后一字符的完整文本, 不带前后说明.',
   ].join('\n');
+  const sys = extraSystemPreamble ? extraSystemPreamble + '\n\n' + sysCore : sysCore;
 
   const issueBlocks = actionable.map((iss, i) => {
     const lines = [

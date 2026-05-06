@@ -10,14 +10,15 @@ import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
 import clsx from 'clsx';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
-import { runTargetedSelfCheck, type SelfCheckResult } from '../pipeline/selfCheck';
+import { runTargetedSelfCheck, type SelfCheckReport } from '../pipeline/selfCheck';
+import { SelfCheckPanel } from '../components/SelfCheckPanel';
 import { computeStepConstraints, type Constraint } from '../pipeline/constraints';
 import {
   R1_NODE_ID, R9_NODE_ID, runR1Directive, runR9Verdict, parseR9,
 } from '../pipeline/editorial';
 import { S0_NODE_ID } from '../pipeline/intake';
-import type { Manifest, ManifestStep, NodeArtifact, NodeStatus, StageId } from '../pipeline/types';
-import { useSettings } from '../store/settings';
+import type { ArtifactMap, Manifest, ManifestStep, NodeArtifact, NodeStatus, StageId } from '../pipeline/types';
+import { useSettings, type SettingsState } from '../store/settings';
 import { useProject } from '../store/project';
 import { MarkdownView } from '../components/MarkdownView';
 
@@ -78,7 +79,8 @@ export function Screenplay(props: ScreenplayProps = {}) {
   const [statuses, setStatuses] = useState<Record<string, NodeStatus>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [editing, setEditing] = useState<Record<string, string | null>>({}); // nodeId → draft (or null = view)
-  const [doctorByNode, setDoctorByNode] = useState<Record<string, SelfCheckResult>>({});
+  // doctor report 现在存于 artifact.meta.selfCheck（与 Pipeline 页一致）；
+  // 本地只保留 busy 状态用于 Action bar “自检”按钮的 spinner。
   const [doctorBusy, setDoctorBusy] = useState<Record<string, boolean>>({});
   const abortRef = useRef<AbortController | null>(null);
   const [chainBusy, setChainBusy] = useState(false);
@@ -264,7 +266,9 @@ export function Screenplay(props: ScreenplayProps = {}) {
     setDoctorBusy((b) => ({ ...b, [step.id]: true }));
     try {
       const res = await runTargetedSelfCheck({ artifact, settings });
-      setDoctorByNode((m) => ({ ...m, [step.id]: res }));
+      // 写入 artifact.meta.selfCheck（与 Pipeline 一致），SelfCheckPanel 可直接读取并提供修复闭环。
+      const nextMeta = { ...(artifact.meta ?? {}), selfCheck: res.report ?? undefined };
+      project.upsertArtifact({ ...artifact, meta: nextMeta });
     } catch (e: any) {
       setErrors((er) => ({ ...er, [step.id]: '自检失败：' + (e.message ?? e) }));
     } finally {
@@ -482,8 +486,23 @@ export function Screenplay(props: ScreenplayProps = {}) {
             stepLabel={stepLabel}
             totalSteps={totalSteps}
             editing={editing[activeStep.id] ?? null}
-            doctor={doctorByNode[activeStep.id]}
+            report={(project.artifacts[activeStep.id]?.meta as any)?.selfCheck as SelfCheckReport | undefined}
             doctorBusy={!!doctorBusy[activeStep.id]}
+            allArtifacts={project.artifacts}
+            settings={settings}
+            onSelfCheckUpdate={(report) => {
+              const a = project.artifacts[activeStep.id];
+              if (!a) return;
+              const nextMeta = { ...(a.meta ?? {}), selfCheck: report ?? undefined };
+              project.upsertArtifact({ ...a, meta: nextMeta });
+            }}
+            onArtifactPatch={(content) => {
+              const a = project.artifacts[activeStep.id];
+              if (!a) return;
+              project.upsertArtifact({ ...a, content });
+              project.invalidateFrom(stageId, activeStep.index + 1);
+              project.setPassed(activeStep.id, false);
+            }}
             durationMin={project.ctx.durationMin}
             onRun={() => runOne(activeStep).catch(() => {})}
             onRunFrom={() => runFrom(activeStep.index)}
@@ -540,8 +559,12 @@ interface StepPaneProps {
   stepLabel?: string;
   totalSteps?: number;
   editing: string | null;
-  doctor?: SelfCheckResult;
+  report?: SelfCheckReport;
   doctorBusy: boolean;
+  allArtifacts: ArtifactMap;
+  settings: SettingsState;
+  onSelfCheckUpdate: (report: SelfCheckReport | null) => void;
+  onArtifactPatch: (newContent: string) => void;
   durationMin: number;
   onRun: () => void;
   onRunFrom: () => void;
@@ -639,9 +662,16 @@ function StepPane(p: StepPaneProps) {
         </div>
       )}
 
-      {/* Self-check verdict */}
-      {p.doctor && (
-        <DoctorVerdict r={p.doctor} />
+      {/* Self-check verdict + 一键修改闭环 */}
+      {p.artifact && (
+        <SelfCheckPanel
+          artifact={p.artifact}
+          settings={p.settings}
+          contextArtifacts={p.allArtifacts}
+          report={p.report}
+          onReportUpdate={p.onSelfCheckUpdate}
+          onArtifactPatch={p.onArtifactPatch}
+        />
       )}
 
       {/* Output / Editor */}
@@ -727,46 +757,6 @@ function ConstraintChip({ c }: { c: Constraint }) {
       <span className="font-mono">{c.actual}{c.unit ?? ''}</span>
       {range && <span className="text-zinc-500">/ {range}{c.unit ?? ''}</span>}
     </span>
-  );
-}
-
-function DoctorVerdict({ r }: { r: SelfCheckResult }) {
-  if (r.report) {
-    const j = r.report;
-    const verdict = j.verdict ?? 'unknown';
-    const tone = verdict === 'pass' ? 'emerald' : verdict === 'warn' ? 'amber' : 'rose';
-    return (
-      <div className="card p-4 space-y-2">
-        <div className="flex items-center gap-2">
-          <Stethoscope className="size-4 text-brand-400" />
-          <strong className="text-sm">医生诊断</strong>
-          <Badge tone={tone}>{verdict.toUpperCase()}</Badge>
-          <span className="text-xs text-zinc-500 ml-auto">{Math.round(r.durationMs)}ms</span>
-        </div>
-        {j.summary && <p className="text-sm text-zinc-300">{j.summary}</p>}
-        {j.issues && j.issues.length > 0 && (
-          <ul className="text-xs space-y-1.5 mt-1">
-            {j.issues.map((it: any, i: number) => (
-              <li key={i} className="flex gap-2">
-                <Badge tone={it.severity === 'critical' ? 'rose' : it.severity === 'major' ? 'amber' : 'sky'}>
-                  {it.severity}
-                </Badge>
-                <span className="text-zinc-300">
-                  <strong className="text-zinc-100">{it.tag}</strong> · {it.detail}
-                  {it.suggestion && <em className="text-zinc-500"> — 建议：{it.suggestion}</em>}
-                </span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    );
-  }
-  return (
-    <details className="card p-3 text-xs">
-      <summary className="cursor-pointer text-zinc-400">医生原始输出（无法解析为 JSON）</summary>
-      <pre className="mt-2 whitespace-pre-wrap font-mono text-zinc-300">{r.raw}</pre>
-    </details>
   );
 }
 

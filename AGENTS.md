@@ -1,6 +1,6 @@
 # AGENTS.md · cineforge-web 协作者导航
 
-> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.7`
+> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.8`
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
 > README.md 面向部署 / 演示，AGENTS.md 面向写代码。
 
@@ -178,6 +178,8 @@ src/
 | 新增题材锚点 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\data\projectTaxonomy.ts` 的 `GENRE_ANCHORS` |
 | 调整 V4 Thinking strategy 默认 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\runner.ts` |
 | 项目导入 / 导出格式 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts`（FLIL_SCHEMA） |
+| 调整修复期注入的知识层（KB / 题材锚点 / R1 / 方法论） | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\fixContext.ts` |
+| 给 SelfCheckPanel 之外的页面接"诊断 → 修复"闭环 | 参考 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ChapterValidationPanel.tsx`（构造临时 NodeArtifact + buildFixContextPreamble + runFixAllIssues） |
 
 ---
 
@@ -235,6 +237,7 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 - **2.5** 拆书两阶段法（Stage 1 框架扫描 → 用户复核 → Stage 2 深度方法论）
 - **2.6** 润色撤销栈持久化（Dexie v4 `liveRefinementUndo` 表）
 - **2.7** 全仓 simplify 扫描（删除 14 处死代码）
+- **2.8** 诊断 → 一键修改闭环（修复路径接入 KB / 题材锚点 / 方法论 / R1 指令书；Screenplay 接 SelfCheckPanel；章节校验加 AI 一键修订）
 
 ---
 

@@ -8,16 +8,23 @@
  * 依赖纯前端规则（src/pipeline/chapterValidation.ts），不调用 LLM。
  */
 
-import { useMemo } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import clsx from 'clsx';
-import { ShieldCheck, AlertOctagon, AlertTriangle, Info } from 'lucide-react';
+import {
+  ShieldCheck, AlertOctagon, AlertTriangle, Info,
+  Wand2, Loader2, X,
+} from 'lucide-react';
 import {
   validateChapter,
   summarizeIssues,
   type ValidationIssue,
   type ValidationSeverity,
 } from '../pipeline/chapterValidation';
-import type { ProjectContext } from '../pipeline/types';
+import { runFixAllIssues, type SelfCheckIssue } from '../pipeline/selfCheck';
+import { buildFixContextPreamble } from '../pipeline/fixContext';
+import type { NodeArtifact, ProjectContext } from '../pipeline/types';
+import { useProject } from '../store/project';
+import { useSettings } from '../store/settings';
 
 interface Props {
   /** 章节正文 */
@@ -26,7 +33,33 @@ interface Props {
   enabledModuleIds?: string[];
   /** 默认展开（章节预览场景默认 true） */
   defaultOpen?: boolean;
+  /** 章节所属节点 id（决定 KB / 用户 KB / 方法论注入白名单）。
+   *  与 onApplyRevised 配合：两者都给才会显示「AI 一键修订」按钮。 */
+  nodeId?: 'novel.3.1' | 'novel.3.2';
+  /** 章节标题（构造临时 artifact 时用）。 */
+  chapterTitle?: string;
+  /** AI 修订完成后的回调；调用方负责把 revised 写回章节并加入撤销栈。 */
+  onApplyRevised?: (revisedText: string) => void;
 }
+
+/** 把纯前端校验的 ValidationIssue 转成修复引擎期望的 SelfCheckIssue。 */
+function toSelfCheckIssue(v: ValidationIssue): SelfCheckIssue {
+  return {
+    severity: v.severity === 'error' ? 'major' : v.severity === 'warning' ? 'minor' : 'info',
+    tag: v.kind,
+    detail:
+      v.message +
+      (v.evidence && v.evidence.length
+        ? `（命中：${v.evidence.slice(0, 3).join('、')}）`
+        : ''),
+    suggestion: v.fixHint,
+  };
+}
+
+type AiFixState =
+  | { kind: 'idle' }
+  | { kind: 'streaming'; previewLen: number }
+  | { kind: 'error'; msg: string };
 
 const SEVERITY_META: Record<ValidationSeverity, {
   label: string;
@@ -59,6 +92,9 @@ export function ChapterValidationPanel({
   ctx,
   enabledModuleIds,
   defaultOpen = true,
+  nodeId,
+  chapterTitle,
+  onApplyRevised,
 }: Props) {
   const issues = useMemo(
     () => validateChapter({ text, ctx, enabledModuleIds }),
@@ -67,6 +103,67 @@ export function ChapterValidationPanel({
   const summary = useMemo(() => summarizeIssues(issues), [issues]);
 
   const isClean = issues.length === 0;
+  const canAiFix = !isClean && !!nodeId && !!onApplyRevised;
+  const [aiFix, setAiFix] = useState<AiFixState>({ kind: 'idle' });
+  const aiAbortRef = useRef<AbortController | null>(null);
+
+  async function startAiFix() {
+    if (!canAiFix || !nodeId) return;
+    if (aiFix.kind === 'streaming') return;
+    aiAbortRef.current?.abort();
+    const ac = new AbortController();
+    aiAbortRef.current = ac;
+    setAiFix({ kind: 'streaming', previewLen: 0 });
+    try {
+      const project = useProject.getState();
+      const settings = useSettings.getState();
+      // 修复仅需 nodeId / title / content / format，其它字段填稳态默认即可。
+      const fakeArtifact: NodeArtifact = {
+        nodeId,
+        stageId: 'novel',
+        index: 0,
+        title: chapterTitle ?? '章节',
+        format: 'markdown',
+        content: text,
+        durationMs: 0,
+        ts: Date.now(),
+      };
+      let preamble = '';
+      try {
+        preamble = await buildFixContextPreamble({
+          nodeId,
+          project: project.ctx,
+          artifacts: project.artifacts,
+          enableKbInjection: settings.enableKbInjection,
+          enableEditorialRounds: settings.enableEditorialRounds,
+        });
+      } catch (e) {
+        console.warn('[ChapterValidationPanel] buildFixContextPreamble 失败，仍继续执行修订：', e);
+      }
+      const res = await runFixAllIssues({
+        artifact: fakeArtifact,
+        issues: issues.map(toSelfCheckIssue),
+        settings,
+        extraSystemPreamble: preamble,
+        signal: ac.signal,
+        onDelta: (_chunk, full) => {
+          if (ac.signal.aborted) return;
+          setAiFix({ kind: 'streaming', previewLen: full.length });
+        },
+      });
+      if (ac.signal.aborted) return;
+      onApplyRevised?.(res.revised);
+      setAiFix({ kind: 'idle' });
+    } catch (e: any) {
+      if (ac.signal.aborted) return;
+      setAiFix({ kind: 'error', msg: e?.message ?? String(e) });
+    }
+  }
+
+  function cancelAiFix() {
+    aiAbortRef.current?.abort();
+    setAiFix({ kind: 'idle' });
+  }
 
   return (
     <details
@@ -107,6 +204,48 @@ export function ChapterValidationPanel({
 
         <span className="ml-auto text-[10px] text-zinc-500">点击展开 / 收起</span>
       </summary>
+
+      {canAiFix && (
+        <div className="mt-2 flex items-center gap-2 flex-wrap">
+          {aiFix.kind === 'idle' && (
+            <button
+              type="button"
+              onClick={startAiFix}
+              className="text-[11px] px-2 py-1 rounded border border-violet-500/40 bg-violet-500/10 hover:bg-violet-500/20 text-violet-200 inline-flex items-center gap-1"
+              title="把上面所有问题打包交给 LLM，结合题材锚点 / KB / 方法论一键修订；修订结果写回当前章节并入撤销栈"
+            >
+              <Wand2 className="size-3" /> AI 一键修订（{summary.error + summary.warning} 项）
+            </button>
+          )}
+          {aiFix.kind === 'streaming' && (
+            <>
+              <span className="text-[11px] inline-flex items-center gap-1 text-violet-200">
+                <Loader2 className="size-3 animate-spin" />
+                AI 修订中… 已输出 {aiFix.previewLen} 字
+              </span>
+              <button
+                type="button"
+                onClick={cancelAiFix}
+                className="text-[11px] px-2 py-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 inline-flex items-center gap-1"
+              >
+                <X className="size-3" /> 取消
+              </button>
+            </>
+          )}
+          {aiFix.kind === 'error' && (
+            <>
+              <span className="text-[11px] text-rose-300">AI 修订失败：{aiFix.msg}</span>
+              <button
+                type="button"
+                onClick={() => setAiFix({ kind: 'idle' })}
+                className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-700 hover:bg-zinc-800 text-zinc-400"
+              >
+                关闭
+              </button>
+            </>
+          )}
+        </div>
+      )}
 
       {!isClean && (
         <div className="mt-2 space-y-1.5">

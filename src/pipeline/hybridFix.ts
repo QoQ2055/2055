@@ -58,6 +58,9 @@ export interface HybridFixOptions {
   settings: SettingsState;
   signal?: AbortSignal;
   onDelta?: (chunk: string, full: string) => void;
+  /** 可选：项目知识层 preamble（KB / 题材锚点 / 方法模块 / R1 指令书）。
+   *  存在则拼接在 patch plan system 之前，让 LLM 输出 patch 时也遵守项目硬律。 */
+  extraSystemPreamble?: string;
 }
 
 /* ── 节点类型路由 ───────────────────────────────────────────── */
@@ -262,7 +265,7 @@ export function applyPatchPlan(
 /* ── 主入口: 询问 LLM 出 patch plan + 应用 ─────────────────── */
 
 export async function runHybridFix(opts: HybridFixOptions): Promise<HybridFixResult> {
-  const { artifact, issues, settings, signal, onDelta } = opts;
+  const { artifact, issues, settings, signal, onDelta, extraSystemPreamble } = opts;
   const actionable = issues.filter((i) => i.severity !== 'info');
   if (!actionable.length) {
     return {
@@ -283,7 +286,7 @@ export async function runHybridFix(opts: HybridFixOptions): Promise<HybridFixRes
   const canBlock = blocks.length > 0;
 
   /* 构造 prompt */
-  const sys = [
+  const sysCore = [
     '你是一名严谨的 QA 修复员. 给定一份产物和若干 issue, **输出 patch 计划 (JSON), 而不是修订后的全文**.',
     '',
     '## 核心原则',
@@ -324,6 +327,7 @@ export async function runHybridFix(opts: HybridFixOptions): Promise<HybridFixRes
     '  "skipped": [ {"issueId":"I3","reason":"..."} ]',
     '}',
   ].join('\n');
+  const sys = extraSystemPreamble ? extraSystemPreamble + '\n\n' + sysCore : sysCore;
 
   const issueBlocks = actionable.map((iss, i) => {
     const id = `I${i + 1}`;

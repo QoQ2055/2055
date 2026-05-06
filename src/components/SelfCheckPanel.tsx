@@ -10,8 +10,10 @@ import {
 import type { SelfCheckReport, Severity, Verdict } from '../pipeline/selfCheck';
 import { runFixAllIssues, runTargetedSelfCheck } from '../pipeline/selfCheck';
 import { runHybridFix } from '../pipeline/hybridFix';
+import { buildFixContextPreamble } from '../pipeline/fixContext';
 import type { NodeArtifact, ArtifactMap } from '../pipeline/types';
 import type { SettingsState } from '../store/settings';
+import { useProject } from '../store/project';
 
 export interface SelfCheckPanelProps {
   artifact: NodeArtifact;
@@ -120,6 +122,22 @@ export function SelfCheckPanel({
     setError('');
     setIter({ kind: 'running', phase: 'fixing', round: 1, previewLen: 0, history: [] });
 
+    // 拼装修复专用的项目知识层 preamble（题材锚点 / KB / 方法模块 / R1）。
+    // 全迭代复用同一份 preamble（项目上下文不变）。
+    let extraPreamble = '';
+    try {
+      const proj = useProject.getState();
+      extraPreamble = await buildFixContextPreamble({
+        nodeId: artifact.nodeId,
+        project: proj.ctx,
+        artifacts: proj.artifacts,
+        enableKbInjection: settings.enableKbInjection,
+        enableEditorialRounds: settings.enableEditorialRounds,
+      });
+    } catch (e) {
+      console.warn('[SelfCheckPanel] buildFixContextPreamble failed (修复仍会继续，仅未注入项目知识层):', e);
+    }
+
     for (let round = 1; round <= MAX_ITERATIONS; round++) {
       if (ac.signal.aborted) break;
 
@@ -132,6 +150,7 @@ export function SelfCheckPanel({
           artifact: { ...artifact, content: best.content },
           issues: best.report.issues,
           settings,
+          extraSystemPreamble: extraPreamble,
           signal: ac.signal,
           onDelta: (_chunk, full) => {
             setIter((s) =>

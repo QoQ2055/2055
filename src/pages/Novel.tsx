@@ -1549,6 +1549,9 @@ function PreviewModal({
             text={displayBody}
             ctx={previewCtx}
             enabledModuleIds={previewEnabledModuleIds}
+            nodeId={chapterSrc === 'draft' ? 'novel.3.1' : 'novel.3.2'}
+            chapterTitle={chapterTitle}
+            onApplyRevised={(revised) => handleRefineApply(revised)}
           />
         )}
         {showRefinement && (
