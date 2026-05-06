@@ -279,15 +279,15 @@ export function Screenplay(props: ScreenplayProps = {}) {
 
   if (error) {
     return (
-      <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <strong className="text-amber-300 flex items-center gap-1.5">
+      <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+        <strong className="text-warning flex items-center gap-1.5">
           <AlertTriangle className="size-4" /> 加载 manifest 失败
         </strong>
-        <p className="text-zinc-300 mt-1">{error}</p>
+        <p className="text-fg-secondary mt-1">{error}</p>
       </div>
     );
   }
-  if (!manifest || !activeStep) return <div className="p-8 text-zinc-500">加载…</div>;
+  if (!manifest || !activeStep) return <div className="p-8 text-fg-muted">加载…</div>;
 
   // 改编模式下检测旧 8 步产物（迁移残留）
   const legacyScreenplayCount = isAdapt
@@ -296,12 +296,12 @@ export function Screenplay(props: ScreenplayProps = {}) {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-border-subtle flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <FileText className="size-5 text-brand-500" />
+          <FileText className="size-5 text-primary-500" />
           <div>
             <h1 className="text-lg font-semibold">{props.title ?? '剧本工作台 · 八步法'}</h1>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-muted">
               {props.subtitle ?? '单步 / 通过 / 修改 / 重跑 / 自检 · 修改任一步会自动把下游标记为 stale'}
             </p>
         </div>
@@ -340,9 +340,9 @@ export function Screenplay(props: ScreenplayProps = {}) {
 
       {/* Legacy screenplay.* artifacts banner (adapt mode only) */}
       {legacyScreenplayCount > 0 && (
-        <section className="px-6 py-2 border-b border-zinc-800 bg-amber-500/5 flex items-center gap-3 text-xs">
-          <AlertTriangle className="size-4 text-amber-400" />
-          <span className="text-amber-200">
+        <section className="px-6 py-2 border-b border-border-subtle bg-warning/5 flex items-center gap-3 text-xs">
+          <AlertTriangle className="size-4 text-warning" />
+          <span className="text-warning">
             检测到旧的 8 步产物 <strong className="font-mono">{legacyScreenplayCount}</strong> 条（来自旧版改编流程，不会被新工作台使用）
           </span>
           <button
@@ -361,17 +361,17 @@ export function Screenplay(props: ScreenplayProps = {}) {
       )}
 
       {/* Project ctx mini-bar */}
-      <section className="px-6 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-400">
-        <span><span className="text-zinc-600">项目：</span>{project.ctx.name}</span>
-        <span className="text-zinc-700">·</span>
-        <span><span className="text-zinc-600">概念：</span>{project.ctx.concept}</span>
-        <span className="text-zinc-700">·</span>
-        <span><span className="text-zinc-600">时长：</span>{project.ctx.durationMin} 分钟</span>
-        <span className="ml-auto text-zinc-500">在「流水线」页可修改项目上下文</span>
+      <section className="px-6 py-2 border-b border-border-subtle flex items-center gap-3 text-xs text-fg-secondary">
+        <span><span className="text-fg-muted">项目：</span>{project.ctx.name}</span>
+        <span className="text-fg-muted">·</span>
+        <span><span className="text-fg-muted">概念：</span>{project.ctx.concept}</span>
+        <span className="text-fg-muted">·</span>
+        <span><span className="text-fg-muted">时长：</span>{project.ctx.durationMin} 分钟</span>
+        <span className="ml-auto text-fg-muted">在「流水线」页可修改项目上下文</span>
       </section>
 
       {/* DAG strip */}
-      <nav className="px-6 py-3 border-b border-zinc-800 overflow-x-auto">
+      <nav className="px-6 py-3 border-b border-border-subtle overflow-x-auto">
         <ol className="flex items-center gap-1 min-w-max">
           {project.ctx.createMode === 'adaptation' && (
             <>
@@ -379,17 +379,17 @@ export function Screenplay(props: ScreenplayProps = {}) {
                 <Link to="/intake"
                       className={clsx(
                         'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs transition-colors',
-                        'text-zinc-400 hover:bg-zinc-900',
+                        'text-fg-secondary hover:bg-surface',
                       )}
                       title="去原作摄入工作台编辑">
                   <span className={clsx('size-2 rounded-full',
                     project.artifacts[S0_NODE_ID] ? 'bg-emerald-500' : 'bg-amber-500')} />
-                  <BookCopy className="size-3 text-amber-400" />
+                  <BookCopy className="size-3 text-warning" />
                   <span className="font-mono">S0</span>
                   <span className="hidden md:inline">原作档案</span>
                 </Link>
               </li>
-              <ChevronRight className="size-3 text-zinc-700 mx-0.5" />
+              <ChevronRight className="size-3 text-fg-muted mx-0.5" />
             </>
           )}
           {settings.enableEditorialRounds && (
@@ -404,7 +404,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
                 status={statuses[R1_NODE_ID]}
                 onClick={() => setActiveIdx(0)}
               />
-              <ChevronRight className="size-3 text-zinc-700 mx-0.5" />
+              <ChevronRight className="size-3 text-fg-muted mx-0.5" />
             </>
           )}
           {steps.map((s, i) => {
@@ -414,7 +414,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
             const stale = project.stale[s.id];
             const stt = statuses[s.id];
             const dotColor =
-              stt === 'running' ? 'bg-brand-500 animate-pulse' :
+              stt === 'running' ? 'bg-primary-500 animate-pulse' :
               stt === 'error' ? 'bg-rose-500' :
               passed ? 'bg-emerald-500' :
               a && stale ? 'bg-amber-500' :
@@ -426,7 +426,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
                   onClick={() => setActiveIdx(s.index)}
                   className={clsx(
                     'flex items-center gap-2 rounded-md px-3 py-1.5 text-xs transition-colors',
-                    isActive ? 'bg-zinc-800 text-zinc-100 ring-1 ring-brand-500/40' : 'text-zinc-400 hover:bg-zinc-900',
+                    isActive ? 'bg-elevated text-fg-primary ring-1 ring-primary-500/40' : 'text-fg-secondary hover:bg-surface',
                   )}
                   title={s.title}
                 >
@@ -434,7 +434,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
                   <span className="font-mono">{stepLabel}{s.index}</span>
                   <span className="hidden md:inline">{s.title}</span>
                 </button>
-                {(i < steps.length - 1 || settings.enableEditorialRounds) && <ChevronRight className="size-3 text-zinc-700 mx-0.5" />}
+                {(i < steps.length - 1 || settings.enableEditorialRounds) && <ChevronRight className="size-3 text-fg-muted mx-0.5" />}
               </li>
             );
           })}
@@ -596,8 +596,8 @@ function StepPane(p: StepPaneProps) {
       {/* Action bar */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <h2 className="text-xl font-semibold text-zinc-100 truncate">
-            <span className="font-mono text-brand-500 mr-2">{stepLabel}{p.step.index}</span>
+          <h2 className="text-xl font-semibold text-fg-primary truncate">
+            <span className="font-mono text-primary-500 mr-2">{stepLabel}{p.step.index}</span>
             {p.step.title}
           </h2>
           {p.passed && <Badge tone="emerald">已通过</Badge>}
@@ -658,7 +658,7 @@ function StepPane(p: StepPaneProps) {
 
       {/* Error */}
       {p.err && (
-        <div className="card border-rose-500/40 bg-rose-500/5 p-3 text-sm text-rose-200">
+        <div className="card border-danger/40 bg-danger/5 p-3 text-sm text-danger">
           {p.err}
         </div>
       )}
@@ -682,14 +682,14 @@ function StepPane(p: StepPaneProps) {
 
       {/* Output / Editor */}
       <div className="card overflow-hidden">
-        <div className="px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+        <div className="px-4 py-2 border-b border-border-subtle flex items-center justify-between">
           <span className="label">
             {isEditing ? '编辑产物（保存后下游会标记 stale）'
                        : isRunning ? '流式输出中…'
                        : p.artifact ? '产物'
                        : '空'}
           </span>
-          <div className="flex items-center gap-3 text-xs text-zinc-500">
+          <div className="flex items-center gap-3 text-xs text-fg-muted">
             {p.artifact && !isEditing && (
               <>
                 <span>{p.artifact.content.length} 字</span>
@@ -707,20 +707,20 @@ function StepPane(p: StepPaneProps) {
 
         {isEditing ? (
           <textarea
-            className="w-full h-[60vh] bg-zinc-950 p-4 text-sm font-mono resize-none focus:outline-none"
+            className="w-full h-[60vh] bg-canvas p-4 text-sm font-mono resize-none focus:outline-none"
             value={p.editing ?? ''}
             onChange={(e) => p.onEditChange(e.target.value)}
           />
         ) : isRunning ? (
-          <pre className="p-4 text-xs font-mono whitespace-pre-wrap break-words text-zinc-200 max-h-[60vh] overflow-auto">
-            {display || <span className="text-zinc-600">连接中…</span>}
+          <pre className="p-4 text-xs font-mono whitespace-pre-wrap break-words text-fg-primary max-h-[60vh] overflow-auto">
+            {display || <span className="text-fg-muted">连接中…</span>}
           </pre>
         ) : !p.artifact ? (
-          <div className="p-10 text-center text-sm text-zinc-500">
-            还没运行过本步。点 <strong className="text-zinc-300">运行此步</strong> 开始。
+          <div className="p-10 text-center text-sm text-fg-muted">
+            还没运行过本步。点 <strong className="text-fg-secondary">运行此步</strong> 开始。
           </div>
         ) : isJson ? (
-          <pre className="p-4 text-xs font-mono whitespace-pre-wrap break-words text-zinc-200 max-h-[60vh] overflow-auto">
+          <pre className="p-4 text-xs font-mono whitespace-pre-wrap break-words text-fg-primary max-h-[60vh] overflow-auto">
             {tryPrettyJson(p.artifact.content)}
           </pre>
         ) : (
@@ -737,9 +737,9 @@ function StepPane(p: StepPaneProps) {
 
 function Badge({ tone, children }: { tone: 'emerald' | 'amber' | 'rose' | 'sky'; children: React.ReactNode }) {
   const map = {
-    emerald: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-    amber:   'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    rose:    'bg-rose-500/15 text-rose-300 border-rose-500/30',
+    emerald: 'bg-success/15 text-success border-success/30',
+    amber:   'bg-warning/15 text-warning border-warning/30',
+    rose:    'bg-danger/15 text-danger border-danger/30',
     sky:     'bg-sky-500/15 text-sky-300 border-sky-500/30',
   };
   return <span className={clsx('px-2 py-0.5 rounded-full text-[11px] border', map[tone])}>{children}</span>;
@@ -755,13 +755,13 @@ function ConstraintChip({ c }: { c: Constraint }) {
     <span className={clsx(
       'inline-flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs',
       c.ok
-        ? 'border-emerald-500/30 bg-emerald-500/5 text-emerald-300'
-        : 'border-amber-500/40 bg-amber-500/5 text-amber-300',
+        ? 'border-success/30 bg-success/5 text-success'
+        : 'border-warning/40 bg-warning/5 text-warning',
     )}>
       {c.ok ? <CheckCircle2 className="size-3" /> : <AlertTriangle className="size-3" />}
-      <span className="text-zinc-300">{c.label}</span>
+      <span className="text-fg-secondary">{c.label}</span>
       <span className="font-mono">{c.actual}{c.unit ?? ''}</span>
-      {range && <span className="text-zinc-500">/ {range}{c.unit ?? ''}</span>}
+      {range && <span className="text-fg-muted">/ {range}{c.unit ?? ''}</span>}
     </span>
   );
 }
@@ -788,7 +788,7 @@ interface DagPillProps {
 }
 function DagPill(p: DagPillProps) {
   const dotColor =
-    p.status === 'running' ? 'bg-brand-500 animate-pulse' :
+    p.status === 'running' ? 'bg-primary-500 animate-pulse' :
     p.status === 'error' ? 'bg-rose-500' :
     p.hasArtifact && !p.stale ? 'bg-emerald-500' :
     p.hasArtifact && p.stale ? 'bg-amber-500' :
@@ -800,13 +800,13 @@ function DagPill(p: DagPillProps) {
         className={clsx(
           'flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs transition-colors',
           p.isActive
-            ? 'bg-zinc-800 text-zinc-100 ring-1 ring-amber-500/40'
-            : 'text-zinc-400 hover:bg-zinc-900',
+            ? 'bg-elevated text-fg-primary ring-1 ring-amber-500/40'
+            : 'text-fg-secondary hover:bg-surface',
         )}
         title={p.longLabel}
       >
         <span className={clsx('size-2 rounded-full', dotColor)} />
-        <span className="text-amber-400">{p.icon}</span>
+        <span className="text-warning">{p.icon}</span>
         <span className="font-mono">{p.label}</span>
         <span className="hidden md:inline">{p.longLabel}</span>
       </button>
@@ -834,9 +834,9 @@ function R1Pane(p: R1PaneProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Crown className="size-5 text-amber-400" />
-          <h2 className="text-xl font-semibold text-zinc-100 truncate">
-            <span className="font-mono text-amber-400 mr-2">R1</span> 创作指令书
+          <Crown className="size-5 text-warning" />
+          <h2 className="text-xl font-semibold text-fg-primary truncate">
+            <span className="font-mono text-warning mr-2">R1</span> 创作指令书
           </h2>
           {p.artifact && <Badge tone="emerald">已锁定</Badge>}
         </div>
@@ -856,13 +856,13 @@ function R1Pane(p: R1PaneProps) {
         </div>
       </div>
 
-      <p className="text-xs text-zinc-500">
-        总编 (R1) 在 Step 1 之前锁定项目战略 — 主题 / 受众 / 题材 / 一句话钩子 / 红线 — 作为<strong className="text-zinc-300">下游 8 步全部 LLM 调用的共享 system 头</strong>。
+      <p className="text-xs text-fg-muted">
+        总编 (R1) 在 Step 1 之前锁定项目战略 — 主题 / 受众 / 题材 / 一句话钩子 / 红线 — 作为<strong className="text-fg-secondary">下游 8 步全部 LLM 调用的共享 system 头</strong>。
         修改 / 重生成会自动把 S1..S8 标记为 stale。
       </p>
 
       {p.err && (
-        <div className="card border-rose-500/40 bg-rose-500/5 p-3 text-sm text-rose-200">{p.err}</div>
+        <div className="card border-danger/40 bg-danger/5 p-3 text-sm text-danger">{p.err}</div>
       )}
 
       {parsed ? (
@@ -878,11 +878,11 @@ function R1Pane(p: R1PaneProps) {
           )}
           {Array.isArray(parsed.mustKeep) && parsed.mustKeep.length > 0 && (
             <div className="md:col-span-2 card p-4 ring-1 ring-emerald-500/30">
-              <div className="label mb-2 text-emerald-300">必须保留 (mustKeep)</div>
+              <div className="label mb-2 text-success">必须保留 (mustKeep)</div>
               <ul className="text-sm space-y-1">
                 {parsed.mustKeep.map((d: string, i: number) => (
-                  <li key={i} className="flex gap-2 text-zinc-300">
-                    <span className="text-emerald-400">✓</span>{d}
+                  <li key={i} className="flex gap-2 text-fg-secondary">
+                    <span className="text-success">✓</span>{d}
                   </li>
                 ))}
               </ul>
@@ -890,11 +890,11 @@ function R1Pane(p: R1PaneProps) {
           )}
           {Array.isArray(parsed.mustCut) && parsed.mustCut.length > 0 && (
             <div className="md:col-span-2 card p-4">
-              <div className="label mb-2 text-amber-300">必须裁掉 (mustCut)</div>
+              <div className="label mb-2 text-warning">必须裁掉 (mustCut)</div>
               <ul className="text-sm space-y-1">
                 {parsed.mustCut.map((d: string, i: number) => (
-                  <li key={i} className="flex gap-2 text-zinc-300">
-                    <span className="text-amber-400">✂</span>{d}
+                  <li key={i} className="flex gap-2 text-fg-secondary">
+                    <span className="text-warning">✂</span>{d}
                   </li>
                 ))}
               </ul>
@@ -902,15 +902,15 @@ function R1Pane(p: R1PaneProps) {
           )}
           {Array.isArray(parsed.riskList) && parsed.riskList.length > 0 && (
             <div className="md:col-span-2 card p-4 ring-1 ring-rose-500/30">
-              <div className="label mb-2 text-rose-300">改编风险 (riskList)</div>
+              <div className="label mb-2 text-danger">改编风险 (riskList)</div>
               <ul className="text-sm space-y-1.5">
                 {parsed.riskList.map((r: any, i: number) => (
-                  <li key={i} className="text-zinc-300">
-                    <span className="px-1 py-0.5 rounded text-[10px] bg-rose-500/15 text-rose-300 border border-rose-500/30 mr-1.5">
+                  <li key={i} className="text-fg-secondary">
+                    <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30 mr-1.5">
                       {r.kind}
                     </span>
                     {r.issue}
-                    {r.mitigation && <div className="text-xs text-zinc-500 ml-6">→ {r.mitigation}</div>}
+                    {r.mitigation && <div className="text-xs text-fg-muted ml-6">→ {r.mitigation}</div>}
                   </li>
                 ))}
               </ul>
@@ -918,11 +918,11 @@ function R1Pane(p: R1PaneProps) {
           )}
           {Array.isArray(parsed.doNots) && parsed.doNots.length > 0 && (
             <div className="md:col-span-2 card p-4">
-              <div className="label mb-2 text-rose-300">红线 doNots</div>
+              <div className="label mb-2 text-danger">红线 doNots</div>
               <ul className="text-sm space-y-1">
                 {parsed.doNots.map((d: string, i: number) => (
-                  <li key={i} className="flex gap-2 text-zinc-300">
-                    <span className="text-rose-400">⛔</span>{d}
+                  <li key={i} className="flex gap-2 text-fg-secondary">
+                    <span className="text-danger">⛔</span>{d}
                   </li>
                 ))}
               </ul>
@@ -931,7 +931,7 @@ function R1Pane(p: R1PaneProps) {
         </div>
       ) : (
         <div className="card overflow-hidden">
-          <div className="px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+          <div className="px-4 py-2 border-b border-border-subtle flex items-center justify-between">
             <span className="label">{isRunning ? '流式输出中…' : p.artifact ? '原始 JSON' : '空'}</span>
             {p.artifact && !isRunning && (
               <button className="btn-ghost px-1.5 py-1"
@@ -940,7 +940,7 @@ function R1Pane(p: R1PaneProps) {
               </button>
             )}
           </div>
-          <pre className="p-4 text-xs whitespace-pre-wrap break-words font-mono text-zinc-200 max-h-[60vh] overflow-auto">
+          <pre className="p-4 text-xs whitespace-pre-wrap break-words font-mono text-fg-primary max-h-[60vh] overflow-auto">
             {display || (isRunning ? '连接中…' : '尚未生成。点上方「生成指令书」开始。')}
           </pre>
         </div>
@@ -954,7 +954,7 @@ function DirectiveCard({ label, value, highlight }: { label: string; value?: str
   return (
     <div className={clsx('card p-3', highlight && 'ring-1 ring-amber-500/30')}>
       <div className="label mb-1">{label}</div>
-      <div className={clsx('text-sm', highlight ? 'text-amber-200 font-medium' : 'text-zinc-300')}>{value}</div>
+      <div className={clsx('text-sm', highlight ? 'text-warning font-medium' : 'text-fg-secondary')}>{value}</div>
     </div>
   );
 }
@@ -983,9 +983,9 @@ function R9Pane(p: R9PaneProps) {
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div className="flex items-center gap-2 min-w-0">
-          <Gavel className="size-5 text-amber-400" />
-          <h2 className="text-xl font-semibold text-zinc-100 truncate">
-            <span className="font-mono text-amber-400 mr-2">R9</span> 总编四级裁决
+          <Gavel className="size-5 text-warning" />
+          <h2 className="text-xl font-semibold text-fg-primary truncate">
+            <span className="font-mono text-warning mr-2">R9</span> 总编四级裁决
           </h2>
           {verdict && <Badge tone={verdictTone}>{verdict.verdict}</Badge>}
         </div>
@@ -1005,12 +1005,12 @@ function R9Pane(p: R9PaneProps) {
         </div>
       </div>
 
-      <p className="text-xs text-zinc-500">
-        终审从<strong className="text-zinc-300">主题 / 受众 / 商业 / 与 R1 指令书一致度</strong> 4 个维度评估，输出 APPROVED / MINOR / MAJOR / REJECTED 四级裁决。
+      <p className="text-xs text-fg-muted">
+        终审从<strong className="text-fg-secondary">主题 / 受众 / 商业 / 与 R1 指令书一致度</strong> 4 个维度评估，输出 APPROVED / MINOR / MAJOR / REJECTED 四级裁决。
       </p>
 
       {p.err && (
-        <div className="card border-rose-500/40 bg-rose-500/5 p-3 text-sm text-rose-200">{p.err}</div>
+        <div className="card border-danger/40 bg-danger/5 p-3 text-sm text-danger">{p.err}</div>
       )}
 
       {verdict ? (
@@ -1032,11 +1032,11 @@ function R9Pane(p: R9PaneProps) {
           </div>
           {verdict.ipRiskCheck && (
             <div className={clsx('card p-3 flex items-center gap-3',
-              verdict.ipRiskCheck === 'PASS' ? 'border-emerald-500/30 bg-emerald-500/5'
-              : verdict.ipRiskCheck === 'WARN' ? 'border-amber-500/30 bg-amber-500/5'
-              : 'border-rose-500/40 bg-rose-500/10',
+              verdict.ipRiskCheck === 'PASS' ? 'border-success/30 bg-success/5'
+              : verdict.ipRiskCheck === 'WARN' ? 'border-warning/30 bg-warning/5'
+              : 'border-danger/40 bg-danger/10',
             )}>
-              <span className="text-xs text-zinc-400">IP 风险审查:</span>
+              <span className="text-xs text-fg-secondary">IP 风险审查:</span>
               <Badge tone={verdict.ipRiskCheck === 'PASS' ? 'emerald' : verdict.ipRiskCheck === 'WARN' ? 'amber' : 'rose'}>
                 {verdict.ipRiskCheck}
               </Badge>
@@ -1044,16 +1044,16 @@ function R9Pane(p: R9PaneProps) {
           )}
           {verdict.recommendation && (
             <div className="card p-4">
-              <div className="label mb-1 text-amber-300">总编建议</div>
-              <p className="text-sm text-zinc-200">{verdict.recommendation}</p>
+              <div className="label mb-1 text-warning">总编建议</div>
+              <p className="text-sm text-fg-primary">{verdict.recommendation}</p>
             </div>
           )}
           {verdict.criticalIssues.length > 0 && (
             <div className="card p-4">
-              <div className="label mb-2 text-rose-300">关键问题（{verdict.criticalIssues.length}）</div>
+              <div className="label mb-2 text-danger">关键问题（{verdict.criticalIssues.length}）</div>
               <ul className="space-y-2">
                 {verdict.criticalIssues.map((it, i) => (
-                  <li key={i} className="border-l-2 border-rose-500/40 pl-3">
+                  <li key={i} className="border-l-2 border-danger/40 pl-3">
                     <div className="flex items-center gap-2 text-xs">
                       {it.stepRef != null && (
                         <button className="btn-ghost text-xs px-1.5 py-0.5"
@@ -1062,9 +1062,9 @@ function R9Pane(p: R9PaneProps) {
                         </button>
                       )}
                     </div>
-                    <p className="text-sm text-zinc-200 mt-1">{it.issue}</p>
+                    <p className="text-sm text-fg-primary mt-1">{it.issue}</p>
                     {it.suggestion && (
-                      <p className="text-xs text-zinc-500 mt-1">建议：{it.suggestion}</p>
+                      <p className="text-xs text-fg-muted mt-1">建议：{it.suggestion}</p>
                     )}
                   </li>
                 ))}
@@ -1074,7 +1074,7 @@ function R9Pane(p: R9PaneProps) {
         </>
       ) : (
         <div className="card overflow-hidden">
-          <div className="px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+          <div className="px-4 py-2 border-b border-border-subtle flex items-center justify-between">
             <span className="label">{isRunning ? '流式输出中…' : p.artifact ? '原始 JSON' : '空'}</span>
             {p.artifact && !isRunning && (
               <button className="btn-ghost px-1.5 py-1"
@@ -1083,7 +1083,7 @@ function R9Pane(p: R9PaneProps) {
               </button>
             )}
           </div>
-          <pre className="p-4 text-xs whitespace-pre-wrap break-words font-mono text-zinc-200 max-h-[60vh] overflow-auto">
+          <pre className="p-4 text-xs whitespace-pre-wrap break-words font-mono text-fg-primary max-h-[60vh] overflow-auto">
             {display || (isRunning ? '连接中…' : '尚未生成。点上方「生成裁决」开始。')}
           </pre>
         </div>
@@ -1110,16 +1110,16 @@ function ScoreCard({ label, v }: { label: string; v?: number }) {
   const score = v ?? 0;
   const tone = score >= 8 ? 'emerald' : score >= 6 ? 'sky' : score >= 4 ? 'amber' : 'rose';
   const colorMap = {
-    emerald: 'text-emerald-400',
+    emerald: 'text-success',
     sky: 'text-sky-400',
-    amber: 'text-amber-400',
-    rose: 'text-rose-400',
+    amber: 'text-warning',
+    rose: 'text-danger',
   } as const;
   return (
     <div className="card p-3 text-center">
       <div className="label">{label}</div>
       <div className={clsx('text-3xl font-bold mt-1', colorMap[tone])}>{score}</div>
-      <div className="text-[10px] text-zinc-500">/ 10</div>
+      <div className="text-[10px] text-fg-muted">/ 10</div>
     </div>
   );
 }

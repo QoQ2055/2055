@@ -94,10 +94,10 @@ export function Playground() {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="flex items-center justify-between px-6 py-4 border-b border-zinc-800">
+      <header className="flex items-center justify-between px-6 py-4 border-b border-border-subtle">
         <div>
           <h1 className="text-lg font-semibold">调试台</h1>
-          <p className="text-xs text-zinc-500">手动选择任一 prompt 模板，对 DeepSeek 单次调用并流式预览。</p>
+          <p className="text-xs text-fg-muted">手动选择任一 prompt 模板，对 DeepSeek 单次调用并流式预览。</p>
         </div>
         <div className="flex items-center gap-2">
           <select
@@ -126,10 +126,10 @@ export function Playground() {
       </header>
 
       {missing && (
-        <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-          <strong className="text-amber-300">⚠ 找不到 prompt 文件</strong>
-          <p className="text-zinc-300 mt-1">
-            请先在仓库根目录运行：<code className="px-1 bg-zinc-800 rounded">npm run import:prompts</code>，
+        <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+          <strong className="text-warning">⚠ 找不到 prompt 文件</strong>
+          <p className="text-fg-secondary mt-1">
+            请先在仓库根目录运行：<code className="px-1 bg-elevated rounded">npm run import:prompts</code>，
             它会读取 <code>F:\下载文件\八步\</code> 并把 14 份 .txt 转成 <code>public/prompts/**/*.json</code>。
           </p>
         </div>
@@ -137,21 +137,21 @@ export function Playground() {
 
       <div className="flex-1 grid grid-cols-2 gap-4 p-6 overflow-hidden">
         <div className="card flex flex-col overflow-hidden">
-          <div className="px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+          <div className="px-4 py-2 border-b border-border-subtle flex items-center justify-between">
             <span className="label">输入 Prompt（可编辑）</span>
-            <span className="text-xs text-zinc-500">
+            <span className="text-xs text-fg-muted">
               system {systemPrompt.length} 字 / user {userPrompt.length} 字
             </span>
           </div>
-          <div className="flex-1 grid grid-rows-2 gap-px bg-zinc-800">
+          <div className="flex-1 grid grid-rows-2 gap-px bg-elevated">
             <textarea
-              className="bg-zinc-950 p-3 text-xs font-mono resize-none focus:outline-none"
+              className="bg-canvas p-3 text-xs font-mono resize-none focus:outline-none"
               placeholder="system"
               value={systemPrompt}
               onChange={(e) => setSystemPrompt(e.target.value)}
             />
             <textarea
-              className="bg-zinc-950 p-3 text-xs font-mono resize-none focus:outline-none"
+              className="bg-canvas p-3 text-xs font-mono resize-none focus:outline-none"
               placeholder="user"
               value={userPrompt}
               onChange={(e) => setUserPrompt(e.target.value)}
@@ -160,9 +160,9 @@ export function Playground() {
         </div>
 
         <div className="card flex flex-col overflow-hidden">
-          <div className="px-4 py-2 border-b border-zinc-800 flex items-center justify-between">
+          <div className="px-4 py-2 border-b border-border-subtle flex items-center justify-between">
             <span className="label">输出（流式）</span>
-            <div className="flex items-center gap-3 text-xs text-zinc-500">
+            <div className="flex items-center gap-3 text-xs text-fg-muted">
               <span>{meta.status}</span>
               {meta.ms != null && <span>{meta.ms}ms</span>}
               {meta.tokens != null && <span>tokens {meta.tokens}</span>}
@@ -176,8 +176,8 @@ export function Playground() {
               </button>
             </div>
           </div>
-          <pre className="flex-1 overflow-auto p-3 text-xs font-mono whitespace-pre-wrap break-words text-zinc-200">
-            {output || <span className="text-zinc-600">（未运行）</span>}
+          <pre className="flex-1 overflow-auto p-3 text-xs font-mono whitespace-pre-wrap break-words text-fg-primary">
+            {output || <span className="text-fg-muted">（未运行）</span>}
           </pre>
         </div>
       </div>

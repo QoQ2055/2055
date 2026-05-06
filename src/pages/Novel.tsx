@@ -403,7 +403,7 @@ export function Novel() {
   }
   if (!manifest || !novelStage) {
     return (
-      <div className="p-8 flex items-center gap-2 text-zinc-400">
+      <div className="p-8 flex items-center gap-2 text-fg-secondary">
         <Loader2 className="size-4 animate-spin" /> 正在加载小说阶段配置…
       </div>
     );
@@ -416,10 +416,10 @@ export function Novel() {
           <Edit3 className="size-7" style={{ color: meta.accentHex }} />
           <div>
             <h1 className="text-2xl font-bold">小说工作台</h1>
-            <p className="text-zinc-500 text-sm">
+            <p className="text-fg-muted text-sm">
               模式：{meta.longLabel} · 项目：{ctx.name || '未命名'}
               {!settings.apiKey && (
-                <span className="ml-2 text-amber-400">⚠ 未配置 API Key（请到「设置」填入）</span>
+                <span className="ml-2 text-warning">⚠ 未配置 API Key（请到「设置」填入）</span>
               )}
             </p>
           </div>
@@ -430,8 +430,8 @@ export function Novel() {
             className={clsx(
               'flex items-center gap-1.5 px-2 py-1 rounded border text-xs transition-colors',
               useBestOfN
-                ? 'border-amber-500/60 bg-amber-500/10 text-amber-300'
-                : 'border-zinc-800 text-zinc-500',
+                ? 'border-warning/60 bg-warning/10 text-warning'
+                : 'border-border-subtle text-fg-muted',
             )}
             title="开启后：N1.1/N1.2/N3.1 等高发散节点会并行跑 N 个候选 + LLM 裁判择优。代价：token ≈ N 倍。"
           >
@@ -449,7 +449,7 @@ export function Novel() {
                 value={bestOfNCount}
                 onChange={(e) => setBestOfNCount(parseInt(e.target.value, 10))}
                 disabled={chainBusy}
-                className="bg-zinc-900 border border-zinc-800 rounded px-1 py-0.5 text-[11px]"
+                className="bg-surface border border-border-subtle rounded px-1 py-0.5 text-[11px]"
               >
                 <option value={2}>×2</option>
                 <option value={3}>×3</option>
@@ -459,7 +459,7 @@ export function Novel() {
             )}
             {useBestOfN && (
               <label
-                className="flex items-center gap-1 cursor-pointer text-[11px] pl-1 border-l border-amber-500/30"
+                className="flex items-center gap-1 cursor-pointer text-[11px] pl-1 border-l border-warning/30"
                 title="反思模式：裁判在打分前先写出维度级批评（提高选择准确度，裁判 token × ~2.5）"
               >
                 <input
@@ -478,8 +478,8 @@ export function Novel() {
             className={clsx(
               'flex items-center gap-1.5 px-2 py-1 rounded border text-xs transition-colors',
               hardGate
-                ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-300'
-                : 'border-zinc-800 text-zinc-500',
+                ? 'border-success/60 bg-success/10 text-success'
+                : 'border-border-subtle text-fg-muted',
             )}
             title={hardGate
               ? '硬闸模式：上游未批准时，下游节点会被阻断运行。'
@@ -496,7 +496,7 @@ export function Novel() {
             <label htmlFor="hard-gate-toggle" className="cursor-pointer">🛡 硬批准闸</label>
           </div>
           {chainBusy && (
-            <button onClick={stop} className="btn-ghost text-amber-400">
+            <button onClick={stop} className="btn-ghost text-warning">
               <Square className="size-4 mr-1" /> 中止
             </button>
           )}
@@ -525,7 +525,7 @@ export function Novel() {
       {stepBy(0) && (
         <section className="card p-5 space-y-3">
           <SectionHeader
-            icon={<Wand2 className="size-4 text-emerald-400" />}
+            icon={<Wand2 className="size-4 text-success" />}
             title="阶段 0 · 选题"
             desc="在世界观之前，先用 3 候选差异化的题材切入帮你择优；推荐开 Best-of-N"
           />
@@ -547,7 +547,7 @@ export function Novel() {
       {/* ── Phase A · 设定 ─────────────────────────────────── */}
       <section className="card p-5 space-y-3">
         <SectionHeader
-          icon={<Sparkles className="size-4 text-emerald-400" />}
+          icon={<Sparkles className="size-4 text-success" />}
           title="阶段 A · 设定"
           desc="确定世界观与人物 bible，是后续所有大纲与章节的根基"
         />
@@ -582,7 +582,7 @@ export function Novel() {
       {/* ── Phase B · 大纲 ─────────────────────────────────── */}
       <section className="card p-5 space-y-3">
         <SectionHeader
-          icon={<BookOpen className="size-4 text-emerald-400" />}
+          icon={<BookOpen className="size-4 text-success" />}
           title="阶段 B · 大纲"
           desc="分卷规划 → 单卷分章 → 伏笔表"
         />
@@ -628,7 +628,7 @@ export function Novel() {
             />
             {volumeMeta.failedVolumes && volumeMeta.failedVolumes.length > 0 && (
               <button
-                className="btn-ghost text-xs text-amber-400 mt-2"
+                className="btn-ghost text-xs text-warning mt-2"
                 disabled={chainBusy}
                 onClick={() => runVolumeLoop({
                   onlyVolumes: volumeMeta.failedVolumes!.map((f) => f.volumeIndex),
@@ -657,13 +657,13 @@ export function Novel() {
       {/* ── Phase C · 章节 ─────────────────────────────────── */}
       <section className="card p-5 space-y-4">
         <SectionHeader
-          icon={<Edit3 className="size-4 text-emerald-400" />}
+          icon={<Edit3 className="size-4 text-success" />}
           title="阶段 C · 章节"
           desc="章节草稿（墨刃）→ 章节润色（默认 / 神经化学重写 / 去冗余精简）"
         />
 
         {chapters.length === 0 ? (
-          <div className="text-sm text-zinc-500 italic">
+          <div className="text-sm text-fg-muted italic">
             暂无章节列表。请先完成 N2.1 分卷规划与 N2.2 单卷分章。
           </div>
         ) : (
@@ -675,14 +675,14 @@ export function Novel() {
               </div>
             )}
             {/* N3.1 草稿控件 */}
-            <div className="rounded border border-zinc-800 p-3 space-y-2">
+            <div className="rounded border border-border-subtle p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-medium">
-                  <Wand2 className="size-4 text-emerald-400" />
+                  <Wand2 className="size-4 text-success" />
                   {NOVEL_STEP_TITLES['novel.6']}
                   <StatusBadge status={runStates['novel.6']?.status ?? 'idle'} />
                 </div>
-                <div className="text-xs text-zinc-500">
+                <div className="text-xs text-fg-muted">
                   {draftMeta.completedChapters?.length ?? 0} / {chapters.length} 章已写
                 </div>
               </div>
@@ -700,10 +700,10 @@ export function Novel() {
                   })}
                 >仅写选中章 {selectedChapterIdx ? `(第 ${selectedChapterIdx} 章)` : ''}</button>
                 <div className="flex items-center gap-1 text-xs">
-                  <span className="text-zinc-500">写到第</span>
+                  <span className="text-fg-muted">写到第</span>
                   <input
                     type="number"
-                    className="w-16 bg-zinc-900 border border-zinc-700 rounded px-1.5 py-0.5"
+                    className="w-16 bg-surface border border-border-default rounded px-1.5 py-0.5"
                     value={draftUpTo}
                     onChange={(e) => setDraftUpTo(e.target.value === '' ? '' : parseInt(e.target.value, 10) || '')}
                     placeholder="N"
@@ -725,7 +725,7 @@ export function Novel() {
               </div>
               {draftMeta.failedChapters && draftMeta.failedChapters.length > 0 && (
                 <button
-                  className="btn-ghost text-xs text-amber-400"
+                  className="btn-ghost text-xs text-warning"
                   disabled={chainBusy || gateBlocks('novel.6')}
                   onClick={() => runDraftLoop({
                     onlyChapters: draftMeta.failedChapters!.map((f) => f.chapterIndex),
@@ -739,20 +739,20 @@ export function Novel() {
             </div>
 
             {/* N3.2 润色控件 */}
-            <div className="rounded border border-zinc-800 p-3 space-y-2">
+            <div className="rounded border border-border-subtle p-3 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2 text-sm font-medium">
-                  <Sparkles className="size-4 text-emerald-400" />
+                  <Sparkles className="size-4 text-success" />
                   {NOVEL_STEP_TITLES['novel.7']}
                   <StatusBadge status={runStates['novel.7']?.status ?? 'idle'} />
                 </div>
-                <div className="text-xs text-zinc-500">
+                <div className="text-xs text-fg-muted">
                   {polishMeta.completedChapters?.length ?? 0} / {chapters.length} 章已润色
                 </div>
               </div>
               <div className="flex flex-wrap gap-2 items-center">
                 <select
-                  className="bg-zinc-900 border border-zinc-700 rounded px-2 py-1 text-xs"
+                  className="bg-surface border border-border-default rounded px-2 py-1 text-xs"
                   value={polishMode}
                   onChange={(e) => setPolishMode(e.target.value as NovelPolishMode)}
                   title={
@@ -812,9 +812,9 @@ export function Novel() {
 
       {/* ── Streaming preview of the currently-running step ──────── */}
       {chainBusy && (
-        <section className="card p-4 bg-zinc-900/50">
-          <div className="text-xs text-zinc-500 mb-1">实时输出</div>
-          <pre className="whitespace-pre-wrap text-xs text-zinc-300 max-h-96 overflow-auto font-mono">
+        <section className="card p-4 bg-surface/50">
+          <div className="text-xs text-fg-muted mb-1">实时输出</div>
+          <pre className="whitespace-pre-wrap text-xs text-fg-secondary max-h-96 overflow-auto font-mono">
             {Object.entries(runStates).find(([, s]) => s.status === 'running')?.[1].streamed
               ?? '（等待首个 token...）'}
           </pre>
@@ -856,10 +856,10 @@ function ProjectSettingsCard({
         style={{ borderColor: '#f59e0b55', backgroundColor: '#f59e0b08' }}
       >
         <div className="flex items-start gap-2">
-          <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />
+          <AlertTriangle className="size-4 text-warning shrink-0 mt-0.5" />
           <div className="space-y-1 flex-1">
-            <div className="font-medium text-amber-300">缺少小说项目设定</div>
-            <div className="text-zinc-400 leading-relaxed">
+            <div className="font-medium text-warning">缺少小说项目设定</div>
+            <div className="text-fg-secondary leading-relaxed">
               当前项目未填写平台 / POV / 调性等小说专用字段，会导致大纲和章节生成质量受影响。
               点击右侧按钮原地<b>补全设定</b>（不影响已有产物）。
             </div>
@@ -889,7 +889,7 @@ function ProjectSettingsCard({
       className="card p-4 space-y-2"
       style={{ borderColor: `${accentHex}55`, backgroundColor: `${accentHex}08` }}
     >
-      <div className="flex items-center gap-2 text-xs font-medium text-zinc-300">
+      <div className="flex items-center gap-2 text-xs font-medium text-fg-secondary">
         <Sparkles className="size-3.5" style={{ color: accentHex }} />
         项目设定（注入到所有小说 prompt）
         <button className="ml-auto btn-ghost text-[11px] py-0.5 px-1.5" onClick={onEdit}>
@@ -921,24 +921,24 @@ function ProjectSettingsCard({
         />
       </div>
       {(ctx.novelLogline || ctx.coreConflict || ctx.novelHook) && (
-        <div className="border-t border-zinc-800/60 pt-2 space-y-1 text-xs">
+        <div className="border-t border-border-subtle/60 pt-2 space-y-1 text-xs">
           {ctx.novelLogline && (
-            <div><span className="text-zinc-500">卖点：</span><span className="text-zinc-300">{ctx.novelLogline}</span></div>
+            <div><span className="text-fg-muted">卖点：</span><span className="text-fg-secondary">{ctx.novelLogline}</span></div>
           )}
           {ctx.coreConflict && (
-            <div><span className="text-zinc-500">核心冲突：</span><span className="text-zinc-300">{ctx.coreConflict}</span></div>
+            <div><span className="text-fg-muted">核心冲突：</span><span className="text-fg-secondary">{ctx.coreConflict}</span></div>
           )}
           {ctx.novelHook && (
-            <div><span className="text-zinc-500">金手指 / 关键设定：</span><span className="text-zinc-300">{ctx.novelHook}</span></div>
+            <div><span className="text-fg-muted">金手指 / 关键设定：</span><span className="text-fg-secondary">{ctx.novelHook}</span></div>
           )}
         </div>
       )}
       {((ctx.userKbDocIds && ctx.userKbDocIds.length > 0) || (ctx.methodModuleIds && ctx.methodModuleIds.length > 0)) && (
-        <div className="border-t border-zinc-800/60 pt-2 text-xs space-y-1">
+        <div className="border-t border-border-subtle/60 pt-2 text-xs space-y-1">
           {ctx.userKbDocIds && ctx.userKbDocIds.length > 0 && (
             <div>
-              <span className="text-zinc-500">📚 知识库绑定：</span>
-              <span className="text-zinc-300">{ctx.userKbDocIds.length} 条资料</span>
+              <span className="text-fg-muted">📚 知识库绑定：</span>
+              <span className="text-fg-secondary">{ctx.userKbDocIds.length} 条资料</span>
               <Link to="/kb" className="ml-2 text-[11px] text-brand-300 hover:text-brand-200">
                 管理 →
               </Link>
@@ -946,9 +946,9 @@ function ProjectSettingsCard({
           )}
           {ctx.methodModuleIds && ctx.methodModuleIds.length > 0 && (
             <div>
-              <span className="text-zinc-500">📐 方法论：</span>
-              <span className="text-zinc-300">{ctx.methodModuleIds.length} 个已启用</span>
-              <span className="ml-1 text-zinc-500 text-[10px]">({ctx.methodModuleIds.join(', ')})</span>
+              <span className="text-fg-muted">📐 方法论：</span>
+              <span className="text-fg-secondary">{ctx.methodModuleIds.length} 个已启用</span>
+              <span className="ml-1 text-fg-muted text-[10px]">({ctx.methodModuleIds.join(', ')})</span>
             </div>
           )}
         </div>
@@ -960,9 +960,9 @@ function ProjectSettingsCard({
 function SettingItem({ label, value, sub }: { label: string; value?: string; sub?: string }) {
   return (
     <div>
-      <div className="text-[10px] text-zinc-600 uppercase tracking-wider">{label}</div>
-      <div className="text-zinc-200 truncate" title={value ?? '—'}>{value ?? <span className="text-zinc-600">—</span>}</div>
-      {sub && <div className="text-[10px] text-zinc-500">{sub}</div>}
+      <div className="text-[10px] text-fg-muted uppercase tracking-wider">{label}</div>
+      <div className="text-fg-primary truncate" title={value ?? '—'}>{value ?? <span className="text-fg-muted">—</span>}</div>
+      {sub && <div className="text-[10px] text-fg-muted">{sub}</div>}
     </div>
   );
 }
@@ -971,7 +971,7 @@ function SectionHeader({ icon, title, desc }: { icon: React.ReactNode; title: st
   return (
     <div>
       <div className="flex items-center gap-2 text-base font-semibold">{icon}{title}</div>
-      <div className="text-xs text-zinc-500 mt-0.5">{desc}</div>
+      <div className="text-xs text-fg-muted mt-0.5">{desc}</div>
     </div>
   );
 }
@@ -983,7 +983,7 @@ function StatusBadge({ status }: { status: NodeStatus }) {
     </span>;
   }
   if (status === 'done') {
-    return <span className="text-xs flex items-center gap-1 text-emerald-400">
+    return <span className="text-xs flex items-center gap-1 text-success">
       <CheckCircle2 className="size-3" /> 完成
     </span>;
   }
@@ -993,11 +993,11 @@ function StatusBadge({ status }: { status: NodeStatus }) {
     </span>;
   }
   if (status === 'aborted') {
-    return <span className="text-xs flex items-center gap-1 text-amber-400">
+    return <span className="text-xs flex items-center gap-1 text-warning">
       <Square className="size-3" /> 中止
     </span>;
   }
-  return <span className="text-xs flex items-center gap-1 text-zinc-500">
+  return <span className="text-xs flex items-center gap-1 text-fg-muted">
     <Circle className="size-3" /> 待运行
   </span>;
 }
@@ -1036,19 +1036,19 @@ function StepCard({
   return (
     <div className={clsx(
       'rounded border p-3 transition-colors space-y-2',
-      approved ? 'border-emerald-700/60 bg-emerald-500/5' : 'border-zinc-800 hover:border-zinc-700',
+      approved ? 'border-emerald-700/60 bg-success/5' : 'border-border-subtle hover:border-border-default',
     )}>
       <div className="flex items-start justify-between gap-2">
         <div className="text-sm font-medium leading-tight flex items-center gap-1.5 flex-wrap">
           {NOVEL_STEP_TITLES[step.id] ?? step.title}
           {bestOfNActive && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">
               🎯 Best-of-N
             </span>
           )}
           {bnMeta && (
             <span
-              className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+              className="text-[10px] px-1.5 py-0.5 rounded bg-success/15 text-success border border-success/30"
               title={`Best-of-${bnMeta.candidateCount} 选中候选 #${bnMeta.chosenIndex + 1}`}
             >
               ✓ {bnMeta.candidateCount}选1
@@ -1056,26 +1056,26 @@ function StepCard({
           )}
           {approved && (
             <span
-              className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-600/20 text-emerald-300 border border-emerald-500/40 flex items-center gap-1"
+              className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-600/20 text-success border border-success/40 flex items-center gap-1"
               title={approvedAt ? `已于 ${new Date(approvedAt).toLocaleString()} 批准` : '已批准'}
             >
               <ShieldCheck className="size-3" /> 已批准
             </span>
           )}
           {!approved && artifact && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300/90 border border-amber-500/30" title="产出已生成，但未被批准。下游可运行，但会提示软警告。">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/10 text-warning/90 border border-warning/30" title="产出已生成，但未被批准。下游可运行，但会提示软警告。">
               🛡 待批准
             </span>
           )}
         </div>
         <StatusBadge status={status as NodeStatus} />
       </div>
-      {badge && <div className="text-xs text-zinc-500">{badge}</div>}
+      {badge && <div className="text-xs text-fg-muted">{badge}</div>}
       {unapprovedUpstream && unapprovedUpstream.length > 0 && (
         <div
           className={clsx(
             'text-[11px] flex items-center gap-1',
-            gateBlocked ? 'text-red-400' : 'text-amber-400/90',
+            gateBlocked ? 'text-red-400' : 'text-warning/90',
           )}
           title={gateBlocked
             ? `硬闸已开启，上游未批准：${unapprovedUpstream.join(', ')}。请先批准上游节点或关闭硬闸。`
@@ -1112,7 +1112,7 @@ function StepCard({
         )}
         {artifact && onApprove && (
           <button
-            className={clsx('btn-ghost text-xs', approved ? 'text-emerald-400' : 'text-zinc-400 hover:text-emerald-400')}
+            className={clsx('btn-ghost text-xs', approved ? 'text-success' : 'text-fg-secondary hover:text-success')}
             onClick={onApprove}
             title={approved ? '点击撤回批准' : '批准该产出（锁定为下游可信依赖的基准版本）'}
           >
@@ -1154,21 +1154,21 @@ function ChapterList({
     return true;
   });
   return (
-    <div className="rounded border border-zinc-800">
-      <div className="flex items-center gap-2 p-2 border-b border-zinc-800 text-xs flex-wrap">
-        <span className="text-zinc-500">章节列表 · 共 {chapters.length} 章</span>
+    <div className="rounded border border-border-subtle">
+      <div className="flex items-center gap-2 p-2 border-b border-border-subtle text-xs flex-wrap">
+        <span className="text-fg-muted">章节列表 · 共 {chapters.length} 章</span>
         {(draftApprovedSet.size > 0 || polishApprovedSet.size > 0) && (
-          <span className="text-emerald-400/80 flex items-center gap-1" title="已批准章节计数（草 / 润）">
+          <span className="text-success/80 flex items-center gap-1" title="已批准章节计数（草 / 润）">
             <ShieldCheck className="size-3" />
             草 {draftApprovedSet.size} / 润 {polishApprovedSet.size}
           </span>
         )}
         {/* A. 一键批准 / 撤销控件 */}
         {onBulkApproveCompleted && (
-          <div className="flex items-center gap-1 ml-1 pl-2 border-l border-zinc-700/60">
-            <span className="text-zinc-600">一键：</span>
+          <div className="flex items-center gap-1 ml-1 pl-2 border-l border-border-default/60">
+            <span className="text-fg-muted">一键：</span>
             <button
-              className="text-emerald-400/80 hover:text-emerald-300 px-1"
+              className="text-success/80 hover:text-success px-1"
               title={`批准所有已完成草稿章节（${(draftMeta.completedChapters?.length ?? 0)} 章）`}
               disabled={(draftMeta.completedChapters?.length ?? 0) === 0}
               onClick={() => onBulkApproveCompleted('draft')}
@@ -1181,7 +1181,7 @@ function ChapterList({
             >✓ 润色</button>
             {onBulkRevoke && (draftApprovedSet.size > 0 || polishApprovedSet.size > 0) && (
               <button
-                className="text-zinc-500 hover:text-rose-400 px-1"
+                className="text-fg-muted hover:text-danger px-1"
                 title="撤销所有批准状态"
                 onClick={() => {
                   if (!confirm('确认撤销本项目中所有章节的批准状态？')) return;
@@ -1198,16 +1198,16 @@ function ChapterList({
               key={k}
               className={clsx(
                 'px-2 py-0.5 rounded',
-                filter === k ? 'bg-emerald-600/20 text-emerald-300' : 'text-zinc-500 hover:text-zinc-300',
+                filter === k ? 'bg-emerald-600/20 text-success' : 'text-fg-muted hover:text-fg-secondary',
               )}
               onClick={() => setFilter(k)}
             >{k === 'all' ? '全部' : k === 'pending' ? '未写' : '失败'}</button>
           ))}
         </div>
       </div>
-      <div className="max-h-72 overflow-auto divide-y divide-zinc-800/50">
+      <div className="max-h-72 overflow-auto divide-y divide-border-subtle/50">
         {visible.length === 0 && (
-          <div className="p-3 text-xs text-zinc-500 italic">无匹配章节</div>
+          <div className="p-3 text-xs text-fg-muted italic">无匹配章节</div>
         )}
         {visible.map((c) => {
           const drafted = draftMeta.completedChapters?.includes(c.index);
@@ -1228,29 +1228,29 @@ function ChapterList({
             <div
               key={c.index}
               className={clsx(
-                'flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-zinc-800/40',
+                'flex items-center gap-2 px-2 py-1.5 text-xs cursor-pointer hover:bg-elevated/40',
                 selected && 'bg-emerald-600/10',
                 lockBorder,
               )}
               onClick={() => setSelectedIdx(selected ? null : c.index)}
             >
-              <span className="w-10 text-zinc-500 font-mono shrink-0">第{c.index}章</span>
-              <span className="flex-1 truncate text-zinc-200">{c.title}</span>
-              <span className="text-zinc-600 truncate max-w-[40%] hidden lg:block">
+              <span className="w-10 text-fg-muted font-mono shrink-0">第{c.index}章</span>
+              <span className="flex-1 truncate text-fg-primary">{c.title}</span>
+              <span className="text-fg-muted truncate max-w-[40%] hidden lg:block">
                 {c.beat || c.paceTag || ''}
               </span>
               <div className="flex gap-1 shrink-0 items-center">
                 {drafted && (
                   <button
                     title="预览草稿"
-                    className="text-emerald-400 hover:text-emerald-300"
+                    className="text-success hover:text-success"
                     onClick={(e) => { e.stopPropagation(); onPreviewChapter(c.index, 'draft'); }}
                   >草</button>
                 )}
                 {drafted && onToggleChapterApproval && (
                   <button
                     title={draftApproved ? '点击撤销草稿批准' : '批准本章草稿（重写会自动撤销）'}
-                    className={clsx(draftApproved ? 'text-emerald-400' : 'text-zinc-600 hover:text-emerald-400')}
+                    className={clsx(draftApproved ? 'text-success' : 'text-fg-muted hover:text-success')}
                     onClick={(e) => { e.stopPropagation(); onToggleChapterApproval('draft', c.index); }}
                   >
                     {draftApproved ? <ShieldCheck className="size-3" /> : <Shield className="size-3" />}
@@ -1266,14 +1266,14 @@ function ChapterList({
                 {polished && onToggleChapterApproval && (
                   <button
                     title={polishApproved ? '点击撤销润色批准' : '批准本章润色版本'}
-                    className={clsx(polishApproved ? 'text-blue-400' : 'text-zinc-600 hover:text-blue-400')}
+                    className={clsx(polishApproved ? 'text-blue-400' : 'text-fg-muted hover:text-blue-400')}
                     onClick={(e) => { e.stopPropagation(); onToggleChapterApproval('polish', c.index); }}
                   >
                     {polishApproved ? <ShieldCheck className="size-3" /> : <Shield className="size-3" />}
                   </button>
                 )}
                 {failed && <span title={failed.error} className="text-red-400">⚠</span>}
-                {!drafted && !failed && <span className="text-zinc-600">·</span>}
+                {!drafted && !failed && <span className="text-fg-muted">·</span>}
               </div>
             </div>
           );
@@ -1460,10 +1460,10 @@ function PreviewModal({
       onClick={onClose}
     >
       <div
-        className="bg-zinc-950 border border-zinc-800 rounded-lg max-w-5xl w-full max-h-[88vh] flex flex-col"
+        className="bg-canvas border border-border-subtle rounded-lg max-w-5xl w-full max-h-[88vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 p-3 border-b border-zinc-800">
+        <div className="flex items-center gap-2 p-3 border-b border-border-subtle">
           <div className="font-semibold text-sm flex-1">{title}</div>
           {/* 章节预览：加「不满意」反馈按钮，沉淀为偏好资料 */}
           {chapterIndex != null && chapterSrc != null && (
@@ -1477,7 +1477,7 @@ function PreviewModal({
             <button
               type="button"
               onClick={handleRefineUndo}
-              className="text-xs px-2 py-1 rounded border border-amber-500/40 bg-amber-500/10 hover:bg-amber-500/20 text-amber-200 inline-flex items-center gap-1"
+              className="text-xs px-2 py-1 rounded border border-warning/40 bg-warning/10 hover:bg-warning/20 text-warning inline-flex items-center gap-1"
               title={`撤销最近一次润色应用（共 ${refineUndoStack.length} 步可撤销）`}
             >
               <RotateCcw className="size-3" />
@@ -1489,27 +1489,27 @@ function PreviewModal({
         </div>
         {/* B. Best-of-N 裁判面板（仅节点产物 + 启用过 Best-of-N 时显示） */}
         {bestOfNInfo && (
-          <details className="border-b border-zinc-800 px-4 py-2 text-xs bg-amber-500/5">
-            <summary className="cursor-pointer text-amber-300 font-medium flex items-center gap-2 select-none">
+          <details className="border-b border-border-subtle px-4 py-2 text-xs bg-warning/5">
+            <summary className="cursor-pointer text-warning font-medium flex items-center gap-2 select-none">
               🎯 Best-of-{bestOfNInfo.candidateCount} 裁判结果
-              <span className="text-emerald-400/80">· 已选候选 #{bestOfNInfo.chosenIndex + 1}</span>
+              <span className="text-success/80">· 已选候选 #{bestOfNInfo.chosenIndex + 1}</span>
               {bestOfNInfo.reflection && (
                 <span className="text-blue-300 text-[10px] px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/30">🔍 反思模式</span>
               )}
-              <span className="ml-auto text-zinc-500 text-[10px]">点击展开 / 收起</span>
+              <span className="ml-auto text-fg-muted text-[10px]">点击展开 / 收起</span>
             </summary>
             <div className="mt-2 space-y-2 pl-1">
               {bestOfNInfo.scores && bestOfNInfo.scores.length > 0 && (
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="text-zinc-500">评分：</span>
+                  <span className="text-fg-muted">评分：</span>
                   {bestOfNInfo.scores.map((s, i) => (
                     <span
                       key={i}
                       className={clsx(
                         'px-1.5 py-0.5 rounded border font-mono text-[11px]',
                         i === bestOfNInfo!.chosenIndex
-                          ? 'border-emerald-500/60 bg-emerald-500/10 text-emerald-300'
-                          : 'border-zinc-700 text-zinc-400',
+                          ? 'border-success/60 bg-success/10 text-success'
+                          : 'border-border-default text-fg-secondary',
                       )}
                     >
                       候选 {i + 1}: {s}
@@ -1519,18 +1519,18 @@ function PreviewModal({
               )}
               {bestOfNInfo.reasoning && (
                 <div>
-                  <div className="text-zinc-500 mb-0.5">裁判理由：</div>
-                  <div className="text-zinc-200 leading-relaxed bg-zinc-900/50 rounded p-2 whitespace-pre-wrap">
+                  <div className="text-fg-muted mb-0.5">裁判理由：</div>
+                  <div className="text-fg-primary leading-relaxed bg-surface/50 rounded p-2 whitespace-pre-wrap">
                     {bestOfNInfo.reasoning}
                   </div>
                 </div>
               )}
               {bestOfNInfo.critique && (
                 <div>
-                  <div className="text-zinc-500 mb-0.5 flex items-center gap-1">
+                  <div className="text-fg-muted mb-0.5 flex items-center gap-1">
                     <span>维度批评（反思模式）：</span>
                   </div>
-                  <pre className="text-zinc-300 text-[11px] leading-relaxed bg-zinc-900/50 rounded p-2 whitespace-pre-wrap font-mono max-h-72 overflow-auto">
+                  <pre className="text-fg-secondary text-[11px] leading-relaxed bg-surface/50 rounded p-2 whitespace-pre-wrap font-mono max-h-72 overflow-auto">
                     {bestOfNInfo.critique}
                   </pre>
                 </div>
@@ -1539,7 +1539,7 @@ function PreviewModal({
           </details>
         )}
         <pre
-          className="flex-1 overflow-auto p-4 text-sm text-zinc-200 whitespace-pre-wrap font-mono leading-relaxed select-text min-h-0"
+          className="flex-1 overflow-auto p-4 text-sm text-fg-primary whitespace-pre-wrap font-mono leading-relaxed select-text min-h-0"
           onMouseUp={handlePreMouseUp}
         >
           {displayBody}
@@ -1565,25 +1565,25 @@ function PreviewModal({
           />
         )}
         {showRefinement && (
-          <details className="border-t border-zinc-800 bg-zinc-950/40 px-4 py-2 shrink-0">
-            <summary className="cursor-pointer text-xs text-zinc-300 select-none flex items-center gap-2 hover:text-zinc-100">
-              <Wand2 className="size-3.5 text-brand-400" />
+          <details className="border-t border-border-subtle bg-canvas/40 px-4 py-2 shrink-0">
+            <summary className="cursor-pointer text-xs text-fg-secondary select-none flex items-center gap-2 hover:text-fg-primary">
+              <Wand2 className="size-3.5 text-primary-400" />
               <span>润色工具（6 个单一职责工具）</span>
               {selection ? (
-                <span className="text-[10px] px-1.5 py-0.5 rounded border border-emerald-500/40 bg-emerald-500/10 text-emerald-300">
+                <span className="text-[10px] px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
                   选区润色 · {selection.length} 字
                 </span>
               ) : (
-                <span className="text-[10px] text-zinc-500">
+                <span className="text-[10px] text-fg-muted">
                   未选区 · 将对全章 ({displayBody.length} 字) 润色
                 </span>
               )}
               {refineUndoStack.length > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/30 bg-amber-500/5 text-amber-300/80">
+                <span className="text-[10px] px-1.5 py-0.5 rounded border border-warning/30 bg-warning/5 text-warning/80">
                   已应用 {refineUndoStack.length} 次
                 </span>
               )}
-              <span className="ml-auto text-[10px] text-zinc-500">点击展开 / 收起</span>
+              <span className="ml-auto text-[10px] text-fg-muted">点击展开 / 收起</span>
             </summary>
             <div className="mt-2">
               <RefinementToolPanel
@@ -1591,7 +1591,7 @@ function PreviewModal({
                 onApply={handleRefineApply}
                 compact
               />
-              <p className="mt-2 text-[10px] text-zinc-500 leading-snug">
+              <p className="mt-2 text-[10px] text-fg-muted leading-snug">
                 💡 点「应用」后会{selection ? '替换选区文本' : '覆写全章内容'}。顺安全起见，顶栏「撤销润色」按钮可逐步回退。
                 多工具可链式使用（先精炼→再润色→再调节奏）；不同于 cineforge 的 N3.2 批量润色节点。
               </p>
@@ -1694,11 +1694,11 @@ function NovelSettingsDialog({
       onClick={onClose}
     >
       <div
-        className="bg-zinc-950 border border-zinc-800 rounded-lg max-w-3xl w-full max-h-[92vh] flex flex-col"
+        className="bg-canvas border border-border-subtle rounded-lg max-w-3xl w-full max-h-[92vh] flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2 p-3 border-b border-zinc-800">
-          <Wand2 className="size-4 text-emerald-400" />
+        <div className="flex items-center gap-2 p-3 border-b border-border-subtle">
+          <Wand2 className="size-4 text-success" />
           <div className="font-semibold text-sm flex-1">编辑小说项目设定</div>
           <button className="btn-ghost text-xs" onClick={onClose}>关闭</button>
         </div>
@@ -1710,7 +1710,7 @@ function NovelSettingsDialog({
               <select
                 value={novelPlatform}
                 onChange={(e) => setNovelPlatform(e.target.value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+                className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
               >
                 {NOVEL_PLATFORMS.map((p) => (
                   <option key={p.value} value={p.value}>
@@ -1718,7 +1718,7 @@ function NovelSettingsDialog({
                   </option>
                 ))}
               </select>
-              <div className="text-zinc-500 mt-1">{platform?.hint}</div>
+              <div className="text-fg-muted mt-1">{platform?.hint}</div>
             </DialogField>
             <DialogField label="读者群 *">
               <div className="flex gap-1">
@@ -1730,8 +1730,8 @@ function NovelSettingsDialog({
                     className={clsx(
                       'flex-1 px-2 py-1.5 rounded border',
                       novelAudience === a.value
-                        ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'
-                        : 'border-zinc-800 hover:border-zinc-700',
+                        ? 'border-success/60 bg-success/15 text-emerald-200'
+                        : 'border-border-subtle hover:border-border-default',
                     )}
                   >{a.label}</button>
                 ))}
@@ -1750,12 +1750,12 @@ function NovelSettingsDialog({
                   className={clsx(
                     'px-2 py-1.5 rounded border text-center',
                     novelScale === s.value
-                      ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'
-                      : 'border-zinc-800 hover:border-zinc-700',
+                      ? 'border-success/60 bg-success/15 text-emerald-200'
+                      : 'border-border-subtle hover:border-border-default',
                   )}
                 >
                   <div className="font-medium">{s.label}</div>
-                  <div className="text-[10px] text-zinc-500">{s.totalWordsK}万</div>
+                  <div className="text-[10px] text-fg-muted">{s.totalWordsK}万</div>
                 </button>
               ))}
             </div>
@@ -1768,7 +1768,7 @@ function NovelSettingsDialog({
                 type="number" min={1} step={5}
                 value={novelTotalWordsK}
                 onChange={(e) => setNovelTotalWordsK(Math.max(1, parseInt(e.target.value, 10) || 0))}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+                className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
               />
             </DialogField>
             <DialogField label={`总章节数 *${chaptersTouched ? '（已手动）' : '（自动派生）'}`}>
@@ -1780,7 +1780,7 @@ function NovelSettingsDialog({
                     setChaptersTouched(true);
                     setNovelTotalChapters(Math.max(5, parseInt(e.target.value, 10) || 0));
                   }}
-                  className="flex-1 bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+                  className="flex-1 bg-surface border border-border-subtle rounded px-2 py-1.5"
                 />
                 {chaptersTouched && (
                   <button className="btn-ghost text-xs" onClick={() => setChaptersTouched(false)}>自动</button>
@@ -1788,8 +1788,8 @@ function NovelSettingsDialog({
               </div>
             </DialogField>
           </div>
-          <div className="text-zinc-500 -mt-1">
-            派生：每章约 <b className="text-zinc-300">{derivedWpc}</b> 字（平台推荐 {wpc} · ±10% 是写作硬律）
+          <div className="text-fg-muted -mt-1">
+            派生：每章约 <b className="text-fg-secondary">{derivedWpc}</b> 字（平台推荐 {wpc} · ±10% 是写作硬律）
           </div>
 
           {/* POV / 调性 */}
@@ -1798,7 +1798,7 @@ function NovelSettingsDialog({
               <select
                 value={novelPov}
                 onChange={(e) => setNovelPov(e.target.value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+                className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
               >
                 {NOVEL_POVS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
@@ -1807,7 +1807,7 @@ function NovelSettingsDialog({
               <select
                 value={novelTone}
                 onChange={(e) => setNovelTone(e.target.value)}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+                className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
               >
                 {NOVEL_TONES.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
               </select>
@@ -1830,10 +1830,10 @@ function NovelSettingsDialog({
                     className={clsx(
                       'px-2 py-0.5 text-[11px] rounded border',
                       picked
-                        ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'
+                        ? 'border-success/60 bg-success/15 text-emerald-200'
                         : capped
-                          ? 'border-zinc-900 text-zinc-700 cursor-not-allowed'
-                          : 'border-zinc-800 hover:border-zinc-700',
+                          ? 'border-border-subtle text-fg-muted cursor-not-allowed'
+                          : 'border-border-subtle hover:border-border-default',
                     )}
                   >{g.label}</button>
                 );
@@ -1852,8 +1852,8 @@ function NovelSettingsDialog({
                   className={clsx(
                     'px-2 py-1.5 rounded border',
                     protagonistGender === opt.value
-                      ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-200'
-                      : 'border-zinc-800 hover:border-zinc-700',
+                      ? 'border-success/60 bg-success/15 text-emerald-200'
+                      : 'border-border-subtle hover:border-border-default',
                   )}
                 >{opt.label}</button>
               ))}
@@ -1866,7 +1866,7 @@ function NovelSettingsDialog({
               value={coreConflict}
               onChange={(e) => setCoreConflict(e.target.value)}
               placeholder="主角 + 处境 + 目标 + 阻力"
-              className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
             />
           </DialogField>
 
@@ -1875,7 +1875,7 @@ function NovelSettingsDialog({
               type="text" maxLength={120}
               value={novelLogline}
               onChange={(e) => setNovelLogline(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
             />
           </DialogField>
 
@@ -1884,7 +1884,7 @@ function NovelSettingsDialog({
               rows={2} maxLength={400}
               value={novelHook}
               onChange={(e) => setNovelHook(e.target.value)}
-              className="w-full bg-zinc-900 border border-zinc-800 rounded px-2 py-1.5"
+              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
             />
           </DialogField>
 
@@ -1911,7 +1911,7 @@ function NovelSettingsDialog({
             }}
           />
 
-          <div className="bg-zinc-900/50 border border-zinc-800 rounded p-2 text-zinc-400">
+          <div className="bg-surface/50 border border-border-subtle rounded p-2 text-fg-secondary">
             预览：{[
               genres.map((v) => GENRES.find((g) => g.value === v)?.label).filter(Boolean).join('+') || '(题材?)',
               audienceLabels[novelAudience],
@@ -1923,7 +1923,7 @@ function NovelSettingsDialog({
           </div>
         </div>
 
-        <div className="flex justify-end gap-2 p-3 border-t border-zinc-800">
+        <div className="flex justify-end gap-2 p-3 border-t border-border-subtle">
           <button className="btn-ghost" onClick={onClose}>取消</button>
           <button className="btn-primary" disabled={!canSave} onClick={handleSave}>
             保存设定
@@ -1937,7 +1937,7 @@ function NovelSettingsDialog({
 function DialogField({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <div className="text-zinc-400 mb-1">{label}</div>
+      <div className="text-fg-secondary mb-1">{label}</div>
       {children}
     </div>
   );

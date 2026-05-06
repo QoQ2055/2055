@@ -298,15 +298,15 @@ export function Analyzer() {
       {/* Header */}
       <div className="flex items-start justify-between flex-wrap gap-2">
         <div>
-          <h1 className="text-xl font-semibold text-zinc-100 flex items-center gap-2">
-            <FileSearch className="size-5 text-brand-400" />
+          <h1 className="text-xl font-semibold text-fg-primary flex items-center gap-2">
+            <FileSearch className="size-5 text-primary-400" />
             拆书分析师
           </h1>
-          <p className="text-sm text-zinc-500 mt-1">
+          <p className="text-sm text-fg-muted mt-1">
             提供参考小说的若干章节（每章打位置标签），AI 提炼可迁移的写作方法论。
           </p>
         </div>
-        <label className="flex items-center gap-2 text-xs text-zinc-300 cursor-pointer">
+        <label className="flex items-center gap-2 text-xs text-fg-secondary cursor-pointer">
           <input
             type="checkbox"
             checked={useThinking}
@@ -325,35 +325,35 @@ export function Analyzer() {
           placeholder="书名（可选）"
           value={bookMeta.title ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, title: e.target.value })}
-          className="bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
         <input
           type="text"
           placeholder="作者（可选）"
           value={bookMeta.author ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, author: e.target.value })}
-          className="bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
         <input
           type="text"
           placeholder="类型 / 流派（可选）"
           value={bookMeta.genre ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, genre: e.target.value })}
-          className="bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </div>
 
       {/* Chapters editor */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <div className="text-xs text-zinc-400 font-medium">
+          <div className="text-xs text-fg-secondary font-medium">
             参考章节（建议 3-6 章覆盖关键位置 · 共 {totalChars} 字）
           </div>
           <button
             type="button"
             onClick={addChapter}
             disabled={chapters.length >= 8}
-            className="px-2 py-1 text-xs rounded border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 text-zinc-300 inline-flex items-center gap-1 disabled:opacity-40"
+            className="px-2 py-1 text-xs rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-40"
           >
             <Plus className="size-3" /> 添加章节
           </button>
@@ -364,14 +364,14 @@ export function Analyzer() {
           return (
             <div
               key={ch.uid}
-              className="rounded-md border border-zinc-800 bg-zinc-950/40 p-3 space-y-2"
+              className="rounded-md border border-border-subtle bg-canvas/40 p-3 space-y-2"
             >
               <div className="flex items-center gap-2 flex-wrap">
-                <div className="text-xs text-zinc-500 font-mono">#{idx + 1}</div>
+                <div className="text-xs text-fg-muted font-mono">#{idx + 1}</div>
                 <select
                   value={ch.tag}
                   onChange={(e) => updateChapter(ch.uid, { tag: e.target.value as ChapterTag })}
-                  className="bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
+                  className="bg-surface border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
                 >
                   {CHAPTER_TAGS.map((t) => (
                     <option key={t.id} value={t.id}>
@@ -384,26 +384,26 @@ export function Analyzer() {
                   placeholder="章节标题（如：第一章·觉醒）"
                   value={ch.title ?? ''}
                   onChange={(e) => updateChapter(ch.uid, { title: e.target.value })}
-                  className="flex-1 min-w-[150px] bg-zinc-900 border border-zinc-800 rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
+                  className="flex-1 min-w-[150px] bg-surface border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
                 />
-                <span className="text-[10px] text-zinc-500">
+                <span className="text-[10px] text-fg-muted">
                   {ch.text.length} 字
                   {ch.text.trim().length < 50 && (
-                    <span className="text-amber-500 ml-1">· 太短</span>
+                    <span className="text-warning ml-1">· 太短</span>
                   )}
                 </span>
                 <button
                   type="button"
                   onClick={() => removeChapter(ch.uid)}
                   disabled={chapters.length === 1}
-                  className="p-1 rounded text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="p-1 rounded text-fg-muted hover:text-danger hover:bg-danger/10 disabled:opacity-30 disabled:cursor-not-allowed"
                   title="删除本章"
                 >
                   <Trash2 className="size-3.5" />
                 </button>
               </div>
-              <div className="text-[10px] text-zinc-500 leading-snug">
-                <span className="text-zinc-400">分析重点：</span>
+              <div className="text-[10px] text-fg-muted leading-snug">
+                <span className="text-fg-secondary">分析重点：</span>
                 {tag.analysisFocus}
               </div>
               <textarea
@@ -411,7 +411,7 @@ export function Analyzer() {
                 onChange={(e) => updateChapter(ch.uid, { text: e.target.value })}
                 placeholder="粘贴本章正文（建议 ≥ 500 字以保证分析质量）..."
                 rows={6}
-                className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-2 py-2 text-xs text-zinc-200 leading-relaxed focus:outline-none focus:border-brand-500 font-serif"
+                className="w-full bg-surface border border-border-subtle rounded-md px-2 py-2 text-xs text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500 font-serif"
                 spellCheck={false}
               />
             </div>
@@ -421,7 +421,7 @@ export function Analyzer() {
 
       {/* Mode toggle */}
       <div className="flex items-center gap-3 text-xs">
-        <span className="text-zinc-400">分析模式：</span>
+        <span className="text-fg-secondary">分析模式：</span>
         <label className="flex items-center gap-1 cursor-pointer">
           <input
             type="radio"
@@ -431,7 +431,7 @@ export function Analyzer() {
             className="accent-brand-500"
             disabled={running}
           />
-          <span className={analysisMode === 'single' ? 'text-zinc-200' : 'text-zinc-500'}>单步快速</span>
+          <span className={analysisMode === 'single' ? 'text-fg-primary' : 'text-fg-muted'}>单步快速</span>
         </label>
         <label className="flex items-center gap-1 cursor-pointer">
           <input
@@ -442,9 +442,9 @@ export function Analyzer() {
             className="accent-brand-500"
             disabled={running}
           />
-          <span className={analysisMode === 'two-stage' ? 'text-zinc-200' : 'text-zinc-500'}>两阶段法（推荐）</span>
+          <span className={analysisMode === 'two-stage' ? 'text-fg-primary' : 'text-fg-muted'}>两阶段法（推荐）</span>
         </label>
-        <span className="text-[10px] text-zinc-500">
+        <span className="text-[10px] text-fg-muted">
           {analysisMode === 'two-stage'
             ? '先扫框架 → 人工复核 → 再深挖方法论，在同一 token 预算下质量更高'
             : '一次调用输出完整结果'}
@@ -459,7 +459,7 @@ export function Analyzer() {
               type="button"
               onClick={run}
               disabled={!canRun}
-              className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-brand-500/15 hover:bg-brand-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Play className="size-4" /> 开始拆书分析
             </button>
@@ -467,7 +467,7 @@ export function Analyzer() {
             <button
               type="button"
               onClick={stop}
-              className="px-4 py-2 text-sm rounded-md border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-200 font-medium inline-flex items-center gap-1.5"
+              className="px-4 py-2 text-sm rounded-md border border-danger/40 bg-danger/10 hover:bg-danger/20 text-danger font-medium inline-flex items-center gap-1.5"
             >
               <Square className="size-4" /> 停止
             </button>
@@ -480,7 +480,7 @@ export function Analyzer() {
                 type="button"
                 onClick={runStage1}
                 disabled={!canRun}
-                className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-brand-500/15 hover:bg-brand-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Play className="size-4" /> {stage1Result ? '重跑' : '运行'} Stage 1：框架扫描
               </button>
@@ -488,7 +488,7 @@ export function Analyzer() {
               <button
                 type="button"
                 onClick={stop}
-                className="px-4 py-2 text-sm rounded-md border border-rose-500/40 bg-rose-500/10 hover:bg-rose-500/20 text-rose-200 font-medium inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-sm rounded-md border border-danger/40 bg-danger/10 hover:bg-danger/20 text-danger font-medium inline-flex items-center gap-1.5"
               >
                 <Square className="size-4" /> 停止 Stage {runningStage === 'stage1' ? '1' : '2'}
               </button>
@@ -498,7 +498,7 @@ export function Analyzer() {
               <button
                 type="button"
                 onClick={runStage2}
-                className="px-4 py-2 text-sm rounded-md border border-emerald-500/40 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-200 font-medium inline-flex items-center gap-1.5"
+                className="px-4 py-2 text-sm rounded-md border border-success/40 bg-success/15 hover:bg-success/25 text-emerald-200 font-medium inline-flex items-center gap-1.5"
               >
                 <Play className="size-4" /> 运行 Stage 2：深度方法论
               </button>
@@ -506,19 +506,19 @@ export function Analyzer() {
           </>
         )}
         {meta.durationMs !== undefined && (
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-fg-muted">
             ✓ Stage 2: {(meta.durationMs / 1000).toFixed(1)}s
             {meta.tokens !== undefined && ` · ${meta.tokens} tokens`}
           </span>
         )}
         {stage1Meta.durationMs !== undefined && analysisMode === 'two-stage' && (
-          <span className="text-xs text-zinc-500">
+          <span className="text-xs text-fg-muted">
             ✓ Stage 1: {(stage1Meta.durationMs / 1000).toFixed(1)}s
             {stage1Meta.tokens !== undefined && ` · ${stage1Meta.tokens} tokens`}
           </span>
         )}
         {!canRun && !running && (
-          <span className="text-[11px] text-amber-500">
+          <span className="text-[11px] text-warning">
             {chapters.some((c) => c.text.trim().length < 50)
               ? '每章正文需 ≥ 50 字'
               : '请先在「设置」中配置 API'}
@@ -528,7 +528,7 @@ export function Analyzer() {
 
       {/* v2 阶段 2.5 · Stage 1 框架扫描预览面板（可编辑） */}
       {analysisMode === 'two-stage' && stage1Result && (
-        <div className="rounded-md border border-brand-500/30 bg-brand-500/5 p-3 space-y-2">
+        <div className="rounded-md border border-brand-500/30 bg-primary-500/5 p-3 space-y-2">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-brand-200">
               📝 Stage 1 框架扫描结果（可手动修订后运行 Stage 2）
@@ -536,7 +536,7 @@ export function Analyzer() {
             <button
               type="button"
               onClick={() => setStage1Result(null)}
-              className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-700 text-zinc-400 hover:bg-zinc-800"
+              className="text-[10px] px-1.5 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
             >
               丢弃
             </button>
@@ -566,20 +566,20 @@ export function Analyzer() {
             />
             {stage1Result.chapterFunctions.length > 0 && (
               <div>
-                <div className="text-xs text-zinc-400 mb-1">各章结构功能</div>
+                <div className="text-xs text-fg-secondary mb-1">各章结构功能</div>
                 <div className="space-y-1">
                   {stage1Result.chapterFunctions.map((cf, i) => {
                     const tag = findChapterTag(cf.tag);
                     return (
                       <div key={i} className="flex items-start gap-2 text-[11px]">
-                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-brand-500/10 text-brand-300 text-[9px]">
+                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300 text-[9px]">
                           {tag?.label ?? cf.tag}
                         </span>
                         <input
                           type="text"
                           value={cf.structuralFunction}
                           onChange={(e) => updateStage1ChapterFn(i, e.target.value)}
-                          className="flex-1 bg-zinc-900 border border-zinc-800 rounded px-1.5 py-0.5 text-[11px] text-zinc-200 focus:outline-none focus:border-brand-500"
+                          className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
                         />
                       </div>
                     );
@@ -589,16 +589,16 @@ export function Analyzer() {
             )}
             {stage1Result.stage2Focus.length > 0 && (
               <div>
-                <div className="text-xs text-zinc-400 mb-1">Stage 2 重点深挖问题</div>
+                <div className="text-xs text-fg-secondary mb-1">Stage 2 重点深挖问题</div>
                 <div className="space-y-1">
                   {stage1Result.stage2Focus.map((q, i) => (
                     <div key={i} className="flex items-start gap-1.5 text-[11px]">
-                      <span className="text-zinc-500 shrink-0">{i + 1}.</span>
+                      <span className="text-fg-muted shrink-0">{i + 1}.</span>
                       <input
                         type="text"
                         value={q}
                         onChange={(e) => updateStage1Focus(i, e.target.value)}
-                        className="flex-1 bg-zinc-900 border border-zinc-800 rounded px-1.5 py-0.5 text-[11px] text-zinc-200 focus:outline-none focus:border-brand-500"
+                        className="flex-1 bg-surface border border-border-subtle rounded px-1.5 py-0.5 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
                       />
                     </div>
                   ))}
@@ -606,7 +606,7 @@ export function Analyzer() {
               </div>
             )}
           </div>
-          <p className="text-[10px] text-zinc-500 leading-snug">
+          <p className="text-[10px] text-fg-muted leading-snug">
             💡 人工复核后点击「运行 Stage 2」，会将以上框架作为已确定背景交给深度分析。
           </p>
         </div>
@@ -614,7 +614,7 @@ export function Analyzer() {
 
       {/* Error */}
       {error && (
-        <div className="rounded-md border border-rose-500/40 bg-rose-500/10 px-3 py-2 text-sm text-rose-300">
+        <div className="rounded-md border border-danger/40 bg-danger/10 px-3 py-2 text-sm text-danger">
           ⚠ {error}
         </div>
       )}
@@ -624,17 +624,17 @@ export function Analyzer() {
         <details
           open={showReasoning}
           onToggle={(e) => setShowReasoning(e.currentTarget.open)}
-          className="rounded-md border border-zinc-800 bg-zinc-900/30 px-3 py-2"
+          className="rounded-md border border-border-subtle bg-surface/30 px-3 py-2"
         >
-          <summary className="text-xs text-zinc-400 cursor-pointer flex items-center gap-1.5">
+          <summary className="text-xs text-fg-secondary cursor-pointer flex items-center gap-1.5">
             <Brain className="size-3.5" />
             思维链
             {running && reasoningStream && (
-              <Loader2 className="size-3 animate-spin text-brand-400" />
+              <Loader2 className="size-3 animate-spin text-primary-400" />
             )}
-            <span className="text-zinc-500 font-normal">（{reasoningStream.length} 字）</span>
+            <span className="text-fg-muted font-normal">（{reasoningStream.length} 字）</span>
           </summary>
-          <div className="mt-2 max-h-[300px] overflow-y-auto text-[11px] text-zinc-400 whitespace-pre-wrap leading-snug border-t border-zinc-800 pt-2">
+          <div className="mt-2 max-h-[300px] overflow-y-auto text-[11px] text-fg-secondary whitespace-pre-wrap leading-snug border-t border-border-subtle pt-2">
             {reasoningStream || '（思维链尚未流式返回...）'}
           </div>
         </details>
@@ -643,13 +643,13 @@ export function Analyzer() {
       {/* Streaming raw JSON (during generation) */}
       {running && streamingJson && !result && (
         <details
-          className="rounded-md border border-zinc-800 bg-zinc-900/30 px-3 py-2"
+          className="rounded-md border border-border-subtle bg-surface/30 px-3 py-2"
         >
-          <summary className="text-xs text-zinc-400 cursor-pointer flex items-center gap-1.5">
+          <summary className="text-xs text-fg-secondary cursor-pointer flex items-center gap-1.5">
             <FileJson className="size-3.5" />
             实时输出（流式 JSON · {streamingJson.length} 字）
           </summary>
-          <pre className="mt-2 max-h-[300px] overflow-y-auto text-[10px] text-zinc-500 whitespace-pre-wrap font-mono">
+          <pre className="mt-2 max-h-[300px] overflow-y-auto text-[10px] text-fg-muted whitespace-pre-wrap font-mono">
             {streamingJson}
           </pre>
         </details>
@@ -659,7 +659,7 @@ export function Analyzer() {
       {result && (
         <div className="space-y-3">
           <div className="flex items-center justify-between flex-wrap gap-2">
-            <h2 className="text-base font-semibold text-zinc-100">📚 分析结果</h2>
+            <h2 className="text-base font-semibold text-fg-primary">📚 分析结果</h2>
             <div className="flex gap-1 flex-wrap">
               <button
                 type="button"
@@ -669,8 +669,8 @@ export function Analyzer() {
                 className={
                   'px-2 py-1 text-[11px] rounded border inline-flex items-center gap-1 disabled:opacity-60 ' +
                   (savedKbId !== null
-                    ? 'border-emerald-500/40 bg-emerald-500/15 text-emerald-200'
-                    : 'border-brand-500/40 bg-brand-500/10 hover:bg-brand-500/20 text-brand-200')
+                    ? 'border-success/40 bg-success/15 text-emerald-200'
+                    : 'border-brand-500/40 bg-primary-500/10 hover:bg-primary-500/20 text-brand-200')
                 }
               >
                 {savingKb ? (
@@ -685,35 +685,35 @@ export function Analyzer() {
               <button
                 type="button"
                 onClick={() => setShowRawJson((v) => !v)}
-                className="px-2 py-1 text-[11px] rounded border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 text-zinc-300 inline-flex items-center gap-1"
+                className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
               >
                 <FileJson className="size-3" /> {showRawJson ? '隐藏' : '查看'} JSON
               </button>
               <button
                 type="button"
                 onClick={copyJson}
-                className="px-2 py-1 text-[11px] rounded border border-zinc-700 hover:border-zinc-600 hover:bg-zinc-800 text-zinc-300 inline-flex items-center gap-1"
+                className="px-2 py-1 text-[11px] rounded border border-border-default hover:border-zinc-600 hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
               >
-                {copied ? <Check className="size-3 text-emerald-400" /> : <Copy className="size-3" />}
+                {copied ? <Check className="size-3 text-success" /> : <Copy className="size-3" />}
                 {copied ? '已复制' : '复制 JSON'}
               </button>
             </div>
           </div>
 
           {kbError && (
-            <div className="rounded-md border border-rose-500/40 bg-rose-500/10 px-3 py-1.5 text-xs text-rose-300">
+            <div className="rounded-md border border-danger/40 bg-danger/10 px-3 py-1.5 text-xs text-danger">
               ⚠ 保存 KB 失败：{kbError}
             </div>
           )}
           {savedKbId !== null && (
-            <div className="rounded-md border border-emerald-500/40 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-200">
+            <div className="rounded-md border border-success/40 bg-success/10 px-3 py-1.5 text-xs text-emerald-200">
               ✓ 已保存为拆书资料 #{savedKbId}。可在项目「资料库」面板中查看并绑定到当前项目。
             </div>
           )}
 
           {/* Book meta echo */}
           {(result.bookMeta?.title || result.bookMeta?.author || result.bookMeta?.genre) && (
-            <div className="text-xs text-zinc-500">
+            <div className="text-xs text-fg-muted">
               📖 {result.bookMeta.title} · {result.bookMeta.author} · {result.bookMeta.genre}
             </div>
           )}
@@ -725,10 +725,10 @@ export function Analyzer() {
             <Field label="节奏签名" value={result.methodology.rhythmSignature} />
             {result.methodology.coreCraftPrinciples?.length > 0 && (
               <div>
-                <div className="text-xs text-zinc-400 mb-1">核心工艺原则</div>
+                <div className="text-xs text-fg-secondary mb-1">核心工艺原则</div>
                 <ul className="space-y-1">
                   {result.methodology.coreCraftPrinciples.map((p, i) => (
-                    <li key={i} className="text-xs text-zinc-300 leading-snug pl-3 border-l-2 border-brand-500/40">
+                    <li key={i} className="text-xs text-fg-secondary leading-snug pl-3 border-l-2 border-brand-500/40">
                       {p}
                     </li>
                   ))}
@@ -758,10 +758,10 @@ export function Analyzer() {
             <Field label="伏笔与回收" value={result.plot.foreshadowingAndPayoff} />
             {result.plot.keyTurningPoints?.length > 0 && (
               <div>
-                <div className="text-xs text-zinc-400 mb-1">关键转折点</div>
+                <div className="text-xs text-fg-secondary mb-1">关键转折点</div>
                 <ul className="space-y-1">
                   {result.plot.keyTurningPoints.map((p, i) => (
-                    <li key={i} className="text-xs text-zinc-300 leading-snug pl-3 border-l-2 border-zinc-700">
+                    <li key={i} className="text-xs text-fg-secondary leading-snug pl-3 border-l-2 border-border-default">
                       {p}
                     </li>
                   ))}
@@ -779,15 +779,15 @@ export function Analyzer() {
                   return (
                     <div
                       key={i}
-                      className="rounded border border-zinc-800 bg-zinc-900/30 p-2 space-y-1"
+                      className="rounded border border-border-subtle bg-surface/30 p-2 space-y-1"
                     >
                       <div className="flex items-center gap-2 flex-wrap text-[11px]">
-                        <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-brand-500/10 text-brand-300">
+                        <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300">
                           {tag.label}
                         </span>
-                        <span className="text-zinc-500">{tag.position}</span>
+                        <span className="text-fg-muted">{tag.position}</span>
                         {ins.chapterTitle && (
-                          <span className="text-zinc-300">· {ins.chapterTitle}</span>
+                          <span className="text-fg-secondary">· {ins.chapterTitle}</span>
                         )}
                       </div>
                       <Field label="为什么这样写有效" value={ins.whyItWorks} small />
@@ -802,7 +802,7 @@ export function Analyzer() {
           {/* Raw JSON viewer */}
           {showRawJson && (
             <Section title="📄 原始 JSON 输出">
-              <pre className="text-[10px] text-zinc-400 font-mono whitespace-pre-wrap max-h-[400px] overflow-y-auto bg-zinc-950 border border-zinc-800 rounded p-2">
+              <pre className="text-[10px] text-fg-secondary font-mono whitespace-pre-wrap max-h-[400px] overflow-y-auto bg-canvas border border-border-subtle rounded p-2">
                 {JSON.stringify(result, null, 2)}
               </pre>
             </Section>
@@ -811,13 +811,13 @@ export function Analyzer() {
       )}
 
       {/* Footer hint */}
-      <div className="text-[11px] text-zinc-500 leading-relaxed border-t border-zinc-800 pt-3">
+      <div className="text-[11px] text-fg-muted leading-relaxed border-t border-border-subtle pt-3">
         <p className="mb-1">
-          <span className="text-zinc-400">💡 使用提示：</span>
-          建议至少提供 <span className="text-zinc-300">黄金章 + 中段 50% + 高潮 80%</span> 三个位置以覆盖核心结构。每章正文 ≥ 500 字效果最佳。
+          <span className="text-fg-secondary">💡 使用提示：</span>
+          建议至少提供 <span className="text-fg-secondary">黄金章 + 中段 50% + 高潮 80%</span> 三个位置以覆盖核心结构。每章正文 ≥ 500 字效果最佳。
         </p>
         <p>
-          <span className="text-zinc-400">⚙️ Thinking Mode：</span>
+          <span className="text-fg-secondary">⚙️ Thinking Mode：</span>
           启用后 AI 会先做深度推理再输出（耗时增加 30-50%，但分析质量显著提升）。需要 DeepSeek V4 Pro 或更高模型支持。
         </p>
       </div>
@@ -829,8 +829,8 @@ export function Analyzer() {
 
 function Section(props: { title: string; children: React.ReactNode }) {
   return (
-    <div className="rounded-md border border-zinc-800 bg-zinc-900/30 p-3 space-y-2">
-      <div className="text-sm font-medium text-zinc-200">{props.title}</div>
+    <div className="rounded-md border border-border-subtle bg-surface/30 p-3 space-y-2">
+      <div className="text-sm font-medium text-fg-primary">{props.title}</div>
       <div className="space-y-2">{props.children}</div>
     </div>
   );
@@ -839,20 +839,20 @@ function Section(props: { title: string; children: React.ReactNode }) {
 function Stage1Field(props: { label: string; value: string; rows?: number; onChange: (v: string) => void }) {
   return (
     <div>
-      <div className="text-[10px] text-zinc-400 mb-0.5">{props.label}</div>
+      <div className="text-[10px] text-fg-secondary mb-0.5">{props.label}</div>
       {props.rows && props.rows > 1 ? (
         <textarea
           value={props.value}
           rows={props.rows}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-[11px] text-zinc-200 leading-relaxed focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-[11px] text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500"
         />
       ) : (
         <input
           type="text"
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded px-1.5 py-1 text-[11px] text-zinc-200 focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-[11px] text-fg-primary focus:outline-none focus:border-brand-500"
         />
       )}
     </div>
@@ -862,16 +862,16 @@ function Stage1Field(props: { label: string; value: string; rows?: number; onCha
 function Field(props: { label: string; value: string; small?: boolean }) {
   return (
     <div>
-      <div className={(props.small ? 'text-[10px]' : 'text-xs') + ' text-zinc-500 mb-0.5'}>
+      <div className={(props.small ? 'text-[10px]' : 'text-xs') + ' text-fg-muted mb-0.5'}>
         {props.label}
       </div>
       <div
         className={
           (props.small ? 'text-[11px]' : 'text-xs') +
-          ' text-zinc-300 leading-relaxed whitespace-pre-wrap'
+          ' text-fg-secondary leading-relaxed whitespace-pre-wrap'
         }
       >
-        {props.value || <span className="text-zinc-600">（未生成）</span>}
+        {props.value || <span className="text-fg-muted">（未生成）</span>}
       </div>
     </div>
   );

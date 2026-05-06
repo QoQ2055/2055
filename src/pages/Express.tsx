@@ -326,15 +326,15 @@ export function Express() {
 
   if (loadErr) {
     return (
-      <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <strong className="text-amber-300 flex items-center gap-1.5">
+      <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+        <strong className="text-warning flex items-center gap-1.5">
           <AlertTriangle className="size-4" /> 加载 manifest 失败
         </strong>
-        <p className="text-zinc-300 mt-1">{loadErr}</p>
+        <p className="text-fg-secondary mt-1">{loadErr}</p>
       </div>
     );
   }
-  if (!manifest) return <div className="p-8 text-zinc-500">加载 manifest…</div>;
+  if (!manifest) return <div className="p-8 text-fg-muted">加载 manifest…</div>;
 
   const sb1 = project.artifacts['storyboard.1'];
   const sb2 = project.artifacts['storyboard.2'];
@@ -391,7 +391,7 @@ export function Express() {
               <button className="btn-outline" onClick={stop}><Square className="size-4" /> 停止</button>
             )}
             <button
-              className="btn-ghost text-xs text-rose-300/80 hover:text-rose-300"
+              className="btn-ghost text-xs text-danger/80 hover:text-danger"
               onClick={clearAll}
               disabled={chainBusy || Object.keys(project.artifacts).length === 0}
               title="清空所有 LLM 产物（项目设定保留）"
@@ -458,8 +458,8 @@ export function Express() {
                     className={clsx(
                       'text-[11px] px-2 py-1 rounded border transition',
                       active
-                        ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                        : 'border-zinc-800 text-zinc-400 hover:border-zinc-600',
+                        ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                        : 'border-border-subtle text-fg-secondary hover:border-zinc-600',
                     )}
                     onClick={() => {
                       const cur = ctx.genres ?? [];
@@ -493,9 +493,9 @@ export function Express() {
               placeholder="如：女修真者被宗门构陷，绝地反杀揭穿背叛"
             />
           </div>
-          <div className="text-[11px] text-zinc-500 mt-2 p-2 bg-zinc-900/50 rounded border border-zinc-800">
-            <span className="text-zinc-400">派生概念（注入到 prompt {'{concept}'}）：</span>
-            <div className="font-mono mt-0.5 text-zinc-300 break-all">{ctx.concept || '(未生成)'}</div>
+          <div className="text-[11px] text-fg-muted mt-2 p-2 bg-surface/50 rounded border border-border-subtle">
+            <span className="text-fg-secondary">派生概念（注入到 prompt {'{concept}'}）：</span>
+            <div className="font-mono mt-0.5 text-fg-secondary break-all">{ctx.concept || '(未生成)'}</div>
           </div>
         </Section>
 
@@ -508,7 +508,7 @@ export function Express() {
           locked={!setupReady}
           headerActions={importReady && (
             <button
-              className="btn-ghost text-[11px] text-zinc-500 hover:text-rose-300"
+              className="btn-ghost text-[11px] text-fg-muted hover:text-danger"
               onClick={() => { if (confirm('确定清空已导入剧本？')) clearScreenplay(); }}
               disabled={chainBusy}
               title="清空已导入剧本"
@@ -543,13 +543,13 @@ export function Express() {
                 AI 修复格式
               </button>
             </div>
-            <span className="text-[10px] text-zinc-600">{draft.length.toLocaleString()} 字</span>
+            <span className="text-[10px] text-fg-muted">{draft.length.toLocaleString()} 字</span>
           </div>
           <textarea
             rows={10}
             className={clsx(
-              'w-full bg-zinc-900 border rounded-md px-3 py-2 text-xs font-mono focus:outline-none',
-              draftErr ? 'border-rose-500/60' : 'border-zinc-800 focus:border-brand-500',
+              'w-full bg-surface border rounded-md px-3 py-2 text-xs font-mono focus:outline-none',
+              draftErr ? 'border-danger/60' : 'border-border-subtle focus:border-brand-500',
             )}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
@@ -557,7 +557,7 @@ export function Express() {
             disabled={normalizing}
           />
           {draftErr && (
-            <div className="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
+            <div className="text-[11px] text-danger mt-1 flex items-center gap-1">
               <AlertTriangle className="size-3" /> {draftErr}
             </div>
           )}
@@ -572,14 +572,14 @@ export function Express() {
                 </div>
                 {!normalizing && (
                   <button
-                    className="text-[10px] px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                    className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
                     onClick={() => setNormalizePreview('')}
                   >
                     丢弃修复结果
                   </button>
                 )}
               </div>
-              <pre className="px-3 py-2 text-[11px] font-mono text-zinc-200 whitespace-pre-wrap break-words max-h-72 overflow-auto">
+              <pre className="px-3 py-2 text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
                 {normalizePreview || '…'}
               </pre>
             </div>
@@ -614,7 +614,7 @@ export function Express() {
               </button>
             )}
             {sb7 && (
-              <span className="text-[11px] text-emerald-400 inline-flex items-center gap-1">
+              <span className="text-[11px] text-success inline-flex items-center gap-1">
                 <CheckCircle2 className="size-3.5" /> 已写入 screenplay.7（{sb7.content.length.toLocaleString()} 字）
               </span>
             )}
@@ -630,7 +630,7 @@ export function Express() {
           locked={!importReady}
           headerActions={(
             <button
-              className="btn-ghost text-[11px] text-zinc-500 hover:text-rose-300"
+              className="btn-ghost text-[11px] text-fg-muted hover:text-danger"
               onClick={() => clearStage('assets', '资产')}
               disabled={chainBusy || !assetsStage?.steps.some((st) => !!project.artifacts[st.id])}
               title="清空本阶段所有产物"
@@ -640,7 +640,7 @@ export function Express() {
           )}
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] text-zinc-500">先扫描清单，再并行展开角色/场景/道具卡片。</p>
+            <p className="text-[11px] text-fg-muted">先扫描清单，再并行展开角色/场景/道具卡片。</p>
             <button
               className="btn-primary text-xs"
               onClick={runAssetsAll}
@@ -668,8 +668,8 @@ export function Express() {
             })}
           </div>
           {assets1 && (
-            <div className="text-[11px] text-zinc-500 mt-2">
-              扫描出 <code className="text-zinc-300">{(assets1.content.match(/[\n,]/g)?.length ?? 0)}</code> 条候选项
+            <div className="text-[11px] text-fg-muted mt-2">
+              扫描出 <code className="text-fg-secondary">{(assets1.content.match(/[\n,]/g)?.length ?? 0)}</code> 条候选项
             </div>
           )}
         </Section>
@@ -683,7 +683,7 @@ export function Express() {
           locked={!importReady}
           headerActions={(
             <button
-              className="btn-ghost text-[11px] text-zinc-500 hover:text-rose-300"
+              className="btn-ghost text-[11px] text-fg-muted hover:text-danger"
               onClick={() => clearStage('storyboard', '分镜')}
               disabled={chainBusy || (!sb1 && !sb2)}
               title="清空本阶段所有产物"
@@ -693,7 +693,7 @@ export function Express() {
           )}
         >
           <div className="flex items-center justify-between mb-2">
-            <p className="text-[11px] text-zinc-500">
+            <p className="text-[11px] text-fg-muted">
               storyboard.2 会读取 storyboard.1 的 <code>&lt;plan-json&gt;</code> 块逐单元生成
             </p>
             <button
@@ -776,9 +776,9 @@ export function Express() {
           <div className="card p-4 flex items-center justify-between">
             <div>
               <h3 className="text-sm font-semibold flex items-center gap-1.5">
-                <CheckCircle2 className="size-4 text-emerald-400" /> 全流程已完成
+                <CheckCircle2 className="size-4 text-success" /> 全流程已完成
               </h3>
-              <p className="text-[11px] text-zinc-500 mt-0.5">
+              <p className="text-[11px] text-fg-muted mt-0.5">
                 可在「资产工作台」/「常规流水线」中进一步编辑与导出。
               </p>
             </div>
@@ -827,15 +827,15 @@ function Section(p: {
             className={clsx(
               'inline-flex items-center justify-center size-6 rounded-full text-[11px] font-semibold border shrink-0',
               p.ready
-                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
-                : 'bg-zinc-800 text-zinc-400 border-zinc-700',
+                ? 'bg-success/20 text-success border-success/40'
+                : 'bg-elevated text-fg-secondary border-border-default',
             )}
           >
             {p.ready ? <CheckCircle2 className="size-3.5" /> : p.step}
           </span>
           <div className="min-w-0">
             <h2 className="text-sm font-semibold truncate">{p.title}</h2>
-            {p.subtitle && <p className="text-[11px] text-zinc-500 truncate">{p.subtitle}</p>}
+            {p.subtitle && <p className="text-[11px] text-fg-muted truncate">{p.subtitle}</p>}
           </div>
         </div>
         {p.headerActions && <div className="flex items-center gap-1.5 shrink-0">{p.headerActions}</div>}
@@ -862,8 +862,8 @@ function ChoiceRow(p: {
             className={clsx(
               'text-[11px] px-2.5 py-1 rounded border transition',
               active
-                ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                : 'border-zinc-800 text-zinc-400 hover:border-zinc-600',
+                ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                : 'border-border-subtle text-fg-secondary hover:border-zinc-600',
             )}
             onClick={() => p.onChange(opt.value)}
           >
@@ -890,12 +890,12 @@ function NodeCard(p: {
   return (
     <div
       className={clsx(
-        'border rounded-md p-3 bg-zinc-900/40 flex flex-col gap-2',
+        'border rounded-md p-3 bg-surface/40 flex flex-col gap-2',
         p.wide ? '' : '',
-        status === 'error' ? 'border-rose-500/40'
-        : status === 'done' ? 'border-emerald-500/30'
+        status === 'error' ? 'border-danger/40'
+        : status === 'done' ? 'border-success/30'
         : status === 'running' ? 'border-violet-500/40'
-        : 'border-zinc-800',
+        : 'border-border-subtle',
       )}
     >
       <div className="flex items-center justify-between gap-2">
@@ -903,13 +903,13 @@ function NodeCard(p: {
           <StatusIcon status={status} />
           <div className="min-w-0">
             <div className="text-xs font-medium truncate">{p.step.title}</div>
-            <div className="text-[10px] font-mono text-zinc-600">{p.step.id}</div>
+            <div className="text-[10px] font-mono text-fg-muted">{p.step.id}</div>
           </div>
         </div>
         <div className="flex items-center gap-1">
           {p.artifact && p.onClear && (
             <button
-              className="btn-ghost text-[11px] px-1.5 py-0.5 text-zinc-500 hover:text-rose-300"
+              className="btn-ghost text-[11px] px-1.5 py-0.5 text-fg-muted hover:text-danger"
               onClick={() => {
                 if (confirm(`确定清空「${p.step.title}」（${p.step.id}）的产物？`)) p.onClear?.();
               }}
@@ -930,13 +930,13 @@ function NodeCard(p: {
         </div>
       </div>
       {p.runState.error && (
-        <div className="text-[10px] text-rose-400 flex items-center gap-1">
+        <div className="text-[10px] text-danger flex items-center gap-1">
           <AlertTriangle className="size-3" /> {p.runState.error}
         </div>
       )}
       {/* 流式中：保持原 <pre> 实时增长视图 */}
       {showStream && (
-        <pre className="text-[10px] font-mono text-zinc-400 whitespace-pre-wrap break-words max-h-40 overflow-auto bg-zinc-950/60 rounded px-2 py-1.5 border border-zinc-800">
+        <pre className="text-[10px] font-mono text-fg-secondary whitespace-pre-wrap break-words max-h-40 overflow-auto bg-canvas/60 rounded px-2 py-1.5 border border-border-subtle">
           {p.runState.streamed}
         </pre>
       )}
@@ -978,17 +978,17 @@ function Phase2ProgressPanel(p: {
   const pct = total > 0 ? Math.round((completedSet.size / total) * 100) : 0;
 
   return (
-    <div className="card p-3 border-zinc-800 bg-zinc-900/30 space-y-2">
+    <div className="card p-3 border-border-subtle bg-surface/30 space-y-2">
       <div className="flex items-center justify-between gap-2 flex-wrap">
         <div className="text-xs font-medium flex items-center gap-2">
           <span>逐单元进度</span>
-          <span className="font-mono text-zinc-500">{completedSet.size}/{total}</span>
-          <span className="text-[10px] text-zinc-600">{pct}%</span>
+          <span className="font-mono text-fg-muted">{completedSet.size}/{total}</span>
+          <span className="text-[10px] text-fg-muted">{pct}%</span>
         </div>
         <div className="flex items-center gap-1.5">
           {failed.length > 0 && (
             <button
-              className="text-[11px] px-2 py-0.5 rounded border border-rose-500/40 text-rose-300 hover:bg-rose-500/10 inline-flex items-center gap-1 disabled:opacity-40"
+              className="text-[11px] px-2 py-0.5 rounded border border-danger/40 text-danger hover:bg-danger/10 inline-flex items-center gap-1 disabled:opacity-40"
               onClick={p.onRetryFailed}
               disabled={p.busy}
               title="只跑 failedUnits 中的单元；其他已完成单元保持不变"
@@ -997,7 +997,7 @@ function Phase2ProgressPanel(p: {
             </button>
           )}
           <button
-            className="text-[11px] px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800 inline-flex items-center gap-1 disabled:opacity-40"
+            className="text-[11px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated inline-flex items-center gap-1 disabled:opacity-40"
             onClick={p.onRerunAll}
             disabled={p.busy}
             title="清空 storyboard.2 进度，从 UNIT 1 开始全量重跑"
@@ -1007,7 +1007,7 @@ function Phase2ProgressPanel(p: {
         </div>
       </div>
       {/* 进度条：每格一个 unit */}
-      <div className="flex gap-0.5 h-2 rounded overflow-hidden bg-zinc-800">
+      <div className="flex gap-0.5 h-2 rounded overflow-hidden bg-elevated">
         {Array.from({ length: total }, (_, i) => {
           const idx = i + 1;
           const isCompleted = completedSet.has(idx);
@@ -1026,9 +1026,9 @@ function Phase2ProgressPanel(p: {
           );
         })}
       </div>
-      <div className="flex items-center gap-3 text-[10px] text-zinc-500">
+      <div className="flex items-center gap-3 text-[10px] text-fg-muted">
         <span className="inline-flex items-center gap-1"><span className="inline-block size-2 rounded-sm bg-emerald-500" /> 已完成 {completedSet.size}</span>
-        {failed.length > 0 && <span className="inline-flex items-center gap-1 text-rose-400"><span className="inline-block size-2 rounded-sm bg-rose-500" /> 失败 {failed.length}</span>}
+        {failed.length > 0 && <span className="inline-flex items-center gap-1 text-danger"><span className="inline-block size-2 rounded-sm bg-rose-500" /> 失败 {failed.length}</span>}
         {pending > 0 && <span className="inline-flex items-center gap-1"><span className="inline-block size-2 rounded-sm bg-zinc-700" /> 待生成 {pending}</span>}
         {meta.cumulativeTokens !== undefined && (
           <span className="ml-auto font-mono">累计 {(meta.cumulativeTokens).toLocaleString()} tok · ${meta.cumulativeCost?.toFixed(4) ?? '0'}</span>
@@ -1036,13 +1036,13 @@ function Phase2ProgressPanel(p: {
       </div>
       {failed.length > 0 && (
         <details className="text-[11px]">
-          <summary className="cursor-pointer text-rose-300">失败详情 · {failed.length}</summary>
-          <ul className="mt-1 space-y-0.5 ml-4 text-zinc-400 list-disc">
+          <summary className="cursor-pointer text-danger">失败详情 · {failed.length}</summary>
+          <ul className="mt-1 space-y-0.5 ml-4 text-fg-secondary list-disc">
             {failed.map((f) => (
               <li key={f.unitIndex}>
-                <span className="font-mono text-rose-400">UNIT {f.unitIndex}</span>
-                <span className="text-zinc-600 ml-1">×{f.retries}</span>
-                <span className="text-zinc-500 ml-2">{f.error.slice(0, 200)}</span>
+                <span className="font-mono text-danger">UNIT {f.unitIndex}</span>
+                <span className="text-fg-muted ml-1">×{f.retries}</span>
+                <span className="text-fg-muted ml-2">{f.error.slice(0, 200)}</span>
               </li>
             ))}
           </ul>
@@ -1054,10 +1054,10 @@ function Phase2ProgressPanel(p: {
 
 function StatusIcon({ status }: { status: NodeStatus }) {
   if (status === 'running') return <Loader2 className="size-3.5 text-violet-400 animate-spin" />;
-  if (status === 'done')    return <CheckCircle2 className="size-3.5 text-emerald-400" />;
-  if (status === 'error')   return <AlertTriangle className="size-3.5 text-rose-400" />;
-  if (status === 'aborted') return <Square className="size-3.5 text-amber-400" />;
-  return <Circle className="size-3.5 text-zinc-600" />;
+  if (status === 'done')    return <CheckCircle2 className="size-3.5 text-success" />;
+  if (status === 'error')   return <AlertTriangle className="size-3.5 text-danger" />;
+  if (status === 'aborted') return <Square className="size-3.5 text-warning" />;
+  return <Circle className="size-3.5 text-fg-muted" />;
 }
 
 function downloadText(filename: string, content: string) {

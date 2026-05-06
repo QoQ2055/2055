@@ -19,8 +19,8 @@ type Tab = 'roles' | 'scenes' | 'props';
 const TAB_TO_INDEX: Record<Tab, number> = { roles: 2, scenes: 3, props: 4 };
 const TAB_META: Record<Tab, { label: string; icon: any; color: string }> = {
   roles:  { label: '角色', icon: Users,  color: 'text-sky-400' },
-  scenes: { label: '场景', icon: MapPin, color: 'text-emerald-400' },
-  props:  { label: '道具', icon: Box,    color: 'text-amber-400' },
+  scenes: { label: '场景', icon: MapPin, color: 'text-success' },
+  props:  { label: '道具', icon: Box,    color: 'text-warning' },
 };
 
 export function Assets() {
@@ -127,24 +127,24 @@ export function Assets() {
 
   if (error) {
     return (
-      <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <strong className="text-amber-300 flex items-center gap-1.5">
+      <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+        <strong className="text-warning flex items-center gap-1.5">
           <AlertTriangle className="size-4" /> 加载 manifest 失败
         </strong>
-        <p className="text-zinc-300 mt-1">{error}</p>
+        <p className="text-fg-secondary mt-1">{error}</p>
       </div>
     );
   }
-  if (!manifest || !stage) return <div className="p-8 text-zinc-500">加载…</div>;
+  if (!manifest || !stage) return <div className="p-8 text-fg-muted">加载…</div>;
 
   return (
     <div className="h-full flex flex-col relative">
-      <header className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-border-subtle flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <Box className="size-5 text-brand-500" />
+          <Box className="size-5 text-primary-500" />
           <div>
             <h1 className="text-lg font-semibold">资产工作台</h1>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-muted">
               gate-then-parallel · 扫描完整性闸 → 角色 / 场景 / 道具 三路并发生成 AI 文生图 prompt
             </p>
           </div>
@@ -174,18 +174,18 @@ export function Assets() {
       </header>
 
       {!screenplayDone && (
-        <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-          <strong className="text-amber-300">⚠ 缺少剧本输入</strong>
-          <p className="text-zinc-300 mt-1">
+        <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+          <strong className="text-warning">⚠ 缺少剧本输入</strong>
+          <p className="text-fg-secondary mt-1">
             资产阶段需要剧本作为输入。三条路径：
-            <strong>原创</strong>跳 <a href="#/screenplay" className="text-brand-400 underline">/screenplay</a> 完成 Step 7；
-            <strong>改编</strong>跳 <a href="#/adapt" className="text-brand-400 underline">/adapt</a> 完成 A6；
+            <strong>原创</strong>跳 <a href="#/screenplay" className="text-primary-400 underline">/screenplay</a> 完成 Step 7；
+            <strong>改编</strong>跳 <a href="#/adapt" className="text-primary-400 underline">/adapt</a> 完成 A6；
             或点右上角 <strong>「📥 导入剧本」</strong> 手动粘贴。
           </p>
         </div>
       )}
       {screenplaySource === 'adapt.6' && (
-        <div className="px-6 py-2 border-b border-zinc-800 bg-sky-500/5 text-xs text-sky-200 flex items-center gap-2">
+        <div className="px-6 py-2 border-b border-border-subtle bg-sky-500/5 text-xs text-sky-200 flex items-center gap-2">
           <FileText className="size-3.5" />
           剧本输入来自 <span className="font-mono">adapt.6</span>（改编最终稿） · 所有资产抽取针对改编后的剧本
         </div>
@@ -209,7 +209,7 @@ export function Assets() {
       </section>
 
       {/* Tabs */}
-      <nav className="px-6 pt-4 flex items-center gap-1 border-b border-zinc-800 -mb-px">
+      <nav className="px-6 pt-4 flex items-center gap-1 border-b border-border-subtle -mb-px">
         {(['roles', 'scenes', 'props'] as Tab[]).map((t) => {
           const meta = TAB_META[t];
           const idx = TAB_TO_INDEX[t];
@@ -225,17 +225,17 @@ export function Assets() {
               className={clsx(
                 'flex items-center gap-2 px-4 py-2 text-sm rounded-t-md border-b-2 transition-colors',
                 isActive
-                  ? 'border-brand-500 text-zinc-100 bg-zinc-900/60'
-                  : 'border-transparent text-zinc-400 hover:text-zinc-200',
+                  ? 'border-brand-500 text-fg-primary bg-surface/60'
+                  : 'border-transparent text-fg-secondary hover:text-fg-primary',
               )}
             >
-              <Icon className={clsx('size-4', isActive ? meta.color : 'text-zinc-500')} />
+              <Icon className={clsx('size-4', isActive ? meta.color : 'text-fg-muted')} />
               {meta.label}
               {count > 0 && (
-                <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">{count}</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">{count}</span>
               )}
               {(statuses[`assets.${idx}`] === 'running') && (
-                <Loader2 className="size-3 animate-spin text-brand-400" />
+                <Loader2 className="size-3 animate-spin text-primary-400" />
               )}
             </button>
           );
@@ -306,17 +306,17 @@ function GateCard(p: GateCardProps) {
   const display = isRunning ? (p.streaming ?? '') : (p.artifact?.content ?? '');
   return (
     <div className="card overflow-hidden">
-      <header className="px-4 py-3 border-b border-zinc-800 flex items-center gap-3">
-        <button onClick={p.onToggle} className="text-zinc-500 hover:text-zinc-200">
+      <header className="px-4 py-3 border-b border-border-subtle flex items-center gap-3">
+        <button onClick={p.onToggle} className="text-fg-muted hover:text-fg-primary">
           {p.open ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
         </button>
-        <Search className="size-4 text-brand-400" />
+        <Search className="size-4 text-primary-400" />
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold flex items-center gap-2">
             完整性扫描闸
             <StatusBadge status={p.status} stale={p.stale} hasArtifact={!!p.artifact} />
           </div>
-          <div className="text-xs text-zinc-500">assets.1 · {p.artifact ? `${p.artifact.content.length} 字 · ${Math.round(p.artifact.durationMs)}ms` : '未运行'}</div>
+          <div className="text-xs text-fg-muted">assets.1 · {p.artifact ? `${p.artifact.content.length} 字 · ${Math.round(p.artifact.durationMs)}ms` : '未运行'}</div>
         </div>
         <div className="flex items-center gap-1.5">
           <button className="btn-outline" onClick={p.onRun} disabled={p.chainBusy}>
@@ -330,13 +330,13 @@ function GateCard(p: GateCardProps) {
         </div>
       </header>
       {p.err && (
-        <div className="px-4 py-2 text-sm text-rose-300 bg-rose-500/5">{p.err}</div>
+        <div className="px-4 py-2 text-sm text-danger bg-danger/5">{p.err}</div>
       )}
       {p.open && (
-        <div className="p-4 max-h-72 overflow-auto bg-zinc-950/40">
+        <div className="p-4 max-h-72 overflow-auto bg-canvas/40">
           {display
             ? <MarkdownView content={display} />
-            : <div className="text-xs text-zinc-600 text-center py-4">未运行扫描。</div>}
+            : <div className="text-xs text-fg-muted text-center py-4">未运行扫描。</div>}
         </div>
       )}
     </div>
@@ -372,7 +372,7 @@ function EnginePane(p: EnginePaneProps) {
           <h2 className="text-lg font-semibold">{meta.label}卡片</h2>
           <StatusBadge status={p.status} hasArtifact={!!p.artifact} />
           {items.length > 0 && (
-            <span className="text-xs text-zinc-500">共 {items.length} 张</span>
+            <span className="text-xs text-fg-muted">共 {items.length} 张</span>
           )}
         </div>
         <div className="flex items-center gap-1.5">
@@ -390,33 +390,33 @@ function EnginePane(p: EnginePaneProps) {
       </div>
 
       {p.err && (
-        <div className="card border-rose-500/40 bg-rose-500/5 p-3 text-sm text-rose-200">
+        <div className="card border-danger/40 bg-danger/5 p-3 text-sm text-danger">
           {p.err}
         </div>
       )}
 
       {isRunning && (
-        <div className="card p-3 max-h-60 overflow-auto bg-zinc-950/60">
-          <div className="text-xs text-zinc-500 mb-2 flex items-center gap-2">
+        <div className="card p-3 max-h-60 overflow-auto bg-canvas/60">
+          <div className="text-xs text-fg-muted mb-2 flex items-center gap-2">
             <Loader2 className="size-3 animate-spin" /> 流式输出中…
           </div>
-          <pre className="text-xs whitespace-pre-wrap break-words font-mono text-zinc-300">
+          <pre className="text-xs whitespace-pre-wrap break-words font-mono text-fg-secondary">
             {p.streaming || ''}
           </pre>
         </div>
       )}
 
       {!isRunning && !p.artifact && (
-        <div className="card p-10 text-center text-sm text-zinc-500">
-          未运行。点 <strong className="text-zinc-300">运行本类</strong> 开始生成 {meta.label}卡。
+        <div className="card p-10 text-center text-sm text-fg-muted">
+          未运行。点 <strong className="text-fg-secondary">运行本类</strong> 开始生成 {meta.label}卡。
         </div>
       )}
 
       {!isRunning && p.artifact && items.length === 0 && (
-        <div className="card p-6 text-sm text-zinc-400">
-          <strong className="text-amber-300">⚠ 输出无法解析为数组</strong>
+        <div className="card p-6 text-sm text-fg-secondary">
+          <strong className="text-warning">⚠ 输出无法解析为数组</strong>
           <p className="mt-1 text-xs">原始输出（前 1000 字）：</p>
-          <pre className="mt-2 text-xs whitespace-pre-wrap font-mono text-zinc-300 max-h-60 overflow-auto bg-zinc-950 p-2 rounded">
+          <pre className="mt-2 text-xs whitespace-pre-wrap font-mono text-fg-secondary max-h-60 overflow-auto bg-canvas p-2 rounded">
             {p.artifact.content.slice(0, 1000)}
           </pre>
         </div>
@@ -456,18 +456,18 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
 
   return (
     <div className="card overflow-hidden flex flex-col">
-      <header className="px-4 py-3 border-b border-zinc-800">
+      <header className="px-4 py-3 border-b border-border-subtle">
         <div className="flex items-center gap-2">
           <Icon className={clsx('size-4 shrink-0', meta.color)} />
           <h3 className="text-sm font-semibold truncate flex-1" title={name}>{name}</h3>
           {category && (
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300 shrink-0">
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary shrink-0">
               {category}
             </span>
           )}
         </div>
         {(belongsTo || era) && (
-          <div className="text-[11px] text-zinc-500 mt-1 truncate">
+          <div className="text-[11px] text-fg-muted mt-1 truncate">
             {belongsTo}{belongsTo && era ? ' · ' : ''}{era}
           </div>
         )}
@@ -475,28 +475,28 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
 
       <div className="px-4 py-3 flex-1 space-y-2">
         {visualAnchor && (
-          <p className="text-xs text-zinc-300 line-clamp-2"><strong className="text-zinc-400">锚点：</strong>{visualAnchor}</p>
+          <p className="text-xs text-fg-secondary line-clamp-2"><strong className="text-fg-secondary">锚点：</strong>{visualAnchor}</p>
         )}
         {dramatic && (
-          <p className="text-xs text-zinc-400 line-clamp-2"><strong>戏剧功能：</strong>{dramatic}</p>
+          <p className="text-xs text-fg-secondary line-clamp-2"><strong>戏剧功能：</strong>{dramatic}</p>
         )}
         {aiPrompt && (
-          <div className="rounded bg-zinc-950/60 border border-zinc-800 p-2 max-h-32 overflow-auto">
-            <pre className="text-[11px] whitespace-pre-wrap break-words font-mono text-zinc-300">
+          <div className="rounded bg-canvas/60 border border-border-subtle p-2 max-h-32 overflow-auto">
+            <pre className="text-[11px] whitespace-pre-wrap break-words font-mono text-fg-secondary">
               {aiPrompt.length > 400 ? aiPrompt.slice(0, 400) + '…' : aiPrompt}
             </pre>
           </div>
         )}
       </div>
 
-      <footer className="px-4 py-2 border-t border-zinc-800 flex items-center justify-between">
+      <footer className="px-4 py-2 border-t border-border-subtle flex items-center justify-between">
         <button className="btn-ghost text-xs" onClick={() => setExpanded((v) => !v)}>
           {expanded ? '收起' : '展开全部字段'}
         </button>
         <div className="flex gap-1">
           {aiPrompt && (
             <button
-              className={clsx('btn-ghost text-xs', copied && 'text-emerald-400')}
+              className={clsx('btn-ghost text-xs', copied && 'text-success')}
               onClick={() => copy(aiPrompt)}
               title="复制 AI 文生图 Prompt"
             >
@@ -514,12 +514,12 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
       </footer>
 
       {expanded && (
-        <div className="px-4 py-3 border-t border-zinc-800 bg-zinc-950/40 max-h-80 overflow-auto">
+        <div className="px-4 py-3 border-t border-border-subtle bg-canvas/40 max-h-80 overflow-auto">
           <dl className="text-xs space-y-1.5">
             {Object.entries(item).map(([k, v]) => (
               <div key={k} className="grid grid-cols-[100px_1fr] gap-2">
-                <dt className="text-zinc-500 shrink-0 break-all">{k}</dt>
-                <dd className="text-zinc-300 whitespace-pre-wrap break-words">
+                <dt className="text-fg-muted shrink-0 break-all">{k}</dt>
+                <dd className="text-fg-secondary whitespace-pre-wrap break-words">
                   {typeof v === 'string' ? v : JSON.stringify(v, null, 2)}
                 </dd>
               </div>
@@ -537,10 +537,10 @@ function StatusBadge({ status, stale, hasArtifact }: { status: NodeStatus; stale
   if (status === 'running')
     return <span className="inline-flex items-center gap-1 text-[10px] text-brand-300"><Loader2 className="size-3 animate-spin" /> 运行中</span>;
   if (status === 'error')
-    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">错误</span>;
+    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">错误</span>;
   if (stale && hasArtifact)
-    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">stale</span>;
+    return <span className="text-[10px] px-1.5 py-0.5 rounded bg-warning/15 text-warning border border-warning/30">stale</span>;
   if (hasArtifact)
-    return <span className="inline-flex items-center gap-1 text-[10px] text-emerald-400"><CheckCircle2 className="size-3" /> 完成</span>;
+    return <span className="inline-flex items-center gap-1 text-[10px] text-success"><CheckCircle2 className="size-3" /> 完成</span>;
   return null;
 }

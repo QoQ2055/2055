@@ -171,19 +171,19 @@ export function Pipeline() {
 
   if (error) {
     return (
-      <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <strong className="text-amber-300 flex items-center gap-1.5">
+      <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-body-m">
+        <strong className="text-warning flex items-center gap-1.5">
           <AlertTriangle className="size-4" /> 加载 manifest 失败
         </strong>
-        <p className="text-zinc-300 mt-1">{error}</p>
-        <p className="text-zinc-400 mt-2">
-          请确认已运行：<code className="px-1 bg-zinc-800 rounded">npm run import:prompts</code>
+        <p className="text-fg-secondary mt-1">{error}</p>
+        <p className="text-fg-muted mt-2">
+          请确认已运行：<code className="code px-1 bg-elevated rounded">npm run import:prompts</code>
         </p>
       </div>
     );
   }
 
-  if (!manifest) return <div className="p-8 text-zinc-500">加载 manifest…</div>;
+  if (!manifest) return <div className="p-8 text-fg-muted">加载 manifest…</div>;
 
   // ── progress segments: one per visible stage of the active mode ──
   // We compute done/total from the manifest's step list intersected with
@@ -224,7 +224,7 @@ export function Pipeline() {
       />
 
       {/* project context bar */}
-      <section className="px-6 py-3 border-b border-zinc-800 grid grid-cols-4 gap-3 text-sm">
+      <section className="px-6 py-3 border-b border-border-subtle grid grid-cols-4 gap-3 text-body-m">
         <Field label="项目名">
           <input className="input" value={project.ctx.name}
                  onChange={(e) => project.setCtx({ name: e.target.value })} />
@@ -257,10 +257,10 @@ export function Pipeline() {
 
           if (visible.length === 0) {
             return (
-              <div className="card p-8 text-center text-zinc-500 text-sm">
-                <div className="font-medium text-zinc-300 mb-2">{meta.longLabel}</div>
+              <div className="card p-8 text-center text-fg-muted text-body-m">
+                <div className="font-medium text-fg-primary mb-2">{meta.longLabel}</div>
                 <div>该模式的流水线尚未实现。</div>
-                <div className="text-xs text-zinc-600 mt-2">{meta.tagline}</div>
+                <div className="text-caption-m text-fg-muted mt-2">{meta.tagline}</div>
               </div>
             );
           }
@@ -359,10 +359,10 @@ function StageBlock(p: StageBlockProps) {
 
   return (
     <div className="card">
-      <header className="px-4 py-3 border-b border-zinc-800 flex items-center justify-between">
+      <header className="px-4 py-3 border-b border-border-subtle flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <h2 className="font-semibold">{stage.nameZh}</h2>
-          <span className="text-xs text-zinc-500">
+          <h2 className="text-heading-m">{stage.nameZh}</h2>
+          <span className="text-caption-m text-fg-muted">
             {stageDoneCount}/{stage.steps.length} · {stage.mode}
           </span>
         </div>
@@ -395,7 +395,7 @@ function StageBlock(p: StageBlockProps) {
 
 
       {p.stageId === 'storyboard' && p.artifacts['storyboard.1'] && (
-        <div className="px-4 py-3 border-b border-zinc-800 bg-zinc-900/30 space-y-3">
+        <div className="px-4 py-3 border-b border-border-subtle bg-elevated/30 space-y-3">
           <StoryboardPlanDiagnostics
             artifact={p.artifacts['storyboard.1']}
             targetDurationSec={
@@ -412,7 +412,7 @@ function StageBlock(p: StageBlockProps) {
         <RunHistoryPanel limit={50} />
       </div>
 
-      <ul className="divide-y divide-zinc-800">
+      <ul className="divide-y divide-border-subtle">
         {stage.steps.map((step) => (
           <StepRow
             key={step.id}
@@ -469,25 +469,25 @@ function StepRow(p: StepRowProps) {
   return (
     <li>
       <div className="px-4 py-3 flex items-center gap-3">
-        <button onClick={p.onToggle} className="text-zinc-500 hover:text-zinc-200">
+        <button onClick={p.onToggle} className="text-fg-muted hover:text-fg-primary">
           {p.expanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
         </button>
         <StatusIcon status={status} />
         <div className="flex-1 min-w-0">
-          <div className="text-sm font-medium truncate">
+          <div className="text-body-m font-medium truncate text-fg-primary">
             {p.stageId === 'screenplay' ? `Step ${p.step.index} · ` : ''}{p.step.title}
           </div>
-          <div className="text-xs text-zinc-500 mt-0.5">
+          <div className="text-caption-m text-fg-muted mt-0.5">
             {p.step.outFormat} · {p.step.id}
             {p.artifact && (
-              <span className="ml-2 text-zinc-400">
+              <span className="ml-2 text-fg-secondary">
                 {p.artifact.content.length} 字 · {Math.round(p.artifact.durationMs)}ms
                 {p.artifact.tokens != null && ` · tokens ${p.artifact.tokens}`}
                 {p.artifact.cost != null && ` · ¥${p.artifact.cost.toFixed(4)}`}
               </span>
             )}
             {p.state?.error && (
-              <span className="ml-2 text-rose-400">{p.state.error}</span>
+              <span className="ml-2 text-danger">{p.state.error}</span>
             )}
           </div>
         </div>
@@ -509,14 +509,14 @@ function StepRow(p: StepRowProps) {
       {p.expanded && (
         <div className="px-4 pb-4 space-y-2">
           {!display ? (
-            <div className="card bg-zinc-950/60 p-3">
-              <div className="text-xs text-zinc-600 py-4 text-center">
+            <div className="card bg-canvas/60 p-3">
+              <div className="text-caption-m text-fg-muted py-4 text-center">
                 未运行。点 ▶ 运行本步，或在阶段顶部点「跑完整阶段」。
               </div>
             </div>
           ) : streaming ? (
             // 流式中：原 <pre> 实时增长 + 复制按钮
-            <div className="card bg-zinc-950/60 max-h-96 overflow-auto p-3 relative">
+            <div className="card bg-canvas/60 max-h-96 overflow-auto p-3 relative">
               <button
                 className="absolute top-2 right-2 btn-ghost px-1.5 py-1"
                 onClick={() => navigator.clipboard.writeText(display)}
@@ -524,13 +524,13 @@ function StepRow(p: StepRowProps) {
               >
                 <Copy className="size-3" />
               </button>
-              <pre className="text-xs whitespace-pre-wrap break-words font-mono text-zinc-200">
+              <pre className="code whitespace-pre-wrap break-words text-fg-primary">
                 {display}
               </pre>
             </div>
           ) : (
             // 完成：结构化视图（按 ## 标题或 --- 拆分为卡片，每卡片独立复制）
-            <div className="card bg-zinc-950/60 p-3">
+            <div className="card bg-canvas/60 p-3">
               <ArtifactStructuredView
                 content={display}
                 nodeId={p.step.id}
@@ -559,11 +559,11 @@ function StepRow(p: StepRowProps) {
 }
 
 function StatusIcon({ status }: { status: NodeStatus }) {
-  if (status === 'running') return <Loader2 className="size-4 text-brand-400 animate-spin" />;
-  if (status === 'done')    return <CheckCircle2 className="size-4 text-emerald-500" />;
-  if (status === 'error')   return <AlertTriangle className="size-4 text-rose-500" />;
-  if (status === 'aborted') return <AlertTriangle className="size-4 text-amber-500" />;
-  return <Circle className="size-4 text-zinc-600" />;
+  if (status === 'running') return <Loader2 className="size-4 text-primary-400 animate-spin" />;
+  if (status === 'done')    return <CheckCircle2 className="size-4 text-success" />;
+  if (status === 'error')   return <AlertTriangle className="size-4 text-danger" />;
+  if (status === 'aborted') return <AlertTriangle className="size-4 text-warning" />;
+  return <Circle className="size-4 text-fg-muted" />;
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {

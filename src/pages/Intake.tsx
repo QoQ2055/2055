@@ -40,11 +40,11 @@ export function Intake() {
 
   if (!isAdaptation) {
     return (
-      <div className="m-6 card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-        <strong className="text-amber-300 flex items-center gap-1.5">
+      <div className="m-6 card border-warning/40 bg-warning/5 p-4 text-sm">
+        <strong className="text-warning flex items-center gap-1.5">
           <AlertTriangle className="size-4" /> 当前项目不是改编模式
         </strong>
-        <p className="text-zinc-300 mt-1">
+        <p className="text-fg-secondary mt-1">
           原作摄入仅在「改编」模式下可用。回到首页 <strong>新建项目 → 改编剧本</strong> 即可启用本页。
         </p>
       </div>
@@ -166,40 +166,40 @@ export function Intake() {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="px-6 py-4 border-b border-zinc-800 flex items-center justify-between gap-4">
+      <header className="px-6 py-4 border-b border-border-subtle flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <BookCopy className="size-5 text-brand-500" />
+          <BookCopy className="size-5 text-primary-500" />
           <div>
             <h1 className="text-lg font-semibold">原作摄入 · S0</h1>
-            <p className="text-xs text-zinc-500">
+            <p className="text-xs text-fg-muted">
               将{adaptType === 'novel' ? '小说 / 网文' : '旧剧本 / 外语原版'}逐章摘要 → 合成改编档案 → 喂给下游 R1' + 8 步
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-xs text-zinc-400">
-          <span>章/段 <span className="font-mono text-zinc-200">{chunks.length}</span></span>
-          <span className="text-zinc-700">·</span>
-          <span>已摘要 <span className="font-mono text-zinc-200">{summarized}</span></span>
-          <span className="text-zinc-700">·</span>
-          <span>{masterArt ? <span className="text-emerald-400">✓ 总档案已生成</span> : <span className="text-amber-400">总档案未生成</span>}</span>
+        <div className="flex items-center gap-2 text-xs text-fg-secondary">
+          <span>章/段 <span className="font-mono text-fg-primary">{chunks.length}</span></span>
+          <span className="text-fg-muted">·</span>
+          <span>已摘要 <span className="font-mono text-fg-primary">{summarized}</span></span>
+          <span className="text-fg-muted">·</span>
+          <span>{masterArt ? <span className="text-success">✓ 总档案已生成</span> : <span className="text-warning">总档案未生成</span>}</span>
         </div>
       </header>
 
-      <section className="px-6 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-400">
-        <span><span className="text-zinc-600">项目：</span>{ctx.name}</span>
-        <span className="text-zinc-700">·</span>
-        <span><span className="text-zinc-600">概念：</span>{ctx.concept}</span>
-        <span className="text-zinc-700">·</span>
-        <span><span className="text-zinc-600">改编类型：</span>{adaptType === 'novel' ? '小说/网文' : '旧剧本翻拍'}</span>
+      <section className="px-6 py-2 border-b border-border-subtle flex items-center gap-3 text-xs text-fg-secondary">
+        <span><span className="text-fg-muted">项目：</span>{ctx.name}</span>
+        <span className="text-fg-muted">·</span>
+        <span><span className="text-fg-muted">概念：</span>{ctx.concept}</span>
+        <span className="text-fg-muted">·</span>
+        <span><span className="text-fg-muted">改编类型：</span>{adaptType === 'novel' ? '小说/网文' : '旧剧本翻拍'}</span>
         <span className="ml-auto">
-          <a href="#/adapt" className="text-brand-400 hover:underline">→ 完成后进入改编工作台</a>
+          <a href="#/adapt" className="text-primary-400 hover:underline">→ 完成后进入改编工作台</a>
         </span>
       </section>
 
       <div className="flex-1 flex overflow-hidden min-h-0">
         {/* Left: chunk list */}
-        <aside className="w-80 shrink-0 border-r border-zinc-800 flex flex-col">
-          <div className="p-3 border-b border-zinc-800 flex flex-wrap gap-1.5">
+        <aside className="w-80 shrink-0 border-r border-border-subtle flex flex-col">
+          <div className="p-3 border-b border-border-subtle flex flex-wrap gap-1.5">
             <button className="btn-outline text-xs" onClick={addChunk}>
               <Plus className="size-3.5" /> 添加{adaptType === 'novel' ? '章' : '段'}
             </button>
@@ -214,7 +214,7 @@ export function Intake() {
           </div>
 
           {bulkOpen && (
-            <div className="p-3 border-b border-zinc-800 space-y-2 bg-zinc-900/50">
+            <div className="p-3 border-b border-border-subtle space-y-2 bg-surface/50">
               <textarea className="input min-h-[120px] text-xs font-mono"
                         placeholder="粘贴原作全文（按「第 X 章」/「Chapter X」/「## 」自动切分；找不到时每 6000 字切一段）"
                         value={bulkText}
@@ -230,7 +230,7 @@ export function Intake() {
 
           <ol className="flex-1 overflow-auto p-2 space-y-1">
             {chunks.length === 0 ? (
-              <li className="text-xs text-zinc-500 text-center py-8">
+              <li className="text-xs text-fg-muted text-center py-8">
                 还没有原文。点上方「添加」或「整本切分」开始。
               </li>
             ) : chunks.map((c) => (
@@ -253,7 +253,7 @@ export function Intake() {
         </aside>
 
         {/* Middle: chunk editor */}
-        <section className="flex-1 min-w-0 border-r border-zinc-800 flex flex-col">
+        <section className="flex-1 min-w-0 border-r border-border-subtle flex flex-col">
           {activeChunk ? (
             <ChunkEditor
               chunk={activeChunk}
@@ -265,7 +265,7 @@ export function Intake() {
               onClearSummary={() => project.updateSourceChunk(activeChunk.id, { summary: undefined })}
             />
           ) : (
-            <div className="flex-1 flex items-center justify-center text-sm text-zinc-500">
+            <div className="flex-1 flex items-center justify-center text-sm text-fg-muted">
               在左侧选一章/段开始编辑
             </div>
           )}
@@ -273,9 +273,9 @@ export function Intake() {
 
         {/* Right: master document */}
         <aside className="w-[420px] shrink-0 flex flex-col">
-          <div className="p-3 border-b border-zinc-800 flex items-center justify-between">
+          <div className="p-3 border-b border-border-subtle flex items-center justify-between">
             <div className="text-sm font-semibold flex items-center gap-1.5">
-              <FileText className="size-4 text-brand-500" /> 改编档案 · masterDocument
+              <FileText className="size-4 text-primary-500" /> 改编档案 · masterDocument
             </div>
             <div className="flex items-center gap-1">
               {compiling ? (
@@ -301,20 +301,20 @@ export function Intake() {
           </div>
           <div className="flex-1 overflow-auto p-3 space-y-3">
             {compileErr && (
-              <div className="card border-rose-500/40 bg-rose-500/5 p-2 text-xs text-rose-200">{compileErr}</div>
+              <div className="card border-danger/40 bg-danger/5 p-2 text-xs text-danger">{compileErr}</div>
             )}
             {summarized === 0 && !masterArt && (
-              <p className="text-xs text-zinc-500">至少需要一章/段已摘要后才能合成总档案。</p>
+              <p className="text-xs text-fg-muted">至少需要一章/段已摘要后才能合成总档案。</p>
             )}
             {compiling ? (
               <MasterPreview master={compileMasterPreview} streaming streamRaw={compileStream} />
             ) : master ? (
               <MasterPreview master={master} />
             ) : masterArt ? (
-              <pre className="text-xs whitespace-pre-wrap font-mono text-zinc-300">{masterArt.content}</pre>
+              <pre className="text-xs whitespace-pre-wrap font-mono text-fg-secondary">{masterArt.content}</pre>
             ) : null}
             {masterArt && !compiling && (
-              <div className="text-[11px] text-zinc-500 flex items-center gap-2">
+              <div className="text-[11px] text-fg-muted flex items-center gap-2">
                 <button className="btn-ghost text-[11px] px-1.5 py-0.5"
                         onClick={() => navigator.clipboard.writeText(masterArt.content)}>
                   <Copy className="size-3" /> 复制 JSON
@@ -342,7 +342,7 @@ function ChunkListItem({
   onDelete: () => void;
 }) {
   const hasSum = !!chunk.summary;
-  const dot = busy ? 'bg-brand-500 animate-pulse'
+  const dot = busy ? 'bg-primary-500 animate-pulse'
             : err ? 'bg-rose-500'
             : hasSum ? 'bg-emerald-500'
             : 'bg-zinc-700';
@@ -350,15 +350,15 @@ function ChunkListItem({
     <li>
       <div className={clsx(
         'rounded-md px-2 py-2 text-xs transition-colors flex items-center gap-2',
-        active ? 'bg-zinc-800 ring-1 ring-brand-500/30' : 'hover:bg-zinc-900',
+        active ? 'bg-elevated ring-1 ring-primary-500/30' : 'hover:bg-surface',
       )}>
         <span className={clsx('size-2 rounded-full shrink-0', dot)} />
         <button onClick={onClick} className="flex-1 min-w-0 text-left">
-          <div className="truncate font-medium text-zinc-200">{chunk.title || '(未命名)'}</div>
-          <div className="truncate text-[10px] text-zinc-500">
+          <div className="truncate font-medium text-fg-primary">{chunk.title || '(未命名)'}</div>
+          <div className="truncate text-[10px] text-fg-muted">
             {chunk.raw.length > 0 ? `${chunk.raw.length} 字` : '空'}
-            {hasSum && <span className="text-emerald-400"> · 已摘要</span>}
-            {err && <span className="text-rose-400"> · 出错</span>}
+            {hasSum && <span className="text-success"> · 已摘要</span>}
+            {err && <span className="text-danger"> · 出错</span>}
           </div>
         </button>
         <button className="btn-ghost px-1 py-1 opacity-60 hover:opacity-100" onClick={onDelete}>
@@ -388,11 +388,11 @@ function ChunkEditor({
 
   return (
     <>
-      <div className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2">
+      <div className="px-4 py-3 border-b border-border-subtle flex items-center gap-2">
         <input className="input flex-1 text-sm font-medium" value={chunk.title}
                onChange={(e) => onTitle(e.target.value)}
                placeholder="章节标题" />
-        <span className="text-xs text-zinc-500 shrink-0">{chunk.raw.length} 字</span>
+        <span className="text-xs text-fg-muted shrink-0">{chunk.raw.length} 字</span>
         <button className="btn-primary text-xs" onClick={onSummarize} disabled={busy || !chunk.raw.trim()}>
           {busy ? <Loader2 className="size-3.5 animate-spin" /> : <Wand2 className="size-3.5" />}
           摘要本{chunk.title.includes('段') ? '段' : '章'}
@@ -400,14 +400,14 @@ function ChunkEditor({
       </div>
 
       {err && (
-        <div className="mx-4 mt-3 card border-rose-500/40 bg-rose-500/5 p-2 text-xs text-rose-200">{err}</div>
+        <div className="mx-4 mt-3 card border-danger/40 bg-danger/5 p-2 text-xs text-danger">{err}</div>
       )}
 
       <div className="flex-1 overflow-auto p-4 space-y-3 min-h-0">
         <div>
           <div className="label mb-1.5 flex items-center justify-between">
             <span>原文</span>
-            <span className="text-zinc-600 text-[10px]">建议每章 ≤8000 字（更长会被截断）</span>
+            <span className="text-fg-muted text-[10px]">建议每章 ≤8000 字（更长会被截断）</span>
           </div>
           <textarea
             className="input w-full font-mono text-xs"
@@ -420,8 +420,8 @@ function ChunkEditor({
 
         {chunk.summary && (
           <div className="card overflow-hidden">
-            <div className="px-3 py-2 border-b border-zinc-800 flex items-center justify-between">
-              <button className="text-xs text-zinc-400 flex items-center gap-1 hover:text-zinc-200"
+            <div className="px-3 py-2 border-b border-border-subtle flex items-center justify-between">
+              <button className="text-xs text-fg-secondary flex items-center gap-1 hover:text-fg-primary"
                       onClick={() => setShowSummary((v) => !v)}>
                 {showSummary ? <ChevronDown className="size-3" /> : <ChevronRight className="size-3" />}
                 结构化摘要 (JSON)
@@ -440,7 +440,7 @@ function ChunkEditor({
               parsedSummary ? (
                 <ChunkSummaryView j={parsedSummary} />
               ) : (
-                <pre className="p-3 text-xs whitespace-pre-wrap font-mono text-zinc-300 max-h-72 overflow-auto">
+                <pre className="p-3 text-xs whitespace-pre-wrap font-mono text-fg-secondary max-h-72 overflow-auto">
                   {chunk.summary}
                 </pre>
               )
@@ -458,7 +458,7 @@ function ChunkSummaryView({ j }: { j: any }) {
       {j.brief && (
         <div>
           <div className="label">brief</div>
-          <p className="text-zinc-200 mt-0.5">{j.brief}</p>
+          <p className="text-fg-primary mt-0.5">{j.brief}</p>
         </div>
       )}
       {Array.isArray(j.beats) && j.beats.length > 0 && (
@@ -471,10 +471,10 @@ function ChunkSummaryView({ j }: { j: any }) {
               const star = tier === 'core' ? '⭐⭐⭐' : tier === 'sub' ? '⭐⭐' : tier === 'transition' ? '⭐' : '';
               const ttype = b.conflictType ?? b.type;
               return (
-                <li key={i} className="text-zinc-300">
-                  <span className="text-amber-400 font-mono">[✨{score ?? '-'}]</span>
-                  {star && <span className="text-zinc-500 ml-1">{star}</span>}
-                  {ttype && <span className="text-brand-400 ml-1">&lt;{ttype}&gt;</span>}
+                <li key={i} className="text-fg-secondary">
+                  <span className="text-warning font-mono">[✨{score ?? '-'}]</span>
+                  {star && <span className="text-fg-muted ml-1">{star}</span>}
+                  {ttype && <span className="text-primary-400 ml-1">&lt;{ttype}&gt;</span>}
                   <span className="ml-1">{b.summary}</span>
                 </li>
               );
@@ -487,11 +487,11 @@ function ChunkSummaryView({ j }: { j: any }) {
           <div className="label">emotionalHooks ({j.emotionalHooks.length})</div>
           <ul className="mt-0.5 space-y-0.5">
             {j.emotionalHooks.map((h: any, i: number) => (
-              <li key={i} className="text-zinc-300">
-                <span className="px-1 py-0.5 rounded text-[10px] bg-rose-500/15 text-rose-300 border border-rose-500/30 mr-1">
+              <li key={i} className="text-fg-secondary">
+                <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30 mr-1">
                   {h.kind}
                 </span>
-                <span className="text-amber-400 font-mono">[✨{h.intensity ?? '-'}]</span>
+                <span className="text-warning font-mono">[✨{h.intensity ?? '-'}]</span>
                 <span className="ml-1">{h.moment}</span>
               </li>
             ))}
@@ -503,9 +503,9 @@ function ChunkSummaryView({ j }: { j: any }) {
           <div className="label">characters</div>
           <ul className="mt-0.5">
             {j.characters.map((c: any, i: number) => (
-              <li key={i} className="text-zinc-300">
-                <strong className="text-zinc-100">{c.name}</strong>
-                {c.appearancesHere && <span className="text-zinc-500"> — {c.appearancesHere}</span>}
+              <li key={i} className="text-fg-secondary">
+                <strong className="text-fg-primary">{c.name}</strong>
+                {c.appearancesHere && <span className="text-fg-muted"> — {c.appearancesHere}</span>}
               </li>
             ))}
           </ul>
@@ -516,7 +516,7 @@ function ChunkSummaryView({ j }: { j: any }) {
           <div className="label">standoutLines</div>
           <ul className="mt-0.5">
             {j.standoutLines.map((l: string, i: number) => (
-              <li key={i} className="text-amber-300">"{l}"</li>
+              <li key={i} className="text-warning">"{l}"</li>
             ))}
           </ul>
         </div>
@@ -524,7 +524,7 @@ function ChunkSummaryView({ j }: { j: any }) {
       {j.notes && (
         <div>
           <div className="label">notes</div>
-          <p className="text-zinc-400 mt-0.5">{j.notes}</p>
+          <p className="text-fg-secondary mt-0.5">{j.notes}</p>
         </div>
       )}
     </div>
@@ -536,21 +536,21 @@ function MasterPreview({
 }: { master: ParsedMaster | null; streaming?: boolean; streamRaw?: string }) {
   if (!master) {
     return streaming ? (
-      <pre className="text-xs whitespace-pre-wrap font-mono text-zinc-300">{streamRaw ?? ''}</pre>
+      <pre className="text-xs whitespace-pre-wrap font-mono text-fg-secondary">{streamRaw ?? ''}</pre>
     ) : null;
   }
   return (
     <div className="space-y-3 text-xs">
       {master.logline && (
         <Section title="logline" tone="brand">
-          <p className="text-zinc-100 font-medium leading-snug">{master.logline}</p>
+          <p className="text-fg-primary font-medium leading-snug">{master.logline}</p>
         </Section>
       )}
       {master.themes && master.themes.length > 0 && (
         <Section title="themes">
           <div className="flex flex-wrap gap-1">
             {master.themes.map((t, i) => (
-              <span key={i} className="px-1.5 py-0.5 rounded border border-zinc-700 text-zinc-300">{t}</span>
+              <span key={i} className="px-1.5 py-0.5 rounded border border-border-default text-fg-secondary">{t}</span>
             ))}
           </div>
         </Section>
@@ -560,10 +560,10 @@ function MasterPreview({
           <ul className="space-y-1">
             {master.mainCharacters.map((c, i) => (
               <li key={i}>
-                <strong className="text-zinc-100">{c.name}</strong>
-                {c.role && <span className="text-amber-400 ml-1">[{c.role}]</span>}
-                {c.signature && <span className="text-zinc-500"> · {c.signature}</span>}
-                {c.arc && <div className="text-zinc-400 leading-snug">{c.arc}</div>}
+                <strong className="text-fg-primary">{c.name}</strong>
+                {c.role && <span className="text-warning ml-1">[{c.role}]</span>}
+                {c.signature && <span className="text-fg-muted"> · {c.signature}</span>}
+                {c.arc && <div className="text-fg-secondary leading-snug">{c.arc}</div>}
               </li>
             ))}
           </ul>
@@ -573,15 +573,15 @@ function MasterPreview({
         <Section title="genre">
           <div className="flex flex-wrap gap-1.5 items-center">
             {master.genreType && (
-              <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-brand-500/10 text-brand-300">
+              <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300">
                 {master.genreType}
               </span>
             )}
             {master.subType && (
-              <span className="px-1.5 py-0.5 rounded border border-zinc-700 text-zinc-300">{master.subType}</span>
+              <span className="px-1.5 py-0.5 rounded border border-border-default text-fg-secondary">{master.subType}</span>
             )}
             {master.hookDensity && (
-              <span className="text-zinc-400">钩子密度: <span className="text-zinc-200">{master.hookDensity}</span></span>
+              <span className="text-fg-secondary">钩子密度: <span className="text-fg-primary">{master.hookDensity}</span></span>
             )}
           </div>
         </Section>
@@ -595,10 +595,10 @@ function MasterPreview({
                 const score = b.intensity ?? (b.weight ? b.weight * 2 : null);
                 const ttype = b.conflictType ?? b.type;
                 return (
-                  <li key={i} className="text-zinc-300">
-                    <span className="text-zinc-500 font-mono">{b.id ?? `B${i + 1}`}</span>
-                    <span className="text-amber-400 font-mono ml-1">[✨{score ?? '-'}]</span>
-                    {ttype && <span className="text-brand-400 ml-1">&lt;{ttype}&gt;</span>}
+                  <li key={i} className="text-fg-secondary">
+                    <span className="text-fg-muted font-mono">{b.id ?? `B${i + 1}`}</span>
+                    <span className="text-warning font-mono ml-1">[✨{score ?? '-'}]</span>
+                    {ttype && <span className="text-primary-400 ml-1">&lt;{ttype}&gt;</span>}
                     <span className="ml-1">{b.summary}</span>
                   </li>
                 );
@@ -609,14 +609,14 @@ function MasterPreview({
       {master.worldRules && master.worldRules.length > 0 && (
         <Section title="worldRules">
           <ul className="space-y-0.5">
-            {master.worldRules.map((r, i) => <li key={i} className="text-zinc-300">· {r}</li>)}
+            {master.worldRules.map((r, i) => <li key={i} className="text-fg-secondary">· {r}</li>)}
           </ul>
         </Section>
       )}
       {master.standoutLines && master.standoutLines.length > 0 && (
         <Section title="standoutLines">
           <ul className="space-y-0.5">
-            {master.standoutLines.map((l, i) => <li key={i} className="text-amber-300">"{l}"</li>)}
+            {master.standoutLines.map((l, i) => <li key={i} className="text-warning">"{l}"</li>)}
           </ul>
         </Section>
       )}
@@ -625,11 +625,11 @@ function MasterPreview({
           <ul className="space-y-1">
             {master.adaptationRisks.map((r, i) => (
               <li key={i}>
-                <span className="px-1 py-0.5 rounded text-[10px] bg-rose-500/15 text-rose-300 border border-rose-500/30">
+                <span className="px-1 py-0.5 rounded text-[10px] bg-danger/15 text-danger border border-danger/30">
                   {r.kind}
                 </span>
-                <span className="text-zinc-300 ml-1.5">{r.issue}</span>
-                {r.mitigation && <div className="text-zinc-500 ml-6">→ {r.mitigation}</div>}
+                <span className="text-fg-secondary ml-1.5">{r.issue}</span>
+                {r.mitigation && <div className="text-fg-muted ml-6">→ {r.mitigation}</div>}
               </li>
             ))}
           </ul>
@@ -637,7 +637,7 @@ function MasterPreview({
       )}
       {master.summary && (
         <Section title="summary">
-          <p className="text-zinc-300 leading-snug">{master.summary}</p>
+          <p className="text-fg-secondary leading-snug">{master.summary}</p>
         </Section>
       )}
     </div>
@@ -647,7 +647,7 @@ function MasterPreview({
 function Section({
   title, children, tone = 'default',
 }: { title: string; children: React.ReactNode; tone?: 'default' | 'brand' | 'rose' }) {
-  const ring = tone === 'brand' ? 'ring-1 ring-brand-500/30'
+  const ring = tone === 'brand' ? 'ring-1 ring-primary-500/30'
              : tone === 'rose' ? 'ring-1 ring-rose-500/30'
              : '';
   return (
