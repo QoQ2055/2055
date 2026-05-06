@@ -10,6 +10,76 @@
 
 ## [Unreleased] · v2 阶段 2.x（2026-05）
 
+### 阶段 2.10 · DESIGN.md 设计系统全量重塑（C 档位）
+
+**动机**：现存 1206 处 `bg-zinc-X`、173 处 `bg-brand-X`、各种散乱 amber/rose/emerald 状态色——
+"工程师密集型"工业风让创作工具失去温度感。同时缺失双主题、token 化、AI agent
+"防 drift"机制。引入 `design-md` skill（Google Labs DESIGN.md 规范蒸馏版）走完整 5
+Phase 路线图，把 UI 从硬编码迁移到 token 系统。
+
+**Phase 路线图（全部完成，跨 6 commits）**：
+
+| Phase | 交付 | commit |
+|---|---|---|
+| 0 · 扫码 | grep 现状颜色/间距/字体 | (内含分析) |
+| 1 · 起草 DESIGN.md | YAML token + Markdown 规范，6 节逐节 halt + Audit | `56751ae` |
+| 2 · token 同步 | tailwind.config.ts + src/index.css CSS 变量 + AGENTS.md 硬约束 | `d1fda6e` |
+| 3 · 6 原子组件 | `src/components/ui/` Button/Input/Textarea/Card/Modal/NavItem/Tabs | `2ae7398` |
+| 4 · 13 页面 token 化 | Home/Layout/Settings 重塑 + 10 页批量替换 | `ef73db4` `28099ba` |
+| 5 · 全仓回归 | 23 components 批量补齐 + audit 报告 | `e78cc90` `本次` |
+
+**关键设计决策**：
+
+- **风格 C · 创作工具温度**（Notion/Figma/Arc 风），暖橙 `#f97316` primary
+  锁定 + 中性切到 warm stone（比 zinc 偏暖 8°）
+- **暗+亮双主题**：`<html class="dark">` 切换；CSS 变量 `--cf-bg-canvas` 等
+  统一驱动；现版默认暗主题，亮主题 token 已就位
+- **WCAG AA 合规**：button fontWeight 700 + 大字 14pt 标准 → 暗主题白字
+  on primary.500 达 3:1（保品牌识别同时合规）
+- **薄壳组件**：6 个原子组件 `<Button>` `<Card>` 等只是 `.btn-primary` 等
+  className 配方的类型化包装，**不强制迁移**现存代码（surgical changes）
+
+**全仓替换统计**（共 4 commits）：
+
+```
+src/pages       10 个文件 + 805 处替换 (Home + Layout + Settings 重塑 + 7 页批量)
+src/components  23 个文件 + 968 处替换 (Phase 5 补齐隐藏债务)
+ui/ 新增         7 个文件 +517 行   (Button/Input/Textarea/Card/Modal/NavItem/Tabs)
+DESIGN.md       1 个文件 +791 行    (project root, v0.1.1-alpha)
+tailwind.config 25 行 → 116 行      (token 全套)
+src/index.css   30 行 → 154 行      (CSS 变量 + 9 组件配方 + 8 utility class)
+合计            ≈ 1900+ 处单点修改
+```
+
+**业务逻辑零变化**：runner / compose / scoreCard / db.ts schema / 13 路由 / 所有
+state / hooks / props / onClick 全部 0 行修改。任何用户都能正常用所有现有功能。
+
+**剩余技术债（acceptable，留 V0.2 evolution 处理）**：
+
+- 24 处 zinc-600/700 边缘色阶（hover 强调态等，无 token 直接对应）
+- 76 处 brand-200/300/500（tailwind 中 brand=primary 别名，**视觉等价**）
+- 49 处 amber/rose/emerald 100/200 浅色阶（无 token 对应）
+- 333 处 `text-[10px]` `text-[11px]` 紧凑字号（DESIGN.md 设计真空——
+  V0.2 应补 `text-tight-xs/sm/2xs` 非 uppercase token）
+
+**关键文件**：
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\DESIGN.md` — 设计系统单一真源 v0.1.1-alpha
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\tailwind.config.ts` — token export
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\index.css` — CSS 变量 + 组件配方
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ui\` — 6 原子组件
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\design-md.md` — skill 触发器
+
+**用户视角变化（你打开浏览器能看到的）**：
+
+- 整体节奏更松（主板块间距升档）；标题层级更清晰（heading-xl 28px tracking-tight）
+- 状态色统一（success/warning/danger 三档），按钮加粗 (font-bold + h-8)
+- 侧栏 active 态改用 primary.500 12% 背景 + 加粗（之前是 zinc-800 块）
+- 长文阅读区已就位 `prose-reading` class（serif + 720px 限宽 + 1.85 行高）
+  — Phase 6 evolution 时给小说章节挂上去
+
+---
+
 ### 阶段 2.9 · AI 综合评分卡 ScoreCard（6 维 + 加权 + 历史轨迹）
 
 **动机**：用户在生成 / 改编 / 修改之后只能"凭感觉"判断质量，缺一个**直观、可对比**

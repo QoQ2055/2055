@@ -1,6 +1,6 @@
 # AGENTS.md · cineforge-web 协作者导航
 
-> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.9`（最新一项是 ScoreCard 评分卡）
+> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.10`（最新一项是 DESIGN.md 设计系统全量重塑 · C 档位 · v0.1.1-alpha）
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
 > README.md 面向部署 / 演示，AGENTS.md 面向写代码。
 
