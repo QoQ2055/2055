@@ -2,28 +2,152 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ═══════════════════════════════════════════════════════════════
+   DESIGN.md token → CSS 变量注入层
+   - 切主题：<html class="dark"> 加 / 移
+   - 默认 :root = light theme
+   - 变量值 = "R G B" 三元组（不带 rgb() 包装），供 Tailwind
+     'rgb(var(--cf-x) / <alpha-value>)' 拼装，支持 /opacity 透明度
+   ═══════════════════════════════════════════════════════════════ */
 @layer base {
+  /* ── Light theme（默认 :root） ── */
+  :root {
+    --cf-bg-canvas:        250 250 249;  /* neutral-50  #fafaf9 */
+    --cf-bg-surface:       255 255 255;  /* white */
+    --cf-bg-elevated:      245 245 244;  /* neutral-100 #f5f5f4 */
+    --cf-bg-overlay:        12 10 9;     /* neutral-950（叠 alpha） */
+    --cf-border-subtle:    245 245 244;
+    --cf-border-default:   231 229 228;  /* neutral-200 */
+    --cf-border-strong:    214 211 209;  /* neutral-300 */
+    --cf-text-primary:      28 25 23;    /* neutral-900 */
+    --cf-text-secondary:    87 83 78;    /* neutral-600 */
+    --cf-text-muted:       120 113 108;  /* neutral-500 */
+    --cf-text-on-primary:  255 255 255;
+    --cf-action-primary:        234 88 12;   /* primary-600 */
+    --cf-action-primary-hover:  249 115 22;  /* primary-500 */
+    --cf-action-primary-active: 194 65 12;   /* primary-700 */
+    --cf-focus-ring:       249 115 22;
+  }
+
+  /* ── Dark theme（<html class="dark"> 时生效） ── */
+  .dark {
+    --cf-bg-canvas:         12 10 9;     /* neutral-950 #0c0a09 */
+    --cf-bg-surface:        28 25 23;    /* neutral-900 */
+    --cf-bg-elevated:       41 37 36;    /* neutral-800 */
+    --cf-bg-overlay:        12 10 9;     /* canvas + alpha */
+    --cf-border-subtle:     28 25 23;
+    --cf-border-default:    41 37 36;
+    --cf-border-strong:     68 64 60;
+    --cf-text-primary:     250 250 249;  /* neutral-50 */
+    --cf-text-secondary:   168 162 158;  /* neutral-400 */
+    --cf-text-muted:       120 113 108;
+    --cf-text-on-primary:  255 255 255;
+    --cf-action-primary:        249 115 22;  /* primary-500 */
+    --cf-action-primary-hover:  251 146 60;  /* primary-400 */
+    --cf-action-primary-active: 234 88 12;   /* primary-600 */
+    --cf-focus-ring:       249 115 22;
+  }
+
   html, body, #root { height: 100%; }
   ::selection { background: rgb(249 115 22 / 0.35); }
 }
 
+/* ═══════════════════════════════════════════════════════════════
+   组件层（DESIGN.md components.* 配方）
+   - .btn-* / .input / .card / .label 用主题感知 token
+   - 现有 1206 处 bg-zinc-X 不动，仅新组件配方与新代码使用 token
+   ═══════════════════════════════════════════════════════════════ */
 @layer components {
+  /* ── Button base ── */
   .btn {
-    @apply inline-flex items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-sm font-medium
-           transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none;
+    @apply inline-flex items-center justify-center gap-1.5
+           rounded-button px-4 h-8 text-body-m font-bold
+           transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action-primary/40;
   }
-  .btn-primary { @apply btn bg-brand-500 text-white hover:bg-brand-600 active:bg-brand-700; }
-  .btn-ghost   { @apply btn text-zinc-300 hover:bg-zinc-800; }
-  .btn-outline { @apply btn border border-zinc-700 text-zinc-200 hover:bg-zinc-800; }
+  .btn-primary {
+    @apply btn bg-action-primary text-fg-on-primary
+           hover:bg-action-primary-hover active:bg-action-primary-active;
+  }
+  .btn-secondary {
+    @apply btn bg-secondary-500 text-fg-on-primary
+           hover:bg-secondary-400 active:bg-secondary-600;
+  }
+  .btn-ghost {
+    @apply btn bg-transparent text-fg-secondary
+           hover:bg-elevated hover:text-fg-primary;
+  }
+  .btn-outline {
+    @apply btn bg-transparent border border-border-default text-fg-primary
+           hover:bg-elevated hover:border-border-strong;
+  }
+  .btn-danger {
+    @apply btn bg-danger text-fg-on-primary
+           hover:bg-danger-hover active:bg-danger-active;
+  }
+  .btn-icon {
+    @apply inline-flex items-center justify-center size-8 rounded-icon-btn
+           text-fg-secondary transition-colors select-none
+           hover:bg-elevated hover:text-fg-primary
+           disabled:opacity-50 disabled:cursor-not-allowed
+           focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-action-primary/40;
+  }
+  /* button size 变体 */
+  .btn-sm  { @apply h-7 px-3 text-body-s; }
+  .btn-lg  { @apply h-10 px-6 text-body-l; }
+
+  /* ── Input ── */
   .input {
-    @apply w-full rounded-md bg-zinc-900 border border-zinc-800 px-3 py-1.5 text-sm
-           focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500/40
-           placeholder:text-zinc-500;
+    @apply w-full rounded-input border border-border-default bg-surface
+           px-3 h-9 text-body-m text-fg-primary
+           transition-colors
+           focus:border-action-primary focus:outline-none focus:ring-1 focus:ring-action-primary/40
+           placeholder:text-fg-muted
+           disabled:opacity-50 disabled:cursor-not-allowed;
   }
+  .input-sm { @apply h-7 px-2 text-body-s; }
+  .input-error {
+    @apply border-danger focus:border-danger focus:ring-danger/40;
+  }
+
+  /* ── Card ── */
   .card {
-    @apply rounded-lg border border-zinc-800 bg-zinc-900/50 backdrop-blur;
+    @apply rounded-card border border-border-default bg-surface;
   }
+  .card-interactive {
+    @apply card shadow-raised cursor-pointer
+           transition-shadow duration-150
+           hover:shadow-floating hover:border-border-strong;
+  }
+  .card-flat {
+    @apply rounded-card border border-border-subtle bg-surface;
+  }
+
+  /* ── Panel / Modal 容器 ── */
+  .panel {
+    @apply rounded-panel border border-border-default bg-surface shadow-raised;
+  }
+  .modal-container {
+    @apply rounded-modal border border-border-default bg-elevated shadow-floating
+           max-w-modal mx-auto;
+  }
+  .drawer-container {
+    @apply h-full w-drawer border-l border-border-default bg-elevated shadow-floating;
+  }
+
+  /* ── Label / Caption / Code ── */
   .label {
-    @apply text-xs font-medium text-zinc-400 uppercase tracking-wider;
+    @apply text-label-m uppercase text-fg-muted;
+  }
+  .caption {
+    @apply text-caption-m text-fg-muted;
+  }
+  .code {
+    @apply font-mono text-code-m;
+  }
+
+  /* ── Reading 阅读区（小说章节 / KB 长文 / 分析师输出） ── */
+  .prose-reading {
+    @apply font-reading text-body-reading text-fg-primary max-w-reading mx-auto;
   }
 }

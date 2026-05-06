@@ -4,9 +4,15 @@
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
 > README.md 面向部署 / 演示，AGENTS.md 面向写代码。
 
-> **行为硬约束**：写代码前先读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\karpathy-guidelines.md`
+> **行为硬约束 ①**：写代码前先读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\karpathy-guidelines.md`
 > （Karpathy 四原则：Think Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution）。
 > 该文件为 `always_on` 规则，每次会话默认注入。
+>
+> **行为硬约束 ②**：写任何 React / UI 组件前先读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\DESIGN.md`
+> （v0.1.1-alpha · token-driven 设计系统）。颜色 / 间距 / 字体 / 圆角 / 阴影一律从 token 取，
+> 禁止 `bg-[#xxx]` `p-[7px]` 这种 arbitrary value。新建组件用 `.windsurf/rules/karpathy-guidelines`
+> 的 surgical 原则 + DESIGN.md 的 6 节 token 双约束。
+> 现存 1206 处 `bg-zinc-X` 是迁移前遗留，Phase 4 统一替换前**不要主动改**（surgical changes）。
 
 ---
 
