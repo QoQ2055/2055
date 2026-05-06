@@ -110,6 +110,16 @@
     @apply border-danger focus:border-danger focus:ring-danger/40;
   }
 
+  /* ── Textarea（同 input 但无固定高，可垂直拉伸） ── */
+  .textarea {
+    @apply w-full rounded-input border border-border-default bg-surface
+           px-3 py-2 text-body-m text-fg-primary leading-relaxed
+           transition-colors min-h-24 resize-y
+           focus:border-action-primary focus:outline-none focus:ring-1 focus:ring-action-primary/40
+           placeholder:text-fg-muted
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
   /* ── Card ── */
   .card {
     @apply rounded-card border border-border-default bg-surface;
