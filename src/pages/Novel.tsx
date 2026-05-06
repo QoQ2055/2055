@@ -15,6 +15,7 @@ import { ChapterFeedbackButton } from '../components/ChapterFeedbackButton';
 import { MethodModulePanel } from '../components/MethodModulePanel';
 import { RefinementToolPanel } from '../components/RefinementToolPanel';
 import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
+import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runStepBestOfN, isBestOfNRecommended } from '../pipeline/bestOfN';
@@ -1543,6 +1544,15 @@ function PreviewModal({
         >
           {displayBody}
         </pre>
+        {/* v2 阶段 2.9 · 章节级 6 维评分（不持久化，仅当前会话） */}
+        {isChapterPreview && (
+          <ChapterScoreCardSlot
+            text={displayBody}
+            chapterKey={`${chapterSrc}:${chapterTitle}`}
+            nodeId={chapterSrc === 'draft' ? 'novel.3.1' : 'novel.3.2'}
+            stageId="novel"
+          />
+        )}
         {/* v2 阶段 2.4 · 章节自动校验面板（仅章节预览场景） */}
         {isChapterPreview && (
           <ChapterValidationPanel

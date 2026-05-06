@@ -12,6 +12,7 @@ import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runTargetedSelfCheck, type SelfCheckReport } from '../pipeline/selfCheck';
 import { SelfCheckPanel } from '../components/SelfCheckPanel';
+import { ArtifactScoreCardSlot } from '../components/ArtifactScoreCardSlot';
 import { computeStepConstraints, type Constraint } from '../pipeline/constraints';
 import {
   R1_NODE_ID, R9_NODE_ID, runR1Directive, runR9Verdict, parseR9,
@@ -660,6 +661,11 @@ function StepPane(p: StepPaneProps) {
         <div className="card border-rose-500/40 bg-rose-500/5 p-3 text-sm text-rose-200">
           {p.err}
         </div>
+      )}
+
+      {/* AI 综合评分（6 维 / 加权 / sparkline） */}
+      {p.artifact && (
+        <ArtifactScoreCardSlot artifact={p.artifact} />
       )}
 
       {/* Self-check verdict + 一键修改闭环 */}

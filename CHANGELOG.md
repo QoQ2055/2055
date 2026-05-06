@@ -10,6 +10,59 @@
 
 ## [Unreleased] · v2 阶段 2.x（2026-05）
 
+### 阶段 2.9 · AI 综合评分卡 ScoreCard（6 维 + 加权 + 历史轨迹）
+
+**动机**：用户在生成 / 改编 / 修改之后只能"凭感觉"判断质量，缺一个**直观、可对比**
+的量化反馈：哪个维度变好了、哪个变差了、和上次比是+5 还是−12。同时已有的诊断/修复
+闭环只输出「pass | warn | fail」三档，太粗。
+
+**改动**：
+
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\scoreCard.ts` — 新建评分引擎。
+  6 维度、加权平均（inactive 自动从分母剔除）、`runScoreCard` 主入口、
+  `applyScoreCardToArtifact` 把分数 + 上一份压栈到 `meta.scoreCard / scoreCardHistory`。
+  - 前 4 维（前端规则，<10ms）：`genre`（题材锚点匹配）/ `method`（方法论模块特征）/
+    `kbRedline`（违禁词、强制词、比例）/ `craft`（可读性、重复度、段落节奏）。
+  - 后 2 维（LLM，~1k tokens）：`r1Align`（R1 创作指令书对齐）/ `userKbStyle`（用户 KB
+    范文风格契合），合并成 1 次 LLM 调用，无 R1/KB 时自动 `inactive`。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\scoreCardModuleChecks.ts` — 新建。
+  方法论模块 → 正则规则注册表，覆盖 8 个高用量模块，给 `method` 维度提供"模块特征是否落地"
+  的量化判据。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ScoreCardBadge.tsx` — 新建紧凑横条
+  + 展开抽屉 + sparkline UI。一行展示总分 / delta / 6 维子分 / 重算 / 详情；展开后看
+  每维度的 issue 列表 + evidence 片段。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\hooks\useScoreCardController.ts` — 新建复用
+  Hook：artifact 版本变化时**自动跑前 4 维**（skipLlm，无 token 成本）；`recompute`
+  暴露给"重算"按钮触发完整 6 维。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ArtifactScoreCardSlot.tsx` — 新建。
+  把 Hook + Badge + settings 开关封装为可插拔槽位，给 artifact 级页面用。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ChapterScoreCardSlot.tsx` — 新建。
+  章节预览专用：不写回 artifact，仅在内存里维护 current/previous 两份分数，用于
+  novel.3.1 / 3.2 章节修订前后对比。
+- 三个触发点接入：
+  - `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Pipeline.tsx` — StepRow 节点产出后
+    SelfCheckPanel 上方插入 `ArtifactScoreCardSlot`。
+  - `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx` — 八步工作台
+    SelfCheckPanel 上方插入 `ArtifactScoreCardSlot`。
+  - `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Novel.tsx` — 章节预览面板内
+    `displayBody` 下方插入 `ChapterScoreCardSlot`，章节修订（handleRefineApply）后
+    自动重评，自然形成 before/after。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\settings.ts` — 新增
+  `enableScoreCard: boolean`（默认 true）+ `scoreCardWeights?: Partial<...>`（缺省 = 等权 1.0）。
+- `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Settings.tsx` — 新增评分开关 +
+  6 维权重滑块（0..2，0 = 不计入分母，>1 = 放大影响）+ 全部重置按钮。
+
+**触发逻辑**：
+- 自动 = 4 维（skipLlm:true，零 token，<10ms）：artifact.ts 变化即跑。
+- 手动 = 6 维（含 LLM）：用户点 Badge 上的「重算」按钮。
+- 历史 = 最近 5 次评分入 `scoreCardHistory`，用于 sparkline + delta。
+
+**不动什么**：runner / compose / R9 全部不变；评分是**只读旁路**，失败也不影响主流程。
+
+**验证**：`npx vite build` ✓（1918 modules）。
+
+---
+
 ### 阶段 2.8 · 诊断 → 一键修改闭环（修复路径接入项目知识层）
 
 **动机**：之前 `runIssueFix` / `runFixAllIssues` / `runHybridFix` 三个修复函数都只看

@@ -21,6 +21,7 @@ import { SelfCheckPanel } from '../components/SelfCheckPanel';
 import { ConsistencyPanel } from '../components/ConsistencyPanel';
 import { RunHistoryPanel } from '../components/RunHistoryPanel';
 import { ArtifactStructuredView } from '../components/ArtifactStructuredView';
+import { ArtifactScoreCardSlot } from '../components/ArtifactScoreCardSlot';
 import { getProjectModeMeta } from '../data/projectModes';
 import { ProgressBanner, type ProgressSegment } from '../components/ProgressBanner';
 import type { SelfCheckReport } from '../pipeline/selfCheck';
@@ -537,6 +538,9 @@ function StepRow(p: StepRowProps) {
               />
             </div>
           )}
+          {p.artifact && status === 'done' && (
+            <ArtifactScoreCardSlot artifact={p.artifact} />
+          )}
           {p.artifact && status === 'done' && useSettings.getState().enableSelfCheck && (
             <SelfCheckPanel
               artifact={p.artifact}
@@ -570,3 +574,4 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     </div>
   );
 }
+

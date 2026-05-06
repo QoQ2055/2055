@@ -1,6 +1,6 @@
 # AGENTS.md · cineforge-web 协作者导航
 
-> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.8`
+> Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.9`（最新一项是 ScoreCard 评分卡）
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
 > README.md 面向部署 / 演示，AGENTS.md 面向写代码。
 
@@ -238,6 +238,7 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 - **2.6** 润色撤销栈持久化（Dexie v4 `liveRefinementUndo` 表）
 - **2.7** 全仓 simplify 扫描（删除 14 处死代码）
 - **2.8** 诊断 → 一键修改闭环（修复路径接入 KB / 题材锚点 / 方法论 / R1 指令书；Screenplay 接 SelfCheckPanel；章节校验加 AI 一键修订）
+- **2.9** AI 综合评分卡 ScoreCard（6 维加权 + 历史 sparkline + before/after delta；前 4 维前端规则自动跑、后 2 维 LLM 按需重算；Pipeline / Screenplay / Novel 章节预览三处接入；settings 开关 + 权重滑块）
 
 ---
 

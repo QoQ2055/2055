@@ -32,6 +32,15 @@ export interface SettingsState {
   enableEditorialRounds: boolean;   // R1 创作指令书 + R9 总编裁决
   enableSelfCheck: boolean;         // 节点完成后允许一键自检（不自动跑，只显示按钮）
   enableSelfCheckContext: boolean;  // storyboard.2 自检时是否注入 sb.1 / assets 上下文（提高一致性检查准确度，耗 token）
+  enableScoreCard: boolean;         // 节点产出后显示 6 维评分（前 4 维自动跑，LLM 维度按需重算）
+  scoreCardWeights?: Partial<{      // 6 维度自定义权重（默认等权 1.0），缺省 = 等权
+    genre: number;
+    method: number;
+    kbRedline: number;
+    craft: number;
+    r1Align: number;
+    userKbStyle: number;
+  }>;
   set: (patch: Partial<SettingsState>) => void;
   reset: () => void;
 }
@@ -52,6 +61,8 @@ const DEFAULTS = {
   enableEditorialRounds: true,
   enableSelfCheck: true,
   enableSelfCheckContext: true,
+  enableScoreCard: true,
+  scoreCardWeights: undefined,
 };
 
 export const useSettings = create<SettingsState>()(

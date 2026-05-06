@@ -188,7 +188,70 @@ export function Settings() {
             </div>
           </div>
         </label>
+
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" className="mt-1" checked={s.enableScoreCard !== false}
+                 onChange={(e) => s.set({ enableScoreCard: e.target.checked })} />
+          <div>
+            <div className="text-sm font-medium">启用 AI 综合评分卡（6 维 + 历史轨迹）</div>
+            <div className="text-xs text-zinc-500 mt-0.5">
+              节点产出/章节修订后<strong>自动跑前 4 维</strong>（题材锚点 / 方法论模块 / KB 红线 / 写作工艺，纯前端规则，{'<'} 10ms）。
+              点击<strong>「重算」</strong>会追加 LLM 2 维（R1 指令对齐 / 用户 KB 风格），单次 ≈ 1k tokens。
+              展示总分 + 6 维子分 + 与上次分数 delta + 最近 5 次 sparkline。
+            </div>
+          </div>
+        </label>
+
+        <ScoreCardWeightSliders />
       </section>
+    </div>
+  );
+}
+
+/** 6 维权重滑块（0..2，默认 1.0 = 等权）。 */
+function ScoreCardWeightSliders() {
+  const enabled = useSettings((st) => st.enableScoreCard !== false);
+  const weights = useSettings((st) => st.scoreCardWeights);
+  const setW = useSettings((st) => st.set);
+  if (!enabled) return null;
+  const dims: Array<{ key: 'genre' | 'method' | 'kbRedline' | 'craft' | 'r1Align' | 'userKbStyle'; label: string; hint: string }> = [
+    { key: 'genre',       label: '题材锚点',     hint: '匹配该节点 stage 期望的题材关键词' },
+    { key: 'method',      label: '方法论模块',    hint: '已开方法论模块的特征是否真正落地' },
+    { key: 'kbRedline',   label: 'KB 红线',      hint: '违禁词 / 强制词 / 比例阈值' },
+    { key: 'craft',       label: '写作工艺',     hint: '可读性 / 重复度 / 段落节奏' },
+    { key: 'r1Align',     label: 'R1 对齐',      hint: 'LLM：是否符合本片创作指令书' },
+    { key: 'userKbStyle', label: '用户 KB 风格',   hint: 'LLM：是否贴合上传的范文/喜好' },
+  ];
+  const reset = () => setW({ scoreCardWeights: undefined });
+  const setOne = (k: string, v: number) =>
+    setW({ scoreCardWeights: { ...(weights ?? {}), [k]: v } });
+  return (
+    <div className="ml-7 mt-1 p-3 rounded border border-zinc-800/60 bg-zinc-900/30">
+      <div className="flex items-center justify-between mb-2">
+        <div className="text-xs font-medium text-zinc-300">6 维度权重（默认全 1.0 = 等权）</div>
+        <button type="button" onClick={reset} className="text-[11px] text-zinc-400 hover:text-zinc-200 underline">
+          全部重置
+        </button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
+        {dims.map((d) => {
+          const v = weights?.[d.key] ?? 1.0;
+          return (
+            <label key={d.key} className="flex items-center gap-2 text-xs" title={d.hint}>
+              <span className="w-20 text-zinc-300 shrink-0">{d.label}</span>
+              <input
+                type="range" min={0} max={2} step={0.1} value={v}
+                onChange={(e) => setOne(d.key, Number(e.target.value))}
+                className="flex-1"
+              />
+              <span className="w-10 text-right font-mono text-zinc-400">{v.toFixed(1)}</span>
+            </label>
+          );
+        })}
+      </div>
+      <div className="text-[11px] text-zinc-500 mt-2">
+        权重 = 0 → 该维度不计入总分（仍会显示子分）；权重 &gt; 1 → 该维度对总分影响放大。
+      </div>
     </div>
   );
 }
