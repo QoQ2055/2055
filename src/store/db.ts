@@ -1,6 +1,7 @@
 import Dexie, { type Table } from 'dexie';
 import type { CreateMode, AdaptationType, ProjectMode, SourceChunk } from '../pipeline/types';
 import type { UserKbDoc, UserKbFeedback } from './userKb';
+import type { CharacterStateRecord } from './characterStates';
 
 export interface Project {
   id?: number;
@@ -127,6 +128,8 @@ class CineDB extends Dexie {
   userKbDocs!: Table<UserKbDoc, number>;
   userKbFeedback!: Table<UserKbFeedback, number>;
   liveRefinementUndo!: Table<LiveRefinementUndoEntry, number>;
+  /** v5 · 阶段 b · 角色状态跨章节追踪（gap-b） */
+  characterStates!: Table<CharacterStateRecord, number>;
 
   constructor() {
     super('FLIL');
@@ -161,6 +164,22 @@ class CineDB extends Dexie {
       userKbDocs: '++id, type, enabled, createdAt, [type+enabled]',
       userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
       liveRefinementUndo: '++id, ts, [chapterIndex+source]',
+    });
+    // v5: 阶段 b · 角色 Bible 跨章节追踪（gap-b）
+    // 仅追加 characterStates 表，v1-v4 stores 字符串保持 0 变更（CK 红线 #1）。
+    // 复合索引设计：
+    //   - [projectId+chapterIndex] · 某项目某章所有角色状态（listChapterStates）
+    //   - [projectId+characterName] · 某项目某角色跨章时间线（listCharacterTimeline）
+    //   - [projectId+chapterIndex+characterName] · upsert 唯一性查找
+    this.version(5).stores({
+      projects: '++id, name, createdAt, status',
+      artifacts: '++id, projectId, nodeId, ts, [projectId+nodeId]',
+      liveArtifacts: '&nodeId, stageId, ts',
+      runHistory: '++id, nodeId, ts, projectId, [projectId+nodeId], [nodeId+ts]',
+      userKbDocs: '++id, type, enabled, createdAt, [type+enabled]',
+      userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
+      liveRefinementUndo: '++id, ts, [chapterIndex+source]',
+      characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
     });
   }
 }
