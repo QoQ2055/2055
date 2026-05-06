@@ -47,7 +47,10 @@ npm run smoke:novel
 ## 目录速查
 
 ```
-.windsurf/workflows/    AI 工作流（/init, /simplify 等 slash 命令源文件）
+.windsurf/
+  rules/                  always_on / model_decision 规则（Karpathy / coding-standards / design-md / bmad-method）
+  skills/                 大型方法论 skill 本地副本（design-md, bmad-method · 含 references/assets）
+  workflows/              AI 工作流（/init, /simplify, /memory 等 slash 命令源文件）
 docs/                   架构参考 + 内部 spec + prompt 原稿存档（不参与构建）
 public/
   prompts/manifest.json    主流水线节点定义（screenplay / assets / storyboard / novel）
@@ -55,11 +58,12 @@ public/
   kb/                      9 篇静态 KB（去 AI 味 / 视觉风格 / 117 运镜 / 14 情绪 / 打斗三幕 …）
 scripts/                Node 脚本：import-prompts.mjs / smoke-novel.mjs
 src/
-  components/  (24 文件)  React 组件（面板 + 对话框 + 校验器 UI）
+  components/  (27 文件)  React 组件（面板 + 对话框 + 校验器 UI + 评分卡 Badge/Slot）
   data/        (2 文件)   静态分类（题材 / 平台 / 调性 / 受众 / 视觉风格 …）+ 题材锚点
+  hooks/       (1 文件)   自定义 React Hooks（评分控制器 useScoreCardController）
   llm/         (3 文件)   deepseek SSE 流式 client + cost 估算 + extractKb（用户 KB JSON 抽取）
   pages/       (12 文件)  路由对应页（每个 1 页）
-  pipeline/    (26 文件)  manifest / 节点编排 / 注入合成 / 自检 / Best-of-N / 反思 / 拆书 / 校验
+  pipeline/    (29 文件)  manifest / 节点编排 / 注入合成 / 自检 / Best-of-N / 反思 / 拆书 / 校验 / 评分
   store/       (6 文件)   zustand state + Dexie schema + 项目归档 / 导入导出 / 用户 KB
 ```
 
