@@ -55,15 +55,15 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
   const orphanCount = value.length - selectedCount; // 引用了但已被删除/禁用的
 
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800 rounded">
+    <div className="bg-surface/40 border border-border-subtle rounded">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full px-3 py-2 flex items-center gap-2 text-left hover:bg-zinc-900/60 transition-colors rounded"
+        className="w-full px-3 py-2 flex items-center gap-2 text-left hover:bg-surface/60 transition-colors rounded"
       >
-        <Library className="size-4 text-brand-500 shrink-0" />
+        <Library className="size-4 text-primary-500 shrink-0" />
         <div className="flex-1">
-          <div className="font-medium text-zinc-200">知识库绑定</div>
-          <div className="text-[11px] text-zinc-500 mt-0.5">
+          <div className="font-medium text-fg-primary">知识库绑定</div>
+          <div className="text-[11px] text-fg-muted mt-0.5">
             {loading ? '加载中…' : (
               docs.length === 0
                 ? '资料库为空。'
@@ -80,15 +80,15 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
         >
           管理 <ExternalLink className="size-3" />
         </a>
-        <span className="text-zinc-500 text-xs">{expanded ? '▾' : '▸'}</span>
+        <span className="text-fg-muted text-xs">{expanded ? '▾' : '▸'}</span>
       </button>
 
       {expanded && (
-        <div className="px-3 pb-3 pt-1 border-t border-zinc-800/50 space-y-2">
-          {loading && <div className="text-[11px] text-zinc-500">加载中…</div>}
+        <div className="px-3 pb-3 pt-1 border-t border-border-subtle/50 space-y-2">
+          {loading && <div className="text-[11px] text-fg-muted">加载中…</div>}
 
           {!loading && docs.length === 0 && (
-            <div className="text-[11px] text-zinc-500 italic py-2">
+            <div className="text-[11px] text-fg-muted italic py-2">
               还没上传过任何资料。前往「
               <a href="#/kb" target="_blank" rel="noreferrer" className="text-brand-300 underline">
                 知识库 → 我的资料库
@@ -101,7 +101,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
             const meta = USER_KB_TYPE_META[type];
             return (
               <div key={type} className="space-y-1">
-                <div className="text-[10px] uppercase tracking-wide text-zinc-500 font-semibold">
+                <div className="text-[10px] uppercase tracking-wide text-fg-muted font-semibold">
                   {meta.label} <span className="opacity-60">→ {meta.injectsTo.join(' · ')}</span>
                 </div>
                 <ul className="space-y-0.5">
@@ -116,18 +116,18 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
                           className={clsx(
                             'w-full text-left px-2 py-1 rounded text-[11px] flex items-center gap-2 transition-colors',
                             checked
-                              ? 'bg-brand-500/15 text-brand-200 border border-brand-500/40'
-                              : 'border border-transparent hover:bg-zinc-900',
+                              ? 'bg-primary-500/15 text-brand-200 border border-brand-500/40'
+                              : 'border border-transparent hover:bg-surface',
                           )}
                         >
                           {checked ? (
                             <ToggleRight className="size-3.5 shrink-0 text-brand-300" />
                           ) : (
-                            <ToggleLeft className="size-3.5 shrink-0 text-zinc-500" />
+                            <ToggleLeft className="size-3.5 shrink-0 text-fg-muted" />
                           )}
                           <span className="truncate flex-1">{d.title}</span>
                           {d.tags.length > 0 && (
-                            <span className="text-[10px] text-zinc-500 shrink-0">{d.tags.join('/')}</span>
+                            <span className="text-[10px] text-fg-muted shrink-0">{d.tags.join('/')}</span>
                           )}
                         </button>
                       </li>
@@ -139,12 +139,12 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
           })}
 
           {orphanCount > 0 && (
-            <div className="text-[10px] text-amber-400/80 italic mt-2">
+            <div className="text-[10px] text-warning/80 italic mt-2">
               注：{orphanCount} 条已绑定的资料已被删除或禁用，注入时会自动跳过；可点
               <button
                 type="button"
                 onClick={() => onChange(value.filter((id) => docs.some((d) => d.id === id)))}
-                className="underline ml-0.5 text-amber-300 hover:text-amber-200"
+                className="underline ml-0.5 text-warning hover:text-warning"
               >
                 清理悬空引用
               </button>

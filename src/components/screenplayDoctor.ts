@@ -201,23 +201,23 @@ function validateReport(x: any): x is DoctorReport {
 export function verdictColor(v: OverallVerdict): { label: string; cls: string } {
   switch (v) {
     case 'pass':
-      return { label: '通过', cls: 'text-emerald-300 border-emerald-500/40 bg-emerald-500/5' };
+      return { label: '通过', cls: 'text-success border-success/40 bg-success/5' };
     case 'minor_issues':
-      return { label: '小问题', cls: 'text-amber-300 border-amber-500/40 bg-amber-500/5' };
+      return { label: '小问题', cls: 'text-warning border-warning/40 bg-warning/5' };
     case 'major_revision':
       return { label: '需修订', cls: 'text-orange-300 border-orange-500/40 bg-orange-500/5' };
     case 'needs_rewrite':
-      return { label: '需重写', cls: 'text-rose-300 border-rose-500/40 bg-rose-500/5' };
+      return { label: '需重写', cls: 'text-danger border-danger/40 bg-danger/5' };
   }
 }
 
 export function severityColor(s: IssueSeverity): { dot: string; text: string; bg: string } {
   switch (s) {
     case 'high':
-      return { dot: 'bg-rose-500', text: 'text-rose-300', bg: 'bg-rose-500/5 border-rose-500/30' };
+      return { dot: 'bg-rose-500', text: 'text-danger', bg: 'bg-danger/5 border-danger/30' };
     case 'mid':
-      return { dot: 'bg-amber-500', text: 'text-amber-300', bg: 'bg-amber-500/5 border-amber-500/30' };
+      return { dot: 'bg-amber-500', text: 'text-warning', bg: 'bg-warning/5 border-warning/30' };
     case 'low':
-      return { dot: 'bg-zinc-500', text: 'text-zinc-300', bg: 'bg-zinc-700/30 border-zinc-700' };
+      return { dot: 'bg-zinc-500', text: 'text-fg-secondary', bg: 'bg-zinc-700/30 border-border-default' };
   }
 }

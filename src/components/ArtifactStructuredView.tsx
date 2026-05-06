@@ -249,8 +249,8 @@ function CopyButton({
       className={clsx(
         'inline-flex items-center gap-1 rounded border px-1.5 py-0.5 text-[10px] transition-colors',
         copied
-          ? 'border-emerald-500/50 text-emerald-300 bg-emerald-500/10'
-          : 'border-zinc-700 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800',
+          ? 'border-success/50 text-success bg-success/10'
+          : 'border-border-default text-fg-secondary hover:text-fg-primary hover:bg-elevated',
         className,
       )}
       title={copied ? '已复制' : `复制${label ? ` ${label}` : ''}`}
@@ -282,13 +282,13 @@ export function ArtifactStructuredView({
       <div className={className}>
         <div className="flex items-center gap-2 mb-2">
           <button
-            className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+            className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
             onClick={() => setView('cards')}
           >
             <LayoutGrid className="size-3" /> 卡片视图
           </button>
           <CopyButton text={content} label="全部" />
-          <span className="ml-auto text-[10px] text-zinc-600">
+          <span className="ml-auto text-[10px] text-fg-muted">
             原始视图 · {content.length.toLocaleString()} 字
           </span>
         </div>
@@ -324,44 +324,44 @@ export function ArtifactStructuredView({
     <div className={className}>
       {/* 工具条 */}
       <div className="flex items-center gap-2 mb-2 flex-wrap">
-        <span className="text-[10px] text-zinc-500 mr-1">
-          共 <strong className="text-zinc-300">{sections.length}</strong> 段
+        <span className="text-[10px] text-fg-muted mr-1">
+          共 <strong className="text-fg-secondary">{sections.length}</strong> 段
           {q && ` · 匹配 ${filtered.length}`}
         </span>
         <CopyButton text={content} label="全部" />
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
           onClick={collapseAll}
           disabled={allCollapsed}
         >
           全部折叠
         </button>
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800 disabled:opacity-40"
+          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated disabled:opacity-40"
           onClick={expandAll}
           disabled={noneCollapsed}
         >
           全部展开
         </button>
         <button
-          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+          className="text-[10px] inline-flex items-center gap-1 px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
           onClick={() => setView('raw')}
         >
           <FileText className="size-3" /> 原始
         </button>
         <div className="ml-auto relative">
-          <Search className="size-3 absolute left-1.5 top-1.5 text-zinc-500 pointer-events-none" />
+          <Search className="size-3 absolute left-1.5 top-1.5 text-fg-muted pointer-events-none" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="搜索…"
-            className="text-[10px] bg-zinc-900 border border-zinc-800 rounded pl-6 pr-5 py-0.5 w-32 focus:border-brand-500 focus:outline-none"
+            className="text-[10px] bg-surface border border-border-subtle rounded pl-6 pr-5 py-0.5 w-32 focus:border-brand-500 focus:outline-none"
           />
           {search && (
             <button
               onClick={() => setSearch('')}
-              className="absolute right-1 top-1 text-zinc-500 hover:text-zinc-200"
+              className="absolute right-1 top-1 text-fg-muted hover:text-fg-primary"
             >
               <X className="size-2.5" />
             </button>
@@ -372,7 +372,7 @@ export function ArtifactStructuredView({
       {/* 卡片网格（单列，每卡片独立滚动） */}
       <div className="space-y-2">
         {filtered.length === 0 ? (
-          <div className="text-[11px] text-zinc-500 text-center py-4 border border-zinc-800 rounded">
+          <div className="text-[11px] text-fg-muted text-center py-4 border border-border-subtle rounded">
             无匹配段
           </div>
         ) : filtered.map((s) => {
@@ -381,32 +381,32 @@ export function ArtifactStructuredView({
           return (
             <div
               key={i}
-              className="border border-zinc-800 rounded-md bg-zinc-950/40 overflow-hidden"
+              className="border border-border-subtle rounded-md bg-canvas/40 overflow-hidden"
             >
               {/* 标题行：chevron+title 区域可点击折叠，复制按钮独立（避免嵌套 button） */}
-              <div className="px-3 py-1.5 flex items-center gap-2 hover:bg-zinc-800/30 transition-colors">
+              <div className="px-3 py-1.5 flex items-center gap-2 hover:bg-elevated/30 transition-colors">
                 <button
                   onClick={() => toggleCollapse(i)}
                   className="flex-1 min-w-0 flex items-center gap-2 text-left"
                 >
                   {isCollapsed ? (
-                    <ChevronRight className="size-3 text-zinc-500 flex-none" />
+                    <ChevronRight className="size-3 text-fg-muted flex-none" />
                   ) : (
-                    <ChevronDown className="size-3 text-zinc-500 flex-none" />
+                    <ChevronDown className="size-3 text-fg-muted flex-none" />
                   )}
-                  <span className="text-[10px] font-mono text-zinc-600 flex-none">#{i + 1}</span>
-                  <span className="text-xs text-zinc-200 truncate flex-1">
+                  <span className="text-[10px] font-mono text-fg-muted flex-none">#{i + 1}</span>
+                  <span className="text-xs text-fg-primary truncate flex-1">
                     {q ? <Highlight text={s.title} q={q} /> : s.title}
                   </span>
                 </button>
-                <span className="text-[10px] text-zinc-600 flex-none">
+                <span className="text-[10px] text-fg-muted flex-none">
                   {s.body.length.toLocaleString()} 字
                 </span>
                 <CopyButton text={s.body} className="flex-none" />
               </div>
               {!isCollapsed && (
                 <pre
-                  className="text-[11px] font-mono text-zinc-200 whitespace-pre-wrap break-words overflow-auto px-3 py-2 border-t border-zinc-800/60 bg-zinc-950/60"
+                  className="text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto px-3 py-2 border-t border-border-subtle/60 bg-canvas/60"
                   style={{ maxHeight: maxBodyHeight }}
                 >
                   {q ? <Highlight text={s.body} q={q} /> : s.body}
@@ -431,7 +431,7 @@ function RawView({
         <CopyButton text={content} label="复制" />
       </div>
       <pre
-        className="text-[11px] font-mono text-zinc-200 whitespace-pre-wrap break-words overflow-auto bg-zinc-950/60 border border-zinc-800 rounded px-3 py-2 pr-20"
+        className="text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words overflow-auto bg-canvas/60 border border-border-subtle rounded px-3 py-2 pr-20"
         style={{ maxHeight }}
       >
         {content}
@@ -455,7 +455,7 @@ function Highlight({ text, q }: { text: string; q: string }) {
     }
     if (found > i) parts.push(text.slice(i, found));
     parts.push(
-      <mark key={found} className="bg-amber-500/40 text-amber-100 rounded px-0.5">
+      <mark key={found} className="bg-warning/40 text-amber-100 rounded px-0.5">
         {text.slice(found, found + q.length)}
       </mark>,
     );

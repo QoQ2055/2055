@@ -70,14 +70,14 @@ const SEVERITY_META: Record<ValidationSeverity, {
   error: {
     label: '错误',
     icon: AlertOctagon,
-    badgeClass: 'bg-rose-500/20 text-rose-300 border-rose-500/40',
-    rowClass: 'border-rose-500/30 bg-rose-500/5',
+    badgeClass: 'bg-danger/20 text-danger border-danger/40',
+    rowClass: 'border-danger/30 bg-danger/5',
   },
   warning: {
     label: '警告',
     icon: AlertTriangle,
-    badgeClass: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
-    rowClass: 'border-amber-500/30 bg-amber-500/5',
+    badgeClass: 'bg-warning/20 text-warning border-warning/40',
+    rowClass: 'border-warning/30 bg-warning/5',
   },
   info: {
     label: '提示',
@@ -167,30 +167,30 @@ export function ChapterValidationPanel({
 
   return (
     <details
-      className="border-t border-zinc-800 bg-zinc-950/40 px-4 py-2 shrink-0"
+      className="border-t border-border-subtle bg-canvas/40 px-4 py-2 shrink-0"
       open={defaultOpen && !isClean}
     >
-      <summary className="cursor-pointer text-xs select-none flex items-center gap-2 hover:text-zinc-100">
+      <summary className="cursor-pointer text-xs select-none flex items-center gap-2 hover:text-fg-primary">
         {isClean ? (
-          <ShieldCheck className="size-3.5 text-emerald-400" />
+          <ShieldCheck className="size-3.5 text-success" />
         ) : (
-          <AlertTriangle className="size-3.5 text-amber-400" />
+          <AlertTriangle className="size-3.5 text-warning" />
         )}
-        <span className="text-zinc-300">章节自动校验</span>
+        <span className="text-fg-secondary">章节自动校验</span>
 
         {isClean ? (
-          <span className="text-[10px] px-1.5 py-0.5 rounded border border-emerald-500/40 bg-emerald-500/10 text-emerald-300">
+          <span className="text-[10px] px-1.5 py-0.5 rounded border border-success/40 bg-success/10 text-success">
             ✓ 无明显问题
           </span>
         ) : (
           <>
             {summary.error > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-rose-500/40 bg-rose-500/10 text-rose-300">
+              <span className="text-[10px] px-1.5 py-0.5 rounded border border-danger/40 bg-danger/10 text-danger">
                 {summary.error} 错误
               </span>
             )}
             {summary.warning > 0 && (
-              <span className="text-[10px] px-1.5 py-0.5 rounded border border-amber-500/40 bg-amber-500/10 text-amber-300">
+              <span className="text-[10px] px-1.5 py-0.5 rounded border border-warning/40 bg-warning/10 text-warning">
                 {summary.warning} 警告
               </span>
             )}
@@ -202,7 +202,7 @@ export function ChapterValidationPanel({
           </>
         )}
 
-        <span className="ml-auto text-[10px] text-zinc-500">点击展开 / 收起</span>
+        <span className="ml-auto text-[10px] text-fg-muted">点击展开 / 收起</span>
       </summary>
 
       {canAiFix && (
@@ -226,7 +226,7 @@ export function ChapterValidationPanel({
               <button
                 type="button"
                 onClick={cancelAiFix}
-                className="text-[11px] px-2 py-1 rounded border border-zinc-700 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 inline-flex items-center gap-1"
+                className="text-[11px] px-2 py-1 rounded border border-border-default bg-elevated hover:bg-zinc-700 text-fg-secondary inline-flex items-center gap-1"
               >
                 <X className="size-3" /> 取消
               </button>
@@ -234,11 +234,11 @@ export function ChapterValidationPanel({
           )}
           {aiFix.kind === 'error' && (
             <>
-              <span className="text-[11px] text-rose-300">AI 修订失败：{aiFix.msg}</span>
+              <span className="text-[11px] text-danger">AI 修订失败：{aiFix.msg}</span>
               <button
                 type="button"
                 onClick={() => setAiFix({ kind: 'idle' })}
-                className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-700 hover:bg-zinc-800 text-zinc-400"
+                className="text-[10px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary"
               >
                 关闭
               </button>
@@ -272,17 +272,17 @@ export function ChapterValidationPanel({
                       >
                         {meta.label}
                       </span>
-                      <span className="text-[9px] px-1 py-0 rounded border border-zinc-700 text-zinc-400 font-mono">
+                      <span className="text-[9px] px-1 py-0 rounded border border-border-default text-fg-secondary font-mono">
                         {it.kind}
                       </span>
-                      <span className="text-zinc-200">{it.message}</span>
+                      <span className="text-fg-primary">{it.message}</span>
                     </div>
                     {it.evidence && it.evidence.length > 0 && (
                       <div className="mt-0.5 flex flex-wrap gap-1">
                         {it.evidence.map((ev, i) => (
                           <span
                             key={i}
-                            className="text-[10px] px-1 py-0 rounded bg-zinc-900/70 border border-zinc-700/50 font-mono text-zinc-400 max-w-full truncate"
+                            className="text-[10px] px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate"
                             title={ev}
                           >
                             {ev}
@@ -291,7 +291,7 @@ export function ChapterValidationPanel({
                       </div>
                     )}
                     {it.fixHint && (
-                      <div className="text-[10px] text-zinc-400 mt-0.5 italic">
+                      <div className="text-[10px] text-fg-secondary mt-0.5 italic">
                         » {it.fixHint}
                       </div>
                     )}
@@ -300,7 +300,7 @@ export function ChapterValidationPanel({
               </div>
             );
           })}
-          <p className="text-[10px] text-zinc-500 italic mt-1">
+          <p className="text-[10px] text-fg-muted italic mt-1">
             💡 这是一组纯前端的轻量检查，不调用 LLM。错误通常需要立刻处理；警告 / 提示可结合调性自行取舍。
           </p>
         </div>

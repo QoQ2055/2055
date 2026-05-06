@@ -215,12 +215,12 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
       onClick={(e) => { if (e.target === e.currentTarget) p.onCancel(); }}
     >
       <div className="w-full max-w-3xl card p-0 max-h-[92vh] flex flex-col">
-        <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-800 shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-semibold flex items-center gap-2">
-              <Download className="size-4 text-emerald-400" /> {p.title}
+              <Download className="size-4 text-success" /> {p.title}
             </h2>
-            {p.description && <p className="text-[11px] text-zinc-500 mt-0.5">{p.description}</p>}
+            {p.description && <p className="text-[11px] text-fg-muted mt-0.5">{p.description}</p>}
           </div>
           <button className="btn-ghost p-1.5" onClick={p.onCancel}>
             <X className="size-4" />
@@ -240,16 +240,16 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
               <div key={f.nodeId}>
                 <div className="flex items-center justify-between mb-1.5 gap-2 flex-wrap">
                   <label className="label flex items-center gap-2">
-                    <FileText className="size-3.5 text-zinc-500" />
+                    <FileText className="size-3.5 text-fg-muted" />
                     {f.label}
-                    <span className="text-[10px] font-mono text-zinc-600">[{f.nodeId}]</span>
+                    <span className="text-[10px] font-mono text-fg-muted">[{f.nodeId}]</span>
                     {replacing && (
-                      <span className="text-[10px] text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
+                      <span className="text-[10px] text-warning bg-warning/10 px-1.5 py-0.5 rounded">
                         将覆盖现有产物
                       </span>
                     )}
                     {wasApplied && (
-                      <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
+                      <span className="text-[10px] text-success bg-success/10 px-1.5 py-0.5 rounded inline-flex items-center gap-1">
                         <Sparkles className="size-2.5" /> 已 AI 修复
                       </span>
                     )}
@@ -257,7 +257,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                   <div className="flex items-center gap-2">
                     {wasApplied && (
                       <button
-                        className="text-[11px] text-zinc-400 hover:text-zinc-200 inline-flex items-center gap-1"
+                        className="text-[11px] text-fg-secondary hover:text-fg-primary inline-flex items-center gap-1"
                         onClick={() => undoNormalize(f.nodeId)}
                         title="还原到 AI 修复前的内容"
                       >
@@ -274,7 +274,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         <Sparkles className="size-3" /> AI 修复格式
                       </button>
                     )}
-                    <span className="text-[10px] text-zinc-600">{v.length.toLocaleString()} 字</span>
+                    <span className="text-[10px] text-fg-muted">{v.length.toLocaleString()} 字</span>
                   </div>
                 </div>
                 <textarea
@@ -283,13 +283,13 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                   onChange={(e) => setValues((s) => ({ ...s, [f.nodeId]: e.target.value }))}
                   placeholder={f.placeholder ?? '粘贴内容…'}
                   className={clsx(
-                    'w-full bg-zinc-900 border rounded-md px-3 py-2 text-xs font-mono focus:outline-none',
-                    err ? 'border-rose-500/60' : 'border-zinc-800 focus:border-brand-500',
+                    'w-full bg-surface border rounded-md px-3 py-2 text-xs font-mono focus:outline-none',
+                    err ? 'border-danger/60' : 'border-border-subtle focus:border-brand-500',
                   )}
                 />
-                {f.hint && !err && !ns && <div className="text-[11px] text-zinc-500 mt-1">{f.hint}</div>}
+                {f.hint && !err && !ns && <div className="text-[11px] text-fg-muted mt-1">{f.hint}</div>}
                 {err && (
-                  <div className="text-[11px] text-rose-400 mt-1 flex items-center gap-1">
+                  <div className="text-[11px] text-danger mt-1 flex items-center gap-1">
                     <AlertTriangle className="size-3" /> {err}
                   </div>
                 )}
@@ -306,27 +306,27 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         ) : ns.status === 'previewing' ? (
                           <>
                             <Sparkles className="size-3" /> 修复完成预览
-                            <span className="text-zinc-500">·</span>
-                            <span className="text-zinc-400">{ns.preview.length.toLocaleString()} 字</span>
+                            <span className="text-fg-muted">·</span>
+                            <span className="text-fg-secondary">{ns.preview.length.toLocaleString()} 字</span>
                           </>
                         ) : ns.status === 'rejected' ? (
                           <>
-                            <AlertTriangle className="size-3 text-amber-400" />
-                            <span className="text-amber-300">模型拒绝修复</span>
-                            {ns.rejectReason && <span className="text-zinc-400">· {ns.rejectReason}</span>}
+                            <AlertTriangle className="size-3 text-warning" />
+                            <span className="text-warning">模型拒绝修复</span>
+                            {ns.rejectReason && <span className="text-fg-secondary">· {ns.rejectReason}</span>}
                           </>
                         ) : (
                           <>
-                            <AlertTriangle className="size-3 text-rose-400" />
-                            <span className="text-rose-300">修复失败</span>
-                            {ns.errMsg && <span className="text-zinc-400 truncate max-w-[400px]">· {ns.errMsg}</span>}
+                            <AlertTriangle className="size-3 text-danger" />
+                            <span className="text-danger">修复失败</span>
+                            {ns.errMsg && <span className="text-fg-secondary truncate max-w-[400px]">· {ns.errMsg}</span>}
                           </>
                         )}
                       </div>
                       <div className="flex items-center gap-1.5">
                         {isStreaming && (
                           <button
-                            className="text-[10px] px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                            className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
                             onClick={() => abortNormalize(f.nodeId)}
                           >
                             中止
@@ -335,7 +335,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         {!isStreaming && (
                           <>
                             <button
-                              className="text-[10px] px-2 py-0.5 rounded border border-zinc-700 text-zinc-300 hover:bg-zinc-800"
+                              className="text-[10px] px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated"
                               onClick={() => discardNormalize(f.nodeId)}
                             >
                               丢弃
@@ -348,7 +348,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                             </button>
                             {ns.status === 'previewing' && (
                               <button
-                                className="text-[10px] px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 hover:bg-emerald-500/30 inline-flex items-center gap-1"
+                                className="text-[10px] px-2 py-0.5 rounded bg-success/20 text-success border border-success/40 hover:bg-success/30 inline-flex items-center gap-1"
                                 onClick={() => applyNormalize(f.nodeId)}
                               >
                                 <Check className="size-2.5" /> 替换原文
@@ -358,7 +358,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
                         )}
                       </div>
                     </div>
-                    <pre className="px-3 py-2 text-[11px] font-mono text-zinc-200 whitespace-pre-wrap break-words max-h-72 overflow-auto">
+                    <pre className="px-3 py-2 text-[11px] font-mono text-fg-primary whitespace-pre-wrap break-words max-h-72 overflow-auto">
                       {ns.preview || (isStreaming ? '…' : '(空)')}
                     </pre>
                   </div>
@@ -380,7 +380,7 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
           })}
         </div>
 
-        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-800 shrink-0">
+        <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle shrink-0">
           <button className="btn-outline" onClick={p.onCancel}>取消</button>
           <button className="btn-primary" onClick={handleSubmit}>
             <Download className="size-4" /> 写入产物

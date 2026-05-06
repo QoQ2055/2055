@@ -53,7 +53,7 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
 
   return (
     <header
-      className="border-b border-zinc-800"
+      className="border-b border-border-subtle"
       style={{ backgroundColor: `${meta.accentHex}08` }}
     >
       <div className="px-6 py-3 flex items-center justify-between gap-4">
@@ -66,26 +66,26 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
           <div className="min-w-0">
             <div className="text-sm font-semibold flex items-center gap-2 truncate">
               <span style={{ color: meta.accentHex }}>{meta.label}</span>
-              <span className="text-zinc-600">·</span>
-              <span className="text-zinc-200 truncate">
+              <span className="text-fg-muted">·</span>
+              <span className="text-fg-primary truncate">
                 {ctx.name || '未命名项目'}
               </span>
               {title && <>
-                <span className="text-zinc-600">·</span>
-                <span className="text-zinc-300 truncate">{title}</span>
+                <span className="text-fg-muted">·</span>
+                <span className="text-fg-secondary truncate">{title}</span>
               </>}
             </div>
             {subtitle && (
-              <div className="text-[11px] text-zinc-500 truncate mt-0.5">{subtitle}</div>
+              <div className="text-[11px] text-fg-muted truncate mt-0.5">{subtitle}</div>
             )}
           </div>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           {totalAll > 0 && (
-            <div className="text-xs text-zinc-500">
-              产物 <span className="font-mono text-zinc-200">{totalDone}</span>
-              <span className="text-zinc-600">/{totalAll}</span>
+            <div className="text-xs text-fg-muted">
+              产物 <span className="font-mono text-fg-primary">{totalDone}</span>
+              <span className="text-fg-muted">/{totalAll}</span>
             </div>
           )}
           {actions}
@@ -103,7 +103,7 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
                 className="flex-1 group"
                 title={`${seg.label} · ${seg.done}/${seg.total}`}
               >
-                <div className="h-1.5 rounded-full overflow-hidden bg-zinc-800/80">
+                <div className="h-1.5 rounded-full overflow-hidden bg-elevated/80">
                   <div
                     className="h-full transition-all"
                     style={{
@@ -112,7 +112,7 @@ export function ProgressBanner({ segments, title, subtitle, actions }: ProgressB
                     }}
                   />
                 </div>
-                <div className="flex items-center justify-between mt-1 text-[10px] text-zinc-500 group-hover:text-zinc-300 transition-colors">
+                <div className="flex items-center justify-between mt-1 text-[10px] text-fg-muted group-hover:text-fg-secondary transition-colors">
                   <span>{seg.label}</span>
                   <span className="font-mono">{seg.done}/{seg.total}</span>
                 </div>

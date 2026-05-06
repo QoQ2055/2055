@@ -244,7 +244,7 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
     >
       <div className="w-full max-w-3xl card p-0 max-h-[92vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-zinc-800 shrink-0">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle shrink-0">
           <div className="flex items-center gap-3">
             {mode && (
               <button
@@ -258,10 +258,10 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
             )}
             <div>
               <h2 className="text-base font-semibold flex items-center gap-2">
-                <Sparkles className="size-4 text-brand-500" />
+                <Sparkles className="size-4 text-primary-500" />
                 {activeMeta ? `新建项目 · ${activeMeta.longLabel}` : '新建项目'}
               </h2>
-              <p className="text-[11px] text-zinc-500 mt-0.5">
+              <p className="text-[11px] text-fg-muted mt-0.5">
                 {activeMeta
                   ? activeMeta.workflow
                   : '第一步：选择创作模式'}
@@ -320,7 +320,7 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
 
         {/* Footer */}
         {mode && (
-          <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-zinc-800 shrink-0">
+          <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-border-subtle shrink-0">
             <button className="btn-outline" onClick={p.onCancel} disabled={p.busy}>取消</button>
             <button
               className="btn-primary"
@@ -345,7 +345,7 @@ export { sourceToLegacyAdaptationType };
 function ModePickStep({ onPick }: { onPick: (m: ProjectMode) => void }) {
   return (
     <div className="space-y-4">
-      <div className="text-xs text-zinc-400 leading-relaxed">
+      <div className="text-xs text-fg-secondary leading-relaxed">
         每种模式有独立的工作台与流水线，互不混淆。选择后右上角可以「返回」重新选。
       </div>
       <div className="grid grid-cols-2 gap-3">
@@ -366,7 +366,7 @@ function ModeBigCard({ meta, onClick }: { meta: ProjectModeMeta; onClick: () => 
       onClick={onClick}
       className={clsx(
         'text-left rounded-lg border p-4 transition-all relative overflow-hidden',
-        'border-zinc-800 hover:border-zinc-600 hover:bg-zinc-900/60',
+        'border-border-subtle hover:border-zinc-600 hover:bg-surface/60',
         isPlaceholder && 'opacity-80',
       )}
     >
@@ -379,13 +379,13 @@ function ModeBigCard({ meta, onClick }: { meta: ProjectModeMeta; onClick: () => 
         <Icon className="size-5" style={{ color: meta.accentHex }} />
         <div className="text-base font-semibold">{meta.longLabel}</div>
         {isPlaceholder && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
             开发中
           </span>
         )}
       </div>
-      <div className="text-xs text-zinc-400 mt-2 leading-relaxed">{meta.tagline}</div>
-      <div className="text-[10px] text-zinc-500 mt-3 font-mono tracking-tight">
+      <div className="text-xs text-fg-secondary mt-2 leading-relaxed">{meta.tagline}</div>
+      <div className="text-[10px] text-fg-muted mt-3 font-mono tracking-tight">
         {meta.workflow}
       </div>
     </button>
@@ -423,7 +423,7 @@ function OriginalForm(f: OriginalFormProps) {
           value={f.name}
           onChange={(e) => f.setName(e.target.value)}
           placeholder="例如：《重生之我是大魔王》"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -438,7 +438,7 @@ function OriginalForm(f: OriginalFormProps) {
             const items = GENRES.filter((g) => g.group === group);
             return (
               <div key={group}>
-                <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">{group}</div>
+                <div className="text-[10px] text-fg-muted uppercase tracking-wider mb-1">{group}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((g) => {
                     const picked = f.genres.includes(g.value);
@@ -453,10 +453,10 @@ function OriginalForm(f: OriginalFormProps) {
                         className={clsx(
                           'px-2 py-1 text-xs rounded-md border transition-colors',
                           picked
-                            ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
+                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
                             : capped
-                              ? 'border-zinc-900 bg-zinc-900/50 text-zinc-700 cursor-not-allowed'
-                              : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 text-zinc-300',
+                              ? 'border-border-subtle bg-surface/50 text-fg-muted cursor-not-allowed'
+                              : 'border-border-subtle hover:border-border-default hover:bg-surface text-fg-secondary',
                         )}
                       >
                         {g.label}{picked && ' ✓'}
@@ -483,8 +483,8 @@ function OriginalForm(f: OriginalFormProps) {
                 className={clsx(
                   'px-2 py-1.5 text-xs rounded-md border transition-colors',
                   f.protagonistGender === opt.value
-                    ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
-                    : 'border-zinc-800 hover:border-zinc-700 text-zinc-300',
+                    ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                    : 'border-border-subtle hover:border-border-default text-fg-secondary',
                 )}
               >
                 {opt.label}
@@ -497,7 +497,7 @@ function OriginalForm(f: OriginalFormProps) {
           <select
             value={f.platform}
             onChange={(e) => f.setPlatform(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-2 py-1.5 text-xs focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-xs focus:outline-none focus:border-brand-500"
           >
             {PLATFORMS.map((pl) => (
               <option key={pl.value} value={pl.value}>{pl.label}</option>
@@ -516,8 +516,8 @@ function OriginalForm(f: OriginalFormProps) {
               className={clsx(
                 'px-2 py-1 text-xs rounded-md border transition-colors',
                 f.durationMin === d.value
-                  ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
-                  : 'border-zinc-800 hover:border-zinc-700 text-zinc-300',
+                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
               title={d.hint}
             >
@@ -533,14 +533,14 @@ function OriginalForm(f: OriginalFormProps) {
           value={f.coreConflict}
           onChange={(e) => f.setCoreConflict(e.target.value)}
           placeholder="谁 + 在什么情境 + 要做什么 + 谁在阻挠"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
-      <div className="card bg-zinc-950 border-zinc-800 p-3">
-        <div className="text-[10px] text-zinc-600 mb-1">派生 concept (将注入到所有 prompt)</div>
-        <div className="text-xs text-zinc-300 font-mono break-all">
-          {f.previewConcept || <span className="text-zinc-600">填写题材和冲突后自动生成…</span>}
+      <div className="card bg-canvas border-border-subtle p-3">
+        <div className="text-[10px] text-fg-muted mb-1">派生 concept (将注入到所有 prompt)</div>
+        <div className="text-xs text-fg-secondary font-mono break-all">
+          {f.previewConcept || <span className="text-fg-muted">填写题材和冲突后自动生成…</span>}
         </div>
       </div>
     </>
@@ -572,7 +572,7 @@ function AdaptForm({
         <Wand2 className="size-4 shrink-0 mt-0.5" />
         <div>
           <div className="font-medium">下一步：原作摄入向导</div>
-          <div className="text-zinc-400 mt-0.5">
+          <div className="text-fg-secondary mt-0.5">
             点击下方「下一步：投喂原作」会打开 4 步向导：① 投喂原作章节 ② 选目标短剧规格 ③ 命名项目。
             项目名、概念、节奏会从原作和向导自动派生。
           </div>
@@ -589,11 +589,11 @@ function ExpressForm({
 }) {
   return (
     <>
-      <div className="card border-amber-500/30 bg-amber-500/5 p-3 text-xs text-amber-200 flex items-start gap-2">
+      <div className="card border-warning/30 bg-warning/5 p-3 text-xs text-warning flex items-start gap-2">
         <Rocket className="size-4 shrink-0 mt-0.5" />
         <div>
           <div className="font-medium">特殊·分镜模式</div>
-          <div className="text-zinc-400 mt-0.5">
+          <div className="text-fg-secondary mt-0.5">
             跳过剧本流水线，直接进入分镜规划。只需项目名即可创建；简介 / 时长 / 风格 在进入分镜工作台后填写。
           </div>
         </div>
@@ -605,7 +605,7 @@ function ExpressForm({
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="例如：《惊鸿一瞥》分镜测试"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -641,11 +641,11 @@ function NovelForm(f: NovelFormProps) {
 
   return (
     <>
-      <div className="card border-emerald-500/30 bg-emerald-500/5 p-3 text-xs text-emerald-200 flex items-start gap-2">
+      <div className="card border-success/30 bg-success/5 p-3 text-xs text-emerald-200 flex items-start gap-2">
         <Edit3 className="size-4 shrink-0 mt-0.5" />
         <div>
           <div className="font-medium">小说创作模式</div>
-          <div className="text-zinc-400 mt-0.5">
+          <div className="text-fg-secondary mt-0.5">
             三阶段流水线：设定（世界观 + 人物 bible）→ 大纲（分卷 + 分章 + 伏笔）→ 章节（草稿 + 润色）。
             以下字段在大纲生成与章节写作中是<b>硬约束</b>，请认真填写。
           </div>
@@ -658,7 +658,7 @@ function NovelForm(f: NovelFormProps) {
           value={f.name}
           onChange={(e) => f.setName(e.target.value)}
           placeholder="例如：《长夜未央》"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -669,7 +669,7 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelPlatform}
             onChange={(e) => f.setNovelPlatform(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
           >
             {NOVEL_PLATFORMS.map((pl) => (
               <option key={pl.value} value={pl.value}>
@@ -677,7 +677,7 @@ function NovelForm(f: NovelFormProps) {
               </option>
             ))}
           </select>
-          <div className="text-[11px] text-zinc-500 mt-1">{platform?.hint}</div>
+          <div className="text-[11px] text-fg-muted mt-1">{platform?.hint}</div>
         </Field>
 
         <Field label="读者群" required hint="影响题材交集 / 爽点配方 / 敏感线">
@@ -691,8 +691,8 @@ function NovelForm(f: NovelFormProps) {
                 className={clsx(
                   'flex-1 px-2 py-1.5 text-xs rounded-md border transition-colors',
                   f.novelAudience === opt.value
-                    ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
-                    : 'border-zinc-800 hover:border-zinc-700 text-zinc-300',
+                    ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                    : 'border-border-subtle hover:border-border-default text-fg-secondary',
                 )}
               >{opt.label}</button>
             ))}
@@ -711,12 +711,12 @@ function NovelForm(f: NovelFormProps) {
               className={clsx(
                 'px-2 py-1.5 text-xs rounded-md border transition-colors text-center',
                 f.novelScale === s.value
-                  ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
-                  : 'border-zinc-800 hover:border-zinc-700 text-zinc-300',
+                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
             >
               <div className="font-medium">{s.label}</div>
-              <div className="text-[10px] text-zinc-500">{s.totalWordsK}万</div>
+              <div className="text-[10px] text-fg-muted">{s.totalWordsK}万</div>
             </button>
           ))}
         </div>
@@ -731,7 +731,7 @@ function NovelForm(f: NovelFormProps) {
             step={5}
             value={f.novelTotalWordsK}
             onChange={(e) => f.setNovelTotalWordsK(Math.max(1, parseInt(e.target.value, 10) || 0))}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           />
         </Field>
         <Field label="目标总章节数" required hint={f.novelChaptersTouched ? '已手动调整' : '随平台 + 总字数自动派生'}>
@@ -742,7 +742,7 @@ function NovelForm(f: NovelFormProps) {
               step={10}
               value={f.novelTotalChapters}
               onChange={(e) => f.setNovelTotalChapters(Math.max(5, parseInt(e.target.value, 10) || 0))}
-              className="flex-1 bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+              className="flex-1 bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
             />
             {f.novelChaptersTouched && (
               <button
@@ -756,8 +756,8 @@ function NovelForm(f: NovelFormProps) {
         </Field>
       </div>
 
-      <div className="text-[11px] text-zinc-500 -mt-2">
-        派生：每章约 <b className="text-zinc-300">{derivedWpc}</b> 字（平台推荐 {wpc} 字 · ±10% 浮动是 chapter_writer 的硬律）
+      <div className="text-[11px] text-fg-muted -mt-2">
+        派生：每章约 <b className="text-fg-secondary">{derivedWpc}</b> 字（平台推荐 {wpc} 字 · ±10% 浮动是 chapter_writer 的硬律）
       </div>
 
       {/* ── POV / 调性 ── */}
@@ -766,13 +766,13 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelPov}
             onChange={(e) => f.setNovelPov(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
           >
             {NOVEL_POVS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
-          <div className="text-[11px] text-zinc-500 mt-1">
+          <div className="text-[11px] text-fg-muted mt-1">
             {NOVEL_POVS.find((o) => o.value === f.novelPov)?.hint}
           </div>
         </Field>
@@ -781,13 +781,13 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelTone}
             onChange={(e) => f.setNovelTone(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
           >
             {NOVEL_TONES.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
             ))}
           </select>
-          <div className="text-[11px] text-zinc-500 mt-1">
+          <div className="text-[11px] text-fg-muted mt-1">
             {NOVEL_TONES.find((o) => o.value === f.novelTone)?.hint}
           </div>
         </Field>
@@ -804,7 +804,7 @@ function NovelForm(f: NovelFormProps) {
             const items = GENRES.filter((g) => g.group === group);
             return (
               <div key={group}>
-                <div className="text-[10px] text-zinc-600 uppercase tracking-wider mb-1">{group}</div>
+                <div className="text-[10px] text-fg-muted uppercase tracking-wider mb-1">{group}</div>
                 <div className="flex flex-wrap gap-1.5">
                   {items.map((g) => {
                     const picked = f.genres.includes(g.value);
@@ -819,10 +819,10 @@ function NovelForm(f: NovelFormProps) {
                         className={clsx(
                           'px-2 py-1 text-xs rounded-md border transition-colors',
                           picked
-                            ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
+                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
                             : capped
-                              ? 'border-zinc-900 bg-zinc-900/50 text-zinc-700 cursor-not-allowed'
-                              : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900 text-zinc-300',
+                              ? 'border-border-subtle bg-surface/50 text-fg-muted cursor-not-allowed'
+                              : 'border-border-subtle hover:border-border-default hover:bg-surface text-fg-secondary',
                         )}
                       >
                         {g.label}{picked && ' ✓'}
@@ -848,8 +848,8 @@ function NovelForm(f: NovelFormProps) {
               className={clsx(
                 'px-2 py-1.5 text-xs rounded-md border transition-colors',
                 f.protagonistGender === opt.value
-                  ? 'border-brand-500/60 bg-brand-500/15 text-brand-200'
-                  : 'border-zinc-800 hover:border-zinc-700 text-zinc-300',
+                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
             >
               {opt.label}
@@ -865,7 +865,7 @@ function NovelForm(f: NovelFormProps) {
           value={f.coreConflict}
           onChange={(e) => f.setCoreConflict(e.target.value)}
           placeholder="例：落魄少年绑定签到系统，立誓在十年内灭杀屠戮全族的仇家，却发现敌方背后有更深的阴谋"
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
@@ -876,7 +876,7 @@ function NovelForm(f: NovelFormProps) {
           onChange={(e) => f.setNovelLogline(e.target.value)}
           placeholder="例：当所有修真者都在追逐天道，他选择跟天道讨债"
           maxLength={120}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
@@ -887,13 +887,13 @@ function NovelForm(f: NovelFormProps) {
           onChange={(e) => f.setNovelHook(e.target.value)}
           placeholder="例：每杀一名同境界敌人可吞噬其修为；但每次吞噬会带回死者最痛苦的一段记忆"
           maxLength={400}
-          className="w-full bg-zinc-900 border border-zinc-800 rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
-      <div className="card bg-zinc-950 border-zinc-800 p-3">
-        <div className="text-[10px] text-zinc-600 mb-1">将注入所有小说 prompt 的项目设定摘要</div>
-        <div className="text-xs text-zinc-300 font-mono break-words leading-relaxed">
+      <div className="card bg-canvas border-border-subtle p-3">
+        <div className="text-[10px] text-fg-muted mb-1">将注入所有小说 prompt 的项目设定摘要</div>
+        <div className="text-xs text-fg-secondary font-mono break-words leading-relaxed">
           {[
             f.genres.map((v) => GENRES.find((g) => g.value === v)?.label).filter(Boolean).join('+'),
             { male: '男频', female: '女频', general: '通用' }[f.novelAudience],
@@ -901,7 +901,7 @@ function NovelForm(f: NovelFormProps) {
             `${f.novelTotalWordsK}万 / ${f.novelTotalChapters}章`,
             NOVEL_POVS.find((o) => o.value === f.novelPov)?.label,
             NOVEL_TONES.find((o) => o.value === f.novelTone)?.label,
-          ].filter(Boolean).join(' · ') || <span className="text-zinc-600">填写以上字段后预览…</span>}
+          ].filter(Boolean).join(' · ') || <span className="text-fg-muted">填写以上字段后预览…</span>}
         </div>
       </div>
     </>
@@ -926,15 +926,15 @@ function SmallCard({
       className={clsx(
         'text-left rounded-md border p-3 transition-colors',
         active
-          ? 'border-brand-500/60 bg-brand-500/10 ring-1 ring-brand-500/30'
-          : 'border-zinc-800 hover:border-zinc-700 hover:bg-zinc-900',
+          ? 'border-brand-500/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+          : 'border-border-subtle hover:border-border-default hover:bg-surface',
       )}
     >
       <div className="flex items-center gap-1.5 text-sm font-medium">
         {icon}
         {title}
       </div>
-      <div className="text-[11px] text-zinc-500 mt-1 leading-snug">{desc}</div>
+      <div className="text-[11px] text-fg-muted mt-1 leading-snug">{desc}</div>
     </button>
   );
 }
@@ -944,10 +944,10 @@ function Field({ label, required, hint, children }:
   return (
     <div>
       <div className="label mb-1.5">
-        {label}{required && <span className="text-rose-400 ml-0.5">*</span>}
+        {label}{required && <span className="text-danger ml-0.5">*</span>}
       </div>
       {children}
-      {hint && <div className="text-[11px] text-zinc-500 mt-1">{hint}</div>}
+      {hint && <div className="text-[11px] text-fg-muted mt-1">{hint}</div>}
     </div>
   );
 }

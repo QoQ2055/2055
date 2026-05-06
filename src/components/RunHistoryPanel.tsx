@@ -50,17 +50,17 @@ export function RunHistoryPanel({
   const stats = useMemo(() => summarize(records), [records]);
 
   return (
-    <div className="card border border-zinc-800 bg-zinc-950/40">
+    <div className="card border border-border-subtle bg-canvas/40">
       <header
         className="px-3 py-2 flex items-center gap-2 cursor-pointer select-none"
         onClick={() => setExpanded((v) => !v)}
       >
-        {expanded ? <ChevronDown className="size-3.5 text-zinc-500" /> : <ChevronRight className="size-3.5 text-zinc-500" />}
-        <History className="size-4 text-brand-400" />
+        {expanded ? <ChevronDown className="size-3.5 text-fg-muted" /> : <ChevronRight className="size-3.5 text-fg-muted" />}
+        <History className="size-4 text-primary-400" />
         <span className="text-sm font-medium">
           {title ?? (nodeId ? `运行历史 · ${nodeId}` : '运行历史')}
         </span>
-        <span className="text-xs text-zinc-500 ml-1">
+        <span className="text-xs text-fg-muted ml-1">
           {records.length === 0 ? '暂无' : (
             <>
               {records.length} 条 · 成功 {stats.done} · 错误 {stats.error}
@@ -81,7 +81,7 @@ export function RunHistoryPanel({
         </button>
         {!nodeId && records.length > 0 && (
           <button
-            className="btn-ghost px-2 py-1 text-xs hover:text-rose-300"
+            className="btn-ghost px-2 py-1 text-xs hover:text-danger"
             onClick={async (e) => {
               e.stopPropagation();
               if (!confirm('清空当前项目的全部运行历史？此操作不可撤销。')) return;
@@ -98,7 +98,7 @@ export function RunHistoryPanel({
       {expanded && (
         <div className="px-3 pb-3">
           {records.length === 0 ? (
-            <div className="text-xs text-zinc-500 py-2">尚未有运行记录</div>
+            <div className="text-xs text-fg-muted py-2">尚未有运行记录</div>
           ) : (
             <ul className="space-y-1">
               {records.map((r) => (
@@ -155,12 +155,12 @@ function RecordRow({ r }: { r: RunRecord }) {
     r.status === 'done' ? CheckCircle2 :
     r.status === 'aborted' ? MinusCircle : XCircle;
   const tone =
-    r.status === 'done' ? 'text-emerald-400' :
-    r.status === 'aborted' ? 'text-zinc-500' : 'text-rose-400';
+    r.status === 'done' ? 'text-success' :
+    r.status === 'aborted' ? 'text-fg-muted' : 'text-danger';
   const bg =
-    r.status === 'done' ? 'border-zinc-800 bg-zinc-900/30' :
-    r.status === 'aborted' ? 'border-zinc-800 bg-zinc-900/30' :
-    'border-rose-500/30 bg-rose-500/5';
+    r.status === 'done' ? 'border-border-subtle bg-surface/30' :
+    r.status === 'aborted' ? 'border-border-subtle bg-surface/30' :
+    'border-danger/30 bg-danger/5';
   return (
     <li className={`text-xs rounded border ${bg}`}>
       <div
@@ -168,36 +168,36 @@ function RecordRow({ r }: { r: RunRecord }) {
         onClick={() => setOpen((v) => !v)}
       >
         <Icon className={`size-3.5 ${tone}`} />
-        <span className="font-mono text-zinc-300">{r.nodeId}</span>
-        {r.unitIndex != null && <span className="text-zinc-500">UNIT {r.unitIndex}</span>}
-        {r.title && <span className="text-zinc-500 truncate">· {r.title}</span>}
+        <span className="font-mono text-fg-secondary">{r.nodeId}</span>
+        {r.unitIndex != null && <span className="text-fg-muted">UNIT {r.unitIndex}</span>}
+        {r.title && <span className="text-fg-muted truncate">· {r.title}</span>}
         <div className="flex-1" />
-        <span className="text-zinc-500">{formatTime(r.ts)}</span>
-        <span className="text-zinc-500">{formatDuration(r.durationMs)}</span>
-        {r.tokens != null && <span className="text-zinc-500">{formatTokens(r.tokens)} tk</span>}
-        {r.cost != null && r.cost > 0 && <span className="text-zinc-500">${r.cost.toFixed(3)}</span>}
+        <span className="text-fg-muted">{formatTime(r.ts)}</span>
+        <span className="text-fg-muted">{formatDuration(r.durationMs)}</span>
+        {r.tokens != null && <span className="text-fg-muted">{formatTokens(r.tokens)} tk</span>}
+        {r.cost != null && r.cost > 0 && <span className="text-fg-muted">${r.cost.toFixed(3)}</span>}
       </div>
       {open && (
-        <div className="px-2 pb-2 border-t border-zinc-800 text-[11px] space-y-1.5 bg-zinc-950/40">
-          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-zinc-400 pt-2">
-            <span>stage: <span className="text-zinc-300">{r.stageId}</span></span>
-            <span>step: <span className="text-zinc-300">{r.stepIndex}</span></span>
-            {r.model && <span>model: <span className="text-zinc-300">{r.model}</span></span>}
-            {r.temperature != null && <span>temp: <span className="text-zinc-300">{r.temperature}</span></span>}
-            {r.contentLength != null && <span>chars: <span className="text-zinc-300">{r.contentLength}</span></span>}
-            <span>id: <span className="text-zinc-300">#{r.id}</span></span>
+        <div className="px-2 pb-2 border-t border-border-subtle text-[11px] space-y-1.5 bg-canvas/40">
+          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-fg-secondary pt-2">
+            <span>stage: <span className="text-fg-secondary">{r.stageId}</span></span>
+            <span>step: <span className="text-fg-secondary">{r.stepIndex}</span></span>
+            {r.model && <span>model: <span className="text-fg-secondary">{r.model}</span></span>}
+            {r.temperature != null && <span>temp: <span className="text-fg-secondary">{r.temperature}</span></span>}
+            {r.contentLength != null && <span>chars: <span className="text-fg-secondary">{r.contentLength}</span></span>}
+            <span>id: <span className="text-fg-secondary">#{r.id}</span></span>
           </div>
           {r.error && (
-            <div className="text-rose-300 leading-relaxed">
-              <span className="text-rose-500">error: </span>{r.error}
+            <div className="text-danger leading-relaxed">
+              <span className="text-danger">error: </span>{r.error}
             </div>
           )}
           {r.contentSnapshot && (
             <details>
-              <summary className="cursor-pointer text-zinc-400 hover:text-zinc-200">
+              <summary className="cursor-pointer text-fg-secondary hover:text-fg-primary">
                 输出预览（前 4KB）
                 <button
-                  className="ml-2 text-zinc-500 hover:text-zinc-200"
+                  className="ml-2 text-fg-muted hover:text-fg-primary"
                   onClick={(e) => {
                     e.preventDefault();
                     navigator.clipboard.writeText(r.contentSnapshot ?? '');
@@ -207,7 +207,7 @@ function RecordRow({ r }: { r: RunRecord }) {
                   <Copy className="inline size-3" />
                 </button>
               </summary>
-              <pre className="mt-1 p-2 bg-black/40 rounded text-zinc-300 max-h-64 overflow-auto whitespace-pre-wrap break-words font-mono">
+              <pre className="mt-1 p-2 bg-black/40 rounded text-fg-secondary max-h-64 overflow-auto whitespace-pre-wrap break-words font-mono">
                 {r.contentSnapshot}
               </pre>
             </details>

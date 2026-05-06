@@ -328,24 +328,24 @@ export function SelfCheckPanel({
         <button onClick={run} className="btn-outline" title="对该节点产物做结构化诊断">
           <ShieldCheck className="size-3.5" /> 自检
         </button>
-        <span className="text-zinc-500">未检测 · 点击检查反装饰 / 结构 / 一致性</span>
+        <span className="text-fg-muted">未检测 · 点击检查反装饰 / 结构 / 一致性</span>
       </div>
     );
   }
 
   return (
-    <div className={`card border ${verdictBorder(report?.verdict)} bg-zinc-950/40`}>
+    <div className={`card border ${verdictBorder(report?.verdict)} bg-canvas/40`}>
       <header
         className="px-3 py-2 flex items-center gap-2 cursor-pointer select-none"
         onClick={() => setExpanded((v) => !v)}
       >
-        {expanded ? <ChevronDown className="size-3.5 text-zinc-500" /> : <ChevronRight className="size-3.5 text-zinc-500" />}
+        {expanded ? <ChevronDown className="size-3.5 text-fg-muted" /> : <ChevronRight className="size-3.5 text-fg-muted" />}
         <VerdictIcon verdict={report?.verdict} running={running} />
         <span className="text-sm font-medium">
           自检 · {report?.verdict ?? (running ? '检查中…' : '失败')}
         </span>
         {report && (
-          <span className="text-xs text-zinc-500 ml-1">
+          <span className="text-xs text-fg-muted ml-1">
             · {report.issues.length} 项 · {Math.round(report.durationMs)}ms
             {report.tokens != null && ` · ${report.tokens} tok`}
           </span>
@@ -364,17 +364,17 @@ export function SelfCheckPanel({
       {expanded && (
         <div className="px-3 pb-3 space-y-2">
           {error && (
-            <div className="text-xs text-rose-300 bg-rose-500/10 border border-rose-500/30 rounded px-2 py-1.5">
+            <div className="text-xs text-danger bg-danger/10 border border-danger/30 rounded px-2 py-1.5">
               {error}
             </div>
           )}
           {report && (
             <>
               {report.summary && (
-                <div className="text-xs text-zinc-300 leading-relaxed">{report.summary}</div>
+                <div className="text-xs text-fg-secondary leading-relaxed">{report.summary}</div>
               )}
               {report.issues.length === 0 ? (
-                <div className="text-xs text-emerald-400">✔ 无问题命中</div>
+                <div className="text-xs text-success">✔ 无问题命中</div>
               ) : (
                 <>
                 {/* 顶部·一键迭代修复 (B+C) */}
@@ -397,7 +397,7 @@ export function SelfCheckPanel({
                         第 {iter.round}/{MAX_ITERATIONS} 轮 · {iter.phase === 'fixing' ? 'AI 修复中' : '重新自检中'}
                       </span>
                       {iter.phase === 'fixing' && iter.previewLen > 0 && (
-                        <span className="text-zinc-500">{iter.previewLen} 字流入</span>
+                        <span className="text-fg-muted">{iter.previewLen} 字流入</span>
                       )}
                       <div className="flex-1" />
                       <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={abortIteration}>
@@ -412,21 +412,21 @@ export function SelfCheckPanel({
 
                 {/* 迭代结束: review 块 (有改善, 等待用户确认应用) */}
                 {iter?.kind === 'review' && (
-                  <div className="rounded border border-emerald-500/40 bg-emerald-500/10 px-2 py-1.5 space-y-1.5">
+                  <div className="rounded border border-success/40 bg-success/10 px-2 py-1.5 space-y-1.5">
                     <div className="flex items-center gap-2 text-[11px] text-emerald-100">
-                      <ShieldCheck className="size-3.5 text-emerald-300" />
+                      <ShieldCheck className="size-3.5 text-success" />
                       <span className="font-medium">
                         迭代完成 · {iter.originalCount} → {iter.bestCount} 项 ·
                         verdict {iter.originalReport?.verdict ?? '?'} → {iter.bestVerdict}
                       </span>
-                      <span className="text-zinc-400">
+                      <span className="text-fg-secondary">
                         ({iter.history.length} 轮, 改动 {(approxChangedRatio(iter.originalContent, iter.bestContent) * 100).toFixed(1)}%)
                       </span>
                     </div>
                     <IterHistory rows={iter.history} />
                     {!iter.reviewConfirming ? (
                       <div className="flex items-center gap-2 text-[11px]">
-                        <span className="text-zinc-400">已自动选取最佳轮次, 是否覆盖原产物?</span>
+                        <span className="text-fg-secondary">已自动选取最佳轮次, 是否覆盖原产物?</span>
                         <div className="flex-1" />
                         <button
                           className="btn-primary px-2 py-0.5 text-[11px]"
@@ -444,8 +444,8 @@ export function SelfCheckPanel({
                         </button>
                       </div>
                     ) : (
-                      <div className="flex items-center gap-2 rounded border border-amber-500/40 bg-amber-500/10 px-2 py-1.5 text-[11px]">
-                        <ShieldAlert className="size-3.5 text-amber-300" />
+                      <div className="flex items-center gap-2 rounded border border-warning/40 bg-warning/10 px-2 py-1.5 text-[11px]">
+                        <ShieldAlert className="size-3.5 text-warning" />
                         <span className="text-amber-100">
                           确认用最佳轮次内容覆盖原产物? 原内容会被替换 (仍可通过下方"回滚"还原)。
                         </span>
@@ -469,9 +469,9 @@ export function SelfCheckPanel({
 
                 {/* 迭代结束: 无任何改善 */}
                 {iter?.kind === 'no-improvement' && (
-                  <div className="rounded border border-zinc-600/40 bg-zinc-800/30 px-2 py-1.5 space-y-1.5">
-                    <div className="flex items-center gap-2 text-[11px] text-zinc-300">
-                      <ShieldX className="size-3.5 text-zinc-400" />
+                  <div className="rounded border border-zinc-600/40 bg-elevated/30 px-2 py-1.5 space-y-1.5">
+                    <div className="flex items-center gap-2 text-[11px] text-fg-secondary">
+                      <ShieldX className="size-3.5 text-fg-secondary" />
                       <span>{iter.reason}</span>
                       <div className="flex-1" />
                       <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={discardIteration}>
@@ -484,9 +484,9 @@ export function SelfCheckPanel({
 
                 {/* 迭代过程出错 */}
                 {iter?.kind === 'error' && (
-                  <div className="rounded border border-rose-500/40 bg-rose-500/10 px-2 py-1.5 text-[11px] text-rose-200 space-y-1.5">
+                  <div className="rounded border border-danger/40 bg-danger/10 px-2 py-1.5 text-[11px] text-danger space-y-1.5">
                     <div className="flex items-center gap-2">
-                      <ShieldAlert className="size-3.5 text-rose-300" />
+                      <ShieldAlert className="size-3.5 text-danger" />
                       <span className="font-medium">迭代失败</span>
                       <div className="flex-1" />
                       <button className="btn-ghost px-2 py-0.5 text-[11px]" onClick={startIteration}>
@@ -496,7 +496,7 @@ export function SelfCheckPanel({
                         <X className="size-3" />
                       </button>
                     </div>
-                    <div className="text-rose-300/80 break-all">{iter.error}</div>
+                    <div className="text-danger/80 break-all">{iter.error}</div>
                     {iter.history.length > 0 && <IterHistory rows={iter.history} />}
                   </div>
                 )}
@@ -510,14 +510,14 @@ export function SelfCheckPanel({
                     <div
                       className={`flex items-center gap-2 text-[11px] rounded border px-2 py-1.5 ${
                         regressed
-                          ? 'text-rose-100 bg-rose-500/15 border-rose-500/40'
-                          : 'text-emerald-100 bg-emerald-500/10 border-emerald-500/30'
+                          ? 'text-rose-100 bg-danger/15 border-danger/40'
+                          : 'text-emerald-100 bg-success/10 border-success/30'
                       }`}
                     >
                       {regressed ? (
-                        <ShieldAlert className="size-3.5 text-rose-300" />
+                        <ShieldAlert className="size-3.5 text-danger" />
                       ) : (
-                        <ShieldCheck className="size-3.5 text-emerald-300" />
+                        <ShieldCheck className="size-3.5 text-success" />
                       )}
                       <span>
                         {regressed
@@ -552,15 +552,15 @@ export function SelfCheckPanel({
                         <span className={`text-[10px] uppercase font-bold ${severityText(issue.severity)}`}>
                           {issue.severity}
                         </span>
-                        <span className="font-medium text-zinc-200">{issue.tag}</span>
+                        <span className="font-medium text-fg-primary">{issue.tag}</span>
                         {issue.locator && (
-                          <span className="text-zinc-500 text-[10px]">@ {issue.locator}</span>
+                          <span className="text-fg-muted text-[10px]">@ {issue.locator}</span>
                         )}
                       </div>
-                      <div className="mt-1 text-zinc-300 leading-relaxed">{issue.detail}</div>
+                      <div className="mt-1 text-fg-secondary leading-relaxed">{issue.detail}</div>
                       {issue.suggestion && (
-                        <div className="mt-1 text-zinc-400">
-                          <span className="text-zinc-500">建议: </span>
+                        <div className="mt-1 text-fg-secondary">
+                          <span className="text-fg-muted">建议: </span>
                           {issue.suggestion}
                         </div>
                       )}
@@ -592,7 +592,7 @@ function FixPreview({
 }) {
   if (state.status === 'error') {
     return (
-      <div className="mt-2 rounded border border-rose-500/40 bg-rose-500/10 px-2 py-1.5 text-xs text-rose-200">
+      <div className="mt-2 rounded border border-danger/40 bg-danger/10 px-2 py-1.5 text-xs text-danger">
         <div className="flex items-center gap-2">
           <span className="font-medium">修订失败</span>
           <div className="flex-1" />
@@ -603,7 +603,7 @@ function FixPreview({
             <X className="size-3" />
           </button>
         </div>
-        <div className="mt-1 text-rose-300/80 break-all">{state.error}</div>
+        <div className="mt-1 text-danger/80 break-all">{state.error}</div>
       </div>
     );
   }
@@ -616,9 +616,9 @@ function FixPreview({
   const changedRatio = streaming ? 0 : approxChangedRatio(original, state.preview);
   const ratioLabel = `${(changedRatio * 100).toFixed(1)}%`;
   const ratioColor =
-    changedRatio < 0.05 ? 'text-emerald-300 bg-emerald-500/10 border-emerald-500/30'
-    : changedRatio < 0.25 ? 'text-amber-300 bg-amber-500/10 border-amber-500/30'
-    : 'text-rose-300 bg-rose-500/15 border-rose-500/40';
+    changedRatio < 0.05 ? 'text-success bg-success/10 border-success/30'
+    : changedRatio < 0.25 ? 'text-warning bg-warning/10 border-warning/30'
+    : 'text-danger bg-danger/15 border-danger/40';
   const isHighRisk = changedRatio >= 0.25;
   return (
     <div className="mt-2 rounded border border-violet-500/30 bg-violet-500/5 px-2 py-1.5">
@@ -627,7 +627,7 @@ function FixPreview({
         <span className="font-medium text-violet-200">
           {streaming ? '修订中…' : confirming ? '等待确认' : '修订预览'}
         </span>
-        <span className="text-zinc-500">
+        <span className="text-fg-muted">
           · {state.preview.length} 字 ({sign}{delta} vs 原文)
         </span>
         {!streaming && (
@@ -665,22 +665,22 @@ function FixPreview({
           </>
         )}
         {streaming && (
-          <span className="text-zinc-500 animate-pulse">流式接收中…</span>
+          <span className="text-fg-muted animate-pulse">流式接收中…</span>
         )}
       </div>
-      <pre className="mt-1.5 max-h-64 overflow-auto whitespace-pre-wrap text-[11px] leading-relaxed text-zinc-300 bg-zinc-950/60 rounded px-2 py-1.5">
+      <pre className="mt-1.5 max-h-64 overflow-auto whitespace-pre-wrap text-[11px] leading-relaxed text-fg-secondary bg-canvas/60 rounded px-2 py-1.5">
         {state.preview || '（等待 LLM 输出…）'}
       </pre>
       {confirming && (
         <div
           className={`mt-2 rounded border px-2 py-1.5 text-[11px] ${
             isHighRisk
-              ? 'border-rose-500/50 bg-rose-500/15'
-              : 'border-amber-500/40 bg-amber-500/10'
+              ? 'border-danger/50 bg-danger/15'
+              : 'border-warning/40 bg-warning/10'
           }`}
         >
           <div className="flex items-center gap-2">
-            <ShieldAlert className={`size-3.5 ${isHighRisk ? 'text-rose-300' : 'text-amber-300'}`} />
+            <ShieldAlert className={`size-3.5 ${isHighRisk ? 'text-danger' : 'text-warning'}`} />
             <span className={isHighRisk ? 'text-rose-100' : 'text-amber-100'}>
               {isHighRisk
                 ? `⚠️ 高风险修订 — 改动幅度 ${ratioLabel}, LLM 可能改写了无关区域. 建议先点「重试」或在预览区人工检查后再确认.`
@@ -717,10 +717,10 @@ function IterHistory({ rows }: { rows: IterHistoryRow[] }) {
       {rows.map((r, i) => {
         const tone =
           r.verdict === 'pass'
-            ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-200'
+            ? 'bg-success/20 border-success/40 text-emerald-200'
             : r.verdict === 'warn'
-            ? 'bg-amber-500/15 border-amber-500/35 text-amber-200'
-            : 'bg-rose-500/15 border-rose-500/35 text-rose-200';
+            ? 'bg-warning/15 border-warning/35 text-warning'
+            : 'bg-danger/15 border-danger/35 text-danger';
         return (
           <span
             key={i}
@@ -767,30 +767,30 @@ function approxChangedRatio(a: string, b: string): number {
 }
 
 function VerdictIcon({ verdict, running }: { verdict?: Verdict; running: boolean }) {
-  if (running) return <Loader2 className="size-4 text-brand-400 animate-spin" />;
-  if (verdict === 'pass') return <ShieldCheck className="size-4 text-emerald-500" />;
-  if (verdict === 'warn') return <ShieldAlert className="size-4 text-amber-500" />;
-  if (verdict === 'fail') return <ShieldX className="size-4 text-rose-500" />;
-  return <ShieldCheck className="size-4 text-zinc-500" />;
+  if (running) return <Loader2 className="size-4 text-primary-400 animate-spin" />;
+  if (verdict === 'pass') return <ShieldCheck className="size-4 text-success" />;
+  if (verdict === 'warn') return <ShieldAlert className="size-4 text-warning" />;
+  if (verdict === 'fail') return <ShieldX className="size-4 text-danger" />;
+  return <ShieldCheck className="size-4 text-fg-muted" />;
 }
 
 function verdictBorder(v?: Verdict): string {
-  if (v === 'pass') return 'border-emerald-500/30';
-  if (v === 'warn') return 'border-amber-500/40';
-  if (v === 'fail') return 'border-rose-500/40';
-  return 'border-zinc-800';
+  if (v === 'pass') return 'border-success/30';
+  if (v === 'warn') return 'border-warning/40';
+  if (v === 'fail') return 'border-danger/40';
+  return 'border-border-subtle';
 }
 
 function severityStyle(s: Severity): string {
-  if (s === 'critical') return 'border-rose-500/40 bg-rose-500/5';
-  if (s === 'major')    return 'border-amber-500/40 bg-amber-500/5';
-  if (s === 'minor')    return 'border-zinc-700 bg-zinc-900/40';
-  return 'border-zinc-800 bg-zinc-950/40';
+  if (s === 'critical') return 'border-danger/40 bg-danger/5';
+  if (s === 'major')    return 'border-warning/40 bg-warning/5';
+  if (s === 'minor')    return 'border-border-default bg-surface/40';
+  return 'border-border-subtle bg-canvas/40';
 }
 
 function severityText(s: Severity): string {
-  if (s === 'critical') return 'text-rose-300';
-  if (s === 'major')    return 'text-amber-300';
-  if (s === 'minor')    return 'text-zinc-300';
-  return 'text-zinc-500';
+  if (s === 'critical') return 'text-danger';
+  if (s === 'major')    return 'text-warning';
+  if (s === 'minor')    return 'text-fg-secondary';
+  return 'text-fg-muted';
 }

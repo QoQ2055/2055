@@ -36,21 +36,21 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
   const visible = showInfo ? report.issues : blocking;
 
   const tone =
-    report.verdict === 'pass' ? 'border-emerald-500/30'
-    : report.verdict === 'warn' ? 'border-amber-500/40'
-    : 'border-rose-500/40';
+    report.verdict === 'pass' ? 'border-success/30'
+    : report.verdict === 'warn' ? 'border-warning/40'
+    : 'border-danger/40';
 
   return (
-    <div className={`card border ${tone} bg-zinc-950/40`}>
+    <div className={`card border ${tone} bg-canvas/40`}>
       <header
         className="px-3 py-2 flex items-center gap-2 cursor-pointer select-none"
         onClick={() => setExpanded((v) => !v)}
       >
-        {expanded ? <ChevronDown className="size-3.5 text-zinc-500" /> : <ChevronRight className="size-3.5 text-zinc-500" />}
-        <Network className="size-4 text-brand-400" />
+        {expanded ? <ChevronDown className="size-3.5 text-fg-muted" /> : <ChevronRight className="size-3.5 text-fg-muted" />}
+        <Network className="size-4 text-primary-400" />
         <span className="text-sm font-medium">资产 ↔ 分镜 一致性</span>
         <VerdictBadge v={report.verdict} />
-        <span className="text-xs text-zinc-500 ml-1">
+        <span className="text-xs text-fg-muted ml-1">
           · {blocking.length} 项问题
           {infos.length > 0 && <> · {infos.length} 项提示</>}
         </span>
@@ -66,19 +66,19 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
 
       {expanded && (
         <div className="px-3 pb-3 space-y-2">
-          <div className="text-xs text-zinc-400 leading-relaxed">{report.summary}</div>
+          <div className="text-xs text-fg-secondary leading-relaxed">{report.summary}</div>
 
           {/* 三类计数条 */}
           <div className="flex flex-wrap gap-1.5 text-[11px]">
             <KindChip kind="character" count={report.assetCount.character} />
             <KindChip kind="scene" count={report.assetCount.scene} />
             <KindChip kind="prop" count={report.assetCount.prop} />
-            <span className="text-zinc-500">|</span>
-            <span className="text-zinc-500">分镜 {report.storyboardUnits} unit</span>
+            <span className="text-fg-muted">|</span>
+            <span className="text-fg-muted">分镜 {report.storyboardUnits} unit</span>
           </div>
 
           {visible.length === 0 ? (
-            <div className="text-xs text-emerald-400 flex items-center gap-1.5">
+            <div className="text-xs text-success flex items-center gap-1.5">
               <CheckCircle2 className="size-3.5" /> 所有提及均能在资产中找到，无未登记角色
             </div>
           ) : (
@@ -91,7 +91,7 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
 
           {infos.length > 0 && (
             <button
-              className="text-[11px] text-zinc-500 hover:text-zinc-300 underline-offset-2 hover:underline"
+              className="text-[11px] text-fg-muted hover:text-fg-secondary underline-offset-2 hover:underline"
               onClick={() => setShowInfo((v) => !v)}
             >
               {showInfo ? '隐藏' : '显示'} {infos.length} 项 info（未被分镜引用的资产）
@@ -107,9 +107,9 @@ export function ConsistencyPanel({ artifacts }: ConsistencyPanelProps) {
 
 function VerdictBadge({ v }: { v: ConsistencyReport['verdict'] }) {
   const map = {
-    pass: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
-    warn: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
-    fail: 'bg-rose-500/15 text-rose-300 border-rose-500/30',
+    pass: 'bg-success/15 text-success border-success/30',
+    warn: 'bg-warning/15 text-warning border-warning/30',
+    fail: 'bg-danger/15 text-danger border-danger/30',
   } as const;
   return (
     <span className={`text-[10px] px-1.5 py-0.5 rounded border font-bold uppercase ${map[v]}`}>
@@ -121,7 +121,7 @@ function VerdictBadge({ v }: { v: ConsistencyReport['verdict'] }) {
 function KindChip({ kind, count }: { kind: EntityKind; count: number }) {
   const label = kind === 'character' ? '角色' : kind === 'scene' ? '场景' : '道具';
   return (
-    <span className={`px-1.5 py-0.5 rounded border ${count === 0 ? 'border-zinc-700 text-zinc-500' : 'border-zinc-700 text-zinc-300'}`}>
+    <span className={`px-1.5 py-0.5 rounded border ${count === 0 ? 'border-border-default text-fg-muted' : 'border-border-default text-fg-secondary'}`}>
       {label} {count}
     </span>
   );
@@ -129,14 +129,14 @@ function KindChip({ kind, count }: { kind: EntityKind; count: number }) {
 
 function IssueRow({ issue }: { issue: ConsistencyIssue }) {
   const sevStyle =
-    issue.severity === 'critical' ? 'border-rose-500/40 bg-rose-500/5' :
-    issue.severity === 'major' ? 'border-amber-500/40 bg-amber-500/5' :
-    issue.severity === 'minor' ? 'border-zinc-700 bg-zinc-900/40' :
-    'border-zinc-800 bg-zinc-950/40';
+    issue.severity === 'critical' ? 'border-danger/40 bg-danger/5' :
+    issue.severity === 'major' ? 'border-warning/40 bg-warning/5' :
+    issue.severity === 'minor' ? 'border-border-default bg-surface/40' :
+    'border-border-subtle bg-canvas/40';
   const sevText =
-    issue.severity === 'critical' ? 'text-rose-300' :
-    issue.severity === 'major' ? 'text-amber-300' :
-    issue.severity === 'minor' ? 'text-zinc-300' : 'text-zinc-500';
+    issue.severity === 'critical' ? 'text-danger' :
+    issue.severity === 'major' ? 'text-warning' :
+    issue.severity === 'minor' ? 'text-fg-secondary' : 'text-fg-muted';
   const Icon =
     issue.severity === 'info' ? Info :
     issue.severity === 'critical' ? AlertTriangle : AlertTriangle;
@@ -148,16 +148,16 @@ function IssueRow({ issue }: { issue: ConsistencyIssue }) {
       <div className="flex items-center gap-2">
         <Icon className={`size-3.5 ${sevText}`} />
         <span className={`text-[10px] uppercase font-bold ${sevText}`}>{issue.severity}</span>
-        <span className="text-zinc-500 text-[10px]">{kindLabel}</span>
-        <span className="font-medium text-zinc-200">「{issue.name}」</span>
+        <span className="text-fg-muted text-[10px]">{kindLabel}</span>
+        <span className="font-medium text-fg-primary">「{issue.name}」</span>
         {issue.unitIndex != null && (
-          <span className="text-zinc-500 text-[10px]">@ UNIT {issue.unitIndex}{issue.count && issue.count > 1 ? ` ×${issue.count}` : ''}</span>
+          <span className="text-fg-muted text-[10px]">@ UNIT {issue.unitIndex}{issue.count && issue.count > 1 ? ` ×${issue.count}` : ''}</span>
         )}
       </div>
-      <div className="mt-1 text-zinc-300 leading-relaxed">{issue.detail}</div>
+      <div className="mt-1 text-fg-secondary leading-relaxed">{issue.detail}</div>
       {issue.suggestion && (
-        <div className="mt-1 text-zinc-400">
-          <span className="text-zinc-500">建议: </span>{issue.suggestion}
+        <div className="mt-1 text-fg-secondary">
+          <span className="text-fg-muted">建议: </span>{issue.suggestion}
         </div>
       )}
     </li>

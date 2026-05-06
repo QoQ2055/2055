@@ -97,7 +97,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
     <>
       <button
         onClick={() => setOpen(true)}
-        className="btn-ghost text-xs flex items-center gap-1 text-rose-400/80 hover:text-rose-300"
+        className="btn-ghost text-xs flex items-center gap-1 text-danger/80 hover:text-danger"
         title="标记本章不满意 → 沉淀为下次生成时的偏好资料"
       >
         <ThumbsDown className="size-3.5" /> 不满意
@@ -109,14 +109,14 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
           onClick={() => !submitting && setOpen(false)}
         >
           <div
-            className="bg-zinc-950 border border-zinc-800 rounded-lg w-full max-w-xl max-h-[85vh] flex flex-col"
+            className="bg-canvas border border-border-subtle rounded-lg w-full max-w-xl max-h-[85vh] flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
-            <header className="px-4 py-3 border-b border-zinc-800 flex items-center gap-2">
-              <ThumbsDown className="size-4 text-rose-400" />
+            <header className="px-4 py-3 border-b border-border-subtle flex items-center gap-2">
+              <ThumbsDown className="size-4 text-danger" />
               <h3 className="text-sm font-semibold flex-1">
                 标记不满意 · 第 {chapterIndex} 章
-                {chapterTitle && <span className="text-zinc-500 ml-1">「{chapterTitle}」</span>}
+                {chapterTitle && <span className="text-fg-muted ml-1">「{chapterTitle}」</span>}
               </h3>
               <button onClick={() => !submitting && setOpen(false)} className="btn-ghost p-1">
                 <X className="size-4" />
@@ -125,17 +125,17 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
 
             <div className="flex-1 overflow-auto p-4 space-y-3 text-xs">
               {error && (
-                <div className="card border-amber-500/40 bg-amber-500/5 p-2 flex items-start gap-2">
-                  <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />
-                  <div className="text-zinc-200">{error}</div>
+                <div className="card border-warning/40 bg-warning/5 p-2 flex items-start gap-2">
+                  <AlertTriangle className="size-4 text-warning shrink-0 mt-0.5" />
+                  <div className="text-fg-primary">{error}</div>
                 </div>
               )}
 
               {submitted ? (
-                <div className="py-6 flex flex-col items-center text-emerald-400">
+                <div className="py-6 flex flex-col items-center text-success">
                   <Check className="size-10 mb-2" />
                   <div className="text-sm">已记录！</div>
-                  <p className="text-zinc-400 mt-1 text-center">
+                  <p className="text-fg-secondary mt-1 text-center">
                     后续可在「知识库 → 我的资料库」里把多条反馈汇总成偏好资料注入下次生成。
                   </p>
                 </div>
@@ -143,7 +143,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                 <>
                   {/* 问题分类 */}
                   <div>
-                    <label className="block text-zinc-400 mb-1.5">主要问题（多选）</label>
+                    <label className="block text-fg-secondary mb-1.5">主要问题（多选）</label>
                     <div className="flex flex-wrap gap-1.5">
                       {ALL_ISSUES.map((k) => (
                         <button
@@ -152,8 +152,8 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                           className={clsx(
                             'px-2 py-1 rounded border text-xs transition-colors',
                             issues.includes(k)
-                              ? 'border-rose-500 bg-rose-500/15 text-rose-300'
-                              : 'border-zinc-700 text-zinc-400 hover:text-zinc-200',
+                              ? 'border-rose-500 bg-danger/15 text-danger'
+                              : 'border-border-default text-fg-secondary hover:text-fg-primary',
                           )}
                         >
                           {USER_KB_FEEDBACK_ISSUE_META[k]}
@@ -164,7 +164,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
 
                   {/* 文字理由 */}
                   <div>
-                    <label className="block text-zinc-400 mb-1.5">详细理由（可选，建议写得越具体越好）</label>
+                    <label className="block text-fg-secondary mb-1.5">详细理由（可选，建议写得越具体越好）</label>
                     <textarea
                       className="input w-full text-xs"
                       rows={3}
@@ -177,7 +177,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                   {/* 负样本片段 */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-zinc-400">负样本片段（可选）</label>
+                      <label className="block text-fg-secondary">负样本片段（可选）</label>
                       <button
                         onClick={captureSelection}
                         className="btn-ghost text-[11px] text-brand-300 hover:text-brand-200"
@@ -193,7 +193,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                       value={highlightedExcerpt}
                       onChange={(e) => setHighlightedExcerpt(e.target.value)}
                     />
-                    <p className="text-[10px] text-zinc-500 mt-1">
+                    <p className="text-[10px] text-fg-muted mt-1">
                       {highlightedExcerpt.length} / 2000 字符
                     </p>
                   </div>
@@ -202,8 +202,8 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
             </div>
 
             {!submitted && (
-              <footer className="px-4 py-3 border-t border-zinc-800 flex items-center justify-between gap-2">
-                <span className="text-[11px] text-zinc-500">
+              <footer className="px-4 py-3 border-t border-border-subtle flex items-center justify-between gap-2">
+                <span className="text-[11px] text-fg-muted">
                   {issues.length > 0 && `已选 ${issues.length} 个问题`}
                 </span>
                 <div className="flex gap-2">

@@ -91,7 +91,7 @@ export function UserKbLibrary() {
 
   if (loading) {
     return (
-      <div className="p-8 text-sm text-zinc-500 flex items-center gap-2">
+      <div className="p-8 text-sm text-fg-muted flex items-center gap-2">
         <Loader2 className="size-4 animate-spin" /> 加载资料库…
       </div>
     );
@@ -101,20 +101,20 @@ export function UserKbLibrary() {
     <>
       <div className="h-full flex">
         {/* 列表侧 */}
-        <aside className="w-80 border-r border-zinc-800 flex flex-col shrink-0">
-          <header className="px-3 py-2.5 border-b border-zinc-800 flex items-center gap-2">
+        <aside className="w-80 border-r border-border-subtle flex flex-col shrink-0">
+          <header className="px-3 py-2.5 border-b border-border-subtle flex items-center gap-2">
             <button
               onClick={() => openUpload('trend')}
               className="btn-primary text-xs flex items-center gap-1"
             >
               <Plus className="size-3" /> 上传文档
             </button>
-            <span className="text-[11px] text-zinc-500 ml-auto">
+            <span className="text-[11px] text-fg-muted ml-auto">
               共 {docs.length} 条 · 启用 {docs.filter((d) => d.enabled).length}
             </span>
           </header>
           {/* 类型筛选 */}
-          <div className="px-2 pt-2 pb-1 flex flex-wrap gap-1 border-b border-zinc-800">
+          <div className="px-2 pt-2 pb-1 flex flex-wrap gap-1 border-b border-border-subtle">
             {TYPE_FILTER_OPTIONS.map((opt) => {
               const count = opt.value === 'all'
                 ? docs.length
@@ -126,8 +126,8 @@ export function UserKbLibrary() {
                   className={clsx(
                     'text-[11px] px-2 py-0.5 rounded border transition-colors',
                     filter === opt.value
-                      ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                      : 'border-zinc-700 text-zinc-400 hover:text-zinc-200',
+                      ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                      : 'border-border-default text-fg-secondary hover:text-fg-primary',
                   )}
                 >
                   {opt.label} {count > 0 && <span className="opacity-60">{count}</span>}
@@ -137,17 +137,17 @@ export function UserKbLibrary() {
           </div>
 
           {error && (
-            <div className="m-2 card border-amber-500/40 bg-amber-500/5 p-2 text-xs">
-              <strong className="text-amber-300 flex items-center gap-1">
+            <div className="m-2 card border-warning/40 bg-warning/5 p-2 text-xs">
+              <strong className="text-warning flex items-center gap-1">
                 <AlertTriangle className="size-3.5" /> 加载失败
               </strong>
-              <p className="text-zinc-300 mt-1">{error}</p>
+              <p className="text-fg-secondary mt-1">{error}</p>
             </div>
           )}
 
           <ul className="flex-1 overflow-auto p-2 space-y-1">
             {filtered.length === 0 && (
-              <li className="text-xs text-zinc-500 italic px-3 py-4 text-center">
+              <li className="text-xs text-fg-muted italic px-3 py-4 text-center">
                 {docs.length === 0
                   ? '资料库为空。点击上方「上传文档」开始，或选下面任一类型快速创建：'
                   : `当前筛选下没有资料`}
@@ -157,7 +157,7 @@ export function UserKbLibrary() {
                       <button
                         key={t}
                         onClick={() => openUpload(t)}
-                        className="text-[11px] px-2 py-0.5 rounded bg-zinc-800 hover:bg-zinc-700"
+                        className="text-[11px] px-2 py-0.5 rounded bg-elevated hover:bg-zinc-700"
                       >
                         + {USER_KB_TYPE_META[t].shortLabel}
                       </button>
@@ -172,7 +172,7 @@ export function UserKbLibrary() {
                   onClick={() => setActiveId(d.id ?? null)}
                   className={clsx(
                     'w-full text-left rounded-md px-2.5 py-2 text-xs transition-colors group',
-                    activeId === d.id ? 'bg-zinc-800' : 'hover:bg-zinc-900',
+                    activeId === d.id ? 'bg-elevated' : 'hover:bg-surface',
                     !d.enabled && 'opacity-50',
                   )}
                 >
@@ -180,7 +180,7 @@ export function UserKbLibrary() {
                     <span className="text-base shrink-0">{USER_KB_TYPE_META[d.type].label.split(' ')[0]}</span>
                     <div className="min-w-0 flex-1">
                       <div className="font-medium truncate">{d.title}</div>
-                      <div className="text-[10px] text-zinc-500 mt-0.5 truncate">
+                      <div className="text-[10px] text-fg-muted mt-0.5 truncate">
                         {USER_KB_TYPE_META[d.type].shortLabel}
                         {d.tags.length > 0 && <span className="ml-1">· {d.tags.join('/')}</span>}
                         <span className="ml-1">· {new Date(d.createdAt).toLocaleDateString()}</span>
@@ -203,7 +203,7 @@ export function UserKbLibrary() {
               onRefresh={refresh}
             />
           ) : (
-            <div className="h-full flex flex-col items-center justify-center text-zinc-500 text-sm">
+            <div className="h-full flex flex-col items-center justify-center text-fg-muted text-sm">
               <FileText className="size-10 mb-3 opacity-30" />
               {docs.length === 0
                 ? '上传第一份资料开始用 v2 资料库'
@@ -254,20 +254,20 @@ function DocDetail({
 
   return (
     <div className="h-full flex flex-col">
-      <header className="px-6 py-4 border-b border-zinc-800 sticky top-0 bg-zinc-950/80 backdrop-blur z-10">
+      <header className="px-6 py-4 border-b border-border-subtle sticky top-0 bg-canvas/80 backdrop-blur z-10">
         <div className="flex items-start gap-3">
           <div className="text-2xl shrink-0">{meta.label.split(' ')[0]}</div>
           <div className="flex-1 min-w-0">
             <h2 className="text-lg font-semibold truncate">{doc.title}</h2>
-            <div className="text-xs text-zinc-400 mt-0.5">
+            <div className="text-xs text-fg-secondary mt-0.5">
               {meta.label} · {doc.source === 'upload' ? `📁 ${doc.sourceFilename ?? '上传'}` : doc.source === 'manual' ? '✍ 手动' : '🤖 自动汇总'}
               <span className="mx-1.5">·</span>
-              注入到 <span className="text-zinc-300">{meta.injectsTo.join('、')}</span>
+              注入到 <span className="text-fg-secondary">{meta.injectsTo.join('、')}</span>
               {doc.tags.length > 0 && (
                 <>
                   <span className="mx-1.5">·</span>
                   {doc.tags.map((t) => (
-                    <span key={t} className="text-[10px] px-1.5 py-0.5 mr-1 rounded bg-zinc-800">{t}</span>
+                    <span key={t} className="text-[10px] px-1.5 py-0.5 mr-1 rounded bg-elevated">{t}</span>
                   ))}
                 </>
               )}
@@ -278,7 +278,7 @@ function DocDetail({
               onClick={onToggle}
               className={clsx(
                 'btn-ghost text-xs flex items-center gap-1',
-                doc.enabled ? 'text-emerald-400' : 'text-zinc-500',
+                doc.enabled ? 'text-success' : 'text-fg-muted',
               )}
               title={doc.enabled ? '点击禁用（保留资料但不注入到任何 prompt）' : '点击启用'}
             >
@@ -288,7 +288,7 @@ function DocDetail({
             <button onClick={onRefresh} className="btn-ghost text-xs" title="刷新列表">
               <RefreshCw className="size-3.5" />
             </button>
-            <button onClick={onDelete} className="btn-ghost text-xs text-rose-400 hover:text-rose-300" title="删除">
+            <button onClick={onDelete} className="btn-ghost text-xs text-danger hover:text-danger" title="删除">
               <Trash2 className="size-3.5" />
             </button>
           </div>
@@ -304,22 +304,22 @@ function DocDetail({
       <div className="flex-1 overflow-auto p-6">
         {tab === 'structured' && (
           parseError ? (
-            <div className="card border-amber-500/40 bg-amber-500/5 p-3 text-sm">
-              <strong className="text-amber-300">structuredJson 解析失败</strong>
-              <p className="text-zinc-300 mt-1">{parseError}</p>
-              <p className="text-zinc-500 mt-2 text-xs">请到「原始 JSON」页签查看原文，并修正后重新保存。</p>
+            <div className="card border-warning/40 bg-warning/5 p-3 text-sm">
+              <strong className="text-warning">structuredJson 解析失败</strong>
+              <p className="text-fg-secondary mt-1">{parseError}</p>
+              <p className="text-fg-muted mt-2 text-xs">请到「原始 JSON」页签查看原文，并修正后重新保存。</p>
             </div>
           ) : (
             <MarkdownView content={structuredPretty} />
           )
         )}
         {tab === 'raw' && (
-          <pre className="text-xs font-mono whitespace-pre-wrap break-all bg-zinc-900 rounded p-3 leading-relaxed">
+          <pre className="text-xs font-mono whitespace-pre-wrap break-all bg-surface rounded p-3 leading-relaxed">
             {tryFormatJson(doc.structuredJson)}
           </pre>
         )}
         {tab === 'meta' && (
-          <div className="text-xs space-y-2 text-zinc-300">
+          <div className="text-xs space-y-2 text-fg-secondary">
             <Row label="ID">{doc.id}</Row>
             <Row label="类型">{doc.type} ({meta.shortLabel})</Row>
             <Row label="来源">{doc.source} {doc.sourceFilename && `· ${doc.sourceFilename}`}</Row>
@@ -338,8 +338,8 @@ function DocDetail({
             <Row label="structuredJson 长度">{doc.structuredJson.length} 字符</Row>
 
             <details className="mt-4">
-              <summary className="cursor-pointer text-zinc-400 hover:text-zinc-200">查看原始上传内容（rawContent）</summary>
-              <pre className="text-[11px] font-mono whitespace-pre-wrap break-all bg-zinc-900 rounded p-3 mt-2 max-h-96 overflow-auto">
+              <summary className="cursor-pointer text-fg-secondary hover:text-fg-primary">查看原始上传内容（rawContent）</summary>
+              <pre className="text-[11px] font-mono whitespace-pre-wrap break-all bg-surface rounded p-3 mt-2 max-h-96 overflow-auto">
                 {doc.rawContent || '(空)'}
               </pre>
             </details>
@@ -356,7 +356,7 @@ function DetailTab({ active, onClick, children }: { active: boolean; onClick: ()
       onClick={onClick}
       className={clsx(
         'px-2 py-1 border-b-2 -mb-px transition-colors',
-        active ? 'border-brand-500 text-zinc-100' : 'border-transparent text-zinc-500 hover:text-zinc-300',
+        active ? 'border-brand-500 text-fg-primary' : 'border-transparent text-fg-muted hover:text-fg-secondary',
       )}
     >
       {children}
@@ -367,7 +367,7 @@ function DetailTab({ active, onClick, children }: { active: boolean; onClick: ()
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex gap-3">
-      <span className="text-zinc-500 w-28 shrink-0">{label}</span>
+      <span className="text-fg-muted w-28 shrink-0">{label}</span>
       <span className="flex-1">{children}</span>
     </div>
   );

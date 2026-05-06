@@ -115,7 +115,7 @@ export function ChapterScoreCardSlot({ text, chapterKey, nodeId, stageId }: Prop
   if (!enabled) return null;
 
   return (
-    <div className="px-4 py-2 border-t border-zinc-800 bg-zinc-950/40 shrink-0">
+    <div className="px-4 py-2 border-t border-border-subtle bg-canvas/40 shrink-0">
       <ScoreCardBadge
         card={state.current}
         previous={state.previous}

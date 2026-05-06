@@ -38,16 +38,16 @@ interface Props {
 }
 
 function scoreColor(score: number): { fg: string; bg: string; border: string } {
-  if (score >= 85) return { fg: 'text-emerald-300', bg: 'bg-emerald-500/15', border: 'border-emerald-500/40' };
+  if (score >= 85) return { fg: 'text-success', bg: 'bg-success/15', border: 'border-success/40' };
   if (score >= 70) return { fg: 'text-sky-300',     bg: 'bg-sky-500/15',     border: 'border-sky-500/40' };
-  if (score >= 55) return { fg: 'text-amber-300',   bg: 'bg-amber-500/15',   border: 'border-amber-500/40' };
-  return                  { fg: 'text-rose-300',    bg: 'bg-rose-500/15',    border: 'border-rose-500/40' };
+  if (score >= 55) return { fg: 'text-warning',   bg: 'bg-warning/15',   border: 'border-warning/40' };
+  return                  { fg: 'text-danger',    bg: 'bg-danger/15',    border: 'border-danger/40' };
 }
 
 function deltaIcon(delta?: number) {
-  if (delta == null || Math.abs(delta) < 1) return <Minus className="size-3 text-zinc-500" />;
-  if (delta > 0) return <TrendingUp className="size-3 text-emerald-400" />;
-  return <TrendingDown className="size-3 text-rose-400" />;
+  if (delta == null || Math.abs(delta) < 1) return <Minus className="size-3 text-fg-muted" />;
+  if (delta > 0) return <TrendingUp className="size-3 text-success" />;
+  return <TrendingDown className="size-3 text-danger" />;
 }
 
 function deltaText(delta?: number): string {
@@ -56,8 +56,8 @@ function deltaText(delta?: number): string {
 }
 
 function severityIcon(sev: 'major' | 'minor' | 'info') {
-  if (sev === 'major') return <AlertOctagon className="size-3 text-rose-400" />;
-  if (sev === 'minor') return <AlertTriangle className="size-3 text-amber-400" />;
+  if (sev === 'major') return <AlertOctagon className="size-3 text-danger" />;
+  if (sev === 'minor') return <AlertTriangle className="size-3 text-warning" />;
   return <Info className="size-3 text-blue-400" />;
 }
 
@@ -74,12 +74,12 @@ function MiniDimBar({
       )}
       title={`${SCORE_DIMENSION_LONG_LABELS[d]}：${ds.score}${ds.inactive ? '（不适用）' : ''}${delta != null && Math.abs(delta) >= 1 ? ` · 变化 ${deltaText(delta)}` : ''}`}
     >
-      <span className="text-zinc-400">{SCORE_DIMENSION_LABELS[d]}</span>
-      <span className={clsx('font-mono', ds.inactive ? 'text-zinc-500' : c.fg)}>
+      <span className="text-fg-secondary">{SCORE_DIMENSION_LABELS[d]}</span>
+      <span className={clsx('font-mono', ds.inactive ? 'text-fg-muted' : c.fg)}>
         {ds.inactive ? '—' : ds.score}
       </span>
       {!ds.inactive && delta != null && Math.abs(delta) >= 1 && (
-        <span className={clsx('font-mono', delta > 0 ? 'text-emerald-300' : 'text-rose-300')}>
+        <span className={clsx('font-mono', delta > 0 ? 'text-success' : 'text-danger')}>
           {deltaText(delta)}
         </span>
       )}
@@ -116,37 +116,37 @@ function DimensionDetail({
   return (
     <div className={clsx('rounded border px-2.5 py-1.5', c.border, c.bg)}>
       <div className="flex items-center gap-2 text-[12px]">
-        <span className="font-medium text-zinc-200">{SCORE_DIMENSION_LONG_LABELS[d]}</span>
+        <span className="font-medium text-fg-primary">{SCORE_DIMENSION_LONG_LABELS[d]}</span>
         <span className={clsx('font-mono', c.fg)}>
           {ds.inactive ? '—' : ds.score}
         </span>
         {!ds.inactive && delta != null && Math.abs(delta) >= 1 && (
           <span className={clsx('font-mono text-[11px] inline-flex items-center gap-0.5',
-            delta > 0 ? 'text-emerald-300' : 'text-rose-300')}>
+            delta > 0 ? 'text-success' : 'text-danger')}>
             {deltaIcon(delta)} {deltaText(delta)}
           </span>
         )}
         {ds.inactive && (
-          <span className="text-[10px] text-zinc-500">（不适用 / 无数据）</span>
+          <span className="text-[10px] text-fg-muted">（不适用 / 无数据）</span>
         )}
       </div>
       {ds.summary && (
-        <div className="mt-1 text-[11px] text-zinc-400">{ds.summary}</div>
+        <div className="mt-1 text-[11px] text-fg-secondary">{ds.summary}</div>
       )}
       {ds.issues.length > 0 && (
         <ul className="mt-1.5 space-y-1">
           {ds.issues.map((iss, i) => (
-            <li key={i} className="flex items-start gap-1.5 text-[11px] text-zinc-300">
+            <li key={i} className="flex items-start gap-1.5 text-[11px] text-fg-secondary">
               <span className="mt-0.5">{severityIcon(iss.severity)}</span>
               <div className="flex-1 min-w-0">
                 <div>
                   {iss.message}
-                  <span className="ml-2 text-[10px] text-zinc-500 font-mono">−{iss.penalty}</span>
+                  <span className="ml-2 text-[10px] text-fg-muted font-mono">−{iss.penalty}</span>
                 </div>
                 {iss.evidence && iss.evidence.length > 0 && (
                   <div className="mt-0.5 flex flex-wrap gap-1">
                     {iss.evidence.map((ev, j) => (
-                      <span key={j} className="text-[10px] px-1 py-0 rounded bg-zinc-900/70 border border-zinc-700/50 font-mono text-zinc-400 max-w-full truncate" title={ev}>
+                      <span key={j} className="text-[10px] px-1 py-0 rounded bg-surface/70 border border-border-default/50 font-mono text-fg-secondary max-w-full truncate" title={ev}>
                         {ev}
                       </span>
                     ))}
@@ -181,9 +181,9 @@ export function ScoreCardBadge({
   if (!card) {
     // 没评分过：只显示一个触发按钮
     return (
-      <div className="rounded-md border border-zinc-800 bg-zinc-900/30 px-3 py-1.5 flex items-center gap-2 text-[11px]">
-        <Gauge className="size-3.5 text-zinc-500" />
-        <span className="text-zinc-400">尚未评分</span>
+      <div className="rounded-md border border-border-subtle bg-surface/30 px-3 py-1.5 flex items-center gap-2 text-[11px]">
+        <Gauge className="size-3.5 text-fg-muted" />
+        <span className="text-fg-secondary">尚未评分</span>
         {onRecompute && (
           <button
             type="button"
@@ -197,7 +197,7 @@ export function ScoreCardBadge({
           </button>
         )}
         {error && (
-          <span className="text-[11px] text-rose-300 ml-2">{error}</span>
+          <span className="text-[11px] text-danger ml-2">{error}</span>
         )}
       </div>
     );
@@ -211,32 +211,32 @@ export function ScoreCardBadge({
       {/* ── 紧凑横条 ───────────────────────────────────────── */}
       <div className="flex items-center gap-2 flex-wrap">
         <Gauge className={clsx('size-4', totalC?.fg)} />
-        <span className="text-[12px] font-medium text-zinc-200">综合评分</span>
+        <span className="text-[12px] font-medium text-fg-primary">综合评分</span>
         <span className={clsx('text-[18px] font-mono font-bold', totalC?.fg)}>
           {card.total}
         </span>
-        <span className="text-[11px] text-zinc-500">/ 100</span>
+        <span className="text-[11px] text-fg-muted">/ 100</span>
 
         {delta.total != null && Math.abs(delta.total) >= 1 && (
           <span className={clsx(
             'text-[11px] font-mono inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded',
             delta.total > 0
-              ? 'text-emerald-300 bg-emerald-500/10 border border-emerald-500/30'
-              : 'text-rose-300 bg-rose-500/10 border border-rose-500/30',
+              ? 'text-success bg-success/10 border border-success/30'
+              : 'text-danger bg-danger/10 border border-danger/30',
           )}>
             {deltaIcon(delta.total)} {deltaText(delta.total)}
-            <span className="text-zinc-500 ml-1">vs 上次</span>
+            <span className="text-fg-muted ml-1">vs 上次</span>
           </span>
         )}
 
         {!card.llmEvaluated && (
-          <span className="text-[10px] px-1.5 py-0.5 rounded border border-zinc-700 bg-zinc-800/50 text-zinc-400">
+          <span className="text-[10px] px-1.5 py-0.5 rounded border border-border-default bg-elevated/50 text-fg-secondary">
             仅前 4 维（LLM 待评）
           </span>
         )}
 
         {sparkData.length >= 2 && (
-          <span className="text-zinc-500" title={`最近 ${sparkData.length} 次评分轨迹`}>
+          <span className="text-fg-muted" title={`最近 ${sparkData.length} 次评分轨迹`}>
             <SparkLine scores={sparkData} />
           </span>
         )}
@@ -247,7 +247,7 @@ export function ScoreCardBadge({
               type="button"
               onClick={() => onRecompute({})}
               disabled={busy}
-              className="text-[11px] px-1.5 py-0.5 rounded border border-zinc-700 hover:bg-zinc-800 text-zinc-300 inline-flex items-center gap-1 disabled:opacity-50"
+              className="text-[11px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1 disabled:opacity-50"
               title="重新评分（含 LLM 维度）"
             >
               {busy ? <Loader2 className="size-3 animate-spin" /> : <RefreshCw className="size-3" />}
@@ -257,7 +257,7 @@ export function ScoreCardBadge({
           <button
             type="button"
             onClick={() => setExpanded((e) => !e)}
-            className="text-[11px] px-1.5 py-0.5 rounded border border-zinc-700 hover:bg-zinc-800 text-zinc-400 inline-flex items-center gap-1"
+            className="text-[11px] px-1.5 py-0.5 rounded border border-border-default hover:bg-elevated text-fg-secondary inline-flex items-center gap-1"
             title={expanded ? '折叠' : '展开详情'}
           >
             {expanded ? <ChevronUp className="size-3" /> : <ChevronDown className="size-3" />}
@@ -280,7 +280,7 @@ export function ScoreCardBadge({
 
       {/* ── 错误提示 ──────────────────────────────────────── */}
       {error && (
-        <div className="text-[11px] text-rose-300 px-2 py-1 rounded bg-rose-500/5 border border-rose-500/30">
+        <div className="text-[11px] text-danger px-2 py-1 rounded bg-danger/5 border border-danger/30">
           {error}
         </div>
       )}
@@ -296,7 +296,7 @@ export function ScoreCardBadge({
               delta={delta.byDimension[d]}
             />
           ))}
-          <div className="text-[10px] text-zinc-500 italic mt-1">
+          <div className="text-[10px] text-fg-muted italic mt-1">
             综合分 = 6 维加权平均（默认等权）。延后维度 = 不计入分母。前 4 维纯前端规则；R1 / 风格由 LLM 评判，未配置数据时显示「不适用」。
           </div>
         </div>

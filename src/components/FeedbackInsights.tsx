@@ -230,7 +230,7 @@ export function FeedbackInsights() {
 
   if (loading) {
     return (
-      <div className="p-8 text-sm text-zinc-500 flex items-center gap-2">
+      <div className="p-8 text-sm text-fg-muted flex items-center gap-2">
         <Loader2 className="size-4 animate-spin" /> 加载反馈记录…
       </div>
     );
@@ -239,11 +239,11 @@ export function FeedbackInsights() {
   return (
     <div className="h-full flex flex-col">
       {/* 顶部统计 + 操作栏 */}
-      <header className="px-5 py-3 border-b border-zinc-800 space-y-3">
+      <header className="px-5 py-3 border-b border-border-subtle space-y-3">
         <div className="flex items-center gap-3">
-          <ThumbsDown className="size-4 text-rose-400" />
+          <ThumbsDown className="size-4 text-danger" />
           <div className="text-sm font-semibold">章节反馈</div>
-          <span className="text-xs text-zinc-500">共 {feedback.length} 条</span>
+          <span className="text-xs text-fg-muted">共 {feedback.length} 条</span>
           <button onClick={refresh} className="btn-ghost text-xs ml-auto" title="刷新">
             <RefreshCw className="size-3.5" />
           </button>
@@ -264,7 +264,7 @@ export function FeedbackInsights() {
           <button
             onClick={() => handleSummarizeAs('antiPattern')}
             disabled={!!summarizing || feedback.length < MIN_FEEDBACK_TO_SUMMARIZE}
-            className="btn-ghost text-xs flex items-center gap-1 text-rose-300"
+            className="btn-ghost text-xs flex items-center gap-1 text-danger"
             title={
               feedback.length < MIN_FEEDBACK_TO_SUMMARIZE
                 ? `至少需要 ${MIN_FEEDBACK_TO_SUMMARIZE} 条反馈才能汇总`
@@ -293,8 +293,8 @@ export function FeedbackInsights() {
               className={clsx(
                 'text-[11px] px-2 py-0.5 rounded border transition-colors',
                 filterIssue === 'all'
-                  ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                  : 'border-zinc-700 text-zinc-400 hover:text-zinc-200',
+                  ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                  : 'border-border-default text-fg-secondary hover:text-fg-primary',
               )}
             >
               全部 {feedback.length}
@@ -306,8 +306,8 @@ export function FeedbackInsights() {
                 className={clsx(
                   'text-[11px] px-2 py-0.5 rounded border transition-colors',
                   filterIssue === k
-                    ? 'border-rose-500 bg-rose-500/15 text-rose-300'
-                    : 'border-zinc-700 text-zinc-400 hover:text-zinc-200',
+                    ? 'border-rose-500 bg-danger/15 text-danger'
+                    : 'border-border-default text-fg-secondary hover:text-fg-primary',
                 )}
               >
                 {USER_KB_FEEDBACK_ISSUE_META[k]} <span className="opacity-60">{n}</span>
@@ -317,21 +317,21 @@ export function FeedbackInsights() {
         )}
 
         {error && (
-          <div className="card border-amber-500/40 bg-amber-500/5 p-2 text-xs flex items-start gap-2">
-            <AlertTriangle className="size-4 text-amber-400 shrink-0 mt-0.5" />
-            <div className="text-zinc-200">{error}</div>
+          <div className="card border-warning/40 bg-warning/5 p-2 text-xs flex items-start gap-2">
+            <AlertTriangle className="size-4 text-warning shrink-0 mt-0.5" />
+            <div className="text-fg-primary">{error}</div>
           </div>
         )}
 
         {summarizedDocs.length > 0 && (
-          <div className="card border-emerald-500/40 bg-emerald-500/5 p-2 text-xs flex items-start gap-2">
-            <Check className="size-4 text-emerald-400 shrink-0 mt-0.5" />
-            <div className="text-zinc-200">
+          <div className="card border-success/40 bg-success/5 p-2 text-xs flex items-start gap-2">
+            <Check className="size-4 text-success shrink-0 mt-0.5" />
+            <div className="text-fg-primary">
               已生成 {summarizedDocs.length} 份 doc：
               {summarizedDocs.map((d, i) => (
                 <span key={d.id} className="ml-1">
-                  {i > 0 && <span className="text-zinc-500">、</span>}
-                  <span className={d.type === 'styleGuide' ? 'text-emerald-300' : 'text-rose-300'}>
+                  {i > 0 && <span className="text-fg-muted">、</span>}
+                  <span className={d.type === 'styleGuide' ? 'text-success' : 'text-danger'}>
                     {d.type === 'styleGuide' ? '偏好资料' : '反例黑名单'} #{d.id}
                   </span>
                 </span>
@@ -344,7 +344,7 @@ export function FeedbackInsights() {
 
       {/* P9-G 多选 / 批量删除控件栏 */}
       {filtered.length > 0 && (
-        <div className="px-5 py-2 border-b border-zinc-800 flex items-center gap-3 text-xs text-zinc-400">
+        <div className="px-5 py-2 border-b border-border-subtle flex items-center gap-3 text-xs text-fg-secondary">
           <label className="flex items-center gap-1.5 cursor-pointer">
             <input
               type="checkbox"
@@ -359,10 +359,10 @@ export function FeedbackInsights() {
           </label>
           {selectedIds.size > 0 && (
             <>
-              <span className="text-zinc-500">· 已选 {selectedIds.size} 条</span>
+              <span className="text-fg-muted">· 已选 {selectedIds.size} 条</span>
               <button
                 onClick={handleBulkDelete}
-                className="text-rose-300 hover:text-rose-200 flex items-center gap-1 ml-auto"
+                className="text-danger hover:text-danger flex items-center gap-1 ml-auto"
                 title="删除选中的反馈条目"
               >
                 <Trash2 className="size-3" /> 删除选中
@@ -372,7 +372,7 @@ export function FeedbackInsights() {
           {selectedIds.size === 0 && filterIssue !== 'all' && (
             <button
               onClick={handleDeleteFilteredAll}
-              className="text-rose-300/80 hover:text-rose-200 flex items-center gap-1 ml-auto"
+              className="text-danger/80 hover:text-danger flex items-center gap-1 ml-auto"
               title={`删除当前「${USER_KB_FEEDBACK_ISSUE_META[filterIssue as keyof typeof USER_KB_FEEDBACK_ISSUE_META]}」筛选下的全部 ${filtered.length} 条`}
             >
               <Trash2 className="size-3" /> 删除当前筛选全部
@@ -384,7 +384,7 @@ export function FeedbackInsights() {
       {/* 反馈列表 */}
       <div className="flex-1 overflow-auto p-5 space-y-2">
         {filtered.length === 0 ? (
-          <div className="text-center text-sm text-zinc-500 py-12">
+          <div className="text-center text-sm text-fg-muted py-12">
             <FileText className="size-10 mx-auto mb-3 opacity-30" />
             {feedback.length === 0 ? (
               <>
@@ -423,7 +423,7 @@ function FeedbackCard({
   return (
     <div className={clsx(
       'card p-3 text-xs space-y-2 transition-colors',
-      selected && 'border-rose-500/40 bg-rose-500/5',
+      selected && 'border-danger/40 bg-danger/5',
     )}>
       <div className="flex items-start gap-2">
         {/* P9-G 多选复选框 */}
@@ -436,41 +436,41 @@ function FeedbackCard({
             aria-label="选中该反馈条目"
           />
         )}
-        <div className="text-rose-400 shrink-0">
+        <div className="text-danger shrink-0">
           <ThumbsDown className="size-4" />
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-medium text-zinc-200">第 {fb.chapterIndex} 章</span>
-            <span className="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400">
+            <span className="font-medium text-fg-primary">第 {fb.chapterIndex} 章</span>
+            <span className="text-[10px] px-1.5 py-0.5 rounded bg-elevated text-fg-secondary">
               {fb.nodeId === 'novel.3.1' ? '草稿' : fb.nodeId === 'novel.3.2' ? '润色' : fb.nodeId}
             </span>
-            <span className="text-[10px] text-zinc-500">{new Date(fb.createdAt).toLocaleString()}</span>
+            <span className="text-[10px] text-fg-muted">{new Date(fb.createdAt).toLocaleString()}</span>
           </div>
           <div className="flex flex-wrap gap-1 mt-1">
             {fb.issues.map((k) => (
-              <span key={k} className="text-[10px] px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">
+              <span key={k} className="text-[10px] px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">
                 {USER_KB_FEEDBACK_ISSUE_META[k]}
               </span>
             ))}
           </div>
           {fb.reason && (
-            <div className="mt-2 text-zinc-300 italic">
+            <div className="mt-2 text-fg-secondary italic">
               「{fb.reason}」
             </div>
           )}
           {fb.highlightedExcerpt && (
             <details className="mt-2">
-              <summary className="cursor-pointer text-zinc-500 hover:text-zinc-300">
+              <summary className="cursor-pointer text-fg-muted hover:text-fg-secondary">
                 负样本片段（{fb.highlightedExcerpt.length} 字）
               </summary>
-              <pre className="mt-1 p-2 bg-zinc-900 rounded text-[11px] font-mono whitespace-pre-wrap text-zinc-300">
+              <pre className="mt-1 p-2 bg-surface rounded text-[11px] font-mono whitespace-pre-wrap text-fg-secondary">
                 {fb.highlightedExcerpt}
               </pre>
             </details>
           )}
         </div>
-        <button onClick={onDelete} className="btn-ghost p-1 text-rose-400 hover:text-rose-300 shrink-0" title="删除">
+        <button onClick={onDelete} className="btn-ghost p-1 text-danger hover:text-danger shrink-0" title="删除">
           <Trash2 className="size-3.5" />
         </button>
       </div>

@@ -146,12 +146,12 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+      <div className="bg-surface border border-border-subtle rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
         {/* header */}
-        <header className="px-5 py-3 border-b border-zinc-800 flex items-center gap-2">
-          <Upload className="size-4 text-brand-500" />
+        <header className="px-5 py-3 border-b border-border-subtle flex items-center gap-2">
+          <Upload className="size-4 text-primary-500" />
           <h2 className="text-base font-semibold">上传资料 → LLM 自动结构化</h2>
-          <div className="ml-auto flex items-center gap-2 text-xs text-zinc-400">
+          <div className="ml-auto flex items-center gap-2 text-xs text-fg-secondary">
             <StepIndicator current={step} step="input">输入</StepIndicator>
             <ArrowRight className="size-3 opacity-40" />
             <StepIndicator current={step} step="extracting">提炼</StepIndicator>
@@ -164,8 +164,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
         {/* body */}
         <div className="flex-1 overflow-auto p-5 space-y-4">
           {error && (
-            <div className="card border-amber-500/40 bg-amber-500/5 p-3 text-sm">
-              <strong className="text-amber-300 flex items-center gap-1.5">
+            <div className="card border-warning/40 bg-warning/5 p-3 text-sm">
+              <strong className="text-warning flex items-center gap-1.5">
                 <AlertTriangle className="size-4" /> {error}
               </strong>
             </div>
@@ -186,8 +186,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                         className={clsx(
                           'text-xs px-2.5 py-1.5 rounded border transition-colors',
                           type === t
-                            ? 'border-brand-500 bg-brand-500/15 text-brand-300'
-                            : 'border-zinc-700 text-zinc-400 hover:text-zinc-200',
+                            ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                            : 'border-border-default text-fg-secondary hover:text-fg-primary',
                         )}
                         title={`${m.description}\n注入到：${m.injectsTo.join('、')}${supported ? '' : '\n⚠ 暂不支持 LLM 自动提炼，需手动填'}`}
                       >
@@ -197,9 +197,9 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                     );
                   })}
                 </div>
-                <p className="text-[11px] text-zinc-500 mt-1.5">{meta.description}</p>
-                <p className="text-[11px] text-zinc-500 mt-0.5">
-                  注入到：<span className="text-zinc-300">{meta.injectsTo.join(' · ')}</span>
+                <p className="text-[11px] text-fg-muted mt-1.5">{meta.description}</p>
+                <p className="text-[11px] text-fg-muted mt-0.5">
+                  注入到：<span className="text-fg-secondary">{meta.injectsTo.join(' · ')}</span>
                 </p>
               </Field>
 
@@ -242,8 +242,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                   >
                     <FileText className="size-3.5" /> 选择 .md / .txt 文件
                   </button>
-                  {filename && <span className="text-xs text-zinc-400">📁 {filename}</span>}
-                  <span className="ml-auto text-[11px] text-zinc-500">
+                  {filename && <span className="text-xs text-fg-secondary">📁 {filename}</span>}
+                  <span className="ml-auto text-[11px] text-fg-muted">
                     {rawContent.length} 字符
                   </span>
                 </div>
@@ -257,7 +257,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
               </Field>
 
               <div className="flex items-center gap-2 pt-2">
-                <label className="flex items-center gap-1.5 text-xs text-zinc-400 cursor-pointer">
+                <label className="flex items-center gap-1.5 text-xs text-fg-secondary cursor-pointer">
                   <input
                     type="checkbox"
                     checked={enableOnSave}
@@ -288,12 +288,12 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
           )}
 
           {step === 'extracting' && (
-            <div className="py-8 flex flex-col items-center text-sm text-zinc-300">
-              <Loader2 className="size-8 animate-spin text-brand-500 mb-3" />
+            <div className="py-8 flex flex-col items-center text-sm text-fg-secondary">
+              <Loader2 className="size-8 animate-spin text-primary-500 mb-3" />
               <div>正在调用 LLM 提炼资料……</div>
-              <div className="text-[11px] text-zinc-500 mt-1">使用 {useSettings.getState().modelLite || useSettings.getState().model}</div>
+              <div className="text-[11px] text-fg-muted mt-1">使用 {useSettings.getState().modelLite || useSettings.getState().model}</div>
               {streamingText && (
-                <pre className="text-[10px] font-mono mt-4 max-h-48 overflow-auto w-full bg-zinc-950 rounded p-2 leading-relaxed">
+                <pre className="text-[10px] font-mono mt-4 max-h-48 overflow-auto w-full bg-canvas rounded p-2 leading-relaxed">
                   {streamingText.slice(-2000)}
                 </pre>
               )}
@@ -302,15 +302,15 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
 
           {step === 'review' && (
             <>
-              <div className="card border-emerald-500/40 bg-emerald-500/5 p-3 text-xs">
-                <strong className="text-emerald-300">✓ 提炼完成</strong>
+              <div className="card border-success/40 bg-success/5 p-3 text-xs">
+                <strong className="text-success">✓ 提炼完成</strong>
                 {extractMeta && (
-                  <span className="text-zinc-400 ml-2">
+                  <span className="text-fg-secondary ml-2">
                     {extractMeta.model} · {extractMeta.durationMs}ms
                     {extractMeta.tokens && ` · ${extractMeta.tokens} tokens`}
                   </span>
                 )}
-                <p className="text-zinc-300 mt-1">请审核下方 JSON，可手动编辑。点「保存」入库。</p>
+                <p className="text-fg-secondary mt-1">请审核下方 JSON，可手动编辑。点「保存」入库。</p>
               </div>
 
               <Field label="结构化 JSON（可手动编辑）">
@@ -320,7 +320,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                   value={structuredJson}
                   onChange={(e) => setStructuredJson(e.target.value)}
                 />
-                <p className="text-[10px] text-zinc-500 mt-1">
+                <p className="text-[10px] text-fg-muted mt-1">
                   {structuredJson.length} 字符 · 注入到 prompt 时会按 type 渲染为简化 markdown，不会原样塞 JSON
                 </p>
               </Field>
@@ -332,7 +332,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                 >
                   ← 返回修改输入
                 </button>
-                <label className="flex items-center gap-1.5 text-xs text-zinc-400 cursor-pointer">
+                <label className="flex items-center gap-1.5 text-xs text-fg-secondary cursor-pointer">
                   <input
                     type="checkbox"
                     checked={enableOnSave}
@@ -358,7 +358,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div>
-      <label className="block text-xs text-zinc-400 mb-1.5">{label}</label>
+      <label className="block text-xs text-fg-secondary mb-1.5">{label}</label>
       {children}
     </div>
   );
@@ -373,9 +373,9 @@ function StepIndicator({ current, step, children }: { current: Step; step: Step;
   return (
     <span className={clsx(
       'px-1.5 py-0.5 rounded transition-colors',
-      active && 'bg-brand-500/20 text-brand-300',
-      done && 'text-emerald-400',
-      !active && !done && 'text-zinc-500',
+      active && 'bg-primary-500/20 text-brand-300',
+      done && 'text-success',
+      !active && !done && 'text-fg-muted',
     )}>
       {children}
     </span>

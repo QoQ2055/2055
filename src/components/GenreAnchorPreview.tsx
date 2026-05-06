@@ -100,7 +100,7 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
     return (
       <div
         className={
-          'mt-2 rounded-md border border-zinc-800 bg-zinc-900/40 px-3 py-2 text-xs text-zinc-500 ' +
+          'mt-2 rounded-md border border-border-subtle bg-surface/40 px-3 py-2 text-xs text-fg-muted ' +
           (className ?? '')
         }
       >
@@ -112,7 +112,7 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
   return (
     <div
       className={
-        'mt-2 rounded-md border border-brand-500/30 bg-brand-500/5 px-3 py-2.5 space-y-2 ' +
+        'mt-2 rounded-md border border-brand-500/30 bg-primary-500/5 px-3 py-2.5 space-y-2 ' +
         (className ?? '')
       }
     >
@@ -120,10 +120,10 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
       <div className="flex items-center justify-between flex-wrap gap-1">
         <div className="text-xs font-medium text-brand-300">
           🎯 题材锚点
-          <span className="ml-1.5 text-zinc-500 font-normal">{merged.labels.join(' + ')}</span>
+          <span className="ml-1.5 text-fg-muted font-normal">{merged.labels.join(' + ')}</span>
         </div>
         {merged.unconfiguredCount > 0 && (
-          <span className="text-[10px] text-amber-500/80">
+          <span className="text-[10px] text-warning/80">
             {merged.unconfiguredCount} 个题材暂无锚点配置
           </span>
         )}
@@ -132,14 +132,14 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
       {/* 必须包含 */}
       {merged.mustInclude.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-emerald-400/80 mb-1">
+          <div className="text-[10px] uppercase tracking-wider text-success/80 mb-1">
             ✓ 必须包含（题材必备元素）
           </div>
           <div className="flex flex-wrap gap-1">
             {merged.mustInclude.map((s, i) => (
               <span
                 key={i}
-                className="px-1.5 py-0.5 text-[11px] rounded border border-emerald-500/30 bg-emerald-500/10 text-emerald-200"
+                className="px-1.5 py-0.5 text-[11px] rounded border border-success/30 bg-success/10 text-emerald-200"
               >
                 {s}
               </span>
@@ -151,14 +151,14 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
       {/* 必须避免 */}
       {merged.mustAvoid.length > 0 && (
         <div>
-          <div className="text-[10px] uppercase tracking-wider text-rose-400/80 mb-1">
+          <div className="text-[10px] uppercase tracking-wider text-danger/80 mb-1">
             ✗ 必须避免（题材污染清单）
           </div>
           <div className="flex flex-wrap gap-1">
             {merged.mustAvoid.map((s, i) => (
               <span
                 key={i}
-                className="px-1.5 py-0.5 text-[11px] rounded border border-rose-500/30 bg-rose-500/10 text-rose-200"
+                className="px-1.5 py-0.5 text-[11px] rounded border border-danger/30 bg-danger/10 text-danger"
               >
                 {s}
               </span>
@@ -172,13 +172,13 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
         <>
           {merged.worldRules.length > 0 && (
             <div>
-              <div className="text-[10px] uppercase tracking-wider text-zinc-500 mb-1">
+              <div className="text-[10px] uppercase tracking-wider text-fg-muted mb-1">
                 🌍 世界观核心规则
               </div>
               <ul className="space-y-1">
                 {merged.worldRules.map((r, i) => (
-                  <li key={i} className="text-[11px] text-zinc-400 leading-snug">
-                    <span className="text-zinc-300 font-medium">[{r.label}]</span> {r.text}
+                  <li key={i} className="text-[11px] text-fg-secondary leading-snug">
+                    <span className="text-fg-secondary font-medium">[{r.label}]</span> {r.text}
                   </li>
                 ))}
               </ul>
@@ -186,15 +186,15 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
           )}
 
           {(merged.paragraphLength !== null || merged.dialogueRatio !== null) && (
-            <div className="flex gap-3 flex-wrap text-[11px] text-zinc-400">
+            <div className="flex gap-3 flex-wrap text-[11px] text-fg-secondary">
               {merged.paragraphLength !== null && (
                 <span>
-                  📐 段落长度参考 <span className="text-zinc-200 font-mono">{merged.paragraphLength}</span> 字
+                  📐 段落长度参考 <span className="text-fg-primary font-mono">{merged.paragraphLength}</span> 字
                 </span>
               )}
               {merged.dialogueRatio !== null && (
                 <span>
-                  💬 对话比例参考 <span className="text-zinc-200 font-mono">{merged.dialogueRatio}%</span>
+                  💬 对话比例参考 <span className="text-fg-primary font-mono">{merged.dialogueRatio}%</span>
                 </span>
               )}
             </div>
