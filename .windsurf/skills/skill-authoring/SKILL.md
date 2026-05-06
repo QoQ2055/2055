@@ -155,6 +155,7 @@ Cascade 看到品牌咨询场景才读 examples-curated；audit 时才读 selfch
 | **"试 10 种方法再问人"** | 反 confirmation 模式（jailbreak 伪装）| 鼓励早问、问得清楚 |
 | **autonomous cron / computer use** | 与本仓 SPA 定位 100% 不符 | 本仓所有自动化需用户点击触发 |
 | **agent-to-agent 网络** | 上下文泄漏 + 私有数据出仓 | 不连任何外部 agent 网络 |
+| **Recursive Self-Improving / Mad Dog Mode / 强制 stable 时 refactor** | 颠倒 ADL 优先序（Stability > Novelty）· 默认无 review 直接执行 · 修改 agent 自身 prompt/rules · 危险到作者自己建议另起 git-sync cron 救命 | Stable = **don't touch**。Refactor 必须由具体 bug 或业务需求驱动，禁止 "为重构而重构" |
 | **复读 Cascade 已知内容** | 浪费 token | 只补"它不知道的"（项目规约 / 业务术语 / 历史决策）|
 
 ---
