@@ -74,9 +74,34 @@ console.log(JSON.stringify(before, null, 2));
 
 ## PR-1 · Foundation（projectExport.ts export 调整）
 
-**Status**: ⏳ pending
+**Status**: ✅ done · `dd64ae2` · 2026-05-06
 
-待实施。完成后追加：完成时间 / 实测耗时 / 遇到的坑 / `git diff --numstat HEAD~1`。
+### diff stat
+
+```
+src/store/projectExport.ts | +24 / -8
+```
+
+### 落地
+
+- Add `export function sanitizeName(name)`
+- Add `export function formatStamp(ts)`
+- Add `export function buildExportFilename(safeName, stamp, ext)`
+- `function packageToBlob` → `export function packageToBlob`
+- `packageToBlob` 内部改用 3 helper · byte-for-byte 等价
+
+### 验证
+
+| 项 | 结果 |
+|---|---|
+| vite build | 1926 modules · 2.98s · 无 error |
+| tsc | 0 新增 error（pre-existing TS2688 容忍） |
+| 红线 #1 #2 #4 | 全过 |
+
+### 坑
+
+- **Erratum #2**：CK §2.1 `-5` 删除上限不现实，实测最小 -8（多行 stamp 表达式 collapse）。已写入 commit msg。
+- **Network**：GitHub push SSL handshake 持续失败，本地 2 个 commit 待推。
 
 ---
 
