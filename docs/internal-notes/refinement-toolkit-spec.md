@@ -1,8 +1,8 @@
-# 内部参考手册 · 章节润色工具集规范
+﻿# 内部参考手册 · 章节润色工具集规范
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/tianming-platform-prompts-original.txt` 提炼（6 大润色 prompts）
-> **目的**：为 cineforge-web 的"章节后处理 / 润色"流水线提供细分工具集蓝图
+> **目的**：为 fili-web 的"章节后处理 / 润色"流水线提供细分工具集蓝图
 > **运行时状态**：❌ 内部蓝图 / 待按需落地
 > **优先级**：⭐⭐ 中等（cineforge 现有 `anti-ai-flavor` 已覆盖部分功能，此处提供更细分的工具集）
 

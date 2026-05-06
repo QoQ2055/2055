@@ -1,4 +1,4 @@
----
+﻿---
 project: CineForge Web
 archId: v3-gap-e-export
 gapCode: e
@@ -68,21 +68,21 @@ React 18 + TypeScript 5 (strict)
 └─ clsx (className 拼接)
 ```
 
-**本 PRD 落地后 zero npm 新增**（NFR-2 + AC-8 双重锁）。lucide 仅新增已有的 `FileDown` icon（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx:3-7` import 列表追加）。
+**本 PRD 落地后 zero npm 新增**（NFR-2 + AC-8 双重锁）。lucide 仅新增已有的 `FileDown` icon（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Screenplay.tsx:3-7` import 列表追加）。
 
 ### 0.5 现状代码资产盘点（CA 复用清单）
 
 | 现有资产 | 锚点 | CA 复用方式 |
 |---|---|---|
-| `FLIL_SCHEMA` v1 + `FlilPackageV1` | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts:25-42` | **零修改**复用，作为抽屉中"项目包"项的下载源 |
+| `FLIL_SCHEMA` v1 + `FlilPackageV1` | `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts:25-42` | **零修改**复用，作为抽屉中"项目包"项的下载源 |
 | `exportArchivedProjectFile(id)` | `projectExport.ts:52-111` | **零修改**复用，对应 FR-11.1 中 `.flil.json` 项 |
 | `packageToBlob(pkg)` | `projectExport.ts:113-126`（**当前未 export**） | §2.4 决策：**改为 export**，提取其中 safeName + stamp 逻辑为新 helper `buildExportFilename(name, stamp, ext)`，6 种格式共用 FR-7 |
 | `downloadBlob(filename, blob)` | `projectExport.ts:128-139` | **零修改**复用，6 种格式共用 |
-| `useProject().artifacts: ArtifactMap` | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\project.ts` zustand | live source 唯一入口（FR-1/2/3/4/5 当 scope=live 时使用） |
+| `useProject().artifacts: ArtifactMap` | `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\project.ts` zustand | live source 唯一入口（FR-1/2/3/4/5 当 scope=live 时使用） |
 | `db.artifacts.where('projectId').equals(id).toArray()` | `db.ts:38-49` + `projectExport.ts:60` | archived source 唯一入口（scope=archived 时） |
-| `parseLooseArray(content)` | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\jsonLoose.ts` | FR-5 / FR-9 资产 JSON 解析复用 |
-| `parseChapterOutlines(content)` | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\novelLoop.ts` | 仅取 `chapterTitles` 兜底，**不**用于内容拼装（直接读 `meta.chapterContents`） |
-| `alert(msg)` 错误反馈惯例 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Home.tsx:113` `handleExportArchived` 的 catch | **沿用**：导出失败用 `alert()`；成功用 `console.log` 不打扰用户（PRD §6.4 "下载完成后保持打开"） |
+| `parseLooseArray(content)` | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\jsonLoose.ts` | FR-5 / FR-9 资产 JSON 解析复用 |
+| `parseChapterOutlines(content)` | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\novelLoop.ts` | 仅取 `chapterTitles` 兜底，**不**用于内容拼装（直接读 `meta.chapterContents`） |
+| `alert(msg)` 错误反馈惯例 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Home.tsx:113` `handleExportArchived` 的 catch | **沿用**：导出失败用 `alert()`；成功用 `console.log` 不打扰用户（PRD §6.4 "下载完成后保持打开"） |
 
 ### 0.6 数据形态（CA 锁死的 6 个 source 形态）
 
@@ -1182,7 +1182,7 @@ export async function buildNovelDocx(d: ExportSourceData): Promise<{ filename: s
 
 ### 4.2 · D4 · utility 补全审计（PRD §6.5 已悲观）
 
-> **CA 实测**：读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\tailwind.config.ts:124-134` 后发现 PRD §6.5 担心的 utility **几乎全部已存在**。
+> **CA 实测**：读 `@C:\Users\QvQ\CascadeProjects\fili-web\tailwind.config.ts:124-134` 后发现 PRD §6.5 担心的 utility **几乎全部已存在**。
 
 #### 4.2.1 已存在 utility 清单（无需补丁）
 

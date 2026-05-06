@@ -1,4 +1,4 @@
-# 雪花写作法 · 立项收紧七步（Snowflake Method）
+﻿# 雪花写作法 · 立项收紧七步（Snowflake Method）
 
 > **来源**：Randy Ingermanson 1998 提出的国际经典写作方法论 + 实战中文整理版（原文归档：`@docs/prompt-archives/snowflake-method-original.md`）。
 > **定位**：craft 工艺层 · **立项阶段的"先收紧再展开"硬律模块**。
@@ -212,11 +212,11 @@ LLM 在生成立意总纲前必须先回答：
 
 ---
 
-## 八、cineforge-web 流水线投影
+## 八、fili-web 流水线投影
 
-雪花法的层层放大本质上就是 cineforge-web 流水线的精神内核：
+雪花法的层层放大本质上就是 fili-web 流水线的精神内核：
 
-| 雪花法层级 | cineforge-web 节点 | 本模块作用 |
+| 雪花法层级 | fili-web 节点 | 本模块作用 |
 |---|---|---|
 | 一句话（≤ 25 字） | `novel.1`（立意总纲）开头 | **强制硬律**：节点产物头部必有一句话 |
 | 五句话 | `novel.1`（立意总纲）主体 | **强制硬律**：必含五句话骨架 |

@@ -1,4 +1,4 @@
----
+﻿---
 project: CineForge Web
 prdId: v3-gap-e-export
 gapCode: e
@@ -31,7 +31,7 @@ related:
 ### 0.1 项目当前态（v2 阶段 2.10）
 
 CineForge Web 已交付 11 阶段累积底层基建（详见
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\CHANGELOG.md`）：
+`@C:\Users\QvQ\CascadeProjects\fili-web\CHANGELOG.md`）：
 
 - 4 种创作模式（短剧 ✅ dogfood 闭环 / 改编 ✓ / 特殊·分镜 ✓ / 小说 🚧 v3 收口）
 - 题材锚点 (15 题材) / 24 方法论模块 / 21 篇静态 KB / 用户 KB 库
@@ -68,9 +68,9 @@ CineForge Web 已交付 11 阶段累积底层基建（详见
 ### 0.5 surgical 红线（贯穿全 PRD · 5 条不可破）
 
 1. **不动 Dexie schema**（brief §7 风险册 / 留缺口 a 多卷架构 dexie v4→v5 升级窗口）。
-2. **不动 `.flil.json` 项目包格式**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts:25` 的 `FLIL_SCHEMA = 'flil/project/v1'`）。本次新增的"创作产物级"导出与"开发者归档级"项目包**正交**——是两套独立产物，不共用文件名 / 不共用入口逻辑。
-3. **不动 Screenplay 顶部 `exportToAssets()` 跨阶段跳转**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx:69-76`）。该按钮是"导出到资产工作台"的页内 navigate('/assets')，**与文件导出同名异义**。本次 Screenplay toolbar 新增按钮**必须用不同 label / icon 避歧义**（建议「下载剧本…」+ `FileDown` icon）。
-4. **DESIGN.md token 硬约束**（AGENTS.md 行为硬约束 ②）：所有新 UI 走 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ui\` 的 `<Button>` `<Modal>` 原子 + `bg-surface` `text-fg-primary` `text-body-m` 等语义类，禁 `bg-[#xxx]` `p-[7px]` 任何 arbitrary value。新加 drawer 按 DESIGN.md `components.modal.drawer.width = 420px` 落盘。
+2. **不动 `.flil.json` 项目包格式**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts:25` 的 `FLIL_SCHEMA = 'flil/project/v1'`）。本次新增的"创作产物级"导出与"开发者归档级"项目包**正交**——是两套独立产物，不共用文件名 / 不共用入口逻辑。
+3. **不动 Screenplay 顶部 `exportToAssets()` 跨阶段跳转**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Screenplay.tsx:69-76`）。该按钮是"导出到资产工作台"的页内 navigate('/assets')，**与文件导出同名异义**。本次 Screenplay toolbar 新增按钮**必须用不同 label / icon 避歧义**（建议「下载剧本…」+ `FileDown` icon）。
+4. **DESIGN.md token 硬约束**（AGENTS.md 行为硬约束 ②）：所有新 UI 走 `@C:\Users\QvQ\CascadeProjects\fili-web\src\components\ui\` 的 `<Button>` `<Modal>` 原子 + `bg-surface` `text-fg-primary` `text-body-m` 等语义类，禁 `bg-[#xxx]` `p-[7px]` 任何 arbitrary value。新加 drawer 按 DESIGN.md `components.modal.drawer.width = 420px` 落盘。
 5. **Karpathy 4**（AGENTS.md 行为硬约束 ①）：surgical / simplicity-first / goal-driven。.docx 路线**优先选 HTML→Word blob 零依赖路线**（brief §4.1 已暗示），`docx.js` 仅在零依赖路线无法满足 NFR 时退而求其次（决策见 §5）。
 
 ---
@@ -205,7 +205,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 
 | Use-Case | 现有解 | 备注 |
 |---|---|---|
-| **项目跨设备同步 / AI 接力** | 现有 `.flil.json` 项目包（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts`） | 红线 #2 · 不动；本 PRD 与此正交 |
+| **项目跨设备同步 / AI 接力** | 现有 `.flil.json` 项目包（`@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts`） | 红线 #2 · 不动；本 PRD 与此正交 |
 | **导出后云上传 / 邮件分享** | 用户浏览器另存 → 自己上传 | brief §6 排除 SaaS 化 |
 | **导出后 PDF 转换** | 用户在 Word/WPS 里 Export PDF | §2.2 Non-Goal · 体积 / 中文字体嵌入复杂 |
 | **多卷分卷分文件导出** | 全书一文件够 dogfood 用 | 缺口 a 触发后再补 |
@@ -231,7 +231,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 ### FR-1 · 小说 → `.md`（按章拼接单文件）
 
 - **Source**：
-  - 优先 `project.artifacts['novel.7'].meta.chapterContents: Record<number, string>`（润色版，定义在 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\novelLoop.ts:317-333` `NovelChapterLoopMeta`）
+  - 优先 `project.artifacts['novel.7'].meta.chapterContents: Record<number, string>`（润色版，定义在 `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\novelLoop.ts:317-333` `NovelChapterLoopMeta`）
   - 回退 `project.artifacts['novel.6'].meta.chapterContents`（草稿版）
   - 章节标题：同 meta 的 `chapterTitles: Record<number, string>`
   - 兜底标题：`第 ${index} 章`（`novelLoop.ts:259` 已有同款逻辑）
@@ -278,7 +278,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 - **Source**：
   - 优先 `project.artifacts['screenplay.7'].content`（最终剧本 markdown）
   - 回退 `project.artifacts['adapt.6'].content`（改编最终稿）
-  - 选择规则与 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Assets.tsx:47-51` 一致：
+  - 选择规则与 `@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Assets.tsx:47-51` 一致：
     ```ts
     project.artifacts['screenplay.7'] ? 'screenplay.7'
     : project.artifacts['adapt.6'] ? 'adapt.6'
@@ -338,7 +338,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 ### FR-5 · 资产 → `.csv`（UTF-8 with BOM · 中文 Excel 友好）
 
 - **Source**：3 个 artifact 的 JSON 数组：
-  - `project.artifacts['assets.2'].content`（角色 / `parseLooseArray` 解析，见 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Assets.tsx:9`）
+  - `project.artifacts['assets.2'].content`（角色 / `parseLooseArray` 解析，见 `@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Assets.tsx:9`）
   - `project.artifacts['assets.3'].content`（场景）
   - `project.artifacts['assets.4'].content`（道具）
 - **Target**：单个 `.csv` 文件，UTF-8 with BOM（`\uFEFF` 前缀），blob `type: 'text/csv; charset=utf-8'`。
@@ -355,13 +355,13 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 
 ### FR-6 · 章节顺序锁定（小说 .md / .docx 共用）
 
-- **Rule**：导出时按 chapter index **数字升序**遍历 `chapterContents`，与 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\novelLoop.ts:270` `chapters.sort((a, b) => a.index - b.index)` 同款逻辑。
+- **Rule**：导出时按 chapter index **数字升序**遍历 `chapterContents`，与 `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\novelLoop.ts:270` `chapters.sort((a, b) => a.index - b.index)` 同款逻辑。
 - **不允许**按 `Object.keys()` 默认枚举顺序输出（IE/老 Edge 兼容性已不是问题，但显式 sort 是 surgical 防御）。
 - **跨卷场景**（缺口 a 触发后）：本 PRD 不处理，仅按 chapter index 全局升序；多卷分隔交给缺口 a。
 
 ### FR-7 · 文件命名规范（6 种格式共用）
 
-- **格式**：`<safeName>_<YYYYMMDD-HHMM>.<ext>`，与 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts:113-126` `packageToBlob` 一致（**复用同款时间戳 helper**）。
+- **格式**：`<safeName>_<YYYYMMDD-HHMM>.<ext>`，与 `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts:113-126` `packageToBlob` 一致（**复用同款时间戳 helper**）。
 - **`safeName`** = `ctx.name.replace(/[\\/:*?"<>|]/g, '_').slice(0, 64)`（同 `projectExport.ts:116`）。
 - **资产专用插入 `_assets`**：`<safeName>_assets_<stamp>.csv`（与 FR-5 一致）。
 - **扩展名映射**：`.md` / `.docx` / `.fdx` / `.fountain` / `.csv`（共 5 种新增；`.flil.json` 不动）。
@@ -370,7 +370,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 ### FR-8 · 剧本元素分类映射规则（FR-3 / FR-4 共用）
 
 > markdown → fdx Paragraph Type / fountain element 的统一识别表。
-> screenplay.7 markdown 由 `@C:\Users\QvQ\CascadeProjects\cineforge-web\public\prompts\screenplay\7.json` prompt 输出，CineForge 历史 prompt 习惯输出**带 markdown 装饰的剧本式文本**。
+> screenplay.7 markdown 由 `@C:\Users\QvQ\CascadeProjects\fili-web\public\prompts\screenplay\7.json` prompt 输出，CineForge 历史 prompt 习惯输出**带 markdown 装饰的剧本式文本**。
 
 | 行模式（regex hint） | fdx Type | fountain encoding | 备注 |
 |---|---|---|---|
@@ -407,11 +407,11 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 | 数据部分缺失（如 5/10 章节） | 抽屉项可点；导出文件头加一行 `> ⚠ 注：仅含 N 章（共 M 章）`；不阻塞 |
 | 解析异常（如 assets.2 JSON 损坏） | toast.error("CSV 导出：角色列表损坏，已跳过该分类")；其他分类继续导出 |
 | Blob 创建失败（极少见） | toast.error 弹原始 error message；不静默失败 |
-| 浏览器拒绝下载（弹窗拦截器） | 日志告知用户需允许下载；按 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts:128-139` `downloadBlob` 复用同款机制 |
+| 浏览器拒绝下载（弹窗拦截器） | 日志告知用户需允许下载；按 `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts:128-139` `downloadBlob` 复用同款机制 |
 
 ### FR-11 · `<ExportDrawer>` 组件契约（G6 落地 / DESIGN.md token 合规）
 
-- **位置**：新建 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ExportDrawer.tsx`
+- **位置**：新建 `@C:\Users\QvQ\CascadeProjects\fili-web\src\components\ExportDrawer.tsx`
 - **Props**：
   ```ts
   interface ExportDrawerProps {
@@ -430,7 +430,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
   - 文字层级：抽屉头 `text-heading-m` / 项目标题 `text-heading-s` / 描述 `text-body-s text-fg-secondary`；
   - 禁 `bg-[#xxx]` `p-[7px]` 任何 arbitrary value（红线 #4 + AGENTS.md ②）。
 - **3 处入口（FR-11.1 / FR-11.2 / FR-11.3）**：
-  - **FR-11.1 Home 项目卡 `<Download>` icon**：`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Home.tsx:242-250` 当前 `handleExportArchived(p.id)` **保留**（向下兼容 `.flil.json` 一键导出）；新增 `handleOpenExportDrawer(p.id)` 调用，把现有 `<Download>` icon 行为改为：
+  - **FR-11.1 Home 项目卡 `<Download>` icon**：`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Home.tsx:242-250` 当前 `handleExportArchived(p.id)` **保留**（向下兼容 `.flil.json` 一键导出）；新增 `handleOpenExportDrawer(p.id)` 调用，把现有 `<Download>` icon 行为改为：
     - **单击 → 弹抽屉**（含 `.flil.json` + 5 种新格式 6 选项）
     - 旧"直接下载 .flil.json"行为退化为抽屉中的一项（命名「项目包 (.flil.json) · 含 manifest 全套元数据」）
     - 这是为数不多的"行为变更"，需在 acceptance criteria 中显式覆盖。
@@ -619,7 +619,7 @@ npx tsc --noEmit -p .
 
 #### 6.2.1 Home 项目卡（FR-11.1）
 
-**当前态**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Home.tsx:242-250`）：
+**当前态**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Home.tsx:242-250`）：
 
 ```tsx
 <Button
@@ -660,7 +660,7 @@ npx tsc --noEmit -p .
 
 #### 6.2.2 Novel toolbar（FR-11.2）
 
-**当前态**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Novel.tsx:412-505`）：
+**当前态**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Novel.tsx:412-505`）：
 
 `<header>` 右侧 `<div className="flex items-center gap-2">` 内由左到右当前是：
 1. Best-of-N 开关 (line 429-475)
@@ -696,7 +696,7 @@ npx tsc --noEmit -p .
 
 #### 6.2.3 Screenplay toolbar（FR-11.3）
 
-**当前态**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx:309-339`）：
+**当前态**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Screenplay.tsx:309-339`）：
 
 `<header>` 右侧 `<div className="flex items-center gap-2">` 内由左到右：
 1. chainBusy 时「停止」(line 311) ←→ 非 busy 时下面三项：

@@ -1,10 +1,10 @@
----
+﻿---
 description: 快速向 AGENTS.md 追加 / 编辑一条记忆（约定 / 避坑 / 任务速查 / 阶段历史）
 ---
 
 `/memory` 是 AGENTS.md 的写入快捷入口。AGENTS.md 是项目唯一的"协作者长期记忆"。
 
-参考 `/init` 的产出物：`@C:\Users\QvQ\CascadeProjects\cineforge-web\AGENTS.md`
+参考 `/init` 的产出物：`@C:\Users\QvQ\CascadeProjects\fili-web\AGENTS.md`
 
 ---
 

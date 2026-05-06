@@ -1,8 +1,8 @@
-# 内部参考手册 · DeepSeek V4 调优手册
+﻿# 内部参考手册 · DeepSeek V4 调优手册
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/novelgenius-deep-enhancement-plan-original.md` 提炼
-> **目的**：为 cineforge-web 的 LLM 客户端层（`@src/llm/deepseek.ts`）和未来的 prompt 工程提供技术参考
+> **目的**：为 fili-web 的 LLM 客户端层（`@src/llm/deepseek.ts`）和未来的 prompt 工程提供技术参考
 > **运行时状态**：❌ 内部文档 / 不影响 LLM 调用 / 不被加载
 > **使用方式**：开发者在调优 LLM 调用 / 设计新 prompt / 升级到 V4 时查阅
 
@@ -219,7 +219,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ---
 
-## 七、cineforge-web 现状 vs 资料建议的 Gap 分析
+## 七、fili-web 现状 vs 资料建议的 Gap 分析
 
 ### 7.1 LLM 客户端层（`@src/llm/deepseek.ts`）
 

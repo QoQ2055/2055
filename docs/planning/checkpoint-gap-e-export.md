@@ -1,4 +1,4 @@
----
+﻿---
 project: CineForge Web
 ckId: v3-gap-e-export
 gapCode: e
@@ -31,9 +31,9 @@ nextWorkflow: IMPL (PR-1 / git branch feat/gap-e-export)
 
 | 上游产物 | 状态 | 行数 | finalize 日期 | 引用关键 |
 |---|---|---|---|---|
-| `@C:\Users\QvQ\CascadeProjects\cineforge-web\docs\planning\product-brief.md` | ✅ final | 137 | 2026-05-06 | v3 5 缺口排序 |
-| `@C:\Users\QvQ\CascadeProjects\cineforge-web\docs\planning\prd-gap-e-export.md` | ✅ final | 1151 | 2026-05-06 | 11 FR + 9 NFR + 8 AC + 5 R |
-| `@C:\Users\QvQ\CascadeProjects\cineforge-web\docs\planning\architecture-gap-e-export.md` | ✅ final | 1551 | 2026-05-06 | 4 D + 6 invariant + 5 PR |
+| `@C:\Users\QvQ\CascadeProjects\fili-web\docs\planning\product-brief.md` | ✅ final | 137 | 2026-05-06 | v3 5 缺口排序 |
+| `@C:\Users\QvQ\CascadeProjects\fili-web\docs\planning\prd-gap-e-export.md` | ✅ final | 1151 | 2026-05-06 | 11 FR + 9 NFR + 8 AC + 5 R |
+| `@C:\Users\QvQ\CascadeProjects\fili-web\docs\planning\architecture-gap-e-export.md` | ✅ final | 1551 | 2026-05-06 | 4 D + 6 invariant + 5 PR |
 
 **验证命令**（CK 落盘前执行）：
 
@@ -77,7 +77,7 @@ CK 与 PRD/CA 的形态差异：
 
 #### 红线 #1 · 不动 Dexie schema
 
-- ✅ **R1.1** 当前 Dexie schema 是 v4（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\db.ts` 内 `version(4)` 是最新）
+- ✅ **R1.1** 当前 Dexie schema 是 v4（`@C:\Users\QvQ\CascadeProjects\fili-web\src\store\db.ts` 内 `version(4)` 是最新）
 - ✅ **R1.2** 整个 IMPL 期间**不调用** `db.version(N)` `bulkPut` `add` `update` `delete` `clear`（除既有 `projectExport.ts` / `projectArchive.ts` 既有调用）
 
 **验证命令**：
@@ -113,7 +113,7 @@ $before.exportedAt = $after.exportedAt = 0
 
 #### 红线 #3 · 不动 `Screenplay.tsx exportToAssets()`
 
-- ✅ **R3.1** `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pages\Screenplay.tsx:69-76` `exportToAssets` 函数零字节修改
+- ✅ **R3.1** `@C:\Users\QvQ\CascadeProjects\fili-web\src\pages\Screenplay.tsx:69-76` `exportToAssets` 函数零字节修改
 - ✅ **R3.2** 该函数对应的 toolbar 按钮（`<Box>` icon + 「进入资产阶段」label）零字节修改
 
 **验证命令**：

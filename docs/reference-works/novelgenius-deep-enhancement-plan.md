@@ -1,15 +1,15 @@
-# 参考资料 · NovelGenius AI Studio 深度增强方案 v2.0
+﻿# 参考资料 · NovelGenius AI Studio 深度增强方案 v2.0
 
 > **归档日期**：2026-05-06
 > **原始来源**：`F:\下载文件\AI技术分享\NovelGenius_Deep_Enhancement_Plan(1).md`（30 KB / 1030 行）
 > **原文位置**：`@docs/reference-works/novelgenius-deep-enhancement-plan-original.md`
-> **关键警示**：⚠ **本档是针对 NovelGenius AI Studio（另一个项目）的实施级方案**，**不是 cineforge-web 的方案**。其 5 大场景（卷纲参考解析 / 自动卷纲 / 简要大纲 / 大纲增强 / 章节正文）的具体 prompt **不能直接套用**到 cineforge 流水线（节点结构不同）。
+> **关键警示**：⚠ **本档是针对 NovelGenius AI Studio（另一个项目）的实施级方案**，**不是 fili-web 的方案**。其 5 大场景（卷纲参考解析 / 自动卷纲 / 简要大纲 / 大纲增强 / 章节正文）的具体 prompt **不能直接套用**到 cineforge 流水线（节点结构不同）。
 > **保留原因**：含大量**通用 DeepSeek V4 技术知识**和 **prompt 工程原则**，已提炼到 `@docs/internal-notes/deepseek-v4-tuning-guide.md` 作为内部参考手册。
 > **运行时状态**：❌ 不被加载。
 
 ---
 
-## 一、对 cineforge-web 真正有价值的部分
+## 一、对 fili-web 真正有价值的部分
 
 | 资料元素 | 性质 | 提炼到 |
 |---|---|---|
@@ -22,7 +22,7 @@
 | `extra_body: { thinking: { type: "enabled" }, reasoning_effort }` | 通用 API 用法 | 同上 |
 | 第一轮 user message 末尾注入指令的最优位置 | 通用 prompt 工程 | 同上 |
 
-## 二、对 cineforge-web 不直接适用的部分
+## 二、对 fili-web 不直接适用的部分
 
 | 资料元素 | 不适用原因 |
 |---|---|

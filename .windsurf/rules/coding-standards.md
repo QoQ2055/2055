@@ -1,6 +1,6 @@
----
+﻿---
 trigger: always_on
-description: cineforge-web 项目通用编程规范与协作约定
+description: fili-web 项目通用编程规范与协作约定
 ---
 
 # 编码规范

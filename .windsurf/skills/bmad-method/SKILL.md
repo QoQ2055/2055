@@ -1,18 +1,18 @@
----
+﻿---
 name: bmad-method
 description: BMAD-METHOD v6.3.0 方法论蒸馏版 (蒸馏自 https://github.com/bmad-code-org/BMAD-METHOD, 日期 2026-04-23). 用于 brownfield 重构 (如 CineForge 网页版从 Electron 迁移) 或 greenfield 新项目. 覆盖 4 阶段 (Analysis / Planning / Solutioning / Implementation) 共 30+ workflow (product-brief / create-prd / create-architecture / create-epics-and-stories / dev-story 等). 触发词:"按 BMAD 走" / "bmad-help" / "下一步做什么" / "写 PRD" / "出架构" / "分 story" / "做 project context" / "document project" / "DP" / "GPC" / "CP" / "CA" / "CE" / "DS"
 ---
 
 # BMAD-METHOD 方法论 · CineForge Web 定制版
 
-> ⚠️ **入仓残留问题提示（v0 蒸馏版）**：本 SKILL 为外部 LLM 对 BMAD 代码仓读后的个人蒸馏作品，未经上游官方背书。使用前请走瞅 https://github.com/bmad-code-org/BMAD-METHOD 核对术语与阶段依赖。原文中提及的 `feedback_workflow_l1l2l3.md` 在本仓中 **不存在**，CineForge Web 的实际反馈循环请以 `@C:\Users\QvQ\CascadeProjects\cineforge-web\AGENTS.md` 为准。
+> ⚠️ **入仓残留问题提示（v0 蒸馏版）**：本 SKILL 为外部 LLM 对 BMAD 代码仓读后的个人蒸馏作品，未经上游官方背书。使用前请走瞅 https://github.com/bmad-code-org/BMAD-METHOD 核对术语与阶段依赖。原文中提及的 `feedback_workflow_l1l2l3.md` 在本仓中 **不存在**，CineForge Web 的实际反馈循环请以 `@C:\Users\QvQ\CascadeProjects\fili-web\AGENTS.md` 为准。
 
 ## 这 Skill 是什么
 
 这是 **BMAD-METHOD v6.3.0 的蒸馏版本**, 由 Claude 读官方 repo 264 份 skill 文件后, 按**solo dev · brownfield(Electron→Web) · 中式 UX 对话**场景剪裁出的一份**方法论手册 + 关键模板参考**.
 
 **源头**: https://github.com/bmad-code-org/BMAD-METHOD · MIT License · 最新版 v6.3.0
-**本地本**: 本仓 `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\skills\bmad-method\` 下仅保留本 SKILL.md + 4 份模板 + 2 份 workflow CSV；完整 264 份原始文件请去上游仓获取。
+**本地本**: 本仓 `@C:\Users\QvQ\CascadeProjects\fili-web\.windsurf\skills\bmad-method\` 下仅保留本 SKILL.md + 4 份模板 + 2 份 workflow CSV；完整 264 份原始文件请去上游仓获取。
 
 **为什么不装官方 npm 包**: 官方 `npx bmad-method install` 会往 `.claude/skills/` 铸 264 个 slash command. 本项目只需方法论指导不需全部 workflow 可触发, 故做蒸馏版.
 

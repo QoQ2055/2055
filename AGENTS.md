@@ -1,14 +1,14 @@
-# AGENTS.md · cineforge-web 协作者导航
+﻿# AGENTS.md · fili-web 协作者导航
 
 > Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.10`（最新一项是 DESIGN.md 设计系统全量重塑 · C 档位 · v0.1.1-alpha）
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
 > README.md 面向部署 / 演示，AGENTS.md 面向写代码。
 
-> **行为硬约束 ①**：写代码前先读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\karpathy-guidelines.md`
+> **行为硬约束 ①**：写代码前先读 `@C:\Users\QvQ\CascadeProjects\fili-web\.windsurf\rules\karpathy-guidelines.md`
 > （Karpathy 四原则：Think Before Coding / Simplicity First / Surgical Changes / Goal-Driven Execution）。
 > 该文件为 `always_on` 规则，每次会话默认注入。
 >
-> **行为硬约束 ②**：写任何 React / UI 组件前先读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\DESIGN.md`
+> **行为硬约束 ②**：写任何 React / UI 组件前先读 `@C:\Users\QvQ\CascadeProjects\fili-web\DESIGN.md`
 > （v0.1.1-alpha · token-driven 设计系统）。颜色 / 间距 / 字体 / 圆角 / 阴影一律从 token 取，
 > 禁止 `bg-[#xxx]` `p-[7px]` 这种 arbitrary value。新建组件用 `.windsurf/rules/karpathy-guidelines`
 > 的 surgical 原则 + DESIGN.md 的 6 节 token 双约束。
@@ -119,7 +119,7 @@ src/
 
 ### Dexie schema 演化
 
-当前 **v4**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\db.ts:133-164`）：
+当前 **v4**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\store\db.ts:133-164`）：
 
 | 版本 | 新增 |
 |------|------|
@@ -139,30 +139,30 @@ src/
 - `temperature`, `max_tokens`
 - 可选 `thinkingStrategy` / `thinkingEffort` / `responseFormat`（V4 Thinking 升级后）
 
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\runner.ts` 是单步执行器；
+`@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\runner.ts` 是单步执行器；
 `compose.ts` 负责把上游产物 + 三层知识注入到 system 头部。
 
 ### 三层知识注入（按优先级从硬到软）
 
-1. **静态 KB**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\kb.ts`）：
+1. **静态 KB**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\kb.ts`）：
    `public/kb/*.md` → 按 nodeId 白名单注入。例：所有章节生成节点注「去 AI 味」。
-2. **方法论模块**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\methodModules.ts`）：
+2. **方法论模块**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\methodModules.ts`）：
    24 个写作方法（Save the Cat / MBTI 五步 / 七要点言情 / 三密度审查 …）。
    用户在 `MethodModulePanel` 选择启用，按 `manifest.injectsTo` 决定注入哪些节点。
    含 `genreCompat` 兼容矩阵（recommended / incompatible / warnOnEnable）。
-3. **用户 KB**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\userKb.ts`）：
+3. **用户 KB**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\store\userKb.ts`）：
    `UserKbDocType` 共 7 类（trend / sample / antiPattern / styleGuide /
    worldHardSchema / voiceCard / bookAnalysis）。用户在 `/kb` 上传，由
    `extractKb.ts` 抽 JSON，按 type 注入到对应规划节点。
 
-外加：**题材锚点**（`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\data\projectTaxonomy.ts`
+外加：**题材锚点**（`@C:\Users\QvQ\CascadeProjects\fili-web\src\data\projectTaxonomy.ts`
 中的 `GENRE_ANCHORS`）— 15 个核心题材的 `mustInclude` / `mustAvoid` / `worldRules` /
 `pronounUsage` / `paragraphLength` / `dialogueRatio` / `rhythmRequirement`。
 由 `compose.ts` 合并多题材后注入 prompt。
 
 ### 小说模式特有循环（v3）
 
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\novelLoop.ts`：
+`@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\novelLoop.ts`：
 - `runNovelVolumeLoop`（N2.2 分卷）
 - `runNovelChapterDraftLoop`（N3.1 章节草稿）
 - `runNovelChapterPolishLoop`（N3.2 章节润色）
@@ -178,18 +178,18 @@ src/
 | 任务 | 入口文件 |
 |------|---------|
 | 新增一个 prompt 节点 | `public/prompts/manifest.json` + `public/prompts/<stage>/N.json` |
-| 调整 prompt 模板插值变量 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\interpolate.ts` |
-| 改注入逻辑（哪个节点进哪个 KB） | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\compose.ts` + `kb.ts` |
-| 新增 deepseek 客户端选项（thinking/responseFormat 等） | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\llm\deepseek.ts` |
-| Dexie schema 升级 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\db.ts` 加 `this.version(N+1)` |
+| 调整 prompt 模板插值变量 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\interpolate.ts` |
+| 改注入逻辑（哪个节点进哪个 KB） | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\compose.ts` + `kb.ts` |
+| 新增 deepseek 客户端选项（thinking/responseFormat 等） | `@C:\Users\QvQ\CascadeProjects\fili-web\src\llm\deepseek.ts` |
+| Dexie schema 升级 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\db.ts` 加 `this.version(N+1)` |
 | 新增方法论模块 | `public/methods/manifest.json` 加条目 + `public/methods/<id>.md` 写内容 |
-| 调整方法论推荐评分 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\methodModuleRecommend.ts` |
-| 新增 / 调整章节自动校验规则 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\chapterValidation.ts` |
-| 新增题材锚点 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\data\projectTaxonomy.ts` 的 `GENRE_ANCHORS` |
-| 调整 V4 Thinking strategy 默认 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\runner.ts` |
-| 项目导入 / 导出格式 | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\store\projectExport.ts`（FLIL_SCHEMA） |
-| 调整修复期注入的知识层（KB / 题材锚点 / R1 / 方法论） | `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\pipeline\fixContext.ts` |
-| 给 SelfCheckPanel 之外的页面接"诊断 → 修复"闭环 | 参考 `@C:\Users\QvQ\CascadeProjects\cineforge-web\src\components\ChapterValidationPanel.tsx`（构造临时 NodeArtifact + buildFixContextPreamble + runFixAllIssues） |
+| 调整方法论推荐评分 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\methodModuleRecommend.ts` |
+| 新增 / 调整章节自动校验规则 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\chapterValidation.ts` |
+| 新增题材锚点 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\data\projectTaxonomy.ts` 的 `GENRE_ANCHORS` |
+| 调整 V4 Thinking strategy 默认 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\runner.ts` |
+| 项目导入 / 导出格式 | `@C:\Users\QvQ\CascadeProjects\fili-web\src\store\projectExport.ts`（FLIL_SCHEMA） |
+| 调整修复期注入的知识层（KB / 题材锚点 / R1 / 方法论） | `@C:\Users\QvQ\CascadeProjects\fili-web\src\pipeline\fixContext.ts` |
+| 给 SelfCheckPanel 之外的页面接"诊断 → 修复"闭环 | 参考 `@C:\Users\QvQ\CascadeProjects\fili-web\src\components\ChapterValidationPanel.tsx`（构造临时 NodeArtifact + buildFixContextPreamble + runFixAllIssues） |
 
 ---
 
@@ -214,7 +214,7 @@ src/
 
 ### 路径引用
 
-文档中引用代码用绝对路径 + 行号：`@C:\Users\QvQ\CascadeProjects\cineforge-web\src\foo.ts:12-34`。
+文档中引用代码用绝对路径 + 行号：`@C:\Users\QvQ\CascadeProjects\fili-web\src\foo.ts:12-34`。
 不要用 workspace-relative 路径。
 
 ### 验证
@@ -236,7 +236,7 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 ### Rules / Skills 索引（`.windsurf/rules/`）
 
 每条规则一个文件，前置 `trigger:` 决定激活档位。新增/修改前先读
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\rules\` 目录全文。
+`@C:\Users\QvQ\CascadeProjects\fili-web\.windsurf\rules\` 目录全文。
 
 | 文件 | trigger | 来源 / 类别 | 一句话摘要 |
 |---|---|---|---|
@@ -256,7 +256,7 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 
 ## 当前阶段（v2 资料库 + DeepSeek V4 升级）
 
-完整时间线见 `@C:\Users\QvQ\CascadeProjects\cineforge-web\CHANGELOG.md`。本轮（2026-05）已完成：
+完整时间线见 `@C:\Users\QvQ\CascadeProjects\fili-web\CHANGELOG.md`。本轮（2026-05）已完成：
 
 - **2.0** 题材锚点系统（15 题材）+ DeepSeek V4 Thinking Mode 接入
 - **2.1** 拆书分析师（`/analyzer`）+ 保存到 KB

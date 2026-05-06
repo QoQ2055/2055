@@ -1,4 +1,4 @@
-# CineForge Web  影语 FLIL
+﻿# CineForge Web  影语 FLIL
 
 > **单人创作者 + AI 协作工作台**，承载 4 种创作模式  纯前端零后端  浏览器本地存储
 
@@ -25,7 +25,7 @@ CineForge 把 DeepSeek API 包装成 manifest 驱动的多阶段创作流水线�
 ## 快速开始
 
 ```powershell
-cd C:\Users\QvQ\CascadeProjects\cineforge-web
+cd C:\Users\QvQ\CascadeProjects\fili-web
 
 # 1) 装依赖
 npm install
@@ -88,7 +88,7 @@ npm run dev
 ## 目录结构
 
 ```
-cineforge-web/
+fili-web/
  DESIGN.md                       # 设计系统 v0.2.0-alpha
  AGENTS.md                       # 协作者导航
  CHANGELOG.md                    # 时间线

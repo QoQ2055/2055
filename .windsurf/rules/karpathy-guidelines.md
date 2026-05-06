@@ -1,4 +1,4 @@
----
+﻿---
 trigger: always_on
 description: Karpathy 四原则 — 减少 LLM 写代码时的常见失误。源自 https://x.com/karpathy/status/2015883857489522876
 ---
@@ -73,10 +73,10 @@ description: Karpathy 四原则 — 减少 LLM 写代码时的常见失误。源
 
 ---
 
-## 项目特定补充（cineforge-web）
+## 项目特定补充（fili-web）
 
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\AGENTS.md` 是项目导航；
-`@C:\Users\QvQ\CascadeProjects\cineforge-web\CHANGELOG.md` 是阶段日志。
+`@C:\Users\QvQ\CascadeProjects\fili-web\AGENTS.md` 是项目导航；
+`@C:\Users\QvQ\CascadeProjects\fili-web\CHANGELOG.md` 是阶段日志。
 
 本仓库特别强调：
 

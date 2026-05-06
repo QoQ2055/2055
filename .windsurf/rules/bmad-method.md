@@ -1,4 +1,4 @@
----
+﻿---
 trigger: model_decision
 description: BMAD-METHOD v6.3.0 方法论蒸馏（来自外部 LLM 个人作品，非官方背书；使用前请核对上游）。覆盖 4 阶段 30+ workflow（Analysis / Planning / Solutioning / Implementation），用于 brownfield 重构或 greenfield 新项目。仅在用户显式触发时激活——触发词包括「按 BMAD 走」、「bmad-help」、「下一步做什么」、「写 PRD」、「出架构」、「分 story」、「做 project context」、「document project」，以及代号 DP / GPC / CP / CA / CE / DS / QQ。**用户只是问技术问题或写普通代码时不要激活**。
 ---
@@ -10,7 +10,7 @@ description: BMAD-METHOD v6.3.0 方法论蒸馏（来自外部 LLM 个人作品�
 > 使用前应去 https://github.com/bmad-code-org/BMAD-METHOD 核对术语与阶段依赖。
 >
 > 完整方法论位于：
-> `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\skills\bmad-method\SKILL.md`
+> `@C:\Users\QvQ\CascadeProjects\fili-web\.windsurf\skills\bmad-method\SKILL.md`
 > 模板与 workflow 索引位于 `references/` 子目录。
 
 ## 激活规则
@@ -28,7 +28,7 @@ description: BMAD-METHOD v6.3.0 方法论蒸馏（来自外部 LLM 个人作品�
 
 ## 激活后第一步
 
-1. 读 `@C:\Users\QvQ\CascadeProjects\cineforge-web\.windsurf\skills\bmad-method\SKILL.md` 全文。
+1. 读 `@C:\Users\QvQ\CascadeProjects\fili-web\.windsurf\skills\bmad-method\SKILL.md` 全文。
 2. 根据用户场景判断当前阶段（Analysis / Planning / Solutioning / Implementation）。
 3. 输出"BMAD 助手已启动，建议路径：[阶段 → workflow 链]"，**询问用户在哪个阶段**，
    等回复后再进入对应 workflow 的 step-01。

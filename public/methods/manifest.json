@@ -1,6 +1,6 @@
-{
+﻿{
   "version": "1.0",
-  "source": "cineforge-web 方法论模块库 v2",
+  "source": "fili-web 方法论模块库 v2",
   "modules": [
     {
       "id": "mbti-5step",

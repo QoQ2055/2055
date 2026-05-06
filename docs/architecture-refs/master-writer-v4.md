@@ -1,9 +1,9 @@
-# 架构蓝本 · Master Writer System V4.1
+﻿# 架构蓝本 · Master Writer System V4.1
 
 > **归档日期**：2026-05-05
 > **原始来源**：`F:\下载文件\AI技术分享\skill分享\master-writer-skill-v4.md`（1108 行，16 个架构模式 M1–M16）
 > **原作定位**：Claude Code 12 大架构 + Hermes Agent 持续学习引擎的融合方案
-> **归档原因**：架构级对标文献，与 cineforge-web 运行环境错位（多 Agent + 云端 + 飞书群协作 vs 单用户浏览器 Dexie），不可直接集成，但整体思路对未来升级有参考价值。
+> **归档原因**：架构级对标文献，与 fili-web 运行环境错位（多 Agent + 云端 + 飞书群协作 vs 单用户浏览器 Dexie），不可直接集成，但整体思路对未来升级有参考价值。
 > **运行时状态**：❌ 不被加载，不影响任何现有流程。
 > **不复制全文**：原文件在 F 盘持续可读，此处仅保留**对照表 + 可借鉴功能点清单 + 集成建议**，避免仓库臃肿。
 
@@ -32,9 +32,9 @@
 
 ---
 
-## 二、能力对照表（vs cineforge-web 当前实现）
+## 二、能力对照表（vs fili-web 当前实现）
 
-| 模式 | cineforge-web 现状 | 覆盖度 | 关键差异 |
+| 模式 | fili-web 现状 | 覆盖度 | 关键差异 |
 |---|---|:-:|---|
 | **M1** 多 Agent 编排 | 单 LLM 流水线，各节点独立调用 | ⚠ 架构不同 | 无"@写手 / @读者"分工角色 |
 | **M2** 静/动态提示词分区 | `@src/pipeline/compose.ts`：静态 KB + 用户 KB + 方法论 + 动态任务 | ✅ 已覆盖 | 无显式 STATIC/DYNAMIC BOUNDARY 标记，但分层清晰 |
@@ -86,7 +86,7 @@ validator system prompt:
 
 #### **M9 · PreWrite / PostWrite Hook 系统**
 
-**价值**：在节点执行链的固定点注入策略（不改主 prompt，只加上下文校验）。当前 cineforge-web 所有校验都塞在 prompt 里，膨胀且不好维护。
+**价值**：在节点执行链的固定点注入策略（不改主 prompt，只加上下文校验）。当前 fili-web 所有校验都塞在 prompt 里，膨胀且不好维护。
 
 **集成建议**：
 - 在 `runner.ts` 的 `runNode()` 前后加两个 hook point
@@ -144,7 +144,7 @@ validator system prompt:
 
 ## 四、绝对不引入的模式（与本项目架构冲突）
 
-- **M1** 多 Agent 编排 → cineforge-web 是节点流水线，不做 Agent 化
+- **M1** 多 Agent 编排 → fili-web 是节点流水线，不做 Agent 化
 - **M8** 爆炸半径权限 → 单用户无需
 - **M13** 多实例协作 → 无云端节点
 - **M16** 前沿扫描 cron → 浏览器环境无 cron，也不适合自动联网搜索
@@ -155,7 +155,7 @@ validator system prompt:
 
 本项目已有模块已经间接实现了 Master Writer V4 的部分规则：
 
-| Master Writer 规则 | cineforge-web 对应模块 |
+| Master Writer 规则 | fili-web 对应模块 |
 |---|---|
 | M6 · 祛 AI 味 7 条（不许连续 3 句主谓宾 / 不许每段推剧情 / 对话粒子…） | `visual-dehydration.md`（第 4–5 条） |
 | M3 · 伏笔追踪、角色状态一致性 | **`plot-coherence-scaffold.md`（硬律 2、3 + 一致性 5 条）** |
@@ -165,7 +165,7 @@ validator system prompt:
 | SKILL-006 · 微缩多巴胺循环 | `seven-emotion-peaks.md` |
 | SKILL-007 · 叙事逻辑 E1–E8 | 分散在 `plot-coherence-scaffold.md` + `pixar-22-rules.md` |
 
-**这种"不同路径实现相似效果"的现象，侧面验证了 cineforge-web 已有模块的合理性**。
+**这种"不同路径实现相似效果"的现象，侧面验证了 fili-web 已有模块的合理性**。
 
 ---
 
@@ -198,7 +198,7 @@ validator system prompt:
 
 ## 七、下一次引用本档的时机
 
-当 cineforge-web 准备做下列任何一项时，**必须先翻本档**：
+当 fili-web 准备做下列任何一项时，**必须先翻本档**：
 
 1. 加「LLM 自审」功能（→ 看 M5）
 2. 加 Hook 系统（→ 看 M9）
