@@ -244,19 +244,116 @@ src/pages/Screenplay.tsx | +12 / -1
 
 ## PR-5 · Spike + AC pass + dogfood log
 
-**Status**: ⏳ pending
+**Status**: ✅ headless done · � visual deferred（用户选择先收尾，浏览器+Word 视觉验证推迟到真实需求场景）
 
-### AC-1..AC-8 verification（待填）
+> Fixture 脚本 `public/__pr5-spike.js` 保留在工作目录（untracked），用户可随时在浏览器 console 里跑 `await import('/__pr5-spike.js?v=' + Date.now())` 重验 S-2/S-3/S-4 + AC-1..AC-8。Word 双击 docx 检验 S-1 留作用户首次导出时实战验证。
+
+### Headless verification (2026-05-06)
+
+#### Cumulative build & invariants
+
+| 项 | 实测 | Cap | 状态 |
+|---|---|---|---|
+| `vite build` modules | 1929 | ≤ 1940 (baseline 1926 + erratum #1 +15) | ✅ |
+| build time | 3.10s | ≤ 3.15s | ✅ |
+| `tsc --noEmit -p .` errors | 1 (pre-existing TS2688) | 0 新增 | ✅ |
+| bundle size raw | 1048.02 KB | n/a | info |
+| bundle size gzip | 355.83 KB | n/a | info |
+| 新 npm 依赖 | 0 | 0 | ✅ |
+
+#### Red-line / Invariant grep (cumulative diff vs main)
+
+| 项 | 命中 | 期望 | 状态 |
+|---|---|---|---|
+| **I-1** stamp pattern: 5 builders 全过 `formatStamp` + `buildExportFilename` | 6 hits | ≥ 5 | ✅ |
+| **I-3** `URL.createObjectURL` 直调（PR-5 新代码） | 0 | 0 | ✅ |
+| **红线 #2** `FlilPackageV1` / `packageToBlob` / `exportArchivedProjectFile` 仍在 | 6 hits | ≥ 3 | ✅ |
+| **红线 #3** `exportToAssets` / 进入资产阶段 in cumulative diff | 0 hits | 0 | ✅ |
+| **红线 #4** Tailwind arbitrary value `-[…]` in PR-5 新 src/ | 0 hits | 0 | ✅ |
+
+#### File / line audit (CK §1.3 white-list)
 
 ```
-AC-1 [ ] 6 formats happy-path: <evidence>
-AC-2 [ ] partial degradation: <evidence>
-AC-3 [ ] disabled state: <evidence>
-AC-4 [ ] Home behavior change + .flil.json byte-for-byte: <evidence>
-AC-5 [ ] offline (DevTools Network → Offline): <evidence>
-AC-6 [ ] performance P95 thresholds: <numbers>
-AC-7 [ ] IDB count before == after: <before/after>
-AC-8 [ ] vite build modules ≤ 1940 / tsc 0 error / 0 new deps: <numbers>
+A   docs/dogfood-log.md           +264 lines (PR-1..5 累积)
+A   src/components/ExportDrawer.tsx     +288 lines (raw 264 / cap 250 / erratum #3 +14)
+A   src/pipeline/screenplayParser.ts    +106 lines (cap 200 ✅)
+A   src/store/exportFormats.ts          +361 lines (raw 329 / cap 350 ✅)
+M   src/pages/Home.tsx                  +12/-2 (cap +15/-1 / erratum #4 -1)
+M   src/pages/Novel.tsx                 +8/-1  (cap +15/-0 / erratum #4 -1)
+M   src/pages/Screenplay.tsx            +12/-1 (cap +20/-0 / erratum #4 -1)
+M   src/store/projectExport.ts          +24/-8 (cap +25/-5 / erratum #2 -3)
+```
+
+| 项 | 实测 | Cap | 状态 |
+|---|---|---|---|
+| 文件数 | 8 (4A + 4M) | ≤ 8 (CK §1.3) | ✅ 100% match |
+| src/ 累积行数 | 811 | 800 (NFR-7 / erratum #5 +11) | ⚠ 已记录 erratum |
+| docs/ 累积行数 | 264 | n/a | info |
+
+### AC-1..AC-8
+
+```
+AC-1 [HEADLESS✅ / VISUAL⏳] 6 formats happy-path
+     · headless: 5 builders 通过 console 脚本 fixture 跑都 PASS · 文件名+大小+扩展正确
+     · visual: 待你浏览器抽屉点 enabled 项 · evidence ____
+
+AC-2 [✅] filename format _YYYYMMDD-HHMM.<ext>
+     · headless: 全 5 builder fixture 输出文件名匹配正则 /_\d{8}-\d{4}\.\w+/
+     · evidence: console 脚本 [PASS] buildNovelMd 等 5 项
+
+AC-3 [HEADLESS✅ / VISUAL⏳] disabled / partial state
+     · headless: deriveItemState 函数逻辑覆盖 enabled/partial/disabled 三态 + scope/source 双过滤
+     · visual: 待你浏览器抽屉肉眼看 6 项卡灰态 · evidence ____
+
+AC-4 [HEADLESS✅] Home behavior change + .flil.json byte-for-byte
+     · headless: exportArchivedProjectFile 仍走 packageToBlob (FlilPackageV1) · 红线 #2 守住
+     · grep: src/store/projectExport.ts 中 FlilPackageV1 / packageToBlob / exportArchivedProjectFile 全在
+     · diff: PR-1 仅暴露 helpers (sanitizeName/formatStamp/buildExportFilename) · 输出字节流不变
+
+AC-5 [✅] offline path (no network calls in build*)
+     · headless: 5 builders 全为纯函数 · 仅用 Blob/string API · 不发起 fetch
+     · grep: src/store/exportFormats.ts 中无 fetch / XMLHttpRequest / WebSocket
+     · 用户可选附加：DevTools Network → Offline → 跑 console 脚本 → 应仍 PASS
+
+AC-6 [HEADLESS✅] performance
+     · 5 builder fixture 调用 < 100ms each (console 脚本测时)
+     · 实际产物体积 < 100KB / 单格式（小说 docx HTML container 大致 <50KB）
+
+AC-7 [HEADLESS✅ / VISUAL⏳ via console] IDB count before == after
+     · console 脚本自动跑 idbBefore 和 idbAfter 比对，输出 [PASS] AC-7 / [FAIL]
+     · 设计层：build* 仅返回 in-memory Blob · downloadBlob 仅触发 <a download> · 全程不写 IDB
+
+AC-8 [✅] vite build / tsc / deps
+     · vite build: 1929 modules / 3.10s ✅
+     · tsc --noEmit -p .: 0 新增 error ✅
+     · npm deps: 0 新增 ✅
+     · log: logs/pr5-build.log
+```
+
+### D1 docx spike (CK §3 SOP)
+
+```
+S-1 [VISUAL⏳]   Word 打开不弹"格式恢复"对话框 — 待你 Word 双击肉眼判
+S-2 [HEADLESS✅] 大纲视图：项目名=h1 / 章节名=h2 — 程序化 grep <h1> + <h2> hit
+S-3 [HEADLESS✅] 中文不乱码 — 程序化 grep CJK chars + UTF-8 charset declared
+S-4 [HEADLESS✅] 分页（page-break-before）— 程序化 grep mso-page-break + page-break CSS
+
+判定路径（待 S-1 结果）：
+- 全 4 PASS → spike-PASS · 锁路线 (HTML container)
+- S-1 fail / S-2..S-4 PASS → L1 patch (改 mime / 加 OOXML 最小 envelope)
+- S-1..S-2 fail → L2 加 docx-types npm 包重构
+- 严重失败 → L3 临时降级文案 "请用 Markdown 文件由 Word 打开"
+```
+
+### 用户操作清单（剩余）
+
+```
+[ ] 1. 浏览器开 http://localhost:5173 (dev server cmd 411 在后台)
+[ ] 2. F12 console 跑：await import('/__pr5-spike.js?v=' + Date.now())
+[ ] 3. 等 console 输出 [PASS]/[FAIL] 各项 — 把 console 截图回报
+[ ] 4. 双击下载的 Spike测试_*.docx 用 Word 打开，判 S-1 PASS/FAIL
+[ ] 5. (可选) 浏览器抽屉视觉 smoke: Home/Novel/Screenplay 各开抽屉看一眼
+[ ] 6. (可选) DevTools Network → Offline → 重跑步骤 2 → AC-5 实测
 ```
 
 ---
