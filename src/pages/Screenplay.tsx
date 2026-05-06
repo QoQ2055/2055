@@ -3,9 +3,10 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Play, Square, Check, Pencil, RotateCcw, Stethoscope, Copy, AlertTriangle,
   CheckCircle2, Loader2, FileText, ChevronRight, Crown, Gavel, BookCopy,
-  Box, Download, ArrowRight,
+  Box, Download, ArrowRight, FileDown,
 } from 'lucide-react';
 import { ManualInjectDialog } from '../components/ManualInjectDialog';
+import { ExportDrawer } from '../components/ExportDrawer';
 import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
 import clsx from 'clsx';
 import { loadManifest } from '../pipeline/manifest';
@@ -43,6 +44,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
   const [error, setError] = useState('');
   const [activeIdx, setActiveIdx] = useState(1);
   const [injectOpen, setInjectOpen] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
 
   // 把当前阶段最终剧本镜像写入 screenplay.7（让资产/分镜阶段能直接消费）
   function mirrorFinalScreenplayToS7(): boolean {
@@ -318,6 +320,13 @@ export function Screenplay(props: ScreenplayProps = {}) {
             >
               <Download className="size-4" /> 导入剧本
             </button>
+            <button
+              className="btn-outline"
+              onClick={() => setExportOpen(true)}
+              title="下载剧本多格式（FDX / Fountain）"
+            >
+              <FileDown className="size-4" /> 下载剧本…
+            </button>
             {(project.artifacts['screenplay.7'] || (isAdapt && project.artifacts['adapt.6'])) && (
               <button
                 className="btn-outline"
@@ -337,6 +346,8 @@ export function Screenplay(props: ScreenplayProps = {}) {
         )}
       </div>
     </header>
+
+      <ExportDrawer open={exportOpen} onClose={() => setExportOpen(false)} scope="screenplay" source="live" />
 
       {/* Legacy screenplay.* artifacts banner (adapt mode only) */}
       {legacyScreenplayCount > 0 && (

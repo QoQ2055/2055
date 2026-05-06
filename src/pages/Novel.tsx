@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import {
   Edit3, Play, Square, Loader2, CheckCircle2, Circle, AlertTriangle,
   BookOpen, Eye, ChevronRight, RotateCcw, Wand2, Sparkles,
-  Shield, ShieldCheck, ShieldAlert,
+  Shield, ShieldCheck, ShieldAlert, Download,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { UserKbBindingPanel } from '../components/UserKbBindingPanel';
@@ -15,6 +15,7 @@ import { ChapterFeedbackButton } from '../components/ChapterFeedbackButton';
 import { MethodModulePanel } from '../components/MethodModulePanel';
 import { RefinementToolPanel } from '../components/RefinementToolPanel';
 import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
+import { ExportDrawer } from '../components/ExportDrawer';
 import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
@@ -72,6 +73,7 @@ export function Novel() {
   const [chainBusy, setChainBusy] = useState(false);
   const [previewNode, setPreviewNode] = useState<string | null>(null);
   const [editSettings, setEditSettings] = useState(false);
+  const [exportOpen, setExportOpen] = useState(false);
   // Best-of-N 全局开关（影响 N1.1 / N1.2 等推荐节点 + 章节草稿循环）
   const [useBestOfN, setUseBestOfN] = useState(false);
   const [bestOfNCount, setBestOfNCount] = useState(3);
@@ -500,9 +502,14 @@ export function Novel() {
               <Square className="size-4 mr-1" /> 中止
             </button>
           )}
+          <button onClick={() => setExportOpen(true)} className="btn-ghost" title="导出小说多格式">
+            <Download className="size-4 mr-1" /> 导出
+          </button>
           <Link to="/" className="btn-ghost"><ChevronRight className="size-4 mr-1" /> 项目首页</Link>
         </div>
       </header>
+
+      <ExportDrawer open={exportOpen} onClose={() => setExportOpen(false)} scope="novel" source="live" />
 
       <ProjectSettingsCard
         ctx={ctx}

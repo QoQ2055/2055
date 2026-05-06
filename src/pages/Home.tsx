@@ -15,6 +15,7 @@ import {
 } from '../store/projectExport';
 import { NewProjectDialog } from '../components/NewProjectDialog';
 import { AdaptIntakeWizard } from '../components/AdaptIntakeWizard';
+import { ExportDrawer } from '../components/ExportDrawer';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
 import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/projectModes';
 
@@ -28,6 +29,7 @@ export function Home() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardSourceType, setWizardSourceType] = useState<string>('novel_long');
   const [busy, setBusy] = useState(false);
+  const [exportDrawerProjectId, setExportDrawerProjectId] = useState<number | null>(null);
   const navigate = useNavigate();
 
   async function refreshList() {
@@ -241,9 +243,9 @@ export function Home() {
                   </Button>
                   <Button
                     iconOnly
-                    onClick={() => p.id != null && handleExportArchived(p.id)}
+                    onClick={() => p.id != null && setExportDrawerProjectId(p.id)}
                     disabled={busy}
-                    title="导出 .flil.json"
+                    title="导出（多格式）"
                     aria-label="导出"
                   >
                     <Download className="size-3.5" />
@@ -312,6 +314,14 @@ export function Home() {
         initialAdaptSourceType={wizardSourceType}
         onCancel={() => setWizardOpen(false)}
         onSubmit={handleAdaptSubmit}
+      />
+
+      <ExportDrawer
+        open={exportDrawerProjectId != null}
+        onClose={() => setExportDrawerProjectId(null)}
+        scope="all"
+        source="archived"
+        archivedProjectId={exportDrawerProjectId ?? undefined}
       />
     </div>
   );
