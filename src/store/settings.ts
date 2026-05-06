@@ -33,6 +33,8 @@ export interface SettingsState {
   enableSelfCheck: boolean;         // 节点完成后允许一键自检（不自动跑，只显示按钮）
   enableSelfCheckContext: boolean;  // storyboard.2 自检时是否注入 sb.1 / assets 上下文（提高一致性检查准确度，耗 token）
   enableScoreCard: boolean;         // 节点产出后显示 6 维评分（前 4 维自动跑，LLM 维度按需重算）
+  /** gap-b · N3.2 润色完成后自动提取角色状态、N3.1 草稿注入上一章状态摘要。默认 false 避免被动产生 token 费用。 */
+  enableCharacterStateExtraction: boolean;
   scoreCardWeights?: Partial<{      // 6 维度自定义权重（默认等权 1.0），缺省 = 等权
     genre: number;
     method: number;
@@ -62,6 +64,7 @@ const DEFAULTS = {
   enableSelfCheck: true,
   enableSelfCheckContext: true,
   enableScoreCard: true,
+  enableCharacterStateExtraction: false,
   scoreCardWeights: undefined,
 };
 

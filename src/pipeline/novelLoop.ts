@@ -19,6 +19,8 @@ import { composeMessages } from './compose';
 import { loadPayload } from './manifest';
 import { applyProjectContext, interpolate } from './interpolate';
 import { buildRollingContext, type ChapterRecord } from './rollingContext';
+import { runCharacterStateExtraction } from './characterStates';
+import { listChapterStates } from '../store/characterStates';
 import type { SettingsState } from '../store/settings';
 import type {
   ArtifactMap,
@@ -730,6 +732,26 @@ async function runChapterLoopShared(opts: RunChapterLoopShared): Promise<NodeArt
         paceTag: ch.paceTag ?? '中速',
         foreshadowOps: ch.foreshadowOps ?? '(无明确指令)',
       } as any);
+      // gap-b PR-3 · 注入上一章末角色状态摘要（FR-5.1/5.3 · settings 守卫）
+      if (settings.enableCharacterStateExtraction && ch.index > 1) {
+        try {
+          const prevStates = await listChapterStates(0, ch.index - 1);
+          if (prevStates.length > 0) {
+            const lines: string[] = [];
+            for (const s of prevStates) {
+              if (!s.snapshot) continue;
+              const sum = s.snapshot.summary ?? '';
+              const emo = s.snapshot.emotion ? ` 情绪[${s.snapshot.emotion}]` : '';
+              lines.push(`- **${s.characterName}**：${sum}${emo}`);
+            }
+            const joined = lines.join('\n');
+            const summary = joined.length > 1500 ? joined.slice(0, 1500) + '\n...(已截断)' : joined;
+            if (summary) userMsg += `\n\n## 截至上一章的角色状态摘要\n${summary}`;
+          }
+        } catch (e) {
+          console.warn('[gap-b] 注入上一章角色状态失败（不阻塞草稿）:', e);
+        }
+      }
     } else {
       // polish: 用模式前缀 + 单章草稿替换 user 中的 {{ artifacts.novel.6.content }}
       const draft = chapterContents[ch.index]
@@ -804,6 +826,26 @@ async function runChapterLoopShared(opts: RunChapterLoopShared): Promise<NodeArt
       cumulativeTokens += art.tokens ?? 0;
       cumulativeCost += art.cost ?? 0;
       opts.onChapterDone?.(ch, art.content, total);
+
+      // gap-b PR-3 · N3.2 润色完成后自动提取角色状态（I-6 不阻塞主流程）
+      if (mode === 'polish' && settings.enableCharacterStateExtraction) {
+        try {
+          const sourceArtifacts: ArtifactMap = {
+            ...artifacts,
+            'novel.7': {
+              ...(artifacts['novel.7'] ?? { nodeId: 'novel.7', stageId: 'novel', index: 7, title: 'novel.7', format: 'markdown' as const, content: '', durationMs: 0, ts: Date.now() }),
+              meta: { ...(artifacts['novel.7']?.meta ?? {}), chapterContents: { ...chapterContents } },
+            },
+          };
+          const r = await runCharacterStateExtraction({
+            project, artifacts: sourceArtifacts, settings,
+            projectId: 0, chapterIndex: ch.index, source: 'novel.7', signal,
+          });
+          if (!r.ok) console.warn('[gap-b] 角色状态提取失败（第 ' + ch.index + ' 章）:', r.error);
+        } catch (e) {
+          console.warn('[gap-b] 角色状态提取异常（第 ' + ch.index + ' 章不阻塞）:', e);
+        }
+      }
 
       const intermediate = assembleChapterArtifact({
         step, chapters, chapterContents, chapterTitles, chapterModesOut,
