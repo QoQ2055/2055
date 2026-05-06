@@ -16,6 +16,7 @@ import { MethodModulePanel } from '../components/MethodModulePanel';
 import { RefinementToolPanel } from '../components/RefinementToolPanel';
 import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
 import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
+import { ProgressDashboard } from '../components/ProgressDashboard';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runStepBestOfN, isBestOfNRecommended } from '../pipeline/bestOfN';
@@ -661,6 +662,9 @@ export function Novel() {
           title="阶段 C · 章节"
           desc="章节草稿（墨刃）→ 章节润色（默认 / 神经化学重写 / 去冗余精简）"
         />
+
+        {/* gap-d · 进度可视化面板（顶部 collapsible · 默认折叠）*/}
+        <ProgressDashboard />
 
         {chapters.length === 0 ? (
           <div className="text-sm text-fg-muted italic">
