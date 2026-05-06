@@ -17,6 +17,7 @@ import { RefinementToolPanel } from '../components/RefinementToolPanel';
 import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
 import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
 import { ProgressDashboard } from '../components/ProgressDashboard';
+import { CharacterBible } from '../components/CharacterBible';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runStepBestOfN, isBestOfNRecommended } from '../pipeline/bestOfN';
@@ -665,6 +666,9 @@ export function Novel() {
 
         {/* gap-d · 进度可视化面板（顶部 collapsible · 默认折叠）*/}
         <ProgressDashboard />
+
+        {/* gap-b · 角色 Bible 跨章节追踪面板（CA §4.1 Q1 决议：同视觉语言 collapsible，默认折叠）*/}
+        <CharacterBible />
 
         {chapters.length === 0 ? (
           <div className="text-sm text-fg-muted italic">
