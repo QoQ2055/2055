@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Plus, FolderOpen, Trash2, Download, Upload } from 'lucide-react';
+import { Button } from '../components/ui';
 import { db, type Project } from '../store/db';
 import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
@@ -156,90 +157,106 @@ export function Home() {
     <div className="max-w-5xl mx-auto p-8 space-y-8">
       <header className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-bold">影语 FLIL</h1>
-          <p className="text-zinc-400 mt-1.5">
+          <h1 className="text-heading-xl">影语 FLIL</h1>
+          <p className="text-body-m text-fg-secondary mt-2">
             短剧 AI 流水线 · 八步剧本 → 资产 → 分镜（Seedance 2.0）
           </p>
-          <p className="text-zinc-500 text-xs mt-1">
+          <p className="text-caption-m text-fg-muted mt-1">
             从「新建项目」开始，或从下方「历史项目」中载入以前的作品。
           </p>
         </div>
         <div className="flex gap-2 shrink-0">
-          <button className="btn-outline"
-                  onClick={() => pickFile('active')}
-                  disabled={busy}
-                  title="从 .flil.json 导入为新项目">
+          <Button
+            variant="outline"
+            onClick={() => pickFile('active')}
+            disabled={busy}
+            title="从 .flil.json 导入为新项目"
+          >
             <Upload className="size-4" /> 导入 .flil
-          </button>
-          <button className="btn-primary text-base px-5 py-2.5"
-                  onClick={() => setDialogOpen(true)}
-                  disabled={busy}>
+          </Button>
+          <Button
+            size="lg"
+            onClick={() => setDialogOpen(true)}
+            disabled={busy}
+          >
             <Plus className="size-5" /> 新建项目
-          </button>
+          </Button>
         </div>
       </header>
 
       {!apiKey && (
-        <div className="card border-amber-500/40 bg-amber-500/5 p-4 text-sm">
-          <strong className="text-amber-300">⚠ 尚未配置 API Key</strong>
-          <p className="text-zinc-300 mt-1">
-            请前往 <Link to="/settings" className="text-amber-400 underline underline-offset-2">设置</Link> 填写 DeepSeek API Key（仅保存在浏览器本地）。
+        <div className="card border-warning/40 bg-warning/5 p-4 text-body-m">
+          <strong className="text-warning">⚠ 尚未配置 API Key</strong>
+          <p className="text-fg-secondary mt-1">
+            请前往 <Link to="/settings" className="text-warning underline underline-offset-2">设置</Link> 填写 DeepSeek API Key（仅保存在浏览器本地）。
           </p>
         </div>
       )}
 
       {/* History */}
       <section className="card p-5">
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="font-semibold">历史项目（{projects.length}）</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-heading-m">历史项目（{projects.length}）</h2>
           <div className="flex items-center gap-2">
-            <button className="btn-ghost text-xs"
-                    onClick={() => pickFile('archive')}
-                    disabled={busy}
-                    title="从 .flil.json 导入为历史项目【不交换当前活动项目】">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => pickFile('archive')}
+              disabled={busy}
+              title="从 .flil.json 导入为历史项目【不交换当前活动项目】"
+            >
               <Upload className="size-3.5" /> 导入为历史
-            </button>
-            <span className="text-xs text-zinc-500">归档于浏览器 IndexedDB</span>
+            </Button>
+            <span className="text-caption-m text-fg-muted">归档于浏览器 IndexedDB</span>
           </div>
         </div>
         {projects.length === 0 ? (
-          <div className="text-sm text-zinc-500 py-8 text-center border border-dashed border-zinc-800 rounded-md">
+          <div className="text-body-s text-fg-muted py-8 text-center border border-dashed border-border-default rounded-md">
             还没有归档项目。点上方「新建项目」开始；新建时若当前项目有产物会自动归档到这里。
           </div>
         ) : (
-          <ul className="divide-y divide-zinc-800">
+          <ul className="divide-y divide-border-subtle">
             {projects.map((p) => (
               <li key={p.id} className="py-3 flex items-center justify-between gap-3">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <ModeTag ctx={p} />
-                    <div className="font-medium truncate">{p.name}</div>
+                    <div className="font-medium truncate text-fg-primary">{p.name}</div>
                   </div>
-                  <div className="text-xs text-zinc-500 truncate mt-0.5">
+                  <div className="text-caption-m text-fg-muted truncate mt-1">
                     {p.concept} · {p.durationMin} 分钟 · {p.mode}
                   </div>
                 </div>
-                <span className="text-xs text-zinc-500 shrink-0">
+                <span className="text-caption-m text-fg-muted shrink-0">
                   {new Date(p.createdAt).toLocaleString()}
                 </span>
                 <div className="flex gap-1 shrink-0">
-                  <button className="btn-outline text-xs"
-                          onClick={() => p.id != null && handleLoad(p.id)}
-                          disabled={busy}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => p.id != null && handleLoad(p.id)}
+                    disabled={busy}
+                  >
                     <FolderOpen className="size-3.5" /> 载入
-                  </button>
-                  <button className="btn-ghost text-xs"
-                          onClick={() => p.id != null && handleExportArchived(p.id)}
-                          disabled={busy}
-                          title="导出 .flil.json">
+                  </Button>
+                  <Button
+                    iconOnly
+                    onClick={() => p.id != null && handleExportArchived(p.id)}
+                    disabled={busy}
+                    title="导出 .flil.json"
+                    aria-label="导出"
+                  >
                     <Download className="size-3.5" />
-                  </button>
-                  <button className="btn-ghost text-xs"
-                          onClick={() => p.id != null && handleDelete(p.id, p.name)}
-                          disabled={busy}
-                          title="删除">
+                  </Button>
+                  <Button
+                    iconOnly
+                    onClick={() => p.id != null && handleDelete(p.id, p.name)}
+                    disabled={busy}
+                    title="删除"
+                    aria-label="删除"
+                  >
                     <Trash2 className="size-3.5" />
-                  </button>
+                  </Button>
                 </div>
               </li>
             ))}
@@ -267,12 +284,12 @@ export function Home() {
                 className="card p-3"
                 style={{ borderColor: `${meta.accentHex}33` }}
               >
-                <div className="flex items-center gap-1.5 text-xs font-medium">
+                <div className="flex items-center gap-1.5 text-body-s font-medium text-fg-primary">
                   <span className="size-2 rounded-full" style={{ backgroundColor: meta.accentHex }} />
                   {meta.label}
-                  <span className="ml-auto text-zinc-300 font-mono">{counts[m] ?? 0}</span>
+                  <span className="ml-auto text-fg-secondary font-mono">{counts[m] ?? 0}</span>
                 </div>
-                <div className="text-[10px] text-zinc-500 mt-1 leading-snug">
+                <div className="text-label-m normal-case tracking-normal text-fg-muted mt-1.5 leading-snug">
                   {meta.workflow}
                 </div>
               </div>
