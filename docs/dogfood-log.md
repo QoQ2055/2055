@@ -107,7 +107,36 @@ src/store/projectExport.ts | +24 / -8
 
 ## PR-2 · Pure builders（screenplayParser + exportFormats）
 
-**Status**: ⏳ pending
+**Status**: ✅ done · `ae285fa` · 2026-05-06
+
+### diff stat
+
+```
+src/pipeline/screenplayParser.ts | +106 (94 raw lines + headers, cap 200)
+src/store/exportFormats.ts       | +361 (322 raw lines + headers, cap 350+)
+2 files changed, 467 insertions(+), 0 deletions(-)
+```
+
+### 落地
+
+- `screenplayParser.ts` · 5 状态机（recognition order hardcoded per CA §3.4.1）
+- `exportFormats.ts` · 5 pure builders（FR-1..5）+ 3 extractors（FR-9）+ ExportSourceData 接口
+- 单测 file 跳过（CK §2.2 已标 ★ 可选）—— PR-5 dogfood 阶段做 AC-2/I-6 手测
+
+### 验证
+
+| 项 | 结果 |
+|---|---|
+| vite build | 1926 modules · 2.96s（新模块 tree-shaken 待 PR-3 import） |
+| tsc | 0 新增 error |
+| I-1/I-2 grep | 0 hit ✅ |
+| I-3 grep | 2 self-doc 注释 hit · 0 actual call ✅ |
+| 红线 #4 | 0 hit ✅ |
+
+### 坑
+
+- `exportFormats.ts` 实际 322 行，commit 显示 361 因含尾部空行 + commit 头注释。仍在 350 cap 边缘 —— 后续若加东西需注意。
+- D1 docx spike 待 PR-2 完成后启动（**下一步可选 · CK §3 SOP**），但也可先 PR-3 完成 UI 后再统一 spike。
 
 ---
 
