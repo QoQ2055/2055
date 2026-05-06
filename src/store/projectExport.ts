@@ -110,19 +110,35 @@ export async function exportArchivedProjectFile(
   return packageToBlob(pkg);
 }
 
-function packageToBlob(pkg: FlilPackageV1): { filename: string; blob: Blob; sizeBytes: number } {
-  const json = JSON.stringify(pkg, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const safeName = (pkg.ctx.name || 'project').replace(/[\\/:*?"<>|]/g, '_').slice(0, 64);
-  const dt = new Date(pkg.exportedAt);
-  const stamp =
+/** Sanitize a project name for filesystem use (FR-7 共用 helper). */
+export function sanitizeName(name: string): string {
+  return (name || 'project').replace(/[\\/:*?"<>|]/g, '_').slice(0, 64);
+}
+
+/** Format a timestamp as `YYYYMMDD-HHMM` (FR-7 共用 helper). */
+export function formatStamp(ts: number): string {
+  const dt = new Date(ts);
+  return (
     dt.getFullYear() +
     String(dt.getMonth() + 1).padStart(2, '0') +
     String(dt.getDate()).padStart(2, '0') +
     '-' +
     String(dt.getHours()).padStart(2, '0') +
-    String(dt.getMinutes()).padStart(2, '0');
-  return { filename: `${safeName}_${stamp}.flil.json`, blob, sizeBytes: blob.size };
+    String(dt.getMinutes()).padStart(2, '0')
+  );
+}
+
+/** Build a filename `<safeName>_<stamp><ext>` (FR-7 共用 helper). */
+export function buildExportFilename(safeName: string, stamp: string, ext: string): string {
+  return `${safeName}_${stamp}${ext}`;
+}
+
+export function packageToBlob(pkg: FlilPackageV1): { filename: string; blob: Blob; sizeBytes: number } {
+  const json = JSON.stringify(pkg, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const safeName = sanitizeName(pkg.ctx.name);
+  const stamp = formatStamp(pkg.exportedAt);
+  return { filename: buildExportFilename(safeName, stamp, '.flil.json'), blob, sizeBytes: blob.size };
 }
 
 /** Trigger a browser download for an exported package. */
