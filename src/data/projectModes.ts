@@ -59,7 +59,8 @@ export const MODE_ORIGINAL: ProjectModeMeta = {
   stages: ['screenplay', 'assets', 'storyboard'],
   defaultRoute: '/screenplay',
   navItems: [
-    { key: 'screenplay', to: '/screenplay', label: '剧本工作台 (S1-S8)', icon: 'FileText' },
+    // 「剧本工作台 (S1-S8)」入口从侧栏移除：用户已通过项目卡 / 模式 defaultRoute 直达，
+    // 侧栏不重复提供。/screenplay 路由仍保留，可通过 URL / 项目卡跳转访问。
     // 「资产工作台」入口从侧栏移除：本身在剧本工作台内部的「镜像到 screenplay.7 跳资产」
     // 按钮与 Express 页「资产工作台」入口中可达，不需侧栏重复提供。/assets 路由仍保留。
     // 「流水线总览」入口已移除：其功能与「新建项目」向导里的完整流程重复。
