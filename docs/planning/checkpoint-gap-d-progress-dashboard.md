@@ -131,8 +131,8 @@ Select-String -Path $dashboardFiles -Pattern 'runStep|runStepBestOfN|fetch\([''"
 Select-String -Path src/store/dashboard.ts -Pattern 'localStorage\.(?:setItem|getItem|removeItem)'
 # 期望：恰好 ≤ 4 hits（1 set + 1 get + persist middleware 内部，主入口 1 个 key）
 # 同时确认 key 为 'flil:dashboard:state'
-Select-String -Path src/store/dashboard.ts -Pattern 'flil:dashboard:state'
-# 期望：恰好 1 hit
+Select-String -Path src/store/dashboard.ts -Pattern 'flil:dashboard:state' | Where-Object { $_.Line -notmatch '^\s*//' }
+# 期望：恰好 1 hit（排除注释行）。gap-d 首轮测试发现原 grep 不排除注释会误判 2 hit（注释 + 配置）。
 ```
 
 ### I-5 · 子组件 props-only（不直接读 zustand）

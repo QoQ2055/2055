@@ -204,11 +204,19 @@ vetting 完成后（决议 = "可借鉴" 或 "可装载"），按下表选 Tier 
 
 ## 本仓现有 skill 对照（2026-05-06 状态）
 
-| skill | 行数 | pattern | 自由度 | 评级 |
+### 带 trigger · 自动加载
+
+| skill | 行数 | trigger | pattern | 评级 |
 |---|---|---|---|---|
-| `bmad-method/SKILL.md` | 226 | Pattern 2（assets/4 模板 + 2 CSV）| Low（CK 9 步死序列）| 🟡 偏长，可砍 30% |
-| `design-md/SKILL.md` | ~? | Pattern 1+2（assets/3 reference）| 混合（§1.2-4 medium / §6.1 high）| 🟢 健康 |
-| `skill-authoring/SKILL.md` | 本文 ~180 | Pattern 1（暂无 reference）| Mixed | 🟢 自我应用三原则 |
+| `bmad-method/SKILL.md` | 253 | model_decision | Pattern 2（references/4 模板 + 2 CSV）| 🟡 偏长，可砍 30% |
+| `design-md/SKILL.md` | 233 | model_decision | Pattern 1+2（assets + references/6 文件）| 🟢 健康 |
+| `skill-authoring/SKILL.md` | 本文 | model_decision | Pattern 1（无 reference）| 🟢 自我应用三原则 |
+
+### 仅 SKILL.md · 无 trigger · explicit `read_file`
+
+| skill | 行数 | 何时读 |
+|---|---|---|
+| `image-prompt-craft/SKILL.md` | 51 | **未来 AI 生图 epic 启动时**（如番外漫画分镜 / 角色立绘批量 / 剧本分镜插画）。抽自 openclaw-limtdesign 评估（3 反模式 + 5 步流程）。如未来启动该 epic 且需高频调用，可升为 L3（加 `rules/image-prompt-craft.md` model_decision）。 |
 
 ---
 

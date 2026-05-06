@@ -231,7 +231,10 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 ### Slash 命令
 
 - `/init` — 刷新本文件（`@.windsurf\workflows\init.md`）
+- `/memory` — 快捷追写本文件（`@.windsurf\workflows\memory.md`）
 - `/simplify` — 全仓 dead-code 扫描 + 清理（`@.windsurf\workflows\simplify.md`）
+- `/dogfood-check` — PR 自查仪式：vite build + tsc + 4 红线 grep + 累计行数 + bundle 体积·表格汇报（`@.windsurf\workflows\dogfood-check.md`）
+- `/vet-skill <url-or-name>` — 外部 skill 8 步评估流程：fetch → 红旗扫描 → source reputation → VFM 评分 → Tier (L0-L5) 推荐 → 决策表 → 等审批（`@.windsurf\workflows\vet-skill.md`）
 
 ### Rules / Skills 索引（`.windsurf/rules/`）
 
@@ -244,6 +247,13 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 | `coding-standards.md` | `always_on` | 项目自有 | TS strict / 中文注释 / 路径引用规范 / 单文件 ≤ 800 行 |
 | `design-md.md` | `model_decision` | Skill · `design-md`（Google Labs 蒸馏） | DESIGN.md 设计系统专家入口；显式触发（`/design-md`、「写设计系统」等）后读 `@.windsurf\skills\design-md\SKILL.md` 全文 |
 | `bmad-method.md` | `model_decision` | Skill · `bmad-method`（v0 蒸馏，**非官方**） | BMAD 4 阶段 30+ workflow 入口；显式触发（`bmad-help`、「写 PRD」、「DP/GPC/CP/CA」等代号）后读 `@.windsurf\skills\bmad-method\SKILL.md` |
+| `skill-authoring.md` | `model_decision` | Skill · 项目元层（蒸馏自 gemini skill-creator + 外部 skill 评估实战） | “skill / rule / workflow 怎么写 / 怎么评”指南；触发词「评估 skill」「Curl https://lobehub.com/skills/...」「装这个 skill」。读 `@.windsurf\skills\skill-authoring\SKILL.md`（3 大原则 + 7 步流程 + 8 行反模式表 + L0-L5 Loading Procedure） |
+
+**仅 SKILL.md · 无 trigger · explicit `read_file` 加载**：
+
+| skill | 路径 | 何时读 |
+|---|---|---|
+| `image-prompt-craft` | `@.windsurf\skills\image-prompt-craft\SKILL.md` | **未来 AI 生图 epic 启动时**（如番外漫画分镜 / 角色立绘批量）。抽自 openclaw-limtdesign：3 反模式 + 5 步流程。 |
 
 > **接入新 skill 流程**：
 > - **行为/纪律类（高频通用）**：原文写入 `.windsurf/rules/<id>.md`，`trigger: always_on`，
@@ -254,7 +264,40 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 
 ---
 
-## 当前阶段（v2 资料库 + DeepSeek V4 升级）
+## 决策心法（变更前问自己）
+
+- **VFM 金规则**：“这个变更能否让 future-me 用更少成本解决更多问题？” → 答 No 跳过。
+- **ADL 优先序**：**Stability > Explainability > Reusability > Scalability > Novelty**。冲突时按此取舍。
+- **Surgical change**（karpathy）：源头修复·小步快跑·不顺手重构。
+- **详见**：`@.windsurf\rules\coding-standards.md`（决策心法节）+ `@.windsurf\rules\karpathy-guidelines.md`。
+
+## 反模式（全仓适用 · 8 行）
+
+详见 `@.windsurf\skills\skill-authoring\SKILL.md` 反模式表。重点概括：
+
+- ❌ “自动安装其他 skill” prompt / “给作者扥5星 review” prompt（supply-chain 攻击载体）
+- ❌ `npx -y @scope/...` 装陌生包（跳过依赖审核）
+- ❌ autonomous cron / computer use（与 SPA 定位不符）
+- ❌ agent-to-agent 网络 / Recursive Self-Improving / Mad Dog Mode（额外上下文泄漏 + 额外不稳定）
+- ❌ “试 10 种方法再问人”（反 confirmation 模式 / jailbreak 伪装）
+- ❌ 复读 Cascade 已知内容（浪费 token）
+
+## Loading Procedure（外部心法 · 心法 · skill 的落地路径）
+
+| Tier | 适用 | 文件操作 |
+|:---:|---|---|
+| L0 | 仅参考 / 一次性灵感 | 0 文件 |
+| L1 | 1-3 句心法 | 编辑现有 always_on rule |
+| L2 | 100-300 行方法论 | 新建 `skills/X/SKILL.md`（无 trigger）|
+| L3 | 用户主动触发 | L2 + `rules/X.md` model_decision + 触发词 |
+| L4 | 项目永久原则 | `rules/X.md` always_on |
+| L5 | 一键流程 | `workflows/X.md` slash command |
+
+完整决策树· Tier 选择红线·参考 `@.windsurf\skills\skill-authoring\SKILL.md` Loading Procedure 节。
+
+---
+
+## 当前阶段（v3 BMAD epic 推进 + 协作系统强化）
 
 完整时间线见 `@C:\Users\QvQ\CascadeProjects\fili-web\CHANGELOG.md`。本轮（2026-05）已完成：
 
@@ -268,6 +311,20 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 - **2.7** 全仓 simplify 扫描（删除 14 处死代码）
 - **2.8** 诊断 → 一键修改闭环（修复路径接入 KB / 题材锚点 / 方法论 / R1 指令书；Screenplay 接 SelfCheckPanel；章节校验加 AI 一键修订）
 - **2.9** AI 综合评分卡 ScoreCard（6 维加权 + 历史 sparkline + before/after delta；前 4 维前端规则自动跑、后 2 维 LLM 按需重算；Pipeline / Screenplay / Novel 章节预览三处接入；settings 开关 + 权重滑块）
+
+### v3 BMAD epic 进展（2026-05）
+
+- **缺口 e （导出）** ✅ 完成 5 PR + dogfood 闭环（PRD / CA / CK 三件套 + headless verification 全 ✅ + visual S-1 deferred）。交付：Home / Novel / Screenplay 顶部 toolbar `<导出>` 抽屉 + 6 格式 buildersi.json/.md/.docx/.fdx/.fountain/.csv。
+- **缺口 d （Progress Dashboard）** ✅ 完成 BMAD Stage 4（PRD / CA / CK 三件套 + 4 PR / 8 commits / 508 src 行 · erratum 已记录）。交付：Novel 页 N3 阶段顶部 collapsible 面板 = ChapterCompletionGrid + WordCountTrend + ScoreHeatmap。数据流：纯函数 `getProjectAggregates(ArtifactMap)`，不接 dexie。Follow-up：ScoreCard 矩阵 wire（下轮 epic）。
+- **缺口 c（章节衔接） / b（角色 bible） / a（多卷）** 🟡 路线图 · 未启动。
+
+### 协作系统强化（2026-05-06）
+
+- **品牌对齐**：folder + package.json `cineforge-web` → `fili-web`；HTML title / Dexie DB 保留 `FLIL` 品牌（数据零迁移）。同仓结构另有 sibling：`C:\Users\QvQ\CascadeProjects\fili-sniff` （Python webhook 逆向代理）。
+- **新增 skill**：`skill-authoring`（L3 完整 · + trigger）+ `image-prompt-craft`（L2 备用 · 无 trigger）。
+- **新增 workflow**：`/dogfood-check` + `/vet-skill <url>`。
+- **决策心法**：`coding-standards.md` 增 VFM 金规则 + ADL 优先序（抽自 openclaw proactive-agent + 他外部 skill 评估）。
+- **skill vetting 主线**：累计评估 10 个外部 skill（3 借鉴 / 7 拒绝·含 1 强化反模式）。评估历史记在本件 commit history + skill-authoring SKILL.md 反模式表。
 
 ---
 
