@@ -173,13 +173,72 @@ src/store/exportFormats.ts       | +361 (322 raw lines + headers, cap 350+)
 
 ## PR-3 · UI shell（ExportDrawer + useExportActions）
 
-**Status**: ⏳ pending
+**Status**: ✅ done · `2ec16a4` · 2026-05-06
+
+### diff stat
+
+```
+src/components/ExportDrawer.tsx | +288 (264 raw lines, cap 250 + erratum #3 +14)
+```
+
+### 落地
+
+- 420px 右侧 drawer · DESIGN.md token-only（w-drawer / shadow-floating / bg-surface / bg-overlay / border-border-default / text-heading-m / text-body-s / text-body-m / text-fg-primary / text-fg-muted / btn-icon）
+- 6 项 export 卡 · 3 态（enabled/partial/disabled）· deriveItemState 含 scope + source 双过滤
+- 内嵌 `useExportActions`：live=sync zustand / archived=async Dexie read + reuse PR-2 extractors
+- a11y: role=dialog / aria-modal / Esc / backdrop click / disabled aria
+
+### 验证
+
+| 项 | 结果 |
+|---|---|
+| vite build | 1926 modules · 2.98s（drawer 待 PR-4 引用后进 bundle） |
+| tsc | 0 新增 error |
+| I-3 URL.createObjectURL 直调 | 0 hit ✅（走 downloadBlob 既有副作用收敛点） |
+| 红线 #4 arbitrary value | 0 hit ✅ |
+
+### 坑
+
+- **Erratum #3**：CK §2.3 行数上限 250 → 实测 264（+14）。原因：hook + UI + deriveItemState + a11y 全部 inline 在单文件（白名单只允 4 新文件，不许拆）。+14 是物理最小。已写入 commit msg。
 
 ---
 
 ## PR-4 · Wire entry points（Home + Novel + Screenplay）
 
-**Status**: ⏳ pending
+**Status**: ✅ done · `a98583a` · 2026-05-06
+
+### diff stat
+
+```
+src/pages/Home.tsx       | +12 / -2
+src/pages/Novel.tsx      | +8  / -1
+src/pages/Screenplay.tsx | +12 / -1
+3 files changed, 32 insertions(+), 4 deletions(-)
+```
+
+### 落地
+
+- Home：onClick 切到 setExportDrawerProjectId / 加 useState / `<ExportDrawer scope=all source=archived>`
+- Novel：加 Download lucide / 加 ExportDrawer 导入 + useState / toolbar 加 `<button>导出</button>` / `<ExportDrawer scope=novel source=live>`
+- Screenplay：加 `FileDown` lucide（红线 #3 disambiguation）/ ExportDrawer 导入 + useState / toolbar 加 `<button>下载剧本…</button>` / `<ExportDrawer scope=screenplay source=live>`
+- exportToAssets / 进入资产阶段 完全未触（red-line #3 grep 0 hit）
+
+### 验证
+
+| 项 | 结果 |
+|---|---|
+| vite build | 1929 modules（baseline 1926 +3）/ 3.06s |
+| tsc | 0 新增 error |
+| 红线 #3 grep | 0 hit ✅ |
+| 红线 #4 grep | 0 hit ✅ |
+| 累积白名单 | 100% 匹配 CK §1.3 ✅ |
+
+### 坑
+
+- **Erratum #4**：CK §2.4 各文件删除上限 `-0/-1` 不可行 · 实测 -2/-1/-1 · git "邻行插入" 物理下限 -1。已写入 commit msg。
+- **Erratum #5**：累积 src/ 实施代码 **811 行**，NFR-7 cap 800 · +11 行。来源：完整 invariant doc + a11y handler + 5 builder + parser + extractor。已记录本节。
+- **Pre-existing 6 个 IDE-only StageId mismatch errors**：在 Screenplay.tsx L121/181/253/260/472/513，根 tsconfig.json 不报，IDE TS server 用 tsconfig.app.json 报。**与 PR-4 无关**，PR-4 未触这些行。建议作为独立技术债登记。
+- **Network**：GitHub push SSL handshake 仍失败，本地累计 7 个 commit 待推。
 
 ---
 
