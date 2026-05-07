@@ -18,7 +18,7 @@ import {
 import clsx from 'clsx';
 import type { ProjectContext, CreateMode, ProjectMode } from '../pipeline/types';
 import { GenreAnchorPreview } from './GenreAnchorPreview';
-import { Textarea } from './ui';
+import { Input, Textarea } from './ui';
 import {
   GENRES, MAX_GENRES, PLATFORMS, PROTAGONISTS, DURATIONS, ADAPT_SOURCE_TYPES,
   NOVEL_PLATFORMS, NOVEL_SCALES, NOVEL_POVS, NOVEL_AUDIENCES, NOVEL_TONES,
@@ -419,12 +419,11 @@ function OriginalForm(f: OriginalFormProps) {
   return (
     <>
       <Field label="项目名称" required>
-        <input
+        <Input
           type="text"
           value={f.name}
           onChange={(e) => f.setName(e.target.value)}
           placeholder="例如：《重生之我是大魔王》"
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -600,12 +599,11 @@ function ExpressForm({
       </div>
 
       <Field label="项目名称" required>
-        <input
+        <Input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="例如：《惊鸿一瞥》分镜测试"
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -653,12 +651,11 @@ function NovelForm(f: NovelFormProps) {
       </div>
 
       <Field label="项目名称" required>
-        <input
+        <Input
           type="text"
           value={f.name}
           onChange={(e) => f.setName(e.target.value)}
           placeholder="例如：《长夜未央》"
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           autoFocus
         />
       </Field>
@@ -725,24 +722,23 @@ function NovelForm(f: NovelFormProps) {
       {/* ── 总字数 / 章数 双联控件 ── */}
       <div className="grid grid-cols-2 gap-3">
         <Field label="目标总字数（万字）" required>
-          <input
+          <Input
             type="number"
             min={1}
             step={5}
             value={f.novelTotalWordsK}
             onChange={(e) => f.setNovelTotalWordsK(Math.max(1, parseInt(e.target.value, 10) || 0))}
-            className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
           />
         </Field>
         <Field label="目标总章节数" required hint={f.novelChaptersTouched ? '已手动调整' : '随平台 + 总字数自动派生'}>
           <div className="flex gap-1.5">
-            <input
+            <Input
               type="number"
               min={5}
               step={10}
               value={f.novelTotalChapters}
               onChange={(e) => f.setNovelTotalChapters(Math.max(5, parseInt(e.target.value, 10) || 0))}
-              className="flex-1 bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+              className="flex-1"
             />
             {f.novelChaptersTouched && (
               <button
@@ -869,13 +865,12 @@ function NovelForm(f: NovelFormProps) {
       </Field>
 
       <Field label="一句话简介 / 卖点（可选）" hint="≤ 100 字，营销向，会出现在大纲首页">
-        <input
+        <Input
           type="text"
           value={f.novelLogline}
           onChange={(e) => f.setNovelLogline(e.target.value)}
           placeholder="例：当所有修真者都在追逐天道，他选择跟天道讨债"
           maxLength={120}
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
