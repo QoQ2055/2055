@@ -63,6 +63,13 @@ export interface RollingContextOptions {
   appendIncrementalDelta?: boolean;
   /** 远距单章原文塞入"增量补丁"时的截断字符上限，默认 400 */
   incrementalChapterMaxChars?: number;
+  /**
+   * gap-c · 在近距区原文后追加 "上一章末尾 N 段" 显式标注 block，让 LLM 视觉聚焦本章开头需衡接。
+   * 默认 3；0 = 不注入；currentIndex === 1 （无上一章）自动跳过。
+   */
+  prevTailParagraphs?: number;
+  /** prev-tail block 总字数硬截断上限，防 token 爆炸，默认 800。 */
+  prevTailMaxChars?: number;
   /** 调用 LLM 浓缩时使用 — 必填 */
   settings: SettingsState;
   signal?: AbortSignal;
@@ -177,6 +184,24 @@ export async function buildRollingContext(
     out.push(recentParts.join('\n').trim());
   }
 
+  // ─── gap-c · 上一章末尾显式标注 block ───────────────────────
+  // CK §2.2 R2 守约：仅追加 block，buildRollingContext 主流程 0 修改。
+  const prevTailN = opts.prevTailParagraphs ?? 3;
+  if (prevTailN > 0 && opts.currentIndex > 1) {
+    const prevChapter = sorted.find((c) => c.index === opts.currentIndex - 1);
+    if (prevChapter) {
+      const tailBlock = formatPrevChapterTail(
+        prevChapter,
+        prevTailN,
+        opts.prevTailMaxChars ?? 800,
+      );
+      if (tailBlock) {
+        out.push('');
+        out.push(tailBlock);
+      }
+    }
+  }
+
   return {
     rolling: out.join('\n').trim(),
     condensed,
@@ -186,6 +211,39 @@ export async function buildRollingContext(
     condenseCost,
     condenseDurationMs,
   };
+}
+
+/* ───────────────────────────────────────────────────────────────────
+ * gap-c · 上一章末尾标注 block 格式化
+ * CK I-1 纯字符串拼接，0 LLM 调用。
+ * ─────────────────────────────────────────────────────────────────── */
+function formatPrevChapterTail(
+  prevChapter: ChapterRecord,
+  paragraphs: number,
+  maxChars: number,
+): string {
+  // 拆段策略：以 \n\n 划分，过滤空段，取末尾 N 段。
+  const allParas = prevChapter.content
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+  if (allParas.length === 0) return '';
+
+  const tailParas = allParas.slice(-paragraphs);
+  let body = tailParas.join('\n\n');
+
+  // 硬截断：总字数超 maxChars 从末尾保留。
+  if (body.length > maxChars) {
+    body = '…' + body.slice(-maxChars);
+  }
+
+  return [
+    `## 上一章（第 ${prevChapter.index} 章 · 「${prevChapter.title}」）末尾 ${tailParas.length} 段【⚠ 本章开头需自然衔接】`,
+    '',
+    body,
+    '',
+    '> 衔接提示：本章开头宜自然承接上述末尾画面 / 情绪 / 时空，避免硬切。',
+  ].join('\n');
 }
 
 /* ───────────────────────────────────────────────────────────────────
