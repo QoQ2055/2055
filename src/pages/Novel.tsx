@@ -1564,13 +1564,18 @@ function PreviewModal({
         >
           {displayBody}
         </pre>
-        {/* v2 阶段 2.9 · 章节级 6 维评分（不持久化，仅当前会话） */}
+        {/* v2 阶段 2.9 · 章节级 6 维评分（不持久化，仅当前会话）+ gap-c 第 7 维 transition */}
         {isChapterPreview && (
           <ChapterScoreCardSlot
             text={displayBody}
             chapterKey={`${chapterSrc}:${chapterTitle}`}
             nodeId={chapterSrc === 'draft' ? 'novel.3.1' : 'novel.3.2'}
             stageId="novel"
+            prevChapterContent={
+              chapterIndex != null && chapterIndex > 1
+                ? (polishMeta.chapterContents?.[chapterIndex - 1] ?? draftMeta.chapterContents?.[chapterIndex - 1])
+                : undefined
+            }
           />
         )}
         {/* v2 阶段 2.4 · 章节自动校验面板（仅章节预览场景） */}

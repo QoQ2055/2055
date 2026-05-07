@@ -27,6 +27,8 @@ interface Props {
   nodeId: string;
   /** stageId 与 nodeId 匹配，如 'novel' */
   stageId: StageId;
+  /** gap-c · 上一章原文。提供且 settings.enableTransitionScoring 开启时，启动 transition 第 7 维 LLM 评分。 */
+  prevChapterContent?: string;
 }
 
 interface MemoState {
@@ -35,7 +37,7 @@ interface MemoState {
   history: ScoreCard[];
 }
 
-export function ChapterScoreCardSlot({ text, chapterKey, nodeId, stageId }: Props) {
+export function ChapterScoreCardSlot({ text, chapterKey, nodeId, stageId, prevChapterContent }: Props) {
   const enabled = useSettings((s) => s.enableScoreCard !== false);
   const [state, setState] = useState<MemoState>({ history: [] });
   const [busy, setBusy] = useState(false);
@@ -77,6 +79,10 @@ export function ChapterScoreCardSlot({ text, chapterKey, nodeId, stageId }: Prop
         ...DEFAULT_DIMENSION_WEIGHTS,
         ...(settings.scoreCardWeights ?? {}),
       };
+      // gap-c · 仅在 settings.enableTransitionScoring 开启时传上一章原文。关闭时第 7 维 inactive。
+      const transitionPrev = (settings.enableTransitionScoring !== false && prevChapterContent && !skipLlm)
+        ? prevChapterContent
+        : undefined;
       const card = await runScoreCard({
         artifact: synthetic,
         project: project.ctx,
@@ -84,6 +90,7 @@ export function ChapterScoreCardSlot({ text, chapterKey, nodeId, stageId }: Prop
         settings,
         weights,
         skipLlm,
+        prevChapterContent: transitionPrev,
       });
       setState((prev) => {
         // previous = 旧的 current（如有）；history 累积最近 5 条

@@ -35,13 +35,16 @@ export interface SettingsState {
   enableScoreCard: boolean;         // 节点产出后显示 6 维评分（前 4 维自动跑，LLM 维度按需重算）
   /** gap-b · N3.2 润色完成后自动提取角色状态、N3.1 草稿注入上一章状态摘要。默认 false 避免被动产生 token 费用。 */
   enableCharacterStateExtraction: boolean;
-  scoreCardWeights?: Partial<{      // 6 维度自定义权重（默认等权 1.0），缺省 = 等权
+  /** gap-c · 第 7 维 transition 衔接顺畅度评分（仅当提供上一章原文时起作用）。默认 true。 */
+  enableTransitionScoring: boolean;
+  scoreCardWeights?: Partial<{      // 7 维度自定义权重（默认等权 1.0），缺省 = 等权
     genre: number;
     method: number;
     kbRedline: number;
     craft: number;
     r1Align: number;
     userKbStyle: number;
+    transition: number;
   }>;
   set: (patch: Partial<SettingsState>) => void;
   reset: () => void;
@@ -65,6 +68,7 @@ const DEFAULTS = {
   enableSelfCheckContext: true,
   enableScoreCard: true,
   enableCharacterStateExtraction: false,
+  enableTransitionScoring: true,
   scoreCardWeights: undefined,
 };
 
