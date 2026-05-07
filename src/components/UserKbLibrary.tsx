@@ -21,6 +21,7 @@ import {
 } from '../store/userKb';
 import { UserKbUploadDialog } from './UserKbUploadDialog';
 import { MarkdownView } from './MarkdownView';
+import { confirm as confirmDialog } from '../store/confirm';
 
 const TYPE_FILTER_OPTIONS: Array<{ value: UserKbDocType | 'all'; label: string }> = [
   { value: 'all', label: '全部' },
@@ -78,7 +79,13 @@ export function UserKbLibrary() {
 
   async function handleDelete(d: UserKbDoc) {
     if (d.id == null) return;
-    if (!confirm(`确认删除「${d.title}」？\n\n注意：所有项目里对该资料的绑定也会自动失效（保留为悬空引用，无副作用）。`)) return;
+    const ok = await confirmDialog({
+      title: `删除「${d.title}」？`,
+      message: '所有项目里对该资料的绑定会自动失效（保留为悬空引用 · 无副作用）。',
+      confirmLabel: '删除',
+      danger: true,
+    });
+    if (!ok) return;
     await deleteUserKbDoc(d.id);
     if (activeId === d.id) setActiveId(null);
     refresh();

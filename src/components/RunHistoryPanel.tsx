@@ -14,6 +14,7 @@ import {
   listRecentRuns, listRunsForNode, clearRunHistoryForProject,
   type RunRecord,
 } from '../store/db';
+import { confirm as confirmDialog } from '../store/confirm';
 
 export interface RunHistoryPanelProps {
   /** When provided, scope to this node only */
@@ -84,7 +85,13 @@ export function RunHistoryPanel({
             className="btn-ghost px-2 py-1 text-xs hover:text-danger"
             onClick={async (e) => {
               e.stopPropagation();
-              if (!confirm('清空当前项目的全部运行历史？此操作不可撤销。')) return;
+              const ok = await confirmDialog({
+                title: '清空当前项目的全部运行历史？',
+                message: '此操作不可撤销。',
+                confirmLabel: '清空',
+                danger: true,
+              });
+              if (!ok) return;
               await clearRunHistoryForProject(0);
               setTick((t) => t + 1);
             }}

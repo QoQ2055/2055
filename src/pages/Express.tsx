@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import clsx from 'clsx';
 import { Input, Textarea } from '../components/ui';
+import { confirm as confirmDialog } from '../store/confirm';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep, runStoryboardPhase2Loop } from '../pipeline/runner';
 import type {
@@ -345,22 +346,34 @@ export function Express() {
   const importReady = !!sb7;
 
   /** 清空指定 stage 下所有 step 的产物（带 confirm）。 */
-  function clearStage(stageId: 'screenplay' | 'assets' | 'storyboard', label: string) {
+  async function clearStage(stageId: 'screenplay' | 'assets' | 'storyboard', label: string) {
     if (!manifest || chainBusy) return;
     const stage = manifest.stages.find((s) => s.id === stageId);
     if (!stage) return;
     const has = stage.steps.some((st) => !!project.artifacts[st.id]);
     if (!has) return;
-    if (!confirm(`确定清空「${label}」阶段的全部产物？此操作不可撤销。`)) return;
+    const ok = await confirmDialog({
+      title: `清空「${label}」阶段的全部产物？`,
+      message: '此操作不可撤销。',
+      confirmLabel: '清空',
+      danger: true,
+    });
+    if (!ok) return;
     for (const st of stage.steps) project.clearArtifact(st.id);
   }
 
   /** 清空整个项目的所有产物 + 重置进度（带二次 confirm）。 */
-  function clearAll() {
+  async function clearAll() {
     if (chainBusy) return;
     const count = Object.keys(project.artifacts).length;
     if (count === 0) return;
-    if (!confirm(`⚠ 确定清空全部 ${count} 个产物？项目设定（题材 / 时长等）保留，但所有 LLM 生成内容会被删除。此操作不可撤销。`)) return;
+    const ok = await confirmDialog({
+      title: `清空全部 ${count} 个产物？`,
+      message: '项目设定（题材 / 时长等）保留 · 但所有 LLM 生成内容会被删除。此操作不可撤销。',
+      confirmLabel: '清空全部',
+      danger: true,
+    });
+    if (!ok) return;
     project.resetAll();
   }
 
@@ -508,7 +521,14 @@ export function Express() {
           headerActions={importReady && (
             <button
               className="btn-ghost text-tight-sm text-fg-muted hover:text-danger"
-              onClick={() => { if (confirm('确定清空已导入剧本？')) clearScreenplay(); }}
+              onClick={async () => {
+                const ok = await confirmDialog({
+                  title: '清空已导入剧本？',
+                  confirmLabel: '清空',
+                  danger: true,
+                });
+                if (ok) clearScreenplay();
+              }}
               disabled={chainBusy}
               title="清空已导入剧本"
             >
@@ -907,8 +927,14 @@ function NodeCard(p: {
           {p.artifact && p.onClear && (
             <button
               className="btn-ghost text-tight-sm px-1.5 py-0.5 text-fg-muted hover:text-danger"
-              onClick={() => {
-                if (confirm(`确定清空「${p.step.title}」（${p.step.id}）的产物？`)) p.onClear?.();
+              onClick={async () => {
+                const ok = await confirmDialog({
+                  title: `清空「${p.step.title}」的产物？`,
+                  message: `节点 ID: ${p.step.id}`,
+                  confirmLabel: '清空',
+                  danger: true,
+                });
+                if (ok) p.onClear?.();
               }}
               disabled={p.busy}
               title="清空本步产物"

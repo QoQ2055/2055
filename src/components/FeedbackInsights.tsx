@@ -24,6 +24,7 @@ import {
 } from '../store/userKb';
 import { extractUserKbDoc } from '../llm/extractKb';
 import { useSettings } from '../store/settings';
+import { confirm as confirmDialog } from '../store/confirm';
 
 const MIN_FEEDBACK_TO_SUMMARIZE = 3;
 
@@ -72,7 +73,13 @@ export function FeedbackInsights() {
   }, [feedback, filterIssue]);
 
   async function handleDelete(id: number) {
-    if (!confirm('确认删除这条反馈？')) return;
+    const ok = await confirmDialog({
+      title: '删除这条反馈？',
+      message: '删除后不可恢复。',
+      confirmLabel: '删除',
+      danger: true,
+    });
+    if (!ok) return;
     await deleteUserKbFeedback(id);
     setSelectedIds((cur) => { const n = new Set(cur); n.delete(id); return n; });
     refresh();
@@ -105,7 +112,13 @@ export function FeedbackInsights() {
   /** P9-G 批量删除选中 */
   async function handleBulkDelete() {
     if (selectedIds.size === 0) return;
-    if (!confirm(`确认删除选中的 ${selectedIds.size} 条反馈？此操作不可逆。`)) return;
+    const ok = await confirmDialog({
+      title: `删除选中的 ${selectedIds.size} 条反馈？`,
+      message: '此操作不可逆。',
+      confirmLabel: '删除',
+      danger: true,
+    });
+    if (!ok) return;
     await bulkDeleteUserKbFeedback([...selectedIds]);
     setSelectedIds(new Set());
     refresh();
@@ -116,7 +129,13 @@ export function FeedbackInsights() {
     const visibleIds = filtered.map((fb) => fb.id).filter((id): id is number => id != null);
     if (visibleIds.length === 0) return;
     const desc = filterIssue === 'all' ? '全部' : `「${USER_KB_FEEDBACK_ISSUE_META[filterIssue]}」`;
-    if (!confirm(`确认删除${desc}反馈共 ${visibleIds.length} 条？此操作不可逆。`)) return;
+    const ok = await confirmDialog({
+      title: `删除${desc}反馈 ${visibleIds.length} 条？`,
+      message: '此操作不可逆。',
+      confirmLabel: '删除',
+      danger: true,
+    });
+    if (!ok) return;
     await bulkDeleteUserKbFeedback(visibleIds);
     setSelectedIds(new Set());
     refresh();

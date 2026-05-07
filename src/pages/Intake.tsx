@@ -11,6 +11,7 @@ import {
 } from '../pipeline/intake';
 import type { SourceChunk } from '../pipeline/types';
 import { Textarea } from '../components/ui';
+import { confirm as confirmDialog } from '../store/confirm';
 
 export function Intake() {
   const settings = useSettings();
@@ -242,8 +243,13 @@ export function Intake() {
                 busy={!!busyChunkIds[c.id]}
                 err={errorByChunk[c.id]}
                 onClick={() => setActiveChunkId(c.id)}
-                onDelete={() => {
-                  if (confirm(`删除「${c.title}」？`)) {
+                onDelete={async () => {
+                  const ok = await confirmDialog({
+                    title: `删除「${c.title}」？`,
+                    confirmLabel: '删除',
+                    danger: true,
+                  });
+                  if (ok) {
                     project.removeSourceChunk(c.id);
                     if (activeChunkId === c.id) setActiveChunkId(null);
                   }

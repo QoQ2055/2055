@@ -8,6 +8,7 @@ import {
 import { ManualInjectDialog } from '../components/ManualInjectDialog';
 import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
 import clsx from 'clsx';
+import { confirm as confirmDialog } from '../store/confirm';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runTargetedSelfCheck, type SelfCheckReport } from '../pipeline/selfCheck';
@@ -348,8 +349,14 @@ export function Screenplay(props: ScreenplayProps = {}) {
           </span>
           <button
             className="btn-outline text-xs ml-auto"
-            onClick={() => {
-              if (!confirm(`清理 ${legacyScreenplayCount} 条遗留 screenplay.* 产物？\n（不影响 S0 原作档案、R1' 改编指令书、R9' 总编裁决，也不影响新的 A1..A6 产物）`)) return;
+            onClick={async () => {
+              const ok = await confirmDialog({
+                title: `清理 ${legacyScreenplayCount} 条遗留 screenplay.* 产物？`,
+                message: '不影响 S0 原作档案、R1\' 改编指令书、R9\' 总编裁决 · 也不影响新的 A1..A6 产物。',
+                confirmLabel: '清理',
+                danger: true,
+              });
+              if (!ok) return;
               // 仅清 screenplay.{1..8}，保留 screenplay.r1 / screenplay.r9
               for (const k of Object.keys(project.artifacts)) {
                 if (/^screenplay\.\d+$/.test(k)) project.clearArtifact(k);

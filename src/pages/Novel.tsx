@@ -57,6 +57,9 @@ import { NovelSettingsDialog } from './novel/NovelSettingsDialog';
 // ui-v3 PR-1B · 局部 J/K 章节切换快捷键
 import { isEditingTarget } from '../lib/shortcuts';
 
+// ui-v3 PR-1C · 替代 native confirm
+import { confirm as confirmDialog } from '../store/confirm';
+
 interface RunState { status: NodeStatus; streamed: string; error?: string }
 
 export function Novel() {
@@ -1213,8 +1216,14 @@ function ChapterList({
               <button
                 className="text-fg-muted hover:text-danger px-1"
                 title="撤销所有批准状态"
-                onClick={() => {
-                  if (!confirm('确认撤销本项目中所有章节的批准状态？')) return;
+                onClick={async () => {
+                  const ok = await confirmDialog({
+                    title: '撤销本项目中所有章节的批准状态？',
+                    message: '已批准的草稿和润色稿都会被取消批准 · 不影响内容本身。',
+                    confirmLabel: '全部撤销',
+                    danger: true,
+                  });
+                  if (!ok) return;
                   if (draftApprovedSet.size > 0) onBulkRevoke('draft');
                   if (polishApprovedSet.size > 0) onBulkRevoke('polish');
                 }}

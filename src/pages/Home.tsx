@@ -7,6 +7,7 @@ import {
 import { Button } from '../components/ui';
 import { EmptyState } from '../components/ui/feedback';
 import { toast } from '../store/toast';
+import { confirm } from '../store/confirm';
 import { db, type Project } from '../store/db';
 import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
@@ -47,7 +48,12 @@ export function Home() {
 
   /** 归档当前活动项目（PR-3 · ActiveProjectCard 「归档」按钮）*/
   async function handleArchiveActive() {
-    if (!confirm(`归档「${activeCtx.name}」到历史项目？\n当前工作区会清空，可随时从下方载入。`)) return;
+    const ok = await confirm({
+      title: `归档「${activeCtx.name}」到历史项目？`,
+      message: '当前工作区会清空，可随时从下方载入。',
+      confirmLabel: '归档',
+    });
+    if (!ok) return;
     setBusy(true);
     try {
       await archiveCurrent();
@@ -112,7 +118,12 @@ export function Home() {
   }
 
   async function handleLoad(id: number) {
-    if (!confirm('载入此项目？当前活动项目（若有产物）会先归档保存。')) return;
+    const ok = await confirm({
+      title: '载入此项目？',
+      message: '当前活动项目（若有产物）会先归档保存。',
+      confirmLabel: '载入',
+    });
+    if (!ok) return;
     setBusy(true);
     try {
       await loadFromDb(id);
@@ -129,7 +140,13 @@ export function Home() {
   }
 
   async function handleDelete(id: number, name: string) {
-    if (!confirm(`确认删除项目「${name}」及其所有产物？此操作不可撤销。`)) return;
+    const ok = await confirm({
+      title: `删除项目「${name}」？`,
+      message: '该项目及其所有产物将被永久删除 · 此操作不可撤销。',
+      confirmLabel: '删除',
+      danger: true,
+    });
+    if (!ok) return;
     await deleteFromDb(id);
     await refreshList();
   }
@@ -154,7 +171,12 @@ export function Home() {
     try {
       const pkg = await parseProjectFile(file);
       if (target === 'active') {
-        if (!confirm(`将「${pkg.ctx.name}」导入为活动项目？当前活动项目会被自动归档。\n\n资产: ${pkg.artifacts.length} 个 · 运行历史: ${pkg.runHistory?.length ?? 0} 条`)) {
+        const ok = await confirm({
+          title: `将「${pkg.ctx.name}」导入为活动项目？`,
+          message: `当前活动项目会被自动归档。\n资产: ${pkg.artifacts.length} 个 · 运行历史: ${pkg.runHistory?.length ?? 0} 条`,
+          confirmLabel: '导入',
+        });
+        if (!ok) {
           setBusy(false); return;
         }
         const summary = await importAsActiveProject(pkg);
