@@ -516,6 +516,26 @@
       "injectsTo": ["novel.1.2", "novel.3.1", "novel.3.2"],
       "estimatedTokens": 750,
       "conflictsWith": []
+    },
+    {
+      "id": "information-asymmetry-method",
+      "title": "\u4fe1\u606f\u5dee\u9b54\u672f\u6cd5 \u00b7 \u6545\u4e8b\u620f\u5267\u6027\u7684\u5e95\u5c42\u5f15\u64ce",
+      "file": "information-asymmetry-method.md",
+      "category": "craft",
+      "summary": "\u5143\u6280\u6cd5\u578b\u6a21\u5757\u00b73 \u724c\u5c40\u73a9\u6cd5\uff08\u66ff\u4e3b\u89d2\u7740\u6025\u60ac\u5ff5/\u548c\u4e3b\u89d2\u4e00\u8d77\u731c\u60ac\u7591/\u7b49\u4e3b\u89d2\u51fa\u624b\u723d\u611f\uff09+ 4 \u5b89\u63d2\u624b\u6cd5\uff08\u53f0\u8bcd/\u52a8\u4f5c\u8868\u60c5/\u9053\u5177\u73af\u5883/\u65c1\u767d\u95ea\u56de\uff09+ \u91d1\u624b\u6307\u672c\u8d28=\u7ec8\u6781\u4fe1\u606f\u724c\u3002\u6765\u6e90\uff1a\u58a8\u9999\u9601\u67d2\u7237\u300a\u4fe1\u606f\u5dee\u9b54\u672f\u300b\u7b2c\u4e09\u8bfe\u3002\u4e0e nine-pleasure-types-pack \u914d\u5957\u3002\u51e0\u4e4e\u6240\u6709\u9879\u76ee\u9002\u7528\u3002",
+      "injectsTo": ["novel.1.1", "novel.1.2", "novel.2.1", "novel.2.2", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 850,
+      "conflictsWith": []
+    },
+    {
+      "id": "nine-pleasure-types-pack",
+      "title": "9 \u5927\u723d\u611f\u7c7b\u578b \u00d7 \u4fe1\u606f\u5dee\u6a21\u578b + 2 \u7c7b\u8650\u5fc3\u62c9\u626f",
+      "file": "nine-pleasure-types-pack.md",
+      "category": "craft",
+      "summary": "\u723d\u70b9\u5206\u7c7b\u901f\u67e5\u578b\u00b711 \u7c7b\u4fe1\u606f\u5dee\u6a21\u578b\uff1aD1 \u6253\u8138/D2 \u626e\u732a\u5403\u864e/D3 \u9006\u88ad/D4 \u56e2\u5ba0/D5 \u964d\u7ef4\u6253\u51fb/D6 \u517b\u6210/D7 \u7834\u5c40/D8 \u5fe0\u72ac/D9 \u96c6\u4f53\u8363\u8a89 + E1 \u8bef\u4f1a\u9519\u8fc7/E2 \u771f\u76f8\u5927\u767d\u3002\u6bcf\u7c7b\u542b\u4fe1\u606f\u5dee\u516c\u5f0f/\u793a\u4f8b/LLM \u6a21\u677f/\u7ec4\u5408\u7b56\u7565\u3002\u6765\u6e90\uff1a\u58a8\u9999\u9601\u67d2\u7237\u300a\u4fe1\u606f\u5dee\u9b54\u672f\u300b\u7b2c\u4e09\u8bfe\u3002\u4e0e information-asymmetry-method \u914d\u5957\u3002\u723d\u6587/\u77ed\u5267/\u6253\u8138\u6d41\u5fc5\u542f\u3002",
+      "injectsTo": ["novel.2.1", "novel.2.2", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 900,
+      "conflictsWith": []
     }
   ]
 }
