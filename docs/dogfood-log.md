@@ -9,6 +9,259 @@
 
 ---
 
+## v6 epic · ACE-lite 反馈闭环（ace-lite-feedback-loop）（2026-05-07 完成 PR-1+PR-2 · PR-3 待用户 dogfood 后增量）
+
+### Epic 总览
+
+| 维度 | 实测 | 备注 |
+|---|---|---|
+| **背景** | v5 epic 已落地 readerLayer · 但失败信号（ScoreCard / consistencyCheck / readerLayer / userFeedback）止步于 UI · 未反馈到 prompt | 见 preflight §1.2 |
+| **目标** | 引入 ACE 三角色 layer-1 浅集成：Generator (复用 N3.x) + Reflector (NEW novel.9 LLM step) + Curator (人工审阅 + 手动 commit) | 论文 arXiv 2510.04618v3 · batch-15 method module |
+| **范围** | 11 文件 · ~1269 行 (含 NEW 文件全文 · 净改动 ~265 行 · 与 PRD 估 ~250 一致) | 见 §2 ledger |
+| **红线** | **0 豁免**（gap-c R1 严守 · 仅 NEW prompt novel.9 · 不改现有 N3.x） | 与 v5 epic R1 豁免不同 |
+| **PR 数** | 3 PR + Stage 2 docs 1 commit · 共 5 commits（含 preflight） | 见 §1 |
+| **Commits** | preflight `942d278` → Stage 2 docs `be5c9fa` → PR-1 `98c5f63` → PR-2 `254b301` → 本节 (PR-3) | git log |
+| **完成时间** | ~3 小时（preflight ~30 min + Stage 2 docs ~120 min + PR-1 ~30 min + PR-2 ~30 min + PR-3 ~15 min） | 实测 |
+| **vite build** | ✅ 1943 modules · 0 errors · 3.25s（baseline 1938 → +5 新模块） | npx vite build × 2 次 |
+
+### §1 PR-1/2/3 验证
+
+#### PR-1 · schema + Reflector pipeline（commit 98c5f63）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | ≥ 1939 | 1941 | ✅ |
+| `vite build` 时间 | ≤ 5s | 3.26s | ✅ |
+| F1 novel/9.json | ~30 行 NEW | 15 行 | 🟡 比估短（system 文本紧凑） |
+| F2 prompts/manifest.json | NEW · 含 novel.9 | NEW (312 行 · 含 9 stages 全文) | 🟡 PRD 估 +10 行（仅 novel.9 part）· 实际首次入版本库 |
+| F3 src/pipeline/reflector.ts | ~85 行 NEW | 308 行 NEW | 🟡 比估长（含完整 collectFailureSignals + parser）|
+| F4 src/store/reflectorLessons.ts | ~75 行 NEW | 131 行 NEW | 🟡 比估长（含详细注释 + 完整类型）|
+| F5 src/store/db.ts | +13 行 v7 | +16 行 | ✅ |
+| F6 src/store/settings.ts | +12 行 | +19 行 | ✅ |
+| F7 src/pipeline/novelLoop.ts | +18 行 hook | +15 行 | ✅ |
+| F8 .gitignore | +1 行 | +4 行 (含 manifest.json + novel/9.json + 注释) | 🟡 PRD 未预见 manifest.json 例外 |
+| Dexie v7 stores 字符串 = v6 + 1 表 | string equal | string equal | ✅ I-2 |
+| pipeline/scoreCard.ts diff | 0 行 | 0 行 | ✅ I-7 |
+| pipeline/consistencyCheck.ts diff | 0 行 | 0 行 | ✅ I-7 |
+| pipeline/characterStates.ts diff | 0 行 | 0 行 | ✅ I-7 |
+| 现有 prompt JSON diff | 0 行 | 0 行 | ✅ I-5 |
+
+#### PR-2 · ReflectorLessonsPanel UI（commit 254b301）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1943 | 1943 | ✅ |
+| `vite build` 时间 | ≤ 5s | 3.25s | ✅ |
+| F9 ReflectorLessonsPanel.tsx | ~110 行 NEW | 389 行 NEW | 🟡 比估长（含详情 modal + 完整 fallback）|
+| F10 reflectorLessonsPanel.ts | ~25 行 NEW | 56 行 NEW | ✅ |
+| F11 Novel.tsx | +5 行 | +4 行（import + mount）| ✅ |
+| 'reader' viewMode（v5）保留 | 不破坏 | 不破坏 | ✅ R5 |
+| ReflectorLessonsPanel 独立面板 | 是（不嵌入 CharacterBible） | 是（mount 在 CharacterBible 之后） | ✅ I-6 |
+| 独立 localStorage key | 'flil:reflector-lessons:state' | 'flil:reflector-lessons:state' | ✅ I-6 |
+| disabled state 显示 | italic 黄底提示 | italic 黄底提示 | ✅ I-4 |
+| modal 详情 4 字段可编辑 | 是 | 是（lessonContent + suggested + reviewNote + committedTo）| ✅ I-3 |
+| modal 不写 method module | 0 fs 调用 | 0 fs 调用 | ✅ I-3 |
+
+#### PR-3 · dogfood log + 文档（本 section）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| docs/dogfood-log.md 加节 | v6 epic section | 本 section | ✅ |
+| 实测数据来源 | git log + vite build × 2 | 见 §0 + §1 | ✅ |
+| dogfood 实测项 | 6 类用户操作 | 见 §4（待用户实测后增量补充） | 🟡 待 user dogfood |
+
+### §2 累积 ledger
+
+| 文件 | 类型 | 行数 | commit | CK 验证 |
+|---|---|:---:|---|:---:|
+| `docs/planning/preflight-v6-ace-lite-feedback-loop.md` | docs | 532 | 942d278 | — |
+| `docs/planning/prd-v6-ace-lite-feedback-loop.md` | docs | 696 | be5c9fa | — |
+| `docs/planning/codebase-analysis-v6-ace-lite-feedback-loop.md` | docs | 529 | be5c9fa | — |
+| `docs/planning/code-knowledge-v6-ace-lite-feedback-loop.md` | docs | 457 | be5c9fa | — |
+| `public/methods/agentic-context-engineering.md` | method module | 466 | 541314c (batch-15) | — |
+| `public/methods/manifest.json` | method meta | +14 | 541314c | — |
+| `public/prompts/novel/9.json` | prompt | 15 (NEW) | 98c5f63 | I-5 ✅ |
+| `public/prompts/manifest.json` | prompt meta | 312 (NEW · 首次入版本库) | 98c5f63 | — |
+| `src/pipeline/reflector.ts` | pipeline | 308 (NEW) | 98c5f63 | I-1/I-7/I-8 ✅ |
+| `src/store/reflectorLessons.ts` | store | 131 (NEW) | 98c5f63 | I-3 ✅ |
+| `src/store/db.ts` | meta | +16 | 98c5f63 | I-2 ✅ |
+| `src/store/settings.ts` | meta | +19 | 98c5f63 | I-4 ✅ |
+| `src/pipeline/novelLoop.ts` | pipeline | +15 | 98c5f63 | I-8 ✅ |
+| `.gitignore` | meta | +4 | 98c5f63 | — |
+| `src/components/ReflectorLessonsPanel.tsx` | UI | 389 (NEW) | 254b301 | I-3/I-6 ✅ |
+| `src/store/reflectorLessonsPanel.ts` | store | 56 (NEW) | 254b301 | I-6 ✅ |
+| `src/pages/Novel.tsx` | mount | +4 | 254b301 | R5 ✅ |
+| `src/pipeline/scoreCard.ts` | pipeline | **0** | — | I-7 完美 |
+| `src/pipeline/consistencyCheck.ts` | pipeline | **0** | — | I-7 完美 |
+| `src/pipeline/characterStates.ts` | pipeline | **0** | — | I-7 完美 |
+| `src/components/CharacterBible.tsx` | UI | **0** | — | R5 / I-6 完美 |
+| `docs/dogfood-log.md` | docs | +~210 | (本 commit) | — |
+
+**总计**：5 commits（preflight + Stage 2 docs + PR-1 + PR-2 + PR-3）· src 增量 ~575 行（PR-1 ~165 + PR-2 ~330 + 80 净改动）· docs 增量 ~2670 行。
+
+### §3 红线审计
+
+| # | 红线 | v6 状态 | 实测证据 |
+|:---:|---|:---:|---|
+| R1 (gap-c) | 不改 `public/prompts/novel/*.json` | ✅ **不豁免** | git diff prompts/novel/ → 仅 NEW 9.json · 现有 N3.x 0 改动 |
+| R2 (gap-c) | 不改 ScoreCard 维度 | ✅ 不影响 | scoreCard.ts diff = 0 |
+| R3 (CK #1) | Dexie v1-v6 stores 0 变更 | ✅ 完全遵守 | v7 stores 字符串 = v6 + reflectorLessons 新表 |
+| R4 (gap-d #4) | 不改 runner.ts | ✅ 不影响 | runner.ts diff = 0 |
+| R5 (gap-b PR-3) | CharacterTimelineView 视觉风格保持 | ✅ 完美守住 | F4/F11 仅 mount 顺序追加 · 0 修改 |
+| R6 (testing) | 不删 / 不弱化既有 tests | ✅ 不影响 | 0 测试改动 |
+| R7 (v5 CK I-1) | readerLayer 字段全可选 | ✅ 严守 | 仅读取（reflector.ts collectFailureSignals）|
+| R8 (v5 CK I-3) | v6 stores 字符串 = v5 | ✅ 严守 | v6 块 0 改动 · v7 块复制 v6 后追加表 |
+
+**v6 epic 关键差异**：与 v5 epic 不同 · v6 是"红线友好"epic · 0 红线豁免。
+
+### §4 dogfood 待执行清单（用户实测后增量补充）
+
+```
+□ [V6-D-1] 启动 dev · 验证 dexie v6→v7 自动迁移
+       - 期望：旧 row 完全保留 · 无 upgrade error
+       - reflectorLessons 表存在但为空（length=0）
+       - console 应无 dexie warn / error
+       - 实测后填：[ ]
+
+□ [V6-D-2] settings 启用 reflectorThresholds.enabled=true
+       - localStorage FLIL.settings 应含 reflectorThresholds 对象
+       - 5 字段值：enabled / scoreCardMin=6 / consistencyCheckTriggerOnAny=true / readerLayerStaleChapterCount=5 / userFeedbackEnabled=true
+       - 实测后填：[ ]
+
+□ [V6-D-3] 跑 N3.2 polish 触发 reflector
+       - 找一个 ≥ 5 章项目 · 章节有 ScoreCard < 6（或 readerLayer 跨 5 章不变）
+       - polish 完成后 console 应有 [v6] 日志
+       - reflectorLessons 表新增 row · status='pending'
+       - 实测后填：[ ]
+
+□ [V6-D-4] 验证 LLM 输出 100-300 字 lessonContent
+       - lesson row.lessonContent 字数在 100-300
+       - lesson row.suggestedModule 在 active modules id 列表中（或 null）
+       - lesson 含 3 要素：哪个段落/角色 + 失败原因 + 改进 hint
+       - 实测后填：[ ]
+
+□ [V6-D-5] ReflectorLessonsPanel UI 验证
+       - Novel 页 CharacterBible 之后看到 panel · 默认折叠
+       - 展开 · 看到 pending 列表
+       - 切 status filter · 列表正确刷新
+       - 切 signal filter · 列表按信号类型过滤
+       - 实测后填：[ ]
+
+□ [V6-D-6] 详情 modal 操作流验证
+       - 点 [详情] 打开 modal
+       - 编辑 lessonContent / suggestedModule / reviewNote
+       - 点 [保存修改] · 不改 status · row 字段更新
+       - 点 [批准] · status='approved' · panel 列表刷新
+       - 用户手动打开 method module 文件 + git commit + 回 modal 填 committedTo + [标记已 commit] · status='committed'
+       - 实测后填：[ ]
+
+□ [V6-D-7] schema fallback 验证
+       - LLM 输出畸形 JSON（手动模拟）· parseReflectorResponse 返 null · 不抛错
+       - polish loop 不被阻塞（继续后续章节）
+       - 实测后填：[ ]
+
+□ [V6-D-8] CK I-3 严守验证
+       - 跑 reflector 100 次 · 检查 public/methods/*.md 全部 git diff = 0
+       - 仅 reflectorLessons 表有数据
+       - 实测后填：[ ]
+```
+
+### §5 后续 epic 依赖契约
+
+| 依赖 epic | 何时启动 | v6 提供的契约 |
+|---|---|---|
+| **v7 epic**（layer 2 · readerLayer 加 counter）| v6 完成 + 用户 dogfood ≥ 1 月 + lesson pass review > 70% | I-7 v5 readerLayer schema 不变 · v7 仅在子字段加 counter（add-only）|
+| **v8/v9 epic**（layer 3 · 自动 Curator）| v7 完成 + 多重审阅成本验证 | 必须先放宽 I-3 · 用户重新签字 · 加 rollback 机制 |
+| **gap-h epic**（交叉验证）| 与 v6 正交 · 可并行 | gap-h 用 v5 readerLayer · v6 用 reflector · I-7 严守 |
+
+### §6 erratum / lessons learned
+
+#### Lesson 1 · NEW prompt 的 .gitignore 例外比预想的多
+
+```
+PRD §5.1 / CA §1.4 写：novel/9.json + .gitignore +1 行
+实际：还需 manifest.json 例外（!public/prompts/manifest.json）
+
+原因：v6 epic 是首次让 prompts/manifest.json 进版本库（之前与所有 prompts 一起 ignore）
+影响：manifest.json 变成首次 commit 312 行（非 +10 行 diff）
+
+→ 教训：未来 prompt JSON 类 epic · 需检查 manifest.json 是否在版本库
+       v5 epic 没遇到此问题 · 因为只改单个 prompt · 不需更新 manifest
+```
+
+#### Lesson 2 · F3 reflector.ts 比预想的复杂
+
+```
+PRD §4.2 / CA §3.3 写：~85 行
+实际：308 行 · 因为完整实现：
+  - collectFailureSignals（4 类信号）
+  - pickTriggeringSignal（优先级排序）
+  - detectStaleReaderLayer（跨章扫描算法）
+  - parseReflectorResponse（4 候选容错）
+  - loadReflectorStep（缓存 manifest）
+  - buildUserOverride（prompt 注入）
+
+→ 教训：pipeline 层"看似简单"的步骤 · 实际生产代码含大量边缘 case
+       PRD 估算时应用×3 系数（~85 行 → ~250 行）
+```
+
+#### Lesson 3 · F9 UI 详情 modal 撑大了行数
+
+```
+PRD §6 / CA §3.9 写：~110 行
+实际：389 行 · 因为详情 modal 含：
+  - 4 字段可编辑（lessonContent / suggestedModule / reviewNote / committedTo）
+  - status 转换按钮（pending/approved/rejected/committed 4 状态各有不同 UI）
+  - 信号上下文显示
+  - I-3 提示框
+  - busy state + disabled 处理
+
+→ 教训：UI 完整 modal ≈ 200+ 行 · PRD 估时应分主面板（100）+ modal（200+）
+       未来 v7+ epic UI 估算应包含 modal 复杂度
+```
+
+#### Lesson 4 · CK I-7 完美守住的代价
+
+```
+v6 epic 全程 0 修改：
+  - src/pipeline/scoreCard.ts
+  - src/pipeline/consistencyCheck.ts
+  - src/pipeline/characterStates.ts
+  - public/prompts/novel/0/1.x/2.x/3.x.json（除 NEW 9.json）
+
+代价：reflector.ts 的 collectFailureSignals 必须从 artifact.meta 读 ScoreCard
+      （不调 runScoreCard · 因 runScoreCard 调用会触发新 LLM）
+      如果未来需要 reflector 主动调用 ScoreCard · 必须 v7 epic 重新签字
+
+→ 教训：CK I-7 / R5 这类"绝对不动"的红线 · 让设计层叠加（reflector 是消费者）
+       是好设计 · 但要预留扩展点（如 v7 / gap-h epic 可能需要更深集成）
+```
+
+### §7 下一步建议（用户决策）
+
+```
+1. 用户 dogfood：实测 §4 V6-D-1 ~ V6-D-8 八项
+   → 实测数据填入本 section §4
+   → 如发现 bug · 启动 v6 hotfix（小 PR）
+
+2. 启动 v7 epic（layer 2 · readerLayer 加 counter）
+   → 等用户 dogfood ≥ 1 月 + lesson pass review > 70%
+   → ~5h · BMAD Stage 2 + 3
+
+3. 启动 gap-h epic（交叉验证 · 与 v6 正交）
+   → 用 v5 readerLayer 数据 + v6 reflector 框架
+   → ~3-4h
+
+4. 启动 gap-g epic（CharacterBible 体验升级）
+   → ~5h
+
+5. 收工 · v6 epic 完成 · 进入 cool-down
+```
+
+---
+
 ## v5 epic · 双层存档（dual-layer-archive）（2026-05-07 完成 PR-1+PR-2 · PR-3 待用户 dogfood 后增量）
 
 ### Epic 总览
