@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import {
   Edit3, Play, Square, Loader2, CheckCircle2, Circle, AlertTriangle,
   BookOpen, Eye, ChevronRight, RotateCcw, Wand2, Sparkles,
-  Shield, ShieldCheck, ShieldAlert,
+  Shield, ShieldCheck, ShieldAlert, FileDown,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { UserKbBindingPanel } from '../components/UserKbBindingPanel';
@@ -60,6 +60,9 @@ import { isEditingTarget } from '../lib/shortcuts';
 // ui-v3 PR-1C · 替代 native confirm
 import { confirm as confirmDialog } from '../store/confirm';
 
+// gap-e · 导出抽屉
+import { ExportDrawer } from '../components/ExportDrawer';
+
 interface RunState { status: NodeStatus; streamed: string; error?: string }
 
 export function Novel() {
@@ -86,6 +89,8 @@ export function Novel() {
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
   const [draftUpTo, setDraftUpTo] = useState<number | ''>('');
   const [polishMode, setPolishMode] = useState<NovelPolishMode>('default');
+  // gap-e · 导出抽屉开关
+  const [exportOpen, setExportOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -524,6 +529,14 @@ export function Novel() {
               <Square className="size-4 mr-1" /> 中止
             </button>
           )}
+          {/* gap-e · 导出抽屉触发 */}
+          <button
+            onClick={() => setExportOpen(true)}
+            className="btn-ghost"
+            title="导出小说 / 资产 · 5 种格式"
+          >
+            <FileDown className="size-4 mr-1" /> 导出…
+          </button>
           <Link to="/" className="btn-ghost"><ChevronRight className="size-4 mr-1" /> 项目首页</Link>
         </div>
       </header>
@@ -865,6 +878,14 @@ export function Novel() {
           onClose={() => setPreviewNode(null)}
         />
       )}
+
+      {/* gap-e · 导出抽屉 · 默认高亮小说类 */}
+      <ExportDrawer
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        context={{ ctx, artifacts: project.artifacts }}
+        mode="novel"
+      />
     </div>
   );
 }

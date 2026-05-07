@@ -3,12 +3,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   Play, Square, Check, Pencil, RotateCcw, Stethoscope, Copy, AlertTriangle,
   CheckCircle2, Loader2, FileText, ChevronRight, Crown, Gavel, BookCopy,
-  Box, Download, ArrowRight,
+  Box, Download, ArrowRight, FileDown,
 } from 'lucide-react';
 import { ManualInjectDialog } from '../components/ManualInjectDialog';
 import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
 import clsx from 'clsx';
 import { confirm as confirmDialog } from '../store/confirm';
+import { ExportDrawer } from '../components/ExportDrawer';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runTargetedSelfCheck, type SelfCheckReport } from '../pipeline/selfCheck';
@@ -45,6 +46,8 @@ export function Screenplay(props: ScreenplayProps = {}) {
   const [error, setError] = useState('');
   const [activeIdx, setActiveIdx] = useState(1);
   const [injectOpen, setInjectOpen] = useState(false);
+  // gap-e · 导出抽屉开关
+  const [exportOpen, setExportOpen] = useState(false);
 
   // 把当前阶段最终剧本镜像写入 screenplay.7（让资产/分镜阶段能直接消费）
   function mirrorFinalScreenplayToS7(): boolean {
@@ -320,6 +323,14 @@ export function Screenplay(props: ScreenplayProps = {}) {
             >
               <Download className="size-4" /> 导入剧本
             </button>
+            {/* gap-e · 下载剧本…·与 exportToAssets“进入资产阶段”同名异义 · 用 FileDown 区分 */}
+            <button
+              className="btn-outline"
+              onClick={() => setExportOpen(true)}
+              title="下载剧本为 .fdx / .fountain 等业界标准格式"
+            >
+              <FileDown className="size-4" /> 下载剧本…
+            </button>
             {(project.artifacts['screenplay.7'] || (isAdapt && project.artifacts['adapt.6'])) && (
               <button
                 className="btn-outline"
@@ -526,6 +537,14 @@ export function Screenplay(props: ScreenplayProps = {}) {
           />
         ) : null}
       </main>
+
+      {/* gap-e · 导出抽屉 · 默认高亮剧本类 */}
+      <ExportDrawer
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        context={{ ctx: project.ctx, artifacts: project.artifacts }}
+        mode="screenplay"
+      />
 
       <ManualInjectDialog
         open={injectOpen}

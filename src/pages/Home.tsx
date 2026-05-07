@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useMemo, useState } from 'react';
 import {
   Plus, FolderOpen, Trash2, Download, Upload, BookOpen, Settings as SettingsIcon,
-  ArrowRight, Archive, Sparkles,
+  ArrowRight, Archive, Sparkles, FileDown,
 } from 'lucide-react';
 import { Button } from '../components/ui';
 import { EmptyState } from '../components/ui/feedback';
@@ -21,6 +21,7 @@ import {
 } from '../store/projectExport';
 import { NewProjectDialog } from '../components/NewProjectDialog';
 import { AdaptIntakeWizard } from '../components/AdaptIntakeWizard';
+import { ExportDrawer } from '../components/ExportDrawer';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
 import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/projectModes';
 
@@ -33,6 +34,8 @@ export function Home() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardSourceType, setWizardSourceType] = useState<string>('novel_long');
   const [busy, setBusy] = useState(false);
+  // gap-e · 导出抽屉·针对当前活动项目的 5 种创作产物格式
+  const [exportOpen, setExportOpen] = useState(false);
   const navigate = useNavigate();
 
   /** 当前活动项目摘要（PR-3 · ActiveProjectCard）· 无产物视为"空白" */
@@ -275,6 +278,15 @@ export function Home() {
               <Button
                 variant="outline"
                 size="sm"
+                onClick={() => setExportOpen(true)}
+                disabled={busy || !activeStatus.hasContent}
+                title="导出小说 / 剧本 / 资产 · 5 种格式"
+              >
+                <FileDown className="size-3.5" /> 导出…
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={handleArchiveActive}
                 disabled={busy}
                 title="归档当前 · 工作区清空"
@@ -443,6 +455,14 @@ export function Home() {
         initialAdaptSourceType={wizardSourceType}
         onCancel={() => setWizardOpen(false)}
         onSubmit={handleAdaptSubmit}
+      />
+
+      {/* gap-e · 创作产物导出抽屉 · 针对当前活动项目 */}
+      <ExportDrawer
+        open={exportOpen}
+        onClose={() => setExportOpen(false)}
+        context={{ ctx: activeCtx, artifacts: activeArtifacts }}
+        mode="all"
       />
     </div>
   );
