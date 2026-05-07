@@ -9,6 +9,121 @@
 
 ---
 
+## ui-v4 epic · 主题外观（2026-05-08 PR-1 完成 · light/dark/system 三档 + Cmd+K 联动）
+
+### PR-1 · 主题切换基础设施 + 3 入口（commit `b0b39da`）
+
+**目标**：让用户能在亮/暗/跟随系统三档主题间一键切换 · 复活 `ui-v3 PR-1B` 文档明确标记的"切换主题"延后项 · 配合 ui-v3 Cmd+K 命令面板实现 keyboard-first 切换。
+
+**实装范围**：
+
+```
+新增文件 :
+  src/lib/theme.ts (~95 行 · applyTheme + resolveTheme + installInitialTheme + useThemeEffect)
+
+修改文件 :
+  src/store/settings.ts            · +theme: ThemeMode 字段 + setTheme(mode) 方法 + DEFAULTS theme='dark'
+  src/main.tsx                     · React 渲染前 installInitialTheme()（避 FOUC）
+  src/components/Layout.tsx        · useThemeEffect() 订阅 + system change 监听
+  src/components/CommandPalette.tsx · +3 主题命令（actions group · 14→17 命令池）
+  src/pages/Settings.tsx           · 主题外观区块 + ThemeSegment 3 档 radiogroup
+
+代码净增 : +214 / -3
+```
+
+**Command Palette 新增 3 命令**：
+
+| label | mode | keywords |
+|---|---|---|
+| 切换到亮色主题 | light | theme · light · 亮 · 白 · 日间 |
+| 切换到暗色主题 | dark | theme · dark · 暗 · 黑 · 夜间 |
+| 主题跟随系统 | system | theme · system · 跟随 · 系统 · 自动 |
+
+**主题应用机制**：
+
+```
+1. 启动期（main.tsx 在 React render 前）:
+   localStorage 'FLIL.settings'.state.theme → applyTheme(mode)
+   → 立即 add/remove html.dark · 设 html.style.colorScheme
+   → 避 FOUC（不等 zustand 异步 hydrate）
+
+2. 运行时（Layout useThemeEffect）:
+   • settings.theme 变化 → applyTheme
+   • theme === 'system' 时 · matchMedia('(prefers-color-scheme: dark)')
+     change 事件触发 applyTheme('system') · 实时跟随 OS 切换
+
+3. 持久化（settings.ts persist）:
+   zustand persist 自动写 'FLIL.settings' · 下次启动从 localStorage 读取
+```
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-1 路由不动 | 仅修改 documentElement.classList + style.colorScheme | ✅ |
+| V3-I-4 不静默 | matchMedia 不可用 → console.warn + 回退 dark | ✅ |
+| V2-I-3/4 6 atoms 不动 | git diff src/components/ui/ | ✅ ThemeSegment 是 page-level（在 Settings 内） |
+| DESIGN.md ① token 不变 | 仅在 :root（亮）和 .dark（暗）已有 token 间切换 · 不引新 hex | ✅ |
+| 兼容现状（默认 dark） | DEFAULTS.theme = 'dark' · 与 index.html `class="dark"` 一致 · 已有用户无感升级 | ✅ |
+| FOUC 避免 | main.tsx 同步读 localStorage · 在 React render 前 apply · 不闪屏 | ✅ |
+
+**Build 验证**：`npx vite build → 0 errors · 3.49s`
+
+**PR-1 dogfood 用户手测项**：
+
+#### US-T1 · Cmd+K 切换主题（必测）
+
+```
+1. 任意页面按 Cmd+K → 输入"亮"或"light" → 命中"切换到亮色主题"
+2. Enter → 整个 UI 立即变亮（<html> 移除 dark class）+ toast"已切换到亮色主题"
+3. 再次 Cmd+K → "暗" → Enter → 变暗
+4. 再次 Cmd+K → "系统"或"system" → Enter → 跟随 OS · toast"主题已设为跟随系统"
+5. 在 OS 设置切换主题（mac System Preferences / Win 设置）
+   → fili 实时跟随（matchMedia change 事件触发）
+6. 关闭刷新页面 → 主题保持上次设置（不退化到 dark · localStorage 持久化）
+```
+
+#### US-T2 · Settings 页 segment 切换
+
+```
+1. /settings 顶部"主题外观"区块 · ThemeSegment 3 档按钮
+2. 当前选中态用 primary tint 高亮（bg-primary-500/15 + text-primary-400）
+3. 点其它档 → 立即生效 · 选中态 jump 到新档
+4. radiogroup a11y · 屏幕阅读器读出"radio · 选中/未选中"
+```
+
+#### US-T3 · FOUC 验证（关键体验）
+
+```
+1. 在 dark 主题下设置 theme='light'
+2. 刷新页面（Ctrl+R / F5）
+3. 预期：从浏览器看到第一帧就是亮色 · 不应先闪一下暗色再变亮
+4. 反之亦然（light → 设 dark → 刷新 → 第一帧暗）
+注：依赖 main.tsx installInitialTheme 在 React 渲染前同步执行
+```
+
+#### US-T4 · System 模式实时跟随
+
+```
+1. 设 theme='system'
+2. mac: 系统偏好设置 → 通用 → 外观 → 浅色 / 深色 / 自动 切换
+   Windows: 设置 → 个性化 → 颜色 → 选择默认应用模式 切换
+3. 不需刷新 fili 页面 · 应用应在 OS 切换瞬间同步 · ≤ 200ms 反应
+4. matchMedia 'change' 事件触发 useThemeEffect 内的 handler
+```
+
+#### US-T5 · 不变量回归
+
+```
+- [ ] DEFAULTS.theme='dark' · 旧用户首次访问无感（localStorage 不存在 theme 字段时回退 dark）
+- [ ] 6 atoms / NavItem / 路由 / Dexie schema 全部 0 修改
+- [ ] vite build 0 errors（3.50s · 模块数变化 ≤ +5）
+- [ ] 17 个 Cmd+K 命令全部仍可用
+- [ ] alert/confirm/native console 数：无新增
+```
+
+---
+
 ## gap-e epic · 创作产物导出（2026-05-08 PR-1 + PR-2 完成 · 5 格式 + Cmd+K 联动）
 
 ### PR-2 · ExportDrawer 全局化 + Cmd+K 命令面板联动（commit `991646d`）
