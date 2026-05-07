@@ -15,6 +15,7 @@ import { useState } from 'react';
 import { Wand2, RotateCcw } from 'lucide-react';
 import { RefinementToolPanel } from '../components/RefinementToolPanel';
 import { REFINEMENT_TOOLS } from '../pipeline/refinement';
+import { Textarea } from '../components/ui';
 
 const SAMPLE_TEXT = `他站在悬崖边，望着远方的云海，心中涌起复杂的情绪。多年的修炼，无数的挫折，仿佛都在这一刻有了答案。他想起了师父临终前的嘱托，想起了那些曾经并肩作战的同门，想起了那个已经离他而去的姑娘。
 
@@ -100,12 +101,12 @@ export function Refinery() {
           <label className="text-xs text-fg-secondary font-medium">原文（待润色）</label>
           <span className="text-tight-xs text-fg-muted font-mono">{text.length} 字</span>
         </div>
-        <textarea
+        <Textarea
           value={text}
           onChange={(e) => setText(e.target.value)}
           placeholder="在此粘贴要润色的小说正文（建议 ≤ 4000 字以避免超出上下文）..."
           rows={12}
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500 font-serif"
+          className="font-serif"
           spellCheck={false}
         />
       </div>

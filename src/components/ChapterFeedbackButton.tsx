@@ -11,6 +11,7 @@
 import { useState } from 'react';
 import { ThumbsDown, X, Check, AlertTriangle } from 'lucide-react';
 import clsx from 'clsx';
+import { Textarea } from './ui';
 import {
   recordUserKbFeedback,
   USER_KB_FEEDBACK_ISSUE_META,
@@ -165,8 +166,8 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                   {/* 文字理由 */}
                   <div>
                     <label className="block text-fg-secondary mb-1.5">详细理由（可选，建议写得越具体越好）</label>
-                    <textarea
-                      className="input w-full text-xs"
+                    <Textarea
+                      className="text-xs"
                       rows={3}
                       placeholder="例如：主角讲了一大段哲学独白，太脱戏；对话不像活人说话，太书面。"
                       value={reason}
@@ -186,8 +187,8 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                         🖍 抓取选中文字
                       </button>
                     </div>
-                    <textarea
-                      className="input w-full font-mono text-tight-sm"
+                    <Textarea
+                      className="font-mono text-tight-sm"
                       rows={4}
                       placeholder="把章节里最尴尬 / 最 AI 味的片段贴在这里，会作为「具体例证」沉淀"
                       value={highlightedExcerpt}
