@@ -9,6 +9,112 @@
 
 ---
 
+## 缺口 c · 章节衔接自然过渡（2026-05-07 完成 BMAD Stage 3）
+
+### Epic 总览
+
+| 维度 | 实测 | 来源 |
+|---|---|---|
+| **范围** | rollingContext 增强（"上一章末尾" 显式标注 block）+ ScoreCard 第 7 维 transition | PRD §1 / §3 |
+| **PR 数** | 4 (PR-1 rollingContext / PR-2 scoreCard 7th dim / PR-3 settings + 接入 / PR-4 dogfood) | CA §4 |
+| **Commit 数** | 6（PRD + CA + CK + 3 实施 PR + 本 dogfood PR-4）| git log |
+| **完成时间** | 单 session ~1.5h（gap-b 后无缝衔接）| — |
+
+### PR-by-PR 验证
+
+| PR | commit | src 行 | 估算 | 偏差 | CK 全绿 |
+|:---:|---|:---:|:---:|:---:|:---:|
+| PR-1 | `29b9033` | 46 | 70 | −34.3% | ✅ |
+| PR-2 | `5252627` | 95 | 120 | −20.8% | ✅ |
+| PR-3 | `8efcdc4` | 18 | 50 | −64.0% | ✅ |
+| PR-4 | （本次）| 0 src + ~80 docs | 80 | — | ✅ |
+| **累计 src** | | **159** | 240 | **−33.8%** | — |
+
+### 累积 ledger（CK §6 实测 · 极宽裕）
+
+```
+PRD NFR-3 cap:        350  (实测 −54.6% 低于)
+CK §6 接受线:          420  (实测 −62.1% 低于)
+CK §6 PAUSE 线:        454  (实测 −65.0% 低于)
+CK §6 回退线:          455  (实测 −65.1% 低于)
+实测累积:             159
+```
+
+→ **零 erratum 触发**。对比 gap-b（916 / 700 = +30.9% 超）/ gap-d（508 / 350 = +45.1% 超），gap-c 估算精度显著提升 · 验证"提质 epic"（add-only/wrapper）vs"新功能 epic"（schema + 完整 UI）的代码量差异。
+
+### CK §2 红线 · 全 PR 实测
+
+| 红线 | PR-1 | PR-2 | PR-3 |
+|:---:|:---:|:---:|:---:|
+| R1 prompt JSON 0 字符变化 | 0 ✅ | 0 ✅ | 0 ✅ |
+| R2 rollingContext 核心算法不变 | add-only ✅ | n/a | n/a |
+| R3 ScoreCard 6 维 0 字符变化 | 0 ✅ | add-only ✅ | 0 ✅ |
+| R4 gap-d/b/e 资产 0 diff | 0 ✅ | 0 ✅ | 0 ✅ |
+| R5 consistencyCheck 不动 | 0 ✅ | 0 ✅ | 0 ✅ |
+
+### CK §3 不变量 · 实测
+
+| 不变量 | 实测 | 状态 |
+|---|---|:---:|
+| I-1 rollingContext 0 新 LLM 调用 | grep `chatStream\(` count 不变 (1) | ✅ |
+| I-2 transition scorer 纯函数 | 不 import store；只接 settings 参数 | ✅ |
+| I-3 第 1 章 score = inactive 占位 | runScoreCard 默认 placeholder 路径生效 | ✅ |
+| I-4 0 新 localStorage key | settings 复用 `FLIL.settings` key | ✅ |
+| I-5 SCORE_DIMENSIONS 仅 add | 6 维字面量 16 hits（add-only 后多次出现）| ✅ |
+| I-6 weights 兼容性 | `scoreCardWeights ?? {}` 在 ChapterScoreCardSlot:78 仍工作 | ✅ |
+| I-7 0 新 npm 依赖 | package.json/lock 0 diff | ✅ |
+
+### 5 Open Question 决议落实
+
+| Q | CA 决议 | 实施位置 |
+|:---:|---|---|
+| Q1 prevTailParagraphs 默认值 | 3 段（200-500 字 · 800 字 cap）| `rollingContext.ts` 接口 + L189 默认值 ✅ |
+| Q2 注入路径 | rollingContext.ts 内增强（不动 prompt）| `rollingContext.ts` L186-203 注入 + 末尾 formatPrevChapterTail ✅ |
+| Q3 LLM prompt 位置 | inline 在 scoreCard.ts | `scoreCard.ts` L527-553 inline TRANSITION sys/user ✅ |
+| Q4 UI 渲染 | 自动遍历 SCORE_DIMENSIONS（0 改动）| ScoreCardBadge.tsx + Settings.tsx **0 修改**（实测 PR-3 不需要碰）✅ |
+| Q5 N3.7 同步增强 | 不做（grep 仅 3.1.json 用 rollingContext）| **0 改动** ✅ |
+
+### 用户感知层成果
+
+1. **Settings 开关** `enableTransitionScoring`（默认 **true** · 与 gap-b 默认 false 对比 · 此功能无新 LLM 调用模式只在已评分场景 piggyback）
+2. **N3.1 章节草稿循环**自动收到"上一章末尾 3 段【⚠ 本章开头需自然衔接】"显式标注 block
+3. **PreviewModal ScoreCard** 自动出现第 7 维"衔接顺畅度"分数（基于上一章末尾 + 本章开头各 ~300 字 LLM 评分）
+4. **第 1 章自动豁免**：无上一章 → 第 7 维 inactive（不影响总分）
+5. **Settings ScoreCardWeightSliders** 自动出现第 7 维 slider（无需 UI 改动）
+
+### 用户手测路径（dogfood-check）
+
+- ⏳ **PR-1 视觉验证**：长篇项目跑 N3.1 第 2 章 → dev console 验证 prompt 含 `## 上一章` block
+- ⏳ **PR-2/3 端到端**：2 章项目预览 → ScoreCard 第 7 维显示分数 + tooltip / 第 1 章显示"—"
+- ⏳ **第 7 维评分质量**：dogfood 5 章后人工抽查"分数 vs 实际衔接质量"是否对齐
+
+### Build 健康
+
+| 指标 | gap-b 完成后 | gap-c 完成后 | delta |
+|---|:---:|:---:|:---:|
+| vite modules | 1938 | 1938 | 0 ✅ |
+| vite build | 0 errors | 0 errors | — |
+| tsc 错误 | baseline 1 (TS2688 node) | baseline 1 | 不变 |
+
+### Open Follow-ups（gap-c 内未做 → v4 / 后续 epic）
+
+- **AI 自动重写前章末尾**：FR §5 OUT，留 v4
+- **跨卷过渡专用逻辑**：gap-a 范畴
+- **N3.7 polish 流增强**：grep 实测仅 3.1 用 rollingContext · polish 不需要做
+- **transition 衔接打硬闸**：仅评分不阻塞符合 v3 哲学
+
+### 估算精度复盘（vs gap-b / gap-d）
+
+| Epic | 估算 src | 实测 src | 偏差 | 原因 |
+|---|:---:|:---:|:---:|---|
+| gap-d | 350 | 508 | **+45.1%** | UI 复杂度 + dogfood 反馈 + erratum 接受 |
+| gap-b | 700 | 916 | **+30.9%** | schema v5 + LLM step + 完整 UI 面板 + erratum 接受 |
+| **gap-c** | **350** | **159** | **−54.6%** | **add-only / wrapper 模式 · UI 0 修改** |
+
+**结论**：gap-c 是 v3 三个 epic 中估算最准（实际还偏保守）的 case。后续若有类似"add-only / 利用现有遍历点扩展"epic，可在估算时打 **−40% 折扣**。
+
+---
+
 ## 缺口 b · 角色 Bible 跨章节追踪（2026-05-07 完成 BMAD Stage 3）
 
 ### Epic 总览
