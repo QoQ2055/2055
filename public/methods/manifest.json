@@ -866,6 +866,48 @@
       "injectsTo": ["novel.0", "novel.1.1", "novel.2.1", "novel.3.1"],
       "estimatedTokens": 700,
       "conflictsWith": []
+    },
+    {
+      "id": "dual-layer-archive-method",
+      "title": "\u53cc\u5c42\u5b58\u6863\u65b9\u6cd5 \u00b7 \u6570\u636e\u5e93\u5c42 + \u8bfb\u8005\u5c42 \u00b7 \u4ea4\u53c9\u9a8c\u8bc1\u6293\u786c\u4f24",
+      "file": "dual-layer-archive-method.md",
+      "category": "character",
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "wuxia", "scifi", "cyberpunk", "fantasy", "dnd", "dark_fantasy", "history", "alt_history", "palace", "intrigue", "era_drama", "infinite", "system", "rebirth", "apocalypse", "thriller", "mystery"],
+        "warnOnEnable": ["sweet", "campus", "youth", "farming"]
+      },
+      "summary": "\u586b\u8865 fili-web \u201c\u8bfb\u8005\u5c42\u201d\u76f2\u533a\u3002\u73b0\u6709 characterStates(gap-b) \u4ec5\u8bb0\u5f55\u4e8b\u5b9e\u00b7\u672c\u6a21\u5757\u5f15\u5165\u201c\u6570\u636e\u5e93\u5c42(\u662f\u4ec0\u4e48)+\u8bfb\u8005\u5c42(\u4e3a\u4ec0\u4e48)\u201d\u53cc\u5c42\u5b58\u6863\u3002\u8bfb\u8005\u5c42\u6db5\u76d6\u6211\u770b\u5230\u7684/\u6211\u77e5\u9053\u7684/\u6211\u5728\u60f3\u7684/\u5173\u952e\u7406\u89e3(\u56e0\u679c\u52a8\u673a\u5173\u7cfb)\u30024 \u7c7b\u4ea4\u53c9\u9a8c\u8bc1\uff1aDB\u2192DB(\u6570\u636e\u77db\u76fe)/DB\u2192Reader(\u4e8b\u5b9e\u4e0e\u7406\u89e3\u8131\u8282)/Reader\u2192Reader(\u7406\u89e3\u524d\u540e\u4e0d\u4e00)/Reader\u2192New(\u4eba\u7269\u5d29\u584c\u00b7\u6700\u4e25\u91cd)\u3002\u4e3a v5 epic \u94fa\u8def(characterStates \u53ef\u589e readerLayer \u5b57\u6bb5)\u3002\u6982\u5ff5\u63d0\u53d6\u81ea self-evolving-auditor v4.0 archive-spec.md\u3002",
+      "injectsTo": ["novel.1.2", "novel.3.1", "novel.3.2", "novel.3.3"],
+      "estimatedTokens": 850,
+      "conflictsWith": []
+    },
+    {
+      "id": "ai-flavor-detection-rules",
+      "title": "AI \u5473\u68c0\u6d4b\u89c4\u5219\u5e93 \u00b7 30+ \u5173\u952e\u8bcd + 5 \u6bd4\u55bb\u6a21\u677f + 4 \u8fc7\u6e21\u5957\u8def",
+      "file": "ai-flavor-detection-rules.md",
+      "category": "craft",
+      "genreCompat": {
+        "recommended": ["romance", "sweet", "campus", "youth", "ceo", "urban", "history", "wuxia", "xianxia", "scifi", "fantasy", "thriller", "mystery", "era_drama"],
+        "warnOnEnable": []
+      },
+      "summary": "\u73b0\u6709 anti-ai-flavor \u4ec5\u662f\u201c\u539f\u5219\u201d(\u600e\u4e48\u5199)\u00b7\u672c\u6a21\u5757\u63d0\u4f9b\u201c\u68c0\u6d4b\u89c4\u521930+\u5173\u952e\u8bcd\u201d(\u600e\u4e48\u8bc6\u522b)\u3002\u4e09\u5927\u5173\u952e\u8bcd\u7c7b\uff1a\u60c5\u7eea\u63cf\u5199(\u77ac\u95f4/\u77b3\u5b54\u5267\u70c8\u6536\u7f29/\u773c\u795e\u9510\u5229\u00b78\u9879)+\u52a8\u4f5c\u63cf\u5199(\u6df1\u5438\u4e00\u53e3\u6c14\u7f13\u7f13\u5730/\u5634\u89d2\u52fe\u8d77\u4e00\u62b9\u5f27\u5ea6\u00b78\u9879)+\u5f62\u5bb9\u8bcd(\u9510\u5229\u7684/\u4e0d\u5bb9\u7f6e\u7591/\u5f7b\u9aa8\u7684\u51b0\u5bd2\u00b714\u9879)\u30025 \u7c7b AI \u6bd4\u55bb\u6a21\u677f(\u50cf\u4e00\u76c6\u51b0\u6c34/\u50cf\u5343\u5e74\u5bd2\u51b0/\u50cf\u4e00\u8bb0\u91cd\u9524\u7b49)+ 4 \u7c7b AI \u8fc7\u6e21\u5957\u8def(\u65f6\u95f4\u8fc7\u5f97\u5f88\u5feb/\u5c31\u5728\u8fd9\u65f6/\u4e0d\u77e5\u4e0d\u89c9\u4e2d/\u6b63\u5f53...\u7684\u65f6\u5019)+\u53e5\u957f/\u9017\u53f7/\u6bd4\u55bb\u5bc6\u5ea6\u68c0\u6d4b\u89c4\u5219+\u7ed3\u6784\u5c42(\u603b\u7ed3\u53e5/\u8fc7\u5ea6\u89e3\u91ca/\u53d9\u8ff0\u8154/\u89d2\u8272\u53e3\u7639)\u3002\u53cd\u5411\u8bc4\u5206\uff1a\u5206\u6570\u8d8a\u4f4e\u8d8a\u597d(1-2=S\uff5e9-10=F)\u3002\u4e0e anti-ai-flavor \u4e92\u8865\u3002\u6982\u5ff5\u63d0\u53d6\u81ea self-evolving-auditor v4.0 ai-style.md\u3002",
+      "injectsTo": ["novel.3.1", "novel.3.2", "novel.3.3"],
+      "estimatedTokens": 950,
+      "conflictsWith": []
+    },
+    {
+      "id": "platform-standards-fq-qd",
+      "title": "\u5e73\u53f0\u6295\u7a3f\u6807\u51c6 \u00b7 \u756a\u8304 vs \u8d77\u70b9\u5bf9\u6bd4 + \u91cf\u5316\u6e05\u5355",
+      "file": "platform-standards-fq-qd.md",
+      "category": "craft",
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "wuxia", "scifi", "cyberpunk", "fantasy", "dark_fantasy", "rebirth", "system", "urban_super", "fast_wear", "ceo", "infinite", "apocalypse", "thriller", "mystery", "history", "alt_history", "palace", "intrigue"],
+        "warnOnEnable": ["campus", "farming"]
+      },
+      "summary": "\u586b\u8865 fili-web \u201c\u5e73\u53f0\u91cf\u5316\u6807\u51c6\u201d\u76f2\u533a\u3002\u756a\u8304(\u514d\u8d39+\u5e7f\u544a\u5206\u6210/\u5feb\u8282\u594f/\u7ae0 2000-3000 \u5b57/\u5c0f\u9ad8\u6f6d\u95f4\u9694 3-5 \u7ae0/\u524d 3 \u7ae0\u51b3\u751f\u6b7b) vs \u8d77\u70b9(VIP \u4ed8\u8d39+\u6708\u7968\u6253\u699c/\u6587\u7b14\u8981\u6c42\u9ad8/\u7ae0 3000-4000 \u5b57/\u5c0f\u9ad8\u6f6d\u95f4\u9694 3-8 \u7ae0/\u524d 5 \u7ae0\u51b3\u7b7e\u7ea6) 5 \u7ef4\u5bf9\u7167\u8868\u3002\u542b\uff1a\u7ae0\u8282\u5b57\u6570\u6309\u7c7b\u578b/\u5f00\u7bc7\u94c1\u5f8b/\u8282\u594f\u914d\u6bd4/\u5185\u5bb9\u7ea2\u7ebf/\u53d1\u5e03\u524d\u68c0\u67e5\u6e05\u5355/\u5e73\u53f0\u51b3\u7b56\u6811(\u8bfb\u8005\u7fa4+\u9898\u6750+\u4f53\u91cf+\u6587\u7b14\u80fd\u529b\u56db\u9009\u4e00)\u3002\u4e0e audience-personas \u4e92\u8865\u3002\u6982\u5ff5\u63d0\u53d6\u81ea self-evolving-auditor v4.0 standards-fanqie/qidian.md\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.2.1", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 1000,
+      "conflictsWith": []
     }
   ]
 }

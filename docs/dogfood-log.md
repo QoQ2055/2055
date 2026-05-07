@@ -9,6 +9,201 @@
 
 ---
 
+## 缺口 f · 新 method modules 推荐引擎注入（2026-05-07 完成 micro-PR · 不开 epic）
+
+### Epic 总览
+
+| 维度 | 实测 | 备注 |
+|---|---|---|
+| **背景** | batch-10/11 落库 5 个新 method modules（chapter-transition / character-id-card / density-filling / ip-adaptation-sop / serialization-paid-hooks）后 · 缺 genreCompat + 推荐规则 | 见 manifest 历史 |
+| **预审计结论** | **不需要 gap-f epic**——method modules 注入机制已成熟（compose.ts:421-430 + methodModules.ts loadMethodModulesForNode）· 仅需补 manifest 元数据 + 推荐规则 | 见 §1 |
+| **范围** | 2 文件改动 · +82 行 · add-only | git diff |
+| **PR 数** | 1 micro-PR（无 BMAD Stage 拆分）| 单次提交 |
+| **Commit** | `562de07` | 本次 push |
+| **完成时间** | ~30 min（预审计 15 min + 实施 15 min）| — |
+
+### §1 预审计核心结论
+
+**质问**：新 5 modules 是否需要新 epic 接入 prompt 系统？
+
+**答**：**不需要**。原因：
+
+```
+fili-web 现有 method modules 注入机制（compose.ts:421-430）：
+  if (enableKbInjection && project.methodModuleIds?.length) {
+    const blocks = await loadMethodModulesForNode(project.methodModuleIds, step.id);
+    const head = buildMethodModulePreamble(blocks);
+    if (head) headerParts.push(head);
+  }
+
+→ 用户启用 module → 自动按 manifest.injectsTo 白名单注入到对应 prompt step 的 system header
+→ 0 prompt JSON 修改（gap-b R2 / gap-c R1 红线天然兼容）
+→ 5 个新 modules 落库时 injectsTo 已正确填写 → 实际已"自动支持"
+```
+
+**唯一缺失**：
+
+1. `genreCompat`：5 个新 modules 缺题材兼容性矩阵 → 推荐引擎不识别 → MethodModulePanel 不会显示推荐徽章
+2. `recommendMethodModules` 启发式规则未覆盖 5 个新 modules → 用户填项目信息后不被自动推荐
+
+→ 用 micro-PR 补这两项即可。
+
+### §2 改动详情
+
+#### `public/methods/manifest.json` · +25 行
+
+为 5 个新 modules 加 `genreCompat` 字段（位置：summary 之前 · 与 twelve-step-mystery 同模式）：
+
+| Module | recommended | warnOnEnable |
+|---|---|---|
+| `chapter-transition-7methods` | xianxia/xuanhuan/wuxia/scifi/cyberpunk/fantasy/dark_fantasy/rebirth/system/urban_super/infinite/thriller/mystery/reasoning/apocalypse/history/alt_history/intrigue/era_drama (19 项 · 长篇连载题材) | sweet/farming/campus/youth |
+| `character-visual-id-card` | xianxia/xuanhuan/wuxia/scifi/cyberpunk/fantasy/dnd/dark_fantasy/history/alt_history/palace/intrigue/era_drama/infinite/apocalypse (15 项 · 多角色重型题材) | sweet/farming |
+| `content-density-filling` | xianxia/xuanhuan/wuxia/scifi/cyberpunk/fantasy/thriller/mystery/reasoning/system/rebirth/urban_super/fast_wear/infinite/apocalypse/ceo/workplace (17 项 · 通用) | （无）|
+| `ip-adaptation-sop` | history/alt_history/intrigue/palace/era_drama/wuxia/xianxia/xuanhuan/fantasy/scifi (10 项 · 改编友好题材) | sweet/campus |
+| `serialization-paid-hooks` | xianxia/xuanhuan/wuxia/rebirth/system/urban_super/fast_wear/ceo/romance/sweet/thriller/mystery/fantasy/infinite/apocalypse (15 项 · 商业网文题材) | campus/farming |
+
+#### `src/pipeline/methodModuleRecommend.ts` · +57 行
+
+在 `recommendMethodModules` 末尾（去重前）加 5 条启发式规则（"工艺增强"段）：
+
+| Module | 触发条件 | 分数 |
+|---|---|:---:|
+| `chapter-transition-7methods` | scale=super_long | 80 |
+| | scale=long | 75 |
+| | scale=medium | 65 |
+| `character-visual-id-card` | long + multi-char-genres（群像/多主角/宫斗/权谋/武侠/玄幻/仙侠/修真/异世界/架空/奇幻）| 80 |
+| | long-only（无 multi-char）| 65 |
+| `content-density-filling` | scale ≠ short | 65 |
+| `ip-adaptation-sop` | createMode === 'adaptation' | **90** ★ 最强推荐 |
+| `serialization-paid-hooks` | 商业平台（qidian/17k/zongheng/jjwxc/fanqie）+ long | 82 |
+| | long-only（非商业平台）| 60 |
+
+### §3 验证（机械化）
+
+| 验证项 | 实测 | 期望 | 结果 |
+|---|---|---|:---:|
+| `manifest.json` JSON 合法性 | `ConvertFrom-Json` 通过 | 通过 | ✅ |
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1938 | 1938 | ✅ 0 变化 |
+| `tsc --noEmit` errors | 1 | 1 (baseline TS2688) | ✅ 0 新错误 |
+| `git diff` 文件数 | 2 | 2 | ✅ |
+| `git diff` 净增行 | 82 | ~80 | ✅ |
+| `git diff` 删除行 | 0 | 0 | ✅ add-only |
+
+### §4 红线影响
+
+| 红线 | 来源 | 是否触发 |
+|---|---|:---:|
+| 不动 N1.x / N2.x / N3.x prompt JSON | gap-c R1 | ❌ 0 改动 |
+| 不动 N1.2 / N3.2 prompt 文件 | gap-b R2 | ❌ 0 改动 |
+| 不动 Dexie schema | gap-b R1 | ❌ 0 改动 |
+| 不动 zustand persist key | I-4 | ❌ 0 改动 |
+| `consistencyCheck.ts` 不动 | gap-b R3 / gap-c R5 | ❌ 0 改动 |
+| gap-d/b/c 资产 0 diff | gap-b R4 / gap-c R4 | ❌ 0 改动 |
+| `rollingContext.ts` 主流程不变 | gap-c R2 | ❌ 0 改动 |
+| `scoreCard.ts` 6 维 0 字符变化 | gap-c R3 | ❌ 0 改动 |
+
+→ **8 条红线全绿**。
+
+### §5 NFR-3 cap 注意
+
+```
+src/pipeline/methodModuleRecommend.ts: 654 → 720 行
+NFR-3 单文件 cap: 250 行
+```
+
+⚠ **该文件 pre-existing 状态已超 cap**（gap-b/c 之前就这样）· 本 micro-PR 是 add-only · 与 epic 修订无关。
+
+未来如要重构：可拆为 `recommendMethodModules.ts`（启发式）+ `recommendModulesLLM.ts`（LLM）+ `applyGenreCompat.ts`（post-process）三文件。但**非本 PR 范围**。
+
+### §6 dogfood 手测清单（用户跑）
+
+#### Phase 1 · 推荐引擎验证（不调 LLM · 30 秒）
+
+进入 NovelSettingsDialog · 切换不同 ProjectContext · 看 MethodModulePanel 是否正确高亮：
+
+```
+□ 测试 A · 长篇玄幻
+  题材：玄幻/修仙 · 体量：long
+  期望：
+    ✓ chapter-transition-7methods (75 分 · 题材契合 +5 → 80)
+    ✓ character-visual-id-card (80 分 · 多角色 + 题材契合 → 85)
+    ✓ content-density-filling (65 分 · 题材契合 +5 → 70)
+    ✓ serialization-paid-hooks (60 分 · 长篇兜底 + 题材契合 → 65)
+
+□ 测试 B · 商业起点长篇
+  平台：qidian · 体量：long · 题材：玄幻
+  期望：
+    ✓ serialization-paid-hooks (82 分 · 商业平台 + 长篇 + 题材契合 → 87)
+
+□ 测试 C · IP 改编模式
+  createMode='adaptation'
+  期望：
+    ✓ ip-adaptation-sop (90 分 · 最强推荐)
+
+□ 测试 D · 短篇治愈
+  题材：治愈/日常 · 体量：short
+  期望：
+    ✗ chapter-transition-7methods 不推（warn=campus/youth → -15）
+    ✗ content-density-filling 不推（短篇排除条件）
+    ✗ ip-adaptation-sop warn=sweet/campus → -15
+
+□ 测试 E · 多 module 互斥
+  同时启用 character-visual-id-card + character-skin-design
+  期望：MethodModulePanel 不冲突（无 conflictsWith 关系）· 都可启用
+```
+
+#### Phase 2 · 注入验证（含 LLM 调用 · 90 秒）
+
+```
+□ 测试 F · 启用 character-visual-id-card · 跑 N1.2 角色 Bible
+  Network tab 查 chat/completions 请求 system 消息：
+  期望：含 "## 【方法论】角色视觉 ID 卡 · 5 维外观锁定"
+  期望生成：含 5 维 ID 卡格式（体型/面部锚点/发型/服装/视觉签名）
+
+□ 测试 G · 启用 chapter-transition-7methods · 跑 N3.3 章节衔接评分
+  Network tab 查请求：
+  期望：含 "## 【方法论】章节衔接 7 种过门方式"
+  期望评分理由：提及 7 过门方式之一
+
+□ 测试 H · 启用 content-density-filling · 跑 N3.1 章节草稿
+  期望：含 "## 【方法论】内容密度装填规则"
+  期望生成：场景切分相对合理 · 对话密度 ≤4 句不强行拆段
+```
+
+#### Phase 3 · 反馈回报
+
+测试后回报：哪些推荐符合预期 / 哪些异常 / 注入是否生效 / LLM 输出质量是否改善。
+
+### §7 vs gap-c / gap-b 对比
+
+| Epic | 估算 src | 实测 src | 偏差 | 模式 |
+|---|:---:|:---:|:---:|---|
+| gap-b | 700 | 916 | **+30.9%** | schema v5 + LLM step + 完整 UI |
+| gap-c | 350 | 159 | **−54.6%** | add-only / wrapper |
+| **gap-f** | **80** | **82** | **+2.5%** | manifest + 启发式规则 |
+
+→ **gap-f 是估算最准的 case**（误差 < 3%）。
+
+### §8 Open Follow-ups
+
+- **Token 预算 UI**：MethodModulePanel 显示已选 modules 的总 estimatedTokens（gap-f 预审计 §4.3 标记 · 优先级低）
+- **dogfood 反馈循环**：Phase 1-3 测试结果若发现新规则缺失 · 可继续微 PR 追加
+- **`methodModuleRecommend.ts` 重构**：720 行已远超 NFR-3 cap · 未来 3 文件拆分（不紧急）
+
+### §9 总结
+
+```
+✅ 预审计正确：5 modules 注入"已经生效"，只缺元数据与推荐规则
+✅ micro-PR 干净：2 文件 +82 行 · add-only · 0 红线触发
+✅ 估算精确：+82 vs +80（+2.5%）
+✅ Build 全绿：vite 0 / tsc 0 / manifest valid
+✅ dogfood checklist 完整：3 phase · 8 测试项
+⏳ 用户手测待跑：Phase 1-3 完成后回填 gap-f §6
+```
+
+---
+
 ## 缺口 c · 章节衔接自然过渡（2026-05-07 完成 BMAD Stage 3）
 
 ### Epic 总览
