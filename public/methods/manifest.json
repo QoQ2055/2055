@@ -1006,6 +1006,20 @@
       "injectsTo": ["novel.0", "novel.1.1", "novel.3.1", "novel.3.2"],
       "estimatedTokens": 950,
       "conflictsWith": []
+    },
+    {
+      "id": "agentic-context-engineering",
+      "title": "Agentic Context Engineering \u00b7 \u6f14\u5316\u4e2d\u7684\u63d0\u793a\u8bcd\u5267\u672c",
+      "file": "agentic-context-engineering.md",
+      "category": "craft",
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "wuxia", "scifi", "cyberpunk", "fantasy", "dnd", "dark_fantasy", "history", "alt_history", "palace", "intrigue", "era_drama", "infinite", "system", "rebirth", "apocalypse", "thriller", "mystery", "urban", "ceo", "campus", "youth", "sweet", "farming", "romance"],
+        "warnOnEnable": []
+      },
+      "summary": "\u586b\u8865 fili-web \u201cprompt \u81ea\u6211\u8fdb\u5316\u201d\u76f2\u533a\u3002\u73b0\u6709 method modules / prompt JSON \u662f\u9759\u6001\u3002\u672c\u6a21\u5757\u5f15\u5165 ACE \u4e09\u89d2\u8272\u67b6\u6784\uff1aGenerator(\u5199\u7ae0\u8282)+Reflector(\u53cd\u601d)+Curator(\u6574\u7406\u5199\u56de)\u3002\u4e09\u521b\u65b0\uff1aReflector \u5206\u79bb/\u589e\u91cf delta \u66f4\u65b0/grow-and-refine\u3002\u907f\u514d\u4e24\u5751\uff1abrevity bias(\u8fc7\u5ea6\u7b80\u6d01)+context collapse(\u4e0a\u4e0b\u6587\u5d29\u6e83)\u3002\u4e0e dual-layer-archive(\u63d0\u4f9b\u53cc\u5c42\u4fe1\u53f7\u6e90)\u00b7self-evolving-auditor(\u5b9e\u73b0\u5c42\u65b9\u6cd5\u8bba)\u00b7chapter-coverage-7layer(\u5168\u8986\u76d6\u5b66\u4e60)\u5f3a\u534f\u540c\u3002\u4e0d\u540c\u4e8e dual-layer-archive(\u53d8\u91cf\u5217\u4e3e)\u00b7self-evolving-auditor(\u4ea7\u54c1\u804c\u80fd)\u00b7\u672c\u6a21\u5757\u8d1f\u8d23\u201cengine\u5c42\u673a\u5236\u201d(\u4e09\u89d2\u8272 + \u589e\u91cf\u66f4\u65b0)\u3002\u6982\u5ff5\u63d0\u53d6\u81ea arXiv 2510.04618v3(Stanford/SambaNova \u00b7 2025-10)\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.1.2", "novel.3.1", "novel.3.2", "novel.3.3"],
+      "estimatedTokens": 1300,
+      "conflictsWith": []
     }
   ]
 }
