@@ -148,6 +148,30 @@
        - 实测后填：[ ]
 ```
 
+### §4.1 实测结果（2026-05-07 18:30 用户 dogfood · QvQ self-report）
+
+| ID | 验证目标 | 实测 | 状态 |
+|---|---|---|---|
+| UV1-D-1 | 侧栏 8 入口 + 3 组分隔 | 无异常 | ✅ pass |
+| UV1-D-2 | /methods 加载 + 列表 + search + category | 无异常 | ✅ pass |
+| UV1-D-3 | 卡片点击 → markdown 详情渲染 | 无异常 | ✅ pass |
+| UV1-D-4 | /lessons 加载 + 未启用提示 | 无异常 | ✅ pass |
+| UV1-D-5 | /lessons 详情 modal · DRY 复用同 modal | 无异常 | ✅ pass |
+| UV1-D-6 | 4 mode 切换 · 侧栏 3 组一致（CK I-2） | 无异常 | ✅ pass |
+| UV1-D-7 | **R-UI-1** Novel.tsx 内嵌 panels 仍工作 | 无异常 | ✅ pass |
+| UV1-D-8 | vite build + simplify · 0 新 dead code | npx vite build 1945 modules 0 errors 3.32s · simplify scan clean | ✅ pass |
+
+```
+总结：8/8 项全 pass · 0 异常 · 0 红线违反 · ui-v1 epic dogfood 完成
+关键验证：
+  ✅ R-UI-1 红线（最关键）· Novel.tsx 内嵌路径未被破坏
+  ✅ CK I-1 路由不变（13 + 2 = 15 路由）
+  ✅ CK I-2 NavItem 路径不变（重组分组，path 完全保留）
+  ✅ CK I-3 method module 文件 zero-modify
+报告人：QvQ（self-report 非 Cascade 亲眼验证）
+报告方式：Phase 1~4 连续"无异常"快速回报
+```
+
 ### §5 后续 epic 依赖契约
 
 | 依赖 epic | 何时启动 | 本 epic 提供的契约 |
@@ -399,6 +423,32 @@ ui-v1 epic CK I-3 严守："不删 Novel.tsx 内嵌 panels"
        - 实测后填：[ ]
 ```
 
+### §4.1 实测结果（2026-05-07 18:30 用户 dogfood · QvQ self-report）
+
+| ID | 验证目标 | 实测 | 状态 |
+|---|---|---|---|
+| V6-D-1 | dexie v6→v7 自动迁移 · reflectorLessons 空表存在 | 无异常 | ✅ pass |
+| V6-D-2 | settings.reflectorThresholds 5 字段就位 | 无异常 | ✅ pass |
+| V6-D-3 | N3.2 polish 触发 reflector · LLM 调用 + 写表 | 无异常 | ✅ pass |
+| V6-D-4 | LLM 输出 100-300 字 · suggestedModule 在 active | 无异常 | ✅ pass |
+| V6-D-5 | ReflectorLessonsPanel UI · status/signal/project filter | 无异常 | ✅ pass |
+| V6-D-6 | 详情 modal 操作流 · 编辑→批准→committed | 无异常 | ✅ pass |
+| V6-D-7 | 畸形 JSON fallback · parseReflectorResponse 返 null | 未模拟畸形输入 | ⏳ 待补测 |
+| V6-D-8 | **CK I-3** public/methods/*.md git diff = 0 | 无异常 | ✅ pass |
+
+```
+总结：7/8 项 pass · 1 项待补测（V6-D-7 需手动构造畸形 JSON）· 0 红线违反
+关键验证：
+  ✅ CK I-2 dexie add-only（v6→v7 stores 字符串完全保留）
+  ✅ CK I-3 method module 文件 zero-modify（lesson 落表不落 markdown）
+  ✅ CK I-4 opt-in（reflectorThresholds.enabled 默认 false）
+  ✅ CK I-7 透传（reflector 失败不阻塞 polish loop）
+未实测主观项：
+  ⏳ 跨 ≥ 1 月 · 累积 ≥ 10 lessons committed 后评估写作体验改善
+  ⏳ tokens 增加 < 20% / lesson pass review rate ≥ 70%
+报告人：QvQ（self-report 非 Cascade 亲眼验证）
+```
+
 ### §5 后续 epic 依赖契约
 
 | 依赖 epic | 何时启动 | v6 提供的契约 |
@@ -615,6 +665,27 @@ v6 epic 全程 0 修改：
        - 在 reader viewMode 看截至上一章读者已知 / 在猜
        - 期望：主观感受 LLM 写新章对"读者悬念 / 已知"把握更准
        - 实测后填：[ ]
+```
+
+### §4.1 实测结果（2026-05-07 18:30 用户 dogfood · QvQ self-report）
+
+| ID | 验证目标 | 实测 | 状态 |
+|---|---|---|---|
+| D-1 | dexie v5→v6 自动迁移 · 旧 row 完全保留 | 无异常 | ✅ pass |
+| D-2 | N3.3 LLM 输出 readerLayer 4 字段 | 无异常 | ✅ pass |
+| D-3 | **CK I-7** schema fallback · LLM 漏返回不报错 | 无异常 | ✅ pass |
+| D-4 | CharacterBible reader tab UI · 4 字段渲染 + 旧 row 提示 | 无异常 | ✅ pass |
+| D-5 | 主观评估 · LLM 写新章对"读者悬念"把握更准 | 跨 ≥ 1 周累积评估 | ⏳ 待累积 |
+
+```
+总结：4/5 项 pass · 1 项待累积（D-5 需跨周主观评估）· 0 红线违反
+关键验证：
+  ✅ CK I-1 readerLayer 严格 optional（旧 row 不报错）
+  ✅ CK I-2 dexie add-only（v5→v6 stores 字符串完全保留）
+  ✅ CK I-7 schema fallback（LLM 返回畸形/缺字段时事实层仍正确保存）
+未实测主观项：
+  ⏳ 跨 ≥ 1 周 · 评估 readerLayer 是否减少了"读者已知却被当成未知"的写作偏差
+报告人：QvQ（self-report 非 Cascade 亲眼验证）
 ```
 
 ### §5 后续 epic 依赖契约
