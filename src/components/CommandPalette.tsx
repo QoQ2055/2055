@@ -13,10 +13,13 @@
  *   • DESIGN.md ① Token 优先：bg-canvas / border-border-subtle / text-fg-primary
  *   • DESIGN.md ⑥ 语义色配 icon：仅 nav 命令灰色 · 不用纯色块
  *
- * 后续延后项（PR-1B / PR-2）：
- *   • 完整快捷键系统（J/K/S/?  + handbook modal）
- *   • "新建项目" 命令（需要全局 dialog state）
- *   • "切换主题" 命令（settings store 暂无 theme 字段）
+ * 已解锁的 PR-1B 延后项（截至 ui-v5 PR-1）：
+ *   ✅ 完整快捷键系统（J/K/S/? + handbook modal · ui-v3 PR-1B）
+ *   ✅ "新建项目" 命令（ui-v5 PR-1 · 全局 useProjectDialog store）
+ *   ✅ "切换主题" 命令（ui-v4 PR-1 · settings.theme 字段 + theme store）
+ *   ✅ 跨组件命令"导出"（gap-e PR-2 · 全局 useExportDrawer store）
+ *
+ * 仍延后：
  *   • fuzzy match 升级（当前 substring · 后续可换 fuse.js / cmdk）
  */
 
@@ -25,11 +28,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search, Home as HomeIcon, BookOpen, FileText, BookCopy,
   Wand2, FileSearch, Settings as SettingsIcon, FlaskConical,
-  Brain, Lightbulb, FileDown, Film, Sun, Moon, Monitor, type LucideIcon,
+  Brain, Lightbulb, FileDown, Film, Sun, Moon, Monitor, Plus, type LucideIcon,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useCommandPalette } from '../store/commandPalette';
 import { useExportDrawer } from '../store/exportDrawer';
+import { useProjectDialog } from '../store/projectDialog';
 import { useSettings } from '../store/settings';
 import { toast } from '../store/toast';
 
@@ -148,6 +152,21 @@ const COMMANDS: Command[] = [
     icon: SettingsIcon,
     keywords: ['settings', '设置', 'api', 'config'],
     action: ({ navigate }) => navigate('/settings'),
+  },
+  // ui-v5 PR-1 · "新建项目"命令 · 解锁 ui-v3 PR-1B 第三个/最后一个延后项
+  {
+    id: 'project-new',
+    label: '新建项目…',
+    description: '打开项目创建对话框 · 选模式后进入工作台',
+    group: 'actions',
+    icon: Plus,
+    keywords: ['new', 'create', '新建', '项目', 'project', '创建', '开始'],
+    action: ({ navigate }) => {
+      // 若不在 / · 先跳过去（NewProjectDialog 渲染在 Home 内 · Home mount 后从 store 读 createOpen 自动打开）
+      if (window.location.pathname !== '/') navigate('/');
+      // setTimeout 0 · 让 Home 在下一个 tick mount + 订阅 store
+      setTimeout(() => useProjectDialog.getState().openCreate(), 0);
+    },
   },
   // gap-e PR-2 · 导出动作类命令 · 调起 ExportDrawer
   {

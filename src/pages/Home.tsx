@@ -22,6 +22,7 @@ import {
 import { NewProjectDialog } from '../components/NewProjectDialog';
 import { AdaptIntakeWizard } from '../components/AdaptIntakeWizard';
 import { useExportDrawer } from '../store/exportDrawer';
+import { useProjectDialog } from '../store/projectDialog';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
 import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/projectModes';
 
@@ -30,9 +31,13 @@ export function Home() {
   const apiKey = useSettings((s) => s.apiKey);
   const activeCtx = useProject((s) => s.ctx);
   const activeArtifacts = useProject((s) => s.artifacts);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [wizardOpen, setWizardOpen] = useState(false);
-  const [wizardSourceType, setWizardSourceType] = useState<string>('novel_long');
+  // ui-v5 PR-1 · 项目创建 / wizard 对话框全局化 · 支持 Cmd+K "新建项目" 跨路由调起
+  const dialogOpen = useProjectDialog((s) => s.createOpen);
+  const wizardOpen = useProjectDialog((s) => s.wizardOpen);
+  const wizardSourceType = useProjectDialog((s) => s.wizardSourceType);
+  const openCreate = useProjectDialog((s) => s.openCreate);
+  const openWizard = useProjectDialog((s) => s.openWizard);
+  const closeAllDialogs = useProjectDialog((s) => s.closeAll);
   const [busy, setBusy] = useState(false);
   // gap-e PR-2 · 导出抽屉提升到全局 store · toolbar 与 Cmd+K 命令面板共享
   const showExport = useExportDrawer((s) => s.show);
@@ -81,7 +86,7 @@ export function Home() {
       await archiveCurrent();
       startNewActive(ctx);
       await refreshList();
-      setDialogOpen(false);
+      closeAllDialogs();
       // Route to the new project's mode-specific default workbench.
       navigate(getProjectModeMeta(ctx).defaultRoute);
     } catch (e: any) {
@@ -93,9 +98,7 @@ export function Home() {
 
   /** 改编模式：Dialog 跳转到 Wizard */
   function handleStartAdaptWizard(adaptSourceType: string) {
-    setDialogOpen(false);
-    setWizardSourceType(adaptSourceType);
-    setWizardOpen(true);
+    openWizard(adaptSourceType);
   }
 
   /** 改编模式：Wizard 提交 = 写 ctx + chunks + 跳 /intake */
@@ -111,7 +114,7 @@ export function Home() {
       const { addSourceChunk } = useProject.getState();
       for (const c of payload.chunks) addSourceChunk(c);
       await refreshList();
-      setWizardOpen(false);
+      closeAllDialogs();
       navigate('/intake');
     } catch (e: any) {
       toast.error('创建失败：' + (e.message ?? e));
@@ -223,7 +226,7 @@ export function Home() {
         </div>
         <Button
           size="lg"
-          onClick={() => setDialogOpen(true)}
+          onClick={() => openCreate()}
           disabled={busy}
         >
           <Plus className="size-5" /> 新建项目
@@ -304,7 +307,7 @@ export function Home() {
           icon={Sparkles}
           label="新建项目"
           desc="开始一段新的故事"
-          onClick={() => setDialogOpen(true)}
+          onClick={() => openCreate()}
           accent="primary"
           disabled={busy}
         />
@@ -444,7 +447,7 @@ export function Home() {
       <NewProjectDialog
         open={dialogOpen}
         busy={busy}
-        onCancel={() => setDialogOpen(false)}
+        onCancel={closeAllDialogs}
         onSubmit={handleCreate}
         onStartAdaptWizard={handleStartAdaptWizard}
       />
@@ -453,7 +456,7 @@ export function Home() {
         open={wizardOpen}
         busy={busy}
         initialAdaptSourceType={wizardSourceType}
-        onCancel={() => setWizardOpen(false)}
+        onCancel={closeAllDialogs}
         onSubmit={handleAdaptSubmit}
       />
 
