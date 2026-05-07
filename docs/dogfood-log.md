@@ -9,7 +9,153 @@
 
 ---
 
-## ui-v3 epic · interaction-system（2026-05-07/08 启动 · PR-1 MVP + PR-1B + PR-2 + PR-3 全部完成 · epic 100%）
+## ui-v3 epic · interaction-system（2026-05-07/08 启动 · PR-1 MVP + PR-1B + PR-2 + PR-3 + PR-1C 完成 · epic 100% + 加餐）
+
+### PR-1C · ConfirmDialog 替代 native confirm()（commit `434946a` Step A · `86f8305` Step B/C）
+
+**目标**：消灭浏览器原生 `confirm()` 阻塞 UI 的视觉割裂 · 全站走 token 化的 ConfirmDialog modal · 与 Toast / ShortcutHandbook 风格统一。
+
+**实装范围**：
+
+```
+新增文件 :
+  src/store/confirm.ts          (~78 行 · zustand · Promise<boolean> API + 单实例排队)
+  src/components/ConfirmDialog.tsx (~108 行 · modal + danger/普通双 variant + Esc/Enter/click outside)
+
+修改文件（17 处 confirm() 全部迁移）:
+  src/components/Layout.tsx              · 渲染 ConfirmDialog
+  src/pages/Home.tsx                     · 4 处（归档 / 载入 / 删除 / 导入）
+  src/components/FeedbackInsights.tsx    · 3 处（删除单条 / 批量删 / filter 删）
+  src/components/RunHistoryPanel.tsx     · 1 处（清空运行历史）
+  src/components/UserKbLibrary.tsx       · 1 处（删除 KB 文档）
+  src/pages/Express.tsx                  · 4 处（清 stage / clearAll / 清剧本 / 清单步）
+  src/pages/Intake.tsx                   · 1 处（删除 chunk）
+  src/pages/Novel.tsx                    · 1 处（撤销批准）
+  src/pages/Screenplay.tsx               · 1 处（清遗留 screenplay.* 产物）
+
+  共 8 文件 · 17 处 confirm 全部迁移 · 0 个 native confirm 真实调用
+```
+
+**API 设计**：
+
+```ts
+import { confirm as confirmDialog } from '../store/confirm';
+
+const ok = await confirmDialog({
+  title: '删除项目「foo」？',
+  message: '该项目及其所有产物将被永久删除 · 此操作不可撤销。',
+  confirmLabel: '删除',
+  cancelLabel: '取消',  // optional · 默认"取消"
+  danger: true,         // 红色危险变体
+});
+if (!ok) return;
+```
+
+**交互**：
+
+| 行为 | 触发 | resolve |
+|---|---|---|
+| 确认 | Enter / 点确认按钮 | true |
+| 取消 | Esc / 点取消按钮 / 点遮罩 | false |
+| Tab 焦点循环 | 浏览器默认 | N/A |
+| 自动焦点 | 打开时聚焦确认按钮（多数场景按 Enter 即可） | N/A |
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V2-I-3 / V2-I-4 6 atoms 不动 | git diff src/components/ui/Button.tsx 等 | ✅ 0 修改 · ConfirmDialog 是 page-level component（feedback 类） |
+| V3-I-4 不静默吞错 | 取消按钮 / Esc → resolve(false) · 不抛 · 调用方决定后续 | ✅ |
+| V3-I-7 / DESIGN.md ⑥ 色盲友好 | danger 用 Button variant="danger" + AlertTriangle icon · 颜色+icon+文字三通道 | ✅ |
+| 业务零回归 | 仅替换 confirm 调用 · 不动业务逻辑 | ✅ 17 处仅改 if 块结构 |
+| async 链路完整 | inline arrow 改 async() · 函数声明改 async function | ✅ Express clearStage/clearAll · Express L511/L911 inline · Intake/Novel/Screenplay 同 |
+
+**Build 验证**：
+
+```bash
+npx vite build → 0 errors · 5.86s
+Get-ChildItem src -Recurse | Select-String '(?<![a-zA-Z\.])confirm\(' → 0 真实调用
+（仅 store/confirm.ts API + Layout.tsx 注释残留）
+```
+
+**PR-1C dogfood 用户手测项**：
+
+#### US-C1 · 基础交互（必测）
+
+```
+1. /home 点删除一个历史项目
+   → 弹出红色 ConfirmDialog · 确认按钮"删除"用 danger 红色
+   → 按 Esc → 关闭 · 项目未删
+   → 再次触发 · 按 Enter → 关闭 · 项目已删 + toast 反馈
+   → 再次触发 · 点遮罩外 → 关闭 · 项目未删
+   → 再次触发 · 点取消按钮 → 关闭 · 项目未删
+
+2. /home 点归档（普通操作 · 非 danger）
+   → 弹出 ConfirmDialog · 确认按钮"归档"用 primary 蓝色（非红）
+   → 与删除 dialog 视觉区分明显
+```
+
+#### US-C2 · 多对话框排队（必测）
+
+```
+1. 触发任意 confirm（如归档）→ dialog 1 打开
+2. 不点任何按钮 · 强制（通过 dev console 或快速点击）触发第二个 confirm
+   → 第一个被强制 reject(false) · 第二个 dialog 显示
+   → 注：单实例策略 · 后来者优先（store ask 中处理）
+```
+
+#### US-C3 · 全站迁移完整性（必测）
+
+```
+逐项触发以下 17 个删除/清空/重要操作 · 所有应弹 ConfirmDialog（不再弹浏览器原生）：
+
+Home.tsx:
+□ 归档活动项目
+□ 载入历史项目
+□ 删除历史项目
+□ 导入文件为活动项目（带产物覆盖警告）
+
+FeedbackInsights:
+□ 删除单条反馈
+□ 批量删除选中反馈
+□ 按 filter 批量删除
+
+RunHistoryPanel:
+□ 清空当前项目运行历史
+
+UserKbLibrary:
+□ 删除 KB 文档
+
+Express:
+□ 清空 screenplay 阶段产物
+□ 清空 assets 阶段产物
+□ 清空 storyboard 阶段产物
+□ 清空全部产物（clearAll）
+□ 清空已导入剧本
+□ 清空单步产物（任意 step header trash）
+
+Intake:
+□ 删除原文 chunk
+
+Novel:
+□ 撤销所有章节批准状态
+
+Screenplay:
+□ 清理遗留 screenplay.* 产物
+```
+
+#### US-C4 · 不变量回归
+
+```
+- [ ] 6 atoms 实现 0 修改（git diff src/components/ui/Button.tsx 等）
+- [ ] vite build 0 errors
+- [ ] 业务逻辑无回归（删除 / 归档 / 清空都正常工作）
+- [ ] confirm 取消时不会执行业务（resolve false 路径）
+- [ ] danger variant 在亮 / 暗主题下都对比清晰
+- [ ] 焦点环可见 · Tab 顺序合理
+```
+
+---
 
 ### PR-3 · Design-system 应用指南（commit `aab212f`）
 

@@ -11,6 +11,7 @@
 > | `Skeleton` | `src/components/ui/feedback/Skeleton.tsx` | 加载占位 |
 > | `EmptyState` | `src/components/ui/feedback/EmptyState.tsx` | 空数据引导 |
 > | `SidebarBadge` | `src/components/SidebarBadge.tsx` | sidebar nav 上的待办计数 |
+> | `ConfirmDialog` | `src/components/ConfirmDialog.tsx` + `src/store/confirm.ts` | 操作前确认（替代 native confirm()） |
 
 ---
 
@@ -22,6 +23,10 @@
 │   ├─ 成功 → toast.success('已保存')
 │   ├─ 警告 → toast.warning('部分失败')
 │   └─ 失败 → toast.error('保存失败：' + e.message) + console.error
+│
+├─ 用户即将执行不可撤销操作（删除 / 清空 / 切换大量数据）
+│   └─ const ok = await confirmDialog({ ... danger: true });
+│      if (!ok) return;
 │
 ├─ 数据异步加载中
 │   ├─ 占位整段 → <Skeleton variant="block" />
@@ -192,16 +197,71 @@ toast.warning('API key 未配置', null);  // 用户每次开页面都看到 · 
 
 ---
 
-## confirm() / ConfirmDialog 现状
+## ConfirmDialog · 操作前确认（ui-v3 PR-1C 已实装）
 
-**当前**：项目内 17 处 `confirm()` 调用（删除 / 清空 / 切项目等）。这是浏览器原生 confirm · 阻塞 + 视觉割裂。
+**何时用**：用户即将执行不可撤销 / 高代价操作（删除 / 清空 / 切换大量数据）· 必须先获得明确确认。
 
-**未实装**：ConfirmDialog atom 留给后续 epic（ui-v3 PR-1C 或 ui-v4）。
+**不要用**：
 
-**临时规则**（在 ConfirmDialog 出来前）：
+- 普通操作（保存 / 归档 / 中性切换）· 用 toast 反馈即可
+- 紧急通知（如错误）· 用 toast.error · 不需要用户确认
+- 长流程的中间步骤 · 用 wizard / 多步表单
 
-- 危险操作（删除 / 不可撤销）→ 沿用 `confirm()` · message 写清楚后果
-- 非危险操作 → 用 toast 反馈即可 · 无需 confirm
+### API（`src/store/confirm.ts`）
+
+```tsx
+import { confirm as confirmDialog } from '../store/confirm';
+
+// 危险操作（删除 · 红色变体）
+const ok = await confirmDialog({
+  title: '删除项目「foo」？',
+  message: '该项目及其所有产物将被永久删除 · 此操作不可撤销。',
+  confirmLabel: '删除',
+  danger: true,
+});
+if (!ok) return;
+
+// 普通操作（归档 · primary 变体）
+const ok = await confirmDialog({
+  title: '归档「foo」到历史项目？',
+  message: '当前工作区会清空，可随时载入。',
+  confirmLabel: '归档',
+});
+if (!ok) return;
+```
+
+### Anti-pattern
+
+```tsx
+// ✗ 不要用 native window.confirm
+if (!confirm('删除？')) return;     // 阻塞 UI · 视觉割裂
+
+// ✗ 不要把 confirmDialog 当 alert 用
+await confirmDialog({ title: '已保存' });  // 应该用 toast.success
+
+// ✗ 不要在 confirm 内放表单
+await confirmDialog({
+  title: '...',
+  message: <input />,  // 类型错误 · message 是 string
+});
+// 需要表单的场景写专用 modal · 不复用 ConfirmDialog
+
+// ✓ 取消时静默退出 · 不抛
+const ok = await confirmDialog({ ... });
+if (!ok) return;  // 不要 throw · 不要 toast.warning('已取消')
+```
+
+### 命名约定
+
+由于 native `confirm` 是 window 全局函数 · 推荐用 alias 避免歧义：
+
+```tsx
+// 推荐
+import { confirm as confirmDialog } from '../store/confirm';
+
+// 接受（局部 scope 覆盖 native · 但读起来歧义）
+import { confirm } from '../store/confirm';
+```
 
 ---
 
