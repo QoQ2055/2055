@@ -9,7 +9,98 @@
 
 ---
 
-## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP 完成）
+## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP + PR-1B 完成）
+
+### PR-1B · 完整快捷键系统 + ShortcutHandbook（commit `394977b` Step1 · `29cbe7b` Step2）
+
+**目标**：补齐 PRD US-1 完整 scope · 把 PR-1 MVP 的 Cmd+K 单点扩展到完整快捷键系统。
+
+**实装范围**：
+
+| 快捷键 | 行为 | 范围 | 输入态保护 | 提交 |
+|---|---|---|---|---|
+| `Cmd+K` / `Ctrl+K` | 打开命令面板 | 全局 | ❌ 不保护（用户期望随时打开） | MVP 已实装 |
+| `Cmd+S` / `Ctrl+S` | 阻拦浏览器保存 + toast 提示已自动保存 | 全局 | ❌ 不保护（任意上下文） | Step1 |
+| `?` (Shift+/) | 打开快捷键手册 modal | 全局 | ✅ input/textarea/select/contenteditable 内禁用 | Step1 |
+| `J` | 下一章节（selectedChapterIdx + 1） | /novel · chapters.length > 0 | ✅ 输入态禁用 | Step2 |
+| `K` | 上一章节（selectedChapterIdx − 1） | /novel · chapters.length > 0 | ✅ 输入态禁用 | Step2 |
+| `Esc` | 关闭 modal/palette | modal 局部 | N/A | MVP 已实装 |
+
+**核心新增文件**：
+
+```
+src/lib/shortcuts.ts             · 33 行 · isEditingTarget / isCtrlOrCmd 工具
+src/store/shortcutHandbook.ts    · 23 行 · zustand open/close state
+src/components/ShortcutHandbook.tsx · 138 行 · 分组手册 modal · kbd 风格
+
+src/components/Layout.tsx        · +30 行 · 全局快捷键路由器（Cmd+K / Cmd+S / ?）
+src/pages/Novel.tsx              · +25 行 · J/K useEffect（chapters dep）
+```
+
+**关键不变量验证（PR-1B）**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-1 路由不动 | router.tsx / Novel.tsx routes | ✅ 仅 useNavigate 跳既有路径 + setSelectedChapterIdx 改 state |
+| V3-I-2 不抢系统 | Cmd+S preventDefault 仅当 Ctrl/Cmd · J/K 拒绝任何 modifier | ✅ Cmd+C/V/Z/A/F/T/N 不动 |
+| V3-I-3 NavItem 路径不变 | git diff src/components/ui/NavItem | ✅ 0 修改 |
+| V3-I-4 不静默吞错 | toast.info on Cmd+S · console.error 沿用 | ✅ |
+| V3-I-7 / DESIGN.md ⑥ | kbd 用 `border + text-fg-muted + bg-surface/50` | ✅ 非纯色块 |
+| V2-I-3 / V2-I-4 | 不动 6 atoms · ShortcutHandbook 是 page-level | ✅ atoms 0 修改 |
+
+**输入态保护策略**（关键设计）：
+
+- `isEditingTarget(e)` 检查 target.tagName ∈ {INPUT, TEXTAREA, SELECT} ∪ contentEditable
+- 输入态自动禁用：`?` / `J` / `K`
+- 输入态仍生效：`Cmd+K` / `Cmd+S` / `Esc`（PRD §4.2 规则：modifier 组合键例外）
+- 边界 case：用户在 NovelSettingsDialog 输入 logline 时按 J → 不会切换章节 ✅
+
+**Build 验证**：
+
+```bash
+npx vite build → 0 errors · 3.81s
+```
+
+**PR-1B dogfood 用户手测项**：
+
+#### US-S1 · 全局快捷键（必测）
+
+```
+1. 任意页面按 Cmd+K（mac）或 Ctrl+K（win）
+   预期：命令面板打开 · 与 PR-1 MVP 行为一致 ✅
+
+2. 任意页面按 Cmd+S 或 Ctrl+S
+   预期：浏览器原生"保存页面"对话框不弹出 · 屏幕右上角显示 toast：
+        "已自动保存 · 所有改动实时持久化到本地 IndexedDB"
+   边界：在 input/textarea 内按 Cmd+S 也应阻拦浏览器 + 弹 toast
+
+3. 任意页面按 ? (Shift+/)
+   预期：快捷键手册 modal 弹出 · 列出全局 + Novel 分组 · kbd 灰边框样式
+   边界：在 NewProjectDialog 的标题 input 内按 ? → 应正常输入 "?" 字符 · 不弹手册 ✅
+```
+
+#### US-S2 · Novel 页 J/K（必测）
+
+```
+1. 进入 /novel · 跑到 N3.1 已生成 chapters（≥ 2 章）
+2. 不点任何 input · 按 J → selectedChapterIdx 从 null/cur → cur+1
+3. 连按 J 直到末章 → 不超过 chapters.length（边界 clamp）
+4. 按 K → cur−1 · 连按到第 1 章 → 不跌破 1
+5. 边界：在 Best-of-N 设置 input focus 时按 J → 应正常输入 "j" 字符 · 不切章节 ✅
+6. 边界：按 Cmd+J 或 Shift+J → 不应切章节（仅纯 J 触发）
+```
+
+#### US-S3 · 手册内容正确性
+
+```
+1. ? 打开手册
+2. 检查全局组：Cmd+K / ? / Cmd+S / Esc 4 条
+3. 检查 Novel 组：J / K 2 条
+4. macOS 显示 "Cmd" · Windows 显示 "Ctrl"（导航条 UA 自适应）
+5. Esc 或点遮罩 → 关闭
+```
+
+---
 
 ### PR-1 MVP · Command Palette 骨架（commit `64fc359`）
 
@@ -114,7 +205,54 @@ build   : ✅ 3.25s · 0 errors
 
 ---
 
-## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3+PR-4 · epic 收尾）
+## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3+PR-4+PR-1B · epic 100% 严守）
+
+### PR-1B · NovelSettingsDialog 5 form 控件 atom 化（commit `6f99fea`）
+
+**目标**：补 PR-4 跳过的"9 form 控件 atom 化" · 实际可 atom 化 5 个（select 无 atom 保留 raw）。
+
+**实装范围**：
+
+```
+src/pages/novel/NovelSettingsDialog.tsx
+  3 input × 2 数字 + 1 文本 → <Input size="sm">
+    L182 总字数（万字）/ L191 总章数 / L289 一句话简介
+  2 textarea × 1 核心冲突 + 1 关键设定 → <Textarea>
+    L279 核心冲突 / L298 主角金手指
+  3 select × 平台 / POV / 调性 → 保留 raw
+    （V2-I-4 不加第 7 atom · 已用 token-based class 符合 DESIGN.md）
+  6 button × 配色按钮 + 4 选择按钮 → 保留 raw
+    （已用 success token 渐变 · 非直接色 · 后续可考虑 ToggleButton atom）
+```
+
+**Diff stat**：1 file · +341 -339（CRLF 行尾差异占大部分 · 实质行变更约 ±25）
+
+**不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V2-I-1 token 优先 | 移除 `bg-surface border border-border-subtle rounded px-2 py-1.5` 直接 class · 改 `<Input className="w-full">` 走 atom 内置 | ✅ |
+| V2-I-3 6 atoms 不动 | git diff src/components/ui/Input.tsx Textarea.tsx | ✅ 0 修改 |
+| V2-I-4 不加第 7 atom | select 保留 raw · 不新建 Select atom | ✅ |
+| V2-I-9 console.error | 业务逻辑 0 修改 | ✅ |
+| 视觉一致性 | atom 内置 .input 配方 = h-9 px-3（md）/ h-7 px-2.5（sm） · 与原 py-1.5 px-2 视觉等价 | ✅ |
+
+**Build 验证**：`npx vite build → 0 errors · 3.38s`
+
+**PR-1B dogfood 用户手测项**：
+
+```
+1. /novel 页面打开"编辑小说项目设定"对话框
+2. 总字数 input：输入 50 → 派生章数自动更新
+3. 总章数 input：手动改 → "已手动" 标记 + "自动" 按钮可恢复
+4. 核心冲突 textarea：多行输入 + 字符计数（无 maxLength · 无限）
+5. 简介 input：输入超 120 字符 → 自动截断（maxLength 生效）
+6. 关键设定 textarea：输入超 400 字符 → 自动截断
+7. 检查焦点环：所有 atom 控件聚焦时 ring-primary-500（与其它页面一致）
+8. 关闭重开 → 数据回填正确
+```
+
+---
 
 ### PR-4 · Novel.tsx 拆解（commit `f74635c` Step A · `0ddd6f9` Step B）
 
