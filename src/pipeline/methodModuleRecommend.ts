@@ -436,6 +436,68 @@ export function recommendMethodModules(ctx: Partial<ProjectContext>): ModuleReco
     });
   }
 
+  // ── 章节焊接 / 角色一致性 / 密度切分（gap-f micro-PR · 通用工艺增强）─────
+  // 章节衔接 7 过门：所有连载（long/super_long/medium）均推荐
+  if (scale === 'long' || scale === 'super_long' || scale === 'medium') {
+    out.push({
+      id: 'chapter-transition-7methods',
+      score: scale === 'super_long' ? 80 : scale === 'long' ? 75 : 65,
+      reason: `${scale === 'super_long' ? '超长篇' : scale === 'long' ? '长篇' : '中篇'}章节衔接刚需：7 种过门方式 + 接力物机制让读者零跳读`,
+    });
+  }
+
+  // 角色视觉 ID 卡：长篇 + 多角色题材强推；其他长篇弱推
+  const multiCharGenres = ['群像', '多主角', '宫斗', '权谋', '武侠', '玄幻', '仙侠', '修真', '异世界', '架空', '奇幻'];
+  const isLongScale = scale === 'long' || scale === 'super_long';
+  if (isLongScale && genres.some((g) => multiCharGenres.some((h) => g.includes(h)))) {
+    out.push({
+      id: 'character-visual-id-card',
+      score: 80,
+      reason: '多角色长篇刚需：5 维 ID 卡（体型/面部锚点/发型/服装/视觉签名）防角色描述漂移',
+    });
+  } else if (isLongScale) {
+    out.push({
+      id: 'character-visual-id-card',
+      score: 65,
+      reason: '长篇推荐：视觉 ID 卡锁定外观，跨章节防漂移',
+    });
+  }
+
+  // 内容密度装填：通用（除短篇外都推）
+  if (scale && scale !== 'short') {
+    out.push({
+      id: 'content-density-filling',
+      score: 65,
+      reason: '场景切分工业化决策树：4 级密度判断 + 4 切点选择 + 对话密度处理',
+    });
+  }
+
+  // IP 改编 SOP：createMode === 'adaptation' 强推
+  if ((ctx as { createMode?: string }).createMode === 'adaptation') {
+    out.push({
+      id: 'ip-adaptation-sop',
+      score: 90,
+      reason: '改编项目核心 SOP：清洗（去水去油）+ 对标（三大方向）+ 重构（加钩子加节奏）',
+    });
+  }
+
+  // 商业付费点：商业平台（起点/番茄/晋江等）+ 长篇 → 强推；任何长篇 → 弱推
+  const isCommercialPlatform = platform.includes('qidian') || platform.includes('17k')
+    || platform.includes('zongheng') || platform.includes('jjwxc') || platform.includes('fanqie');
+  if (isCommercialPlatform && isLongScale) {
+    out.push({
+      id: 'serialization-paid-hooks',
+      score: 82,
+      reason: '商业连载付费点设计：3 段位（10-12 集/20-25 集/结局）让付费转化率最大化',
+    });
+  } else if (isLongScale) {
+    out.push({
+      id: 'serialization-paid-hooks',
+      score: 60,
+      reason: '长篇连载可参考 3 段位付费点布局，做宏观钩子节奏管理',
+    });
+  }
+
   // ── 去重（同 id 取最高分）+ 排序 ───────────────────────────────
   const map = new Map<string, ModuleRecommendation>();
   for (const r of out) {
