@@ -9,7 +9,93 @@
 
 ---
 
-## gap-e epic · 创作产物导出（2026-05-08 PR-1 完成 · 5 格式接入 3 入口）
+## gap-e epic · 创作产物导出（2026-05-08 PR-1 + PR-2 完成 · 5 格式 + Cmd+K 联动）
+
+### PR-2 · ExportDrawer 全局化 + Cmd+K 命令面板联动（commit `991646d`）
+
+**目标**：把 PR-1 的 3 处局部 useState 提升到全局 zustand · 让 Command Palette 真正能调起"打开导出抽屉"操作类命令 · 同时解锁 **ui-v3 PR-1B 延后项**"跨组件命令"（之前 PR-1 MVP 文档明确标记的 backlog）。
+
+**实装范围**：
+
+```
+新增文件 :
+  src/store/exportDrawer.ts (~28 行 · zustand · open/mode + show()/hide())
+
+修改文件 :
+  src/components/Layout.tsx        · 加 GlobalExportDrawer wrapper（从 store + useProject 注入）
+  src/components/CommandPalette.tsx · 加 'actions' group + 3 个导出命令（all/novel/screenplay）
+  src/pages/Home.tsx               · 移除局部 exportOpen state · 按钮改调 useExportDrawer.show('all')
+  src/pages/Novel.tsx              · 同上 · show('novel')
+  src/pages/Screenplay.tsx         · 同上 · show('screenplay')
+
+净变化 : +109 / -41
+```
+
+**Command Palette 新增 3 命令（actions group）**：
+
+| label | mode | keywords | 作用 |
+|---|---|---|---|
+| 导出产物… | all | export · 导出 · md · docx · fdx · fountain · csv | 通用入口（无类别偏好） |
+| 导出小说… | novel | novel · 小说 · md · docx · word · markdown | 高亮小说类 |
+| 下载剧本… | screenplay | screenplay · 剧本 · fdx · fountain · final draft | 高亮剧本类 |
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-3 NavItem 不动 | git diff src/components/ui/NavItem.tsx | ✅ 0 修改 |
+| V3-I-4 不静默 | ExportDrawer 内 toast.error 沿用 | ✅ |
+| V2-I-3/4 6 atoms 不动 | git diff src/components/ui/ | ✅ 0 修改 |
+| Command Palette 命令数 | 11 nav/tools + 3 actions = **14 条** | ✅ 满足 PRD §10 ≥ 30 长期目标的渐进 |
+| 单实例策略 | Layout 只挂 1 个 GlobalExportDrawer · 3 处 toolbar 不再各自渲染 | ✅ |
+
+**Build 验证**：`npx vite build → 0 errors · 3.42s`
+
+**PR-2 dogfood 用户手测项**：
+
+#### US-EE1 · Cmd+K 调起导出抽屉（必测）
+
+```
+1. 任意页面（含 input focus 内）按 Cmd+K（mac）或 Ctrl+K（win）
+2. 输入"导出"或"export"或"md" → 命中 3 条 actions 类命令
+3. 选中"导出产物…" 按 Enter → ExportDrawer 从右滑入（mode='all'）
+4. 同样路径试"导出小说…" → mode='novel'·小说类排在最上
+5. 试"下载剧本…" → mode='screenplay'·剧本类排在最上
+6. 在抽屉打开时再按 Cmd+K → 命令面板再次打开（独立 z-index 不冲突）
+```
+
+#### US-EE2 · 工具栏按钮仍正常（必测）
+
+```
+- [ ] /home ActiveProjectCard "导出…"按钮 → 抽屉 mode='all'
+- [ ] /novel toolbar "导出…"按钮 → mode='novel'
+- [ ] /screenplay toolbar "下载剧本…"按钮 → mode='screenplay'
+- [ ] 三处按钮关闭后再次点击 · 抽屉重新打开（不卡死）
+```
+
+#### US-EE3 · 单实例验证
+
+```
+1. /novel 点"导出…" → 抽屉打开（store.open=true）
+2. 不关闭 · 切换到 /home（路由跳转）
+3. 抽屉**仍显示**（全局挂载 · 不随 Outlet 卸载）
+4. 此时项目数据已从 useProject 读到 home 页面的 ctx → 显示项目名应是当前活动项目（不是 novel 切之前的）
+   注：useProject 是全局 store · ctx 只有"活动项目"这一个概念 · 跨页面一致
+5. 关闭抽屉 → store.open=false · 任何位置都关
+```
+
+#### US-EE4 · 不变量回归
+
+```
+- [ ] 11 个 nav/tools 命令仍工作（首页/小说/剧本/...）
+- [ ] Cmd+K / Ctrl+K 仍 toggle palette
+- [ ] ? 仍打开 ShortcutHandbook
+- [ ] J/K 仍切章节
+- [ ] Cmd+S 仍触发"已自动保存"toast
+- [ ] vite build 0 errors
+```
+
+---
 
 ### PR-1 · ExportDrawer + 5 builder + 3 入口接入（commit `e66b584`）
 
