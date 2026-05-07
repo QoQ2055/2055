@@ -18,6 +18,7 @@ import { ChapterValidationPanel } from '../components/ChapterValidationPanel';
 import { ChapterScoreCardSlot } from '../components/ChapterScoreCardSlot';
 import { ProgressDashboard } from '../components/ProgressDashboard';
 import { CharacterBible } from '../components/CharacterBible';
+import { ReflectorLessonsPanel } from '../components/ReflectorLessonsPanel';
 import { markStateStale } from '../store/characterStates';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
@@ -670,6 +671,9 @@ export function Novel() {
 
         {/* gap-b · 角色 Bible 跨章节追踪面板（CA §4.1 Q1 决议：同视觉语言 collapsible，默认折叠）*/}
         <CharacterBible />
+
+        {/* v6 epic · ACE-lite Reflector lessons 面板（CK I-6 独立面板 · 默认折叠 · 默认未启用）*/}
+        <ReflectorLessonsPanel />
 
         {chapters.length === 0 ? (
           <div className="text-sm text-fg-muted italic">
