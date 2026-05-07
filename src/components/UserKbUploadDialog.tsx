@@ -21,6 +21,7 @@ import {
 } from '../store/userKb';
 import { extractUserKbDoc } from '../llm/extractKb';
 import { useSettings } from '../store/settings';
+import { Input, Textarea } from './ui';
 
 interface Props {
   initialType?: UserKbDocType;
@@ -206,16 +207,14 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
               {/* 标题 + 标签 */}
               <div className="grid grid-cols-2 gap-3">
                 <Field label="标题">
-                  <input
-                    className="input w-full"
+                  <Input
                     placeholder="例：2026 年 4 月爆款要点"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </Field>
                 <Field label="标签（逗号分隔，可选）">
-                  <input
-                    className="input w-full"
+                  <Input
                     placeholder="例：都市,2026Q1,重生"
                     value={tags}
                     onChange={(e) => setTags(e.target.value)}
@@ -247,8 +246,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                     {rawContent.length} 字符
                   </span>
                 </div>
-                <textarea
-                  className="input w-full font-mono text-xs"
+                <Textarea
+                  className="font-mono text-xs"
                   rows={12}
                   placeholder="或直接粘贴文本……（支持 markdown / 纯文本，建议 200-50000 字符）"
                   value={rawContent}
@@ -314,8 +313,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
               </div>
 
               <Field label="结构化 JSON（可手动编辑）">
-                <textarea
-                  className="input w-full font-mono text-tight-sm"
+                <Textarea
+                  className="font-mono text-tight-sm"
                   rows={20}
                   value={structuredJson}
                   onChange={(e) => setStructuredJson(e.target.value)}
