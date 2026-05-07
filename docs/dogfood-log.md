@@ -9,7 +9,97 @@
 
 ---
 
-## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP + PR-1B 完成）
+## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP + PR-1B + PR-2 完成）
+
+### PR-2 · Sidebar status badge（commit `8b16d3b`）
+
+**目标**：在 sidebar nav 上叠加 contextual badge · 让"待办通知"在视觉层面被动暴露 · 而不需用户主动点开页面才发现。
+
+**实装范围**（PRD §2.3 完成 Part A · Part B Toast 全站集成已在 ui-v2 PR-2 完成 · 本 PR 不重复）：
+
+```
+新增文件 :
+  src/store/sidebarBadges.ts       (~38 行 · zustand · pendingLessons + refresh())
+  src/components/SidebarBadge.tsx  (~90 行 · variant=danger/warning/info · count/dot 双模式)
+
+修改文件 :
+  src/components/Layout.tsx                 +18 行 · 周期 10s 轮询 + ctx 切换刷新 + 2 处 SidebarBadge 挂载
+  src/components/ReflectorLessonsPanel.tsx  +6 行 · approve/reject 后即时 refresh
+```
+
+**Badge 设计**（DESIGN.md ⑥严守 · 色盲友好）：
+
+| variant | 视觉 | 用例 | 显示规则 |
+|---|---|---|---|
+| `danger` | bg-danger + text-white + 数字 | /lessons 待审 lessons 数 | count > 0 显示 · ≥10 显示 "9+" |
+| `warning` | bg-warning + AlertTriangle + text-canvas | （备用 · 数字模式） | count > 0 显示 |
+| `warning` (dot) | bg-warning 圆点 size-2 | /settings 未配 API key | hidden=hasKey 控制显示 |
+| `info` | bg-info + text-white + 数字 | （备用 · v7+ 可用） | count > 0 显示 |
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-3 NavItem 路径不变 | `git diff src/components/ui/NavItem.tsx` | ✅ 0 修改 · 通过 `<div className="relative">` wrapper + absolute 定位 |
+| V3-I-4 不静默吞错 | `sidebarBadges.refresh` console.error on dexie 失败 | ✅ |
+| V3-I-5 Dexie schema 不变 | 仅读 `listLessonsByStatus` · 无 schema 改动 | ✅ |
+| V3-I-7 / DESIGN.md ⑥ 色盲友好 | dot 模式带 aria-label · 数字模式带 aria-label · 不仅靠颜色 | ✅ 数字+icon 双通道 |
+| V2-I-3 / V2-I-4 6 atoms 不动 | git diff src/components/ui/ | ✅ SidebarBadge 是 page-level component |
+| V2-I-9 console.error | 沿用 | ✅ |
+
+**刷新策略**：
+
+```
+1. Layout mount → refreshBadges() 立即拉一次
+2. setInterval(refreshBadges, 10_000) → 周期 10s（IndexedDB 索引查询 < 5ms · 成本 trivial）
+3. ctx.name 变化 → 项目切换时强制刷新（避免显示旧项目的 pending 数）
+4. ReflectorLessonsPanel approve/reject → useSidebarBadges.getState().refresh() 即时刷新
+```
+
+**Build 验证**：`npx vite build → 0 errors · 3.57s`
+
+**PR-2 dogfood 用户手测项**：
+
+#### US-B1 · /lessons pending badge（必测）
+
+```
+1. 在某项目内进入 N3 阶段触发 reflector lessons（或手动构造）
+2. 不在 /lessons 页 → sidebar 的 "Reflector Lessons" 右侧应显示红色数字 badge
+3. 进入 /lessons 页 → badge 仍显示
+4. 在 /lessons 内 approve 一条 → badge 数字立即 -1（不需等 10s 轮询）✅
+5. approve/reject 全部 → badge 自动消失（count=0 不渲染）
+6. ≥ 10 条 pending → badge 显示 "9+"
+```
+
+#### US-B2 · /settings API key warning dot（必测）
+
+```
+1. 清空 settings.apiKey → /settings 项右侧出现黄色圆点
+2. 点 sidebar 底部"未配置 API Key"提示 → 进入 /settings 配置一个 key
+3. 保存后 dot 消失（hidden=hasKey 立即生效 · 不依赖轮询）
+4. 验证：dot 不显示数字 · 仅圆点 · 与底部状态条一致（视觉冗余但合理）
+```
+
+#### US-B3 · 切项目时刷新
+
+```
+1. 项目 A 有 5 pending lessons · 项目 B 有 0 → sidebar 显示 5
+2. 切到项目 B → sidebar 应在 ≤ 1s 内变成不显示（ctx.name 变化触发 refresh）
+3. 切回项目 A → 5 复现
+注：projectId=0 是 live · listLessonsByStatus(0, 'pending') 拿到的是当前活动项目的 pending
+```
+
+#### US-B4 · 不变量回归
+
+```
+- [ ] NavItem 行为不变 · 跳转 / active 高亮 / hover 状态都正常
+- [ ] sidebar 底部"API Key 已配置"状态条仍工作（与 dot 共存 · 视觉冗余但功能合理）
+- [ ] vite build 0 errors
+- [ ] 不抢系统快捷键（PR-1B 行为继承）
+- [ ] alert/confirm 数：无新增（PR-2 不动业务代码）
+```
+
+---
 
 ### PR-1B · 完整快捷键系统 + ShortcutHandbook（commit `394977b` Step1 · `29cbe7b` Step2）
 
