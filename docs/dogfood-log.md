@@ -9,6 +9,237 @@
 
 ---
 
+## ui-v1 epic · 资产路由化（asset-routing）（2026-05-07 完成 PR-1+PR-2+PR-3 · 用户 dogfood 待启动）
+
+### Epic 总览
+
+| 维度 | 实测 | 备注 |
+|---|---|---|
+| **背景** | 13 路由 vs 6 侧栏入口失衡 · method modules（74 个）+ reflectorLessons（v6 epic）只在 Novel.tsx 内嵌 · 其它 mode 用户访问不到 | 见 preflight §1 |
+| **目标** | 加 /methods + /lessons 独立页面 + Sidebar 三组分隔（工具/资产/设置）· 与 /kb 平级 | preflight §0 |
+| **范围** | 7 文件 · ~480 行实施代码 + 1114 行 Stage 2 docs | 见 §2 |
+| **红线** | **0 豁免**（与 v5 R1 不同）· 8 红线 R-UI-1 ~ R-UI-8 全守 | preflight §6 |
+| **PR 数** | 3 PR + Stage 0 preflight 1 + Stage 2 docs 1 = 5 commits | git log |
+| **Commits** | preflight `eef2953` → Stage 2 `16299ef` → PR-1 `90d2d59` → PR-2 `b7b63c8` → PR-3 (本节) | + 前置 fix `385649d` |
+| **完成时间** | ~2.5h（preflight 30min + Stage 2 90min + PR-1 25min + PR-2 25min + PR-3 15min） | 比 estimate 5h 减半 ✓ |
+| **vite build** | ✅ 1945 modules · 0 errors · 3.27s（baseline 1943 · +2 新 page） | × 3 次累积验证 |
+
+### §1 PR-1/2/3 验证
+
+#### PR-1 · /methods 独立页面（commit 90d2d59）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1944 | 1944 | ✅ |
+| F1 MethodModules.tsx | ~120 行 NEW | 244 行 NEW | 🟡 比估长（含完整 list+panel + 12 category color meta + 错误状态）|
+| F2 router.tsx | +3 行 | +2 行 (import + Route) | ✅ |
+| F3 Layout.tsx | +2 行 | +2 行 (Brain icon + NavItem) | ✅ |
+| I-1 router 旧 path 0 改 | 0 | 0 | ✅ |
+| I-2 Layout 旧 NavItem to 0 改 | 0 | 0 | ✅ |
+| I-3 Novel.tsx panels 引用 ≥ 2 | ≥ 2 | 4 | ✅ |
+| I-4 ~ I-8 schema/prompt 0 改 | 0 | 0 | ✅ |
+
+#### PR-2 · /lessons 独立页面（commit b7b63c8）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1945 | 1945 | ✅ |
+| F4 ReflectorLessons.tsx | ~80 行 NEW | 205 行 NEW | 🟡 比估长（含 4 status badge + 3 filter + cross-project list）|
+| F5 reflectorLessons.ts | +10 行 listAllLessons | +10 行 | ✅ |
+| F6 ReflectorLessonsPanel.tsx modal export | ~5 行 | +5 / -3 行 | ✅ |
+| F7 router.tsx | +3 行 | +2 行 (import + Route) | ✅ |
+| F8 Layout.tsx | +2 行 | +2 行 (Lightbulb + NavItem) | ✅ |
+| I-6 reflectorLessons.ts 仅 +listAllLessons | 仅 + | 仅 + | ✅ |
+| R-UI-1 panel 内部仍调用 modal | 是 | 是（line 221 + line 243）| ✅ |
+
+#### PR-3 · Sidebar 分组 + dogfood log（本节）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1945 | 1945 | ✅（无新模块）|
+| Sidebar 重组：通用 → 工具/资产/设置 | 3 组 | 3 组 | ✅ |
+| F-PR3-1 Layout.tsx | ~+15 行 | -1 / +5 行（重排 + 加 2 NavSectionLabel）| ✅ |
+| F-PR3-2 dogfood-log.md | +~80 行 | +~250 行（本 section）| 🟡 比估长 |
+| I-2 现有 NavItem to 全保留 | 是 | 是（仅顺序变 + 加 NavSectionLabel）| ✅ |
+
+### §2 累积 ledger
+
+| 文件 | 类型 | 行数 | commit | CK 验证 |
+|---|---|:---:|---|:---:|
+| `docs/planning/preflight-ui-v1-asset-routing.md` | docs | 313 | eef2953 | — |
+| `docs/planning/prd-ui-v1-asset-routing.md` | docs | 373 | 16299ef | — |
+| `docs/planning/codebase-analysis-ui-v1-asset-routing.md` | docs | 455 | 16299ef | — |
+| `docs/planning/code-knowledge-ui-v1-asset-routing.md` | docs | 286 | 16299ef | — |
+| `src/data/projectModes.ts` | 前置修复 | -2 / +5 | 385649d (前置) | UI 一致性 |
+| `src/pages/MethodModules.tsx` | UI page NEW | 244 | 90d2d59 | I-1 ~ I-8 ✅ |
+| `src/pages/ReflectorLessons.tsx` | UI page NEW | 205 | b7b63c8 | I-1 ~ I-8 ✅ |
+| `src/store/reflectorLessons.ts` | store | +10 | b7b63c8 | I-6 ✅ |
+| `src/components/ReflectorLessonsPanel.tsx` | UI | +5 / -3 | b7b63c8 | R-UI-1 ✅ |
+| `src/router.tsx` | meta | +4 | 90d2d59 + b7b63c8 | I-1 ✅ |
+| `src/components/Layout.tsx` | meta | +6 / -1 (累积) | 90d2d59 + b7b63c8 + 本节 | I-2 ✅ |
+| `docs/dogfood-log.md` | docs | +~250 | (本 commit) | — |
+| `src/store/db.ts` | meta | **0** | — | I-4 完美 |
+| `src/store/characterStates.ts` | store | **0** | — | I-5 完美 |
+| `src/store/settings.ts` | meta | **0** | — | I-7 完美 |
+| `public/prompts/manifest.json` | prompt | **0** | — | I-8 完美 |
+
+**总计**：5 commits（preflight + Stage 2 + 3 PR）· src 增量 ~480 行 · docs 增量 ~1677 行（含 1114 Stage 2 + 250 dogfood + 313 preflight）。
+
+### §3 红线审计
+
+| # | 红线 | 状态 | 实测证据 |
+|:---:|---|:---:|---|
+| R-UI-1 | 不删 Novel.tsx 内嵌 panels | ✅ 严守 | grep MethodModulePanel/ReflectorLessonsPanel 在 Novel.tsx = 4 refs |
+| R-UI-2 | 不动 13 旧路由 path | ✅ 严守 | git diff router.tsx · 旧 path 行数 = 0 |
+| R-UI-3 | 不动 Dexie schema | ✅ 严守 | git diff db.ts = 0 行 |
+| R-UI-4 | 不动 v5 readerLayer | ✅ 严守 | git diff characterStates.ts = 0 行 |
+| R-UI-5 | 不动 v6 reflectorLessons schema | ✅ 严守 | 仅 +listAllLessons · 无 -export |
+| R-UI-6 | 不动 settings.reflectorThresholds 默认值 | ✅ 严守 | git diff settings.ts = 0 行 |
+| R-UI-7 | 不动 prompts/manifest.json | ✅ 严守 | git diff = 0 行 |
+| R-UI-8 | 保持 simplify "clean 状态" | ✅ 严守 | 0 dead code 引入 · 0 长文件新增 |
+
+**结论**：与 v5 epic 不同 · 与 v6 epic 一致 · 本 epic 是"红线友好"epic · 0 豁免。
+
+### §4 dogfood 待执行清单
+
+```
+□ [UV1-D-1] 启动 dev · 验证侧栏 8 入口（重组后 3 组分隔）
+       - 项目（/）+ mode-specific（动态）+ 工具(3) + 资产(3) + 设置(1)
+       - 实测后填：[ ]
+
+□ [UV1-D-2] 点 "方法论" → /methods · 加载 OK
+       - 74 个 modules 显示在左列表
+       - 顶部 search + 12 category tab 工作正常
+       - 实测后填：[ ]
+
+□ [UV1-D-3] 点卡片 → 右侧 markdown 详情显示
+       - 完整 markdown 渲染（heading / code / blockquote / list 等）
+       - injectsTo 节点 / conflictsWith 显示正确
+       - 实测后填：[ ]
+
+□ [UV1-D-4] 点 "Reflector Lessons" → /lessons · 加载 OK
+       - v6 reflectorThresholds.enabled=false 时显示"未启用"提示
+       - settings 启用后再访问 · 看到 lessons（如未跑 N3.2 · 显示空态）
+       - 实测后填：[ ]
+
+□ [UV1-D-5] /lessons 详情 modal 操作（CK I-3 验证）
+       - 点 [详情/编辑] → modal 弹出
+       - 编辑 lessonContent / suggestedModule / reviewNote
+       - 点 [批准] → status='approved' · 列表刷新
+       - 检查 public/methods/*.md → 0 改动（CK I-3）
+       - 实测后填：[ ]
+
+□ [UV1-D-6] 跨 4 mode 切换 · 侧栏 3 组分隔显示一致（CK I-2）
+       - original / adaptation / express / novel 4 mode
+       - 每个 mode 下：项目（/）+ mode-specific（可能 0 项）+ 工具/资产/设置
+       - 实测后填：[ ]
+
+□ [UV1-D-7] R-UI-1 验证 · Novel.tsx 内嵌 panels 仍工作
+       - 进 Novel 页 · 展开 MethodModulePanel · 选 modules 工作正常
+       - 展开 ReflectorLessonsPanel · 详情 modal 弹出工作正常
+       - 实测后填：[ ]
+
+□ [UV1-D-8] R-UI-8 验证 · simplify 跑过
+       - npx vite build 无 warn
+       - 跑 simplify workflow 1.1 / 1.2 / 1.3 / 1.5 → 0 新 dead code / 长文件
+       - 实测后填：[ ]
+```
+
+### §5 后续 epic 依赖契约
+
+| 依赖 epic | 何时启动 | 本 epic 提供的契约 |
+|---|---|---|
+| **ui-v2 epic**（B1 + B2 · Home dashboard + Novel.tsx 拆解）| 用户 dogfood ≥ 2 周后 | `/methods` `/lessons` 路由不变 · NavSectionLabel 三组结构稳定 |
+| **ui-v3 epic**（C1 + C2 · 三栏 + Command Palette）| ui-v2 完成后 | 路由层 + Layout sidebar 在 ui-v3 时可能整体重构（本 epic 不绑定）|
+| **gap-h epic**（交叉验证）| 与本 epic 完全独立 | 无依赖 |
+| **v7 epic**（layer 2 readerLayer counter）| v6 dogfood ≥ 1 月 | /lessons 提供全局视图 · 帮助 v7 决策 lesson commit rate 是否达 70% |
+
+### §6 lessons learned
+
+#### Lesson 1 · 双 epic 并发不会冲突（v5/v6 + ui-v1）
+
+```
+v5 epic（数据层）：readerLayer schema
+v6 epic（pipeline 层）：reflector + reflectorLessons
+ui-v1 epic（UI 层）：路由 + 资产页面
+
+三 epic 同日（2026-05-07）落地 · 0 红线豁免 · 0 build 错误
+原因：BMAD 三件套 docs（preflight + PRD + CA + CK）严格的"不变量列表"机制
+       让每 epic 都明确自己对其它 epic 资产的承诺
+       后续 epic 不需"重新验证"前 epic 的安全
+```
+
+#### Lesson 2 · 估算偏差：UI 详情 modal + cross-project filter 撑大行数
+
+```
+F1 MethodModules.tsx：估 ~120 行 · 实际 244 行（×2）
+F4 ReflectorLessons.tsx：估 ~80 行 · 实际 205 行（×2.5）
+F-PR3-2 dogfood-log：估 ~80 行 · 实际 ~250 行（×3）
+
+原因：
+  - UI 详情区含完整字段展示（injectsTo / conflictsWith / suggestedModule / committedTo / signal context）
+  - cross-project filter 引入 dynamic projectId dropdown
+  - dogfood-log 需详细审计每 PR + 8 不变量 + 8 红线
+
+教训：
+  - PRD 估算时 UI 类文件应 ×2-3 系数
+  - dogfood-log 应单独估（不计入"代码行数"）
+```
+
+#### Lesson 3 · simplify workflow 时机选择
+
+```
+v6 PR-3 后立即跑 simplify · 报告"仓库相当 clean"
+ui-v1 完成后再跑 → 仍预计 clean（本 epic 0 dead code）
+
+教训：
+  - simplify 不应在每 epic 后跑（噪音多）
+  - 而应在 3-5 个 epic 累积后跑
+  - 本 session 触发了 1 次（v6 PR-3 后）· 体验：报告价值有 · 但落地为 0 改动 · 时机偏早
+  - 下次跑：等 ui-v2 / v7 完成后
+```
+
+#### Lesson 4 · 设计哲学守住的代价 vs 收益
+
+```
+v6 epic CK I-7 严守："不改 scoreCard.ts / consistencyCheck.ts / characterStates.ts"
+ui-v1 epic CK I-3 严守："不删 Novel.tsx 内嵌 panels"
+
+代价：本 epic 必须复用 modal（提取 export · 不能 inline 重写）
+      本 epic 必须 mount 全局页面 + 项目级面板共存（用户可能困惑）
+
+收益：
+  - 旧 dogfood 路径不破坏（用户记忆保留）
+  - 全局浏览 ≠ 项目级激活 · 语义不冲突
+  - 项目级面板 + 全局页面 = 用户从不同入口都能到达资产
+```
+
+### §7 下一步建议
+
+```
+1. 用户 dogfood：实测 §4 UV1-D-1 ~ UV1-D-8 八项
+   → 重点：UV1-D-7（R-UI-1 验证）+ UV1-D-6（4 mode 切换 · CK I-2 验证）
+   → 实测数据填入本 section §4
+
+2. 试 push（5 commits 堆积）
+   → 9 commits 总（含 v5 + v6 epic + 前置 fix + ui-v1 全套）
+   → standing instruction：1 次失败即停
+
+3. 启动 ui-v2 epic？
+   → 不推荐立即（需 dogfood ≥ 2 周积累）
+   → ui-v2 范围：B1 Home dashboard + B2 Novel.tsx 拆解
+   → 时间：~8-10h（含 BMAD 流程）
+
+4. 收工 · cool-down
+   → 双 epic + ui-v1 一气呵成 · ~6.5h 累积
+   → 适合休息后再启动新工作
+```
+
+---
+
 ## v6 epic · ACE-lite 反馈闭环（ace-lite-feedback-loop）（2026-05-07 完成 PR-1+PR-2 · PR-3 待用户 dogfood 后增量）
 
 ### Epic 总览

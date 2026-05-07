@@ -78,14 +78,17 @@ export function Layout() {
             );
           })}
 
-          <NavSectionLabel>通用</NavSectionLabel>
-
-          <NavItem to="/kb" icon={<BookOpen className="size-4" />}>知识库</NavItem>
+          <NavSectionLabel>工具</NavSectionLabel>
           <NavItem to="/analyzer" icon={<FileSearch className="size-4" />}>拆书分析</NavItem>
           <NavItem to="/refinery" icon={<Wand2 className="size-4" />}>润色工坊</NavItem>
           <NavItem to="/playground" icon={<FlaskConical className="size-4" />}>调试台</NavItem>
+
+          <NavSectionLabel>资产</NavSectionLabel>
+          <NavItem to="/kb" icon={<BookOpen className="size-4" />}>知识库</NavItem>
           <NavItem to="/methods" icon={<Brain className="size-4" />}>方法论</NavItem>
           <NavItem to="/lessons" icon={<Lightbulb className="size-4" />}>Reflector Lessons</NavItem>
+
+          <NavSectionLabel>设置</NavSectionLabel>
           <NavItem to="/settings" icon={<SettingsIcon className="size-4" />}>设置</NavItem>
         </nav>
 
