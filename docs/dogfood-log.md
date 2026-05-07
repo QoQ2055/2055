@@ -9,6 +9,157 @@
 
 ---
 
+## gap-e epic · 创作产物导出（2026-05-08 PR-1 完成 · 5 格式接入 3 入口）
+
+### PR-1 · ExportDrawer + 5 builder + 3 入口接入（commit `e66b584`）
+
+**目标**：堵 v3 dogfood 闭环最后一公里·让用户能把项目里写好的小说/剧本/资产**离开浏览器**进入投稿/投递/盘点流程·不再走"复制粘贴 10 章"或"导 .flil.json 给编辑看"的退路。
+
+**实装范围**（PRD §0 排序第一 / `product-brief.md` §4 价值密度最高）：
+
+```
+新增文件 :
+  src/store/exportFormats.ts   (~440 行 · 5 builder + element 分类 helper + downloadExportResult)
+  src/components/ExportDrawer.tsx (~250 行 · 420px 抽屉 + 6 项导出 + disabled 判断 + a11y)
+
+修改文件 :
+  src/pages/Home.tsx       · ActiveProjectCard 加"导出…"Button + 渲染 ExportDrawer (mode='all')
+  src/pages/Novel.tsx      · toolbar 加"导出…"button + 渲染 ExportDrawer (mode='novel')
+  src/pages/Screenplay.tsx · toolbar 加"下载剧本…"button (FileDown · 与 exportToAssets 同名异义) + 渲染 ExportDrawer (mode='screenplay')
+```
+
+**5 格式覆盖**：
+
+| FR | 格式 | 数据源 | 路线 | 受益场景 |
+|---|---|---|---|---|
+| FR-1 | 小说 .md | `novel.7/.6.meta.chapterContents` (回退 .content) | 字符串拼接 + Blob | 番茄/起点/微信读书 markdown 投稿 |
+| FR-2 | 小说 .docx | 同上 | Word HTML 容器（0 依赖 · application/msword） | 编辑投稿/打印交付 |
+| FR-3 | 剧本 .fdx | `screenplay.7.content` (回退 `adapt.6`) | 启发式分类 + XML | Final Draft 制片方业界标准 |
+| FR-4 | 剧本 .fountain | 同上 | 同上 + plain text | 开源剧本格式 · 跨工具 |
+| FR-5 | 资产 .csv | `assets.2/3/4.content` via parseLooseArray | 中文 BOM + RFC4180 | Excel 制片盘点（角色×场景×道具） |
+
+**剧本 element 启发式分类（FR-8 共用 helper）**：
+
+```ts
+parseScreenplayElements(md: string) → Array<{ type: 'sceneHeading' | 'action' | 'character' | 'dialogue' | 'transition', text }>
+
+规则：
+• sceneHeading · INT./EXT./EST./内/外/场N 起头
+• transition   · > 起头 / FADE OUT / CUT TO: / 淡入/淡出/切至/溶入
+• character    · ≤ 24 字 + 不含句末标点 + 下行非空非场景头
+• dialogue     · 紧跟 character 的下一行
+• action       · 默认（不丢内容）
+```
+
+**关键不变量验证**（PRD §0.5 红线 5 条）：
+
+| 红线 | 检查 | 结果 |
+|---|---|---|
+| #1 不动 Dexie schema | `git diff src/store/db.ts` | ✅ 0 修改 |
+| #2 不动 .flil.json 格式 | `git diff src/store/projectExport.ts` | ✅ 0 修改 · 与本模块正交 |
+| #3 不动 exportToAssets() 跨阶段跳转 | `git diff src/pages/Screenplay.tsx:71` 区域 | ✅ "下载剧本…"用 FileDown icon 区分 |
+| #4 DESIGN.md token 硬约束 | 抽屉 420px / `bg-canvas / border-border-subtle / text-fg-*` token / 复用 Button atom | ✅ |
+| #5 Karpathy Simplicity First | 0 npm 依赖（首选 Word HTML 路线 · docx.js 备用未启用） | ✅ |
+| V2-I-3/V2-I-4 6 atoms 不动 | git diff src/components/ui/ | ✅ ExportDrawer 是 page-level（feedback 类） |
+| V2-I-9 console.error 不静默 | exportFormats / ExportDrawer 异常路径 | ✅ |
+| NFR-9 零 IDB 写 | 仅读 artifacts · 不调任何 db.* 写方法 | ✅ |
+| NFR-3 零网络 | 全程 Blob 本地生成 · 不联网 | ✅ |
+
+**Build 验证**：
+
+```bash
+npx vite build → 0 errors · 3.36s
+新增源文件 modules · 实测预期 +5（exportFormats 1 + ExportDrawer 1 + 3 个 page 不增 module）
+```
+
+**PR-1 dogfood 用户手测项**：
+
+#### US-E1 · 小说 .md / .docx 导出（必测）
+
+```
+1. 进入有 ≥ 2 章已完成的 novel 项目（如 dogfood 项目）
+2. /novel toolbar 点"导出…"
+   → 抽屉从右滑入·宽 420px
+   → 6 项中"小说 · Markdown"和"小说 · Word"在最上面（mode='novel'）
+3. 点"小说 · Markdown" → 浏览器下载 <项目名>-YYYYMMDD.md
+   → 用 VSCode/任何 markdown 编辑器打开 → 标题层级正确 · 章号"第 N 章" · 段落空行
+   → 文件头有"导出于 ... · 共 N 章 · 约 M 字 · 润色稿/草稿"标识
+   → 部分章节缺失时显示"⚠ 共规划 X 章 · 当前 Y 章已完成"
+
+4. 点"小说 · Word" → 浏览器下载 <项目名>-YYYYMMDD.docx
+   → 用 Word 2016+ 打开 → 标题样式 (h1/h2) 正确 · 中文字体不乱排
+   → 章节间分页（page-break-before: always）· 段落首行缩进 2em
+   → 若 Word 提示"是否转换格式" → 视为退化 · 记 erratum（启用 docx.js 退路）
+```
+
+#### US-E2 · 剧本 .fdx / .fountain 导出（必测）
+
+```
+1. 进入有 screenplay.7（或 adapt.6）的项目
+2. /screenplay toolbar 点"下载剧本…"（FileDown icon · 与"进入资产阶段"区分）
+   → 抽屉滑入 · 剧本类在最上
+3. 点"剧本 · Final Draft" → 下载 .fdx
+   → 用 Final Draft 8/9/10/11 打开 → 5 类元素识别正确（场景头 / 动作 / 人物 / 对白 / 转场）
+   → 若启发式分类失误（如把人物当 action） → 记 erratum（PR-1B 调启发式或加用户标注）
+
+4. 点"剧本 · Fountain" → 下载 .fountain
+   → 用 Highland / Trelby / Fountain VSCode 插件打开 → 同上识别正确
+   → Title page (Title:/Author:/Draft date:) 正确
+```
+
+#### US-E3 · 资产 .csv 导出（必测）
+
+```
+1. 进入有 assets.2/3/4 任一的项目
+2. /home 点"导出…"或导航至 /assets · /screenplay toolbar
+3. 点"资产清单 · Excel" → 下载 <项目名>-资产-YYYYMMDD.csv
+4. 用 Microsoft Excel 打开（不是 Office 365 Web）：
+   → 中文不乱码（BOM 起作用）
+   → 第一列"分类"取值"角色 / 场景 / 道具"
+   → 列头："分类,名称,描述,视觉风格,关联场次,其他属性"
+   → 含逗号 / 引号 / 换行的字段正确转义（"" 内嵌引号）
+```
+
+#### US-E4 · disabled 状态 + 错误处理（必测）
+
+```
+1. 新建空项目（无任何 artifact） → /home 点"导出…"
+   → 6 项全 disabled · 灰显 · 鼠标 hover 显示"请先在 ... 完成 ..."tooltip
+   → ActiveProjectCard 的"导出…"按钮本身也 disabled（!activeStatus.hasContent）
+
+2. 仅有 novel.6（草稿）无 .7（润色）：
+   → 小说 .md / .docx 启用 · 文件头标"草稿"
+   → 剧本 .fdx / .fountain disabled
+
+3. 故意损坏 assets.2 content（用 dev console upsertArtifact 写非 JSON）：
+   → 点资产 .csv → 仅跳过 .2 · 仍导出 .3/.4
+   → console.error 有 [exportFormats] parseLooseArray failed 痕迹
+   → 不阻塞其他 stage 导出（NFR-9 容错）
+```
+
+#### US-E5 · 不变量回归（必测）
+
+```
+- [ ] git diff src/store/db.ts → 0 修改（红线 #1）
+- [ ] git diff src/store/projectExport.ts → 0 修改（红线 #2）
+- [ ] /screenplay 上"进入资产阶段"按钮（exportToAssets）功能不变 · navigate('/assets') 仍工作
+- [ ] /home 历史项目 Download icon 导出 .flil.json 仍工作
+- [ ] vite build 0 errors（5.86 → 3.36s · 模块数变化 ≤ +10）
+- [ ] DevTools Network 录制导出全程 → 0 outbound request（NFR-3 离线）
+- [ ] DevTools 数据库快照·导出前后 db.artifacts.count() 不变（NFR-9 零 IDB 写）
+```
+
+#### US-E6 · 性能（次测 · 触发条件后）
+
+```
+≥ 10 章 / ≥ 5 万字 dogfood 项目：
+- [ ] 小说 .md 导出 P95 ≤ 2s（performance.now 实测）
+- [ ] 小说 .docx 导出 P95 ≤ 5s
+- [ ] 抽屉打开 → 首屏可交互 ≤ 200ms
+```
+
+---
+
 ## ui-v3 epic · interaction-system（2026-05-07/08 启动 · PR-1 MVP + PR-1B + PR-2 + PR-3 + PR-1C 完成 · epic 100% + 加餐）
 
 ### PR-1C · ConfirmDialog 替代 native confirm()（commit `434946a` Step A · `86f8305` Step B/C）
