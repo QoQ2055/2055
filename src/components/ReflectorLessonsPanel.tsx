@@ -230,13 +230,17 @@ export function ReflectorLessonsPanel() {
 
 // ─── 详情 modal（CK I-3：用户手动操作 · 不自动写 method module） ──
 
-interface ReflectorLessonModalProps {
+export interface ReflectorLessonModalProps {
   lesson: ReflectorLesson;
   onClose(): void;
   onUpdated(): void;
 }
 
-function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Element {
+/**
+ * Reflector lesson 详情 modal。供 ReflectorLessonsPanel（项目级）与 /lessons page（全局）复用。
+ * CK ui-v1 I-3 · v6 CK I-3 严守：不自动写 method module。
+ */
+export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Element {
   const { lesson, onClose, onUpdated } = props;
   const [content, setContent] = useState(lesson.lessonContent);
   const [suggested, setSuggested] = useState(lesson.suggestedModule ?? '');

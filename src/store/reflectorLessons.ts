@@ -122,6 +122,16 @@ export async function updateLessonStatus(
 }
 
 /**
+ * 列出所有项目的 lessons · 按 ts 降序（最新在前）。
+ *
+ * 供 ui-v1 /lessons 全局页面使用 · 不限项目范围。
+ */
+export async function listAllLessons(): Promise<ReflectorLesson[]> {
+  const rows = await db.reflectorLessons.toArray();
+  return rows.sort((a, b) => b.ts - a.ts);
+}
+
+/**
  * 清空某项目所有 lessons（项目删除 / 重置时使用）。
  *
  * 不主动调用；预留给项目级别的 reset 流程。

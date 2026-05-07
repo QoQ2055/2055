@@ -11,7 +11,7 @@ import { Outlet } from 'react-router-dom';
 import {
   Clapperboard, Settings as SettingsIcon, FlaskConical, Home as HomeIcon,
   FileText, Box, BookOpen, BookCopy, Workflow, Rocket, Edit3, Wand2, FileSearch,
-  Brain,
+  Brain, Lightbulb,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { useSettings } from '../store/settings';
@@ -85,6 +85,7 @@ export function Layout() {
           <NavItem to="/refinery" icon={<Wand2 className="size-4" />}>润色工坊</NavItem>
           <NavItem to="/playground" icon={<FlaskConical className="size-4" />}>调试台</NavItem>
           <NavItem to="/methods" icon={<Brain className="size-4" />}>方法论</NavItem>
+          <NavItem to="/lessons" icon={<Lightbulb className="size-4" />}>Reflector Lessons</NavItem>
           <NavItem to="/settings" icon={<SettingsIcon className="size-4" />}>设置</NavItem>
         </nav>
 

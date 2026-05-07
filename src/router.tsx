@@ -13,6 +13,7 @@ import { Novel } from './pages/Novel';
 import { Refinery } from './pages/Refinery';
 import { Analyzer } from './pages/Analyzer';
 import { MethodModules } from './pages/MethodModules';
+import { ReflectorLessons } from './pages/ReflectorLessons';
 
 export const router = createHashRouter([
   {
@@ -32,6 +33,7 @@ export const router = createHashRouter([
       { path: 'analyzer', element: <Analyzer /> },
       { path: 'playground', element: <Playground /> },
       { path: 'methods', element: <MethodModules /> },
+      { path: 'lessons', element: <ReflectorLessons /> },
       { path: 'settings', element: <Settings /> },
       { path: '*', element: <Navigate to="/" replace /> },
     ],
