@@ -29,6 +29,7 @@ import { ToastContainer } from './ui/feedback';
 import { CommandPalette } from './CommandPalette';
 import { ShortcutHandbook } from './ShortcutHandbook';
 import { SidebarBadge } from './SidebarBadge';
+import { ConfirmDialog } from './ConfirmDialog';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
@@ -175,6 +176,8 @@ export function Layout() {
       <CommandPalette />
       {/* ui-v3 PR-1B · 全局快捷键手册（? 触发） */}
       <ShortcutHandbook />
+      {/* ui-v3 PR-1C · 全局确认对话框（替代 native confirm()） */}
+      <ConfirmDialog />
     </div>
   );
 }
