@@ -11,7 +11,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type CharacterBibleViewMode = 'timeline' | 'relations';
+export type CharacterBibleViewMode = 'timeline' | 'relations' | 'reader';
 
 export interface CharacterBibleState {
   collapsed: boolean;

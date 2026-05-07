@@ -197,6 +197,19 @@ export function CharacterBible() {
               >
                 关系图
               </button>
+              {/* v5 epic · 双层存档 · 读者层视图 */}
+              <button
+                type="button"
+                role="tab"
+                aria-selected={viewMode === 'reader'}
+                onClick={() => setViewMode('reader')}
+                className={clsx(
+                  'text-xs px-2 py-1 rounded',
+                  viewMode === 'reader' ? 'bg-violet-500 text-white' : 'bg-surface-2 hover:bg-surface-3',
+                )}
+              >
+                读者层
+              </button>
             </div>
           </div>
 
@@ -219,8 +232,48 @@ export function CharacterBible() {
                 提示：点击单元格 = 重跑该章提取（{busy ? `运行中：${busy}` : '空闲'}）
               </div>
             </>
-          ) : (
+          ) : viewMode === 'relations' ? (
             <CharacterRelationGraph characterName={selectedCharacter} records={timeline} />
+          ) : (
+            // v5 epic · 双层存档 · 读者层视图（CK I-8 fallback 优雅退化）
+            <div className="space-y-2 px-1 py-1 max-h-96 overflow-y-auto">
+              {timeline.length === 0 ? (
+                <div className="text-sm text-gray-500 text-center py-4">尚无章节状态</div>
+              ) : (
+                timeline.map((rec) => (
+                  <div
+                    key={`reader-${rec.chapterIndex}`}
+                    className="rounded border border-border-subtle px-3 py-2 bg-surface-1"
+                  >
+                    <div className="text-xs font-medium mb-1 flex items-center gap-2">
+                      <span>第 {rec.chapterIndex} 章</span>
+                      {rec.stale && <span className="text-[10px] px-1 rounded bg-yellow-500/20 text-yellow-700">已过期</span>}
+                      {rec.snapshot === null && <span className="text-[10px] px-1 rounded bg-rose-500/20 text-rose-700">提取失败</span>}
+                    </div>
+                    {rec.snapshot?.readerLayer ? (
+                      <div className="text-xs space-y-1 text-fg-muted">
+                        {rec.snapshot.readerLayer.whatISaw && (
+                          <div><span className="text-violet-600 font-medium">看到：</span>{rec.snapshot.readerLayer.whatISaw}</div>
+                        )}
+                        {rec.snapshot.readerLayer.whatIKnow && (
+                          <div><span className="text-violet-600 font-medium">已知：</span>{rec.snapshot.readerLayer.whatIKnow}</div>
+                        )}
+                        {rec.snapshot.readerLayer.whatImWondering && (
+                          <div><span className="text-violet-600 font-medium">在猜：</span>{rec.snapshot.readerLayer.whatImWondering}</div>
+                        )}
+                        {rec.snapshot.readerLayer.keyUnderstanding && (
+                          <div><span className="text-violet-600 font-medium">核心：</span>{rec.snapshot.readerLayer.keyUnderstanding}</div>
+                        )}
+                      </div>
+                    ) : (
+                      <div className="text-xs italic text-fg-muted">
+                        {rec.snapshot ? '本章无读者层数据 · 重跑 N3.3 可补全（v5 schema）' : `提取失败：${rec.extractionError ?? '未知原因'}`}
+                      </div>
+                    )}
+                  </div>
+                ))
+              )}
+            </div>
           )}
         </div>
       )}
