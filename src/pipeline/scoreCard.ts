@@ -27,10 +27,12 @@ export type ScoreDimension =
   | 'kbRedline'     // 3. KB 红线
   | 'craft'         // 4. 文笔基础
   | 'r1Align'       // 5. R1 指令书对齐 (LLM)
-  | 'userKbStyle';  // 6. 用户 KB 风格 (LLM)
+  | 'userKbStyle'   // 6. 用户 KB 风格 (LLM)
+  | 'transition';   // 7. 章节衔接顺畅度 (LLM · gap-c)
 
 export const SCORE_DIMENSIONS: ScoreDimension[] = [
   'genre', 'method', 'kbRedline', 'craft', 'r1Align', 'userKbStyle',
+  'transition',
 ];
 
 export const SCORE_DIMENSION_LABELS: Record<ScoreDimension, string> = {
@@ -40,6 +42,7 @@ export const SCORE_DIMENSION_LABELS: Record<ScoreDimension, string> = {
   craft: '文笔',
   r1Align: 'R1',
   userKbStyle: '风格',
+  transition: '衔接',
 };
 
 export const SCORE_DIMENSION_LONG_LABELS: Record<ScoreDimension, string> = {
@@ -49,6 +52,7 @@ export const SCORE_DIMENSION_LONG_LABELS: Record<ScoreDimension, string> = {
   craft: '文笔基础',
   r1Align: 'R1 指令书对齐',
   userKbStyle: '用户 KB 风格',
+  transition: '章节衔接顺畅度',
 };
 
 export interface ScoreIssue {
@@ -81,6 +85,7 @@ export const DEFAULT_DIMENSION_WEIGHTS: DimensionWeights = {
   craft: 1,
   r1Align: 1,
   userKbStyle: 1,
+  transition: 1,
 };
 
 export interface ScoreCard {
@@ -103,6 +108,11 @@ export interface ScoreCardOptions {
   /** true 时跳过 LLM 2 维（debounce 期间快速预览用） */
   skipLlm?: boolean;
   signal?: AbortSignal;
+  /**
+   * gap-c · 上一章原文（末尾 ≈ 300 字可判）。
+   * 提供时启动 transition 第 7 维评分；未提供 / 第 1 章 → inactive 占位。
+   */
+  prevChapterContent?: string;
 }
 
 /* ── 工具：合成总分（加权平均；inactive 维度自动从分母中剔除） ─── */
@@ -499,11 +509,94 @@ async function scoreLlmCombined(
   };
 }
 
+/* ── 维度 7: 章节衔接顺畅度（LLM · gap-c）─────────────────── */
+
+async function scoreTransition(
+  currentChapterContent: string,
+  prevChapterContent: string,
+  settings: SettingsState,
+  signal?: AbortSignal,
+): Promise<DimensionScore> {
+  // 取上一章末尾 + 本章开头各 ~300 字评判衔接
+  const prevTail = prevChapterContent.trim().slice(-300);
+  const currentOpening = currentChapterContent.trim().slice(0, 300);
+  if (prevTail.length === 0 || currentOpening.length === 0) {
+    return { score: 100, inactive: true, issues: [], summary: '文本不足以评判' };
+  }
+
+  const sys = [
+    '你是网络小说衔接评审师。评估"本章开头"与"上一章末尾"的衔接顺畅度。',
+    '',
+    '## 评分维度',
+    '- 时空衔接：地点 / 时间过渡是否自然',
+    '- 情绪衔接：人物情绪是否合理延续',
+    '- 视点衔接：POV 切换是否流畅',
+    '- 节奏衔接：开头节奏是否承上启下',
+    '',
+    '## 输出严格 JSON（无 markdown 围栏）',
+    '{ "score": 0-100, "summary": "一句话评价 ≤ 30 字", "issues": [{"severity":"major|minor|info","message":"...","evidence":["..."]}] }',
+    '',
+    '## 评分原则',
+    '- ≥ 80 自然 / 60-80 可改 / < 60 硬切',
+    '- issues ≤ 2 条，每条含具体证据（原文短语）',
+    '- 如本章是首章或不需衔接，返回 inactive=true',
+  ].join('\n');
+
+  const user = [
+    '## 上一章末尾',
+    prevTail,
+    '',
+    '## 本章开头',
+    currentOpening,
+    '',
+    '请按 schema 输出 JSON。',
+  ].join('\n');
+
+  const res = await chatStream({
+    baseUrl: settings.baseUrl,
+    apiKey: settings.apiKey,
+    model: settings.model,
+    messages: [
+      { role: 'system', content: sys },
+      { role: 'user', content: user },
+    ],
+    temperature: 0,
+    max_tokens: 400,
+    signal,
+  });
+
+  const stripped = res.content.replace(/^```(?:json)?\s*|\s*```$/g, '').trim();
+  let parsed: any;
+  try {
+    parsed = JSON.parse(stripped);
+  } catch (e: any) {
+    throw new Error(`transition JSON 解析失败：${e?.message ?? e}\n原始前 200 字：${stripped.slice(0, 200)}`);
+  }
+
+  const score = Math.max(0, Math.min(100, Number(parsed.score ?? 100)));
+  const issues: ScoreIssue[] = Array.isArray(parsed.issues)
+    ? parsed.issues.slice(0, 2).map((i: any): ScoreIssue => ({
+        dimension: 'transition',
+        severity: ['major', 'minor', 'info'].includes(i.severity) ? i.severity : 'minor',
+        message: String(i.message ?? '').slice(0, 80),
+        evidence: Array.isArray(i.evidence) ? i.evidence.slice(0, 3).map((e: any) => String(e)) : undefined,
+        penalty: 100 - score,
+      }))
+    : [];
+
+  return {
+    score,
+    inactive: !!parsed.inactive,
+    summary: String(parsed.summary ?? '').slice(0, 60) || undefined,
+    issues,
+  };
+}
+
 /* ── 主入口 ───────────────────────────────────────────────────── */
 
 export async function runScoreCard(opts: ScoreCardOptions): Promise<ScoreCard> {
   const t0 = performance.now();
-  const { artifact, project, artifacts, settings, weights, skipLlm, signal } = opts;
+  const { artifact, project, artifacts, settings, weights, skipLlm, signal, prevChapterContent } = opts;
   const w = weights ?? DEFAULT_DIMENSION_WEIGHTS;
 
   // 4 个前端维度（同步，<10ms）
@@ -528,8 +621,20 @@ export async function runScoreCard(opts: ScoreCardOptions): Promise<ScoreCard> {
     }
   }
 
+  // gap-c · 第 7 维 transition：仅在提供 prevChapterContent + apiKey + 不跳 LLM 时含化
+  let transition: DimensionScore = { score: 100, inactive: true, issues: [], summary: '第一章无衔接对象' };
+  if (!skipLlm && settings.apiKey && opts.prevChapterContent && opts.prevChapterContent.trim().length > 0) {
+    try {
+      transition = await scoreTransition(artifact.content, opts.prevChapterContent, settings, signal);
+      llmEvaluated = true;
+    } catch (e) {
+      console.warn('[scoreCard] transition 维度评分失败：', e);
+      transition = { score: 100, inactive: true, issues: [], summary: '评分失败' };
+    }
+  }
+
   const dimensions: Record<ScoreDimension, DimensionScore> = {
-    genre, method, kbRedline, craft, r1Align, userKbStyle,
+    genre, method, kbRedline, craft, r1Align, userKbStyle, transition,
   };
   const total = computeTotal(dimensions, w);
 
