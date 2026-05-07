@@ -9,6 +9,91 @@
 
 ---
 
+## ui-v5 epic · 全局对话框（2026-05-08 PR-1 完成 · Cmd+K "新建项目" 收尾 PR-1B 延后项）
+
+### PR-1 · 项目对话框全局化 + Cmd+K "新建项目"（commit `6ff1fc0`）
+
+**目标**：把 Home.tsx 局部 `dialogOpen / wizardOpen / wizardSourceType` 三个 useState 提升到全局 zustand · 让 Command Palette 能从**任意路由**调起"新建项目" · **完整闭环 ui-v3 PR-1B 三个延后项**：
+
+```
+✅ 跨组件命令"导出"        (gap-e PR-2 · useExportDrawer)
+✅ "切换主题"命令          (ui-v4 PR-1 · settings.theme + useThemeEffect)
+✅ "新建项目"命令          (本 PR · useProjectDialog · 跨路由)
+```
+
+**实装范围**：
+
+```
+新增文件 :
+  src/store/projectDialog.ts (~50 行 · createOpen + wizardOpen + wizardSourceType + open*/closeAll)
+
+修改文件 :
+  src/pages/Home.tsx               · 删 3 个 useState · 改读 store · setX(false) → closeAllDialogs()
+  src/components/CommandPalette.tsx · +1 命令 + 头注释更新（17→18 命令池 · PR-1B 全部解锁）
+
+代码净增 : +87 / -17
+```
+
+**"新建项目"命令机制**：
+
+```ts
+{
+  id: 'project-new',
+  label: '新建项目…',
+  keywords: ['new', 'create', '新建', '项目', 'project', '创建', '开始'],
+  action: ({ navigate }) => {
+    if (window.location.pathname !== '/') navigate('/');
+    setTimeout(() => useProjectDialog.getState().openCreate(), 0);
+  },
+}
+```
+
+**跨路由调起原理**：
+
+1. 用户在任何页面（如 /novel）按 Cmd+K 选"新建项目…"
+2. `window.location.pathname !== '/'` → `navigate('/')` 跳到首页
+3. `setTimeout(0)` 让 React 完成下一个 tick 渲染（Home mount + 订阅 store）
+4. Home 内 `useProjectDialog((s) => s.createOpen)` 读到 true → NewProjectDialog 自动渲染
+5. 关闭走 `closeAllDialogs()` → store 清空 → Home 收到 false → dialog 卸载
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-1 路由不动 | router.tsx 0 修改 · 仅 navigate('/') 跳既有路径 | ✅ |
+| V3-I-4 不静默 | NewProjectDialog 内业务回调 toast 沿用 | ✅ |
+| V2-I-3/4 6 atoms 不动 | git diff src/components/ui/ | ✅ |
+| 业务零回归 | NewProjectDialog 渲染位置不变（仍在 Home）· 仅 open state 提升 | ✅ |
+| Cmd+K 命令池 | 11 nav/tools + 7 actions = **18 条** | ✅ 从 PR-1 MVP 11 → 18 增长 64% |
+
+**Build 验证**：`npx vite build → 0 errors · 3.50s`
+
+**PR-1 dogfood 用户手测项**：
+
+#### US-N1 · Cmd+K 跨路由调起新建（必测）
+
+```
+1. 进入 /novel（或其它非首页）
+2. Cmd+K → 输入"新建"或"new"或"create" → 命中"新建项目…"
+3. Enter → 路由切到 / · NewProjectDialog 立即弹出
+4. 取消 → 关闭 · URL 留在 /（不回 novel）
+5. 再次 Cmd+K → "新建" → 在 / 上直接弹出（不重复 navigate）
+```
+
+#### US-N2 · 工具栏按钮仍正常
+
+- [ ] /home Header "新建项目"按钮（lg primary）→ 弹出 dialog
+- [ ] /home QuickActionCard "新建项目"卡片 → 弹出
+- [ ] dialog 内"切换到改编模式" → wizard 打开 · dialog 关闭（store 互斥）
+
+#### US-N3 · 不变量回归
+
+- [ ] 创建普通项目（原创）→ 项目正常创建 · 切到对应 mode workbench
+- [ ] 创建改编项目（adapt wizard）→ chunks 写入 · 跳 /intake
+- [ ] 取消 dialog → 不残留 state（再次打开是初始态）
+
+---
+
 ## ui-v4 epic · 主题外观（2026-05-08 PR-1 完成 · light/dark/system 三档 + Cmd+K 联动）
 
 ### PR-1 · 主题切换基础设施 + 3 入口（commit `b0b39da`）
