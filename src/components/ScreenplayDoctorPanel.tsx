@@ -21,6 +21,7 @@ import {
   type DoctorReport, type IssueSeverity, type IssueCategory,
 } from './screenplayDoctor';
 import { useSettings } from '../store/settings';
+import { Button } from './ui';
 
 interface Props {
   /** 待诊断的剧本（通常是 normalize 后的预览或原始 draft） */
@@ -230,13 +231,15 @@ export function ScreenplayDoctorPanel(p: Props) {
           <div className="text-tight-sm text-fg-secondary">
             将对剧本做 7 维度审阅（戏剧结构 / 人物动机 / 场次 / 台词 / 场景头 / 遗漏 / 节奏），输出问题清单与修改建议。
           </div>
-          <button
-            className="px-3 py-1.5 rounded border border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10 text-xs inline-flex items-center gap-1.5 disabled:opacity-40 whitespace-nowrap"
+          <Button
+            variant="secondary"
+            size="sm"
+            className="whitespace-nowrap"
             onClick={startDiagnose}
             disabled={p.disabled || !p.script.trim()}
           >
             <Stethoscope className="size-3.5" /> 启动质检
-          </button>
+          </Button>
         </div>
       )}
 
@@ -325,14 +328,15 @@ export function ScreenplayDoctorPanel(p: Props) {
 
           {/* actions */}
           <div className="px-3 py-2 border-t border-border-subtle/70 flex items-center gap-2">
-            <button
-              className="px-3 py-1.5 rounded border border-violet-500/50 text-violet-300 hover:bg-violet-500/10 text-xs inline-flex items-center gap-1.5 disabled:opacity-40"
+            <Button
+              variant="secondary"
+              size="sm"
               onClick={startRewrite}
               disabled={report.issues.length === 0}
               title={report.issues.length === 0 ? '没有问题需要改写' : '调用医生改写一次（独立 LLM 调用，会重新计费）'}
             >
               <Sparkles className="size-3.5" /> 应用医生改写（再发一次 LLM）
-            </button>
+            </Button>
             <button
               className="text-xs px-2 py-1 rounded border border-border-default text-fg-secondary hover:bg-elevated"
               onClick={reset}
@@ -369,9 +373,9 @@ export function ScreenplayDoctorPanel(p: Props) {
             {phase.rawOutput || '(空)'}
           </pre>
           <div className="mt-2 flex gap-2">
-            <button className="text-xs px-2 py-1 rounded border border-cyan-500/50 text-cyan-300 hover:bg-cyan-500/10" onClick={startDiagnose}>
+            <Button variant="secondary" size="sm" onClick={startDiagnose}>
               重试质检
-            </button>
+            </Button>
             <button className="text-xs px-2 py-1 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={reset}>
               关闭
             </button>
