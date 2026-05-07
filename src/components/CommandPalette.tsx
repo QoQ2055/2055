@@ -25,11 +25,12 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search, Home as HomeIcon, BookOpen, FileText, BookCopy,
   Wand2, FileSearch, Settings as SettingsIcon, FlaskConical,
-  Brain, Lightbulb, FileDown, Film, type LucideIcon,
+  Brain, Lightbulb, FileDown, Film, Sun, Moon, Monitor, type LucideIcon,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useCommandPalette } from '../store/commandPalette';
 import { useExportDrawer } from '../store/exportDrawer';
+import { useSettings } from '../store/settings';
 import { toast } from '../store/toast';
 
 interface CommandContext {
@@ -175,6 +176,43 @@ const COMMANDS: Command[] = [
     icon: Film,
     keywords: ['export', 'screenplay', '剧本', 'fdx', 'fountain', 'final draft', '下载'],
     action: () => useExportDrawer.getState().show('screenplay'),
+  },
+  // ui-v4 PR-1 · 主题切换命令 · 解锁 ui-v3 PR-1B 第二个延后项
+  {
+    id: 'theme-light',
+    label: '切换到亮色主题',
+    description: 'Light · 适合白天 / 强光环境',
+    group: 'actions',
+    icon: Sun,
+    keywords: ['theme', 'light', '亮', '白', '主题', '日间'],
+    action: () => {
+      useSettings.getState().setTheme('light');
+      toast.success('已切换到亮色主题');
+    },
+  },
+  {
+    id: 'theme-dark',
+    label: '切换到暗色主题',
+    description: 'Dark · 默认 · 适合夜间 / 长时间写作',
+    group: 'actions',
+    icon: Moon,
+    keywords: ['theme', 'dark', '暗', '黑', '主题', '夜间'],
+    action: () => {
+      useSettings.getState().setTheme('dark');
+      toast.success('已切换到暗色主题');
+    },
+  },
+  {
+    id: 'theme-system',
+    label: '主题跟随系统',
+    description: 'System · 自动跟随 OS prefers-color-scheme',
+    group: 'actions',
+    icon: Monitor,
+    keywords: ['theme', 'system', '跟随', '系统', '自动', '主题'],
+    action: () => {
+      useSettings.getState().setTheme('system');
+      toast.success('主题已设为跟随系统');
+    },
   },
 ];
 

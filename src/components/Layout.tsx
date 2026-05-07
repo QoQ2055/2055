@@ -21,6 +21,7 @@ import { useCommandPalette } from '../store/commandPalette';
 import { useShortcutHandbook } from '../store/shortcutHandbook';
 import { useSidebarBadges } from '../store/sidebarBadges';
 import { isEditingTarget, isCtrlOrCmd } from '../lib/shortcuts';
+import { useThemeEffect } from '../lib/theme';
 import { toast } from '../store/toast';
 import { getProjectModeMeta } from '../data/projectModes';
 import type { ModeNavItem } from '../data/projectModes';
@@ -69,6 +70,9 @@ export function Layout() {
   const showHandbook = useShortcutHandbook((s) => s.show);
   const pendingLessons = useSidebarBadges((s) => s.pendingLessons);
   const refreshBadges = useSidebarBadges((s) => s.refresh);
+
+  // ui-v4 PR-1 · 主题订阅 · 跟随 settings.theme 与 system prefers-color-scheme 实时同步
+  useThemeEffect();
 
   // ui-v3 PR-2 · sidebar badge 初始 + 周期刷新 + 项目切换时刷新
   // 轮询 10s · IndexedDB 索引查询 < 5ms · 成本 trivial

@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Eye, EyeOff, RotateCcw, Save } from 'lucide-react';
-import { useSettings } from '../store/settings';
+import { Eye, EyeOff, RotateCcw, Save, Sun, Moon, Monitor } from 'lucide-react';
+import clsx from 'clsx';
+import { useSettings, type ThemeMode } from '../store/settings';
 import { chatStream } from '../llm/deepseek';
 
 export function Settings() {
@@ -38,6 +39,15 @@ export function Settings() {
           所有配置仅保存在浏览器 <code className="code px-1 bg-elevated rounded">localStorage</code>，永不上传任何服务器。
         </p>
       </header>
+
+      {/* ui-v4 PR-1 · 主题切换 · 3 档 segment */}
+      <section className="card p-5 space-y-3">
+        <h2 className="text-heading-m">主题外观</h2>
+        <p className="text-body-s text-fg-muted">
+          切换亮/暗主题 · 也可随随系统 prefers-color-scheme · 快捷键：Cmd+K 输入“主题”。
+        </p>
+        <ThemeSegment value={s.theme} onChange={s.setTheme} />
+      </section>
 
       <section className="card p-5 space-y-4">
         <h2 className="text-heading-m">DeepSeek API</h2>
@@ -261,6 +271,50 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
     <div>
       <div className="label mb-1.5">{label}</div>
       {children}
+    </div>
+  );
+}
+
+/**
+ * ui-v4 PR-1 · 主题 segment 切换器
+ * 3 档 button group · token 配色 · 选中态用 primary tint
+ */
+function ThemeSegment({
+  value, onChange,
+}: {
+  value: ThemeMode;
+  onChange: (mode: ThemeMode) => void;
+}) {
+  const options: Array<{ value: ThemeMode; label: string; icon: typeof Sun; hint: string }> = [
+    { value: 'light', label: '亮色', icon: Sun, hint: '强光环境 / 白天编辑' },
+    { value: 'dark', label: '暗色', icon: Moon, hint: '夜间 / 长时间写作（默认）' },
+    { value: 'system', label: '跟随系统', icon: Monitor, hint: '随 OS prefers-color-scheme 自动切换' },
+  ];
+  return (
+    <div className="inline-flex gap-1 p-1 rounded-lg border border-border-subtle bg-surface" role="radiogroup" aria-label="主题模式">
+      {options.map((opt) => {
+        const Icon = opt.icon;
+        const active = value === opt.value;
+        return (
+          <button
+            key={opt.value}
+            type="button"
+            role="radio"
+            aria-checked={active}
+            onClick={() => onChange(opt.value)}
+            title={opt.hint}
+            className={clsx(
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm transition-colors',
+              active
+                ? 'bg-primary-500/15 text-primary-400 font-semibold'
+                : 'text-fg-secondary hover:bg-elevated hover:text-fg-primary',
+            )}
+          >
+            <Icon className="size-4" />
+            {opt.label}
+          </button>
+        );
+      })}
     </div>
   );
 }

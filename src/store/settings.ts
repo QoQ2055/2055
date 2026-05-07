@@ -1,9 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export type ThemeMode = 'light' | 'dark' | 'system';
+
 export interface SettingsState {
   baseUrl: string;
   apiKey: string;
+  /**
+   * ui-v4 epic · 主题模式 · 'system' 跳随系统 prefers-color-scheme
+   * 默认 'dark' 保持与原 index.html `class="dark"` 行为一致
+   */
+  theme: ThemeMode;
   /**
    * Standard model — used for the majority of nodes (大纲 / 角色 / 一般写作).
    * Backwards-compatible default for any node that doesn't have a per-tier
@@ -58,12 +65,15 @@ export interface SettingsState {
     userFeedbackEnabled: boolean;
   };
   set: (patch: Partial<SettingsState>) => void;
+  setTheme: (theme: ThemeMode) => void;
   reset: () => void;
 }
 
 const DEFAULTS = {
   baseUrl: 'https://api.deepseek.com',
   apiKey: '',
+  // ui-v4 · 默认 dark · 保持与 index.html `class="dark"` 行为堆叠不退化
+  theme: 'dark' as ThemeMode,
   model: 'deepseek-chat',
   modelFlagship: '',
   modelLite: '',
@@ -96,6 +106,7 @@ export const useSettings = create<SettingsState>()(
     (set) => ({
       ...DEFAULTS,
       set: (patch) => set(patch),
+      setTheme: (theme) => set({ theme }),
       reset: () => set(DEFAULTS),
     }),
     { name: 'FLIL.settings' },
