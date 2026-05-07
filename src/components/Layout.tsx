@@ -19,6 +19,7 @@ import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
 import { useCommandPalette } from '../store/commandPalette';
 import { useShortcutHandbook } from '../store/shortcutHandbook';
+import { useSidebarBadges } from '../store/sidebarBadges';
 import { isEditingTarget, isCtrlOrCmd } from '../lib/shortcuts';
 import { toast } from '../store/toast';
 import { getProjectModeMeta } from '../data/projectModes';
@@ -27,6 +28,7 @@ import { NavItem, NavSectionLabel } from './ui';
 import { ToastContainer } from './ui/feedback';
 import { CommandPalette } from './CommandPalette';
 import { ShortcutHandbook } from './ShortcutHandbook';
+import { SidebarBadge } from './SidebarBadge';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
@@ -40,6 +42,20 @@ export function Layout() {
   const togglePalette = useCommandPalette((s) => s.togglePalette);
   const openPalette = useCommandPalette((s) => s.openPalette);
   const showHandbook = useShortcutHandbook((s) => s.show);
+  const pendingLessons = useSidebarBadges((s) => s.pendingLessons);
+  const refreshBadges = useSidebarBadges((s) => s.refresh);
+
+  // ui-v3 PR-2 · sidebar badge 初始 + 周期刷新 + 项目切换时刷新
+  // 轮询 10s · IndexedDB 索引查询 < 5ms · 成本 trivial
+  useEffect(() => {
+    refreshBadges();
+    const id = window.setInterval(refreshBadges, 10_000);
+    return () => window.clearInterval(id);
+  }, [refreshBadges]);
+  // 项目切换 · 以 ctx.name 作为轻量变更检测（ctx 对象 ref 变动个别字段会频繁·name 仅在切换时变）
+  useEffect(() => {
+    refreshBadges();
+  }, [ctx.name, refreshBadges]);
 
   // ui-v3 PR-1 MVP / PR-1B · 全局快捷键路由器
   // V3-I-2 · 不与浏览器原生冲突：
@@ -114,10 +130,18 @@ export function Layout() {
           <NavSectionLabel>资产</NavSectionLabel>
           <NavItem to="/kb" icon={<BookOpen className="size-4" />}>知识库</NavItem>
           <NavItem to="/methods" icon={<Brain className="size-4" />}>方法论</NavItem>
-          <NavItem to="/lessons" icon={<Lightbulb className="size-4" />}>Reflector Lessons</NavItem>
+          {/* ui-v3 PR-2 · lessons pending badge */}
+          <div className="relative">
+            <NavItem to="/lessons" icon={<Lightbulb className="size-4" />}>Reflector Lessons</NavItem>
+            <SidebarBadge variant="danger" count={pendingLessons} />
+          </div>
 
           <NavSectionLabel>设置</NavSectionLabel>
-          <NavItem to="/settings" icon={<SettingsIcon className="size-4" />}>设置</NavItem>
+          {/* ui-v3 PR-2 · settings API key warning dot */}
+          <div className="relative">
+            <NavItem to="/settings" icon={<SettingsIcon className="size-4" />}>设置</NavItem>
+            <SidebarBadge variant="warning" dot hidden={hasKey} />
+          </div>
         </nav>
 
         <div className="p-3 border-t border-border-subtle text-caption-m text-fg-muted space-y-2">

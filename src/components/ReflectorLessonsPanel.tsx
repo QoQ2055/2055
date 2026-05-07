@@ -17,6 +17,7 @@ import { ChevronDown, ChevronUp, Brain, AlertTriangle, X } from 'lucide-react';
 import clsx from 'clsx';
 import { useSettings } from '../store/settings';
 import { useReflectorLessonsPanel } from '../store/reflectorLessonsPanel';
+import { useSidebarBadges } from '../store/sidebarBadges';
 import { Button, Input, Textarea } from './ui';
 import {
   listLessonsByStatus,
@@ -94,6 +95,8 @@ export function ReflectorLessonsPanel() {
     try {
       await updateLessonStatus(id, newStatus);
       setRefresh((n) => n + 1);
+      // ui-v3 PR-2 · 立即刷新 sidebar pending 计数
+      useSidebarBadges.getState().refresh();
     } catch (e) {
       console.warn('[v6] 状态更新失败:', e);
     }
@@ -260,6 +263,8 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
         committedTo: committedTo.trim() || undefined,
       });
       onUpdated();
+      // ui-v3 PR-2 · 立即刷新 sidebar pending 计数
+      useSidebarBadges.getState().refresh();
       if (newStatus) onClose();
     } catch (e) {
       console.warn('[v6] modal 更新失败:', e);
