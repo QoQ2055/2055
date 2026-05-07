@@ -9,6 +9,202 @@
 
 ---
 
+## v5 epic · 双层存档（dual-layer-archive）（2026-05-07 完成 PR-1+PR-2 · PR-3 待用户 dogfood 后增量）
+
+### Epic 总览
+
+| 维度 | 实测 | 备注 |
+|---|---|---|
+| **背景** | gap-b 已落地 CharacterSnapshot 5 字段事实层 · 缺读者层（whatISaw/whatIKnow/whatImWondering/keyUnderstanding）· 与 `dual-layer-archive-method.md`（batch-12 method module）方法论不对齐 | 见 preflight §1 |
+| **目标** | 在 gap-b 基础上 add-only 加 readerLayer 4 字段 · 升级 N3.3 prompt schema · CharacterBible UI 加 reader viewMode | PRD §0 TL;DR |
+| **范围** | 7 文件改动（含 docs · 不含 PR-3）· +112 行代码 + 1512 行 docs | 见 §2 ledger |
+| **红线** | 触发 gap-c R1 豁免（仅 N3.3 system content）· CK 红线 #1 严守（v6 stores 字符串 = v5 verbatim）| 用户已签字 |
+| **PR 数** | 3 PR + Stage 2 docs 1 commit · 共 4 commits | 见 §1 |
+| **Commits** | `3723fe8` (Stage 2 docs) → `8b20487` (PR-1 schema+prompt) → `a30c285` (PR-2 UI) → 本节 (PR-3 docs) | git log |
+| **完成时间** | ~3 小时（preflight ~30 min + Stage 2 docs ~90 min + PR-1 ~30 min + PR-2 ~30 min + PR-3 ~15 min）| — |
+| **vite build** | ✅ 1938 modules · 0 errors · 2.98-3.00s | npx vite build × 2 次 |
+
+### §1 PR-1/2/3 验证
+
+#### PR-1 · schema + prompt 升级（commit 8b20487）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | ≥ 1937 | 1938 | ✅ |
+| `vite build` 时间 | ≤ 5s | 3.00s | ✅ |
+| F1 src/store/characterStates.ts 行数 | +6 (估) | +23 (含 doc 注释) | 🟡 略超（含详细 doc） |
+| F2 src/store/db.ts 行数 | +12 | +13 (含注释) | ✅ |
+| F3 public/prompts/novel/3.3.json 行数 | +5 | +15 (NEW · 整文件首入版本库) | 🟡 整文件 ~15 行（PRD 估的 +5 是文本内 schema 扩展行数） |
+| .gitignore 改动 | 无 | +6 (例外规则) | 🟡 PRD 未预见 |
+| public/prompts/.gitkeep | 无 | 0 字节占位 | 🟡 PRD 未预见（历史遗留 placeholder） |
+| Dexie v6 stores 字符串 = v5 | string equal | string equal | ✅ I-3 |
+| pipeline/characterStates.ts diff | 0 行 | 0 行 | ✅ I-5 |
+| prompts/ 改动范围 | 仅 3.3.json | 仅 3.3.json | ✅ I-6 |
+
+#### PR-2 · UI 升级（commit a30c285）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| `vite build` errs | 0 | 0 | ✅ |
+| `vite build` modules | 1938 | 1938 | ✅ |
+| `vite build` 时间 | ≤ 5s | 2.98s | ✅ |
+| F4 CharacterTimelineView.tsx 行数 | +20 (估) | **0** | 🟢 简化方案 · I-4 完美守住 |
+| F5 CharacterBible.tsx 行数 | +30 (估) | +54 | 🟡 略超（含 reader 视图完整实现） |
+| F-store characterBible.ts 行数 | 未估 | +1 (CharacterBibleViewMode 加 'reader') | 🟡 PRD 未细分 |
+| 'reader' tab 与现有 tab 同结构 | aria + className 一致 | 一致 | ✅ |
+| readerLayer 4 字段独立 undefined check | 是 | 是 (per-field optional chain) | ✅ I-8 |
+| snapshot=null fallback | 显示 extractionError | 显示 extractionError | ✅ I-8 |
+| snapshot 存在但 readerLayer 缺 | italic 提示 | italic 提示 | ✅ I-8 |
+| timeline 0 行 → reader 显示空态 | "尚无章节状态" | "尚无章节状态" | ✅ |
+
+#### PR-3 · dogfood log + 文档（本 section）
+
+| 验证项 | 期望 | 实测 | 状态 |
+|---|---|---|:---:|
+| docs/dogfood-log.md 加节 | v5 epic section | 本 section | ✅ |
+| 实测数据来源 | git log + vite build × 2 | 见 §0 + §1 | ✅ |
+| dogfood 实测项 | 5 类用户操作 | 见 §4（待用户实测后增量补充）| 🟡 待 user dogfood |
+
+### §2 累积 ledger
+
+| 文件 | 类型 | 行数 | commit | CK 验证 |
+|---|---|:---:|---|:---:|
+| `docs/planning/preflight-v5-dual-layer-archive.md` | docs | ~440 | M3-step1 | — |
+| `docs/planning/prd-v5-dual-layer-archive.md` | docs | ~480 | 3723fe8 | — |
+| `docs/planning/codebase-analysis-v5-dual-layer-archive.md` | docs | ~390 | 3723fe8 | — |
+| `docs/planning/code-knowledge-v5-dual-layer-archive.md` | docs | ~280 | 3723fe8 | — |
+| `src/store/characterStates.ts` | src | +23 | 8b20487 | I-1 ✅ |
+| `src/store/db.ts` | src | +13 | 8b20487 | I-3 ✅ |
+| `public/prompts/novel/3.3.json` | prompt | +15 (NEW) | 8b20487 | I-6 ✅ |
+| `.gitignore` | meta | +6 | 8b20487 | — |
+| `public/prompts/.gitkeep` | placeholder | 0 | 8b20487 | — |
+| `src/store/characterBible.ts` | src | +1 | a30c285 | — |
+| `src/components/CharacterBible.tsx` | src | +54 | a30c285 | I-4 ✅ I-8 ✅ |
+| `src/components/character/CharacterTimelineView.tsx` | src | **0** | — | I-4 完美 |
+| `src/pipeline/characterStates.ts` | pipeline | **0** | — | I-5 完美 |
+| `docs/dogfood-log.md` | docs | +~150 | (本 commit) | — |
+
+**总计**：3 commits（不含 PR-3 自身）· src 增量 ~91 行 · docs 增量 ~1740 行（含 preflight）。
+
+### §3 红线审计
+
+| # | 红线 | v5 状态 | 实测证据 |
+|:---:|---|:---:|---|
+| R1 (gap-c) | 不改 `public/prompts/novel/*.json` | 🟡 豁免 N3.3 | git diff prompts/ → 仅 3.3.json |
+| R2 (gap-c) | 不改 ScoreCard 维度 | ✅ 不影响 | scoreCard.ts diff = 0 |
+| R3 (CK #1) | Dexie v1-v5 stores 0 变更 | ✅ 完全遵守 | v6 stores = v5 verbatim |
+| R4 (gap-d #4) | 不改 runner.ts | ✅ 不影响 | runner.ts diff = 0 |
+| R5 (gap-b PR-3) | CharacterTimelineView 视觉风格保持 | ✅ 完美守住 | F4 diff = 0 (简化方案) |
+| R6 (testing) | 不删 / 不弱化既有 tests | ✅ 不影响 | 0 测试改动 |
+
+### §4 dogfood 待执行清单（用户实测后增量补充）
+
+```
+□ [D-1] 启动 dev · 验证 dexie v5→v6 自动迁移
+       - 期望：旧 row 完全保留 · 无 upgrade error
+       - console 应无 dexie warn / error
+       - 实测后填：[ ]
+
+□ [D-2] 跑 N3.3（≥ 5 章项目）· 验证 LLM 输出 readerLayer
+       - 启动一个已有 ≥ 5 章的项目
+       - 在 N3.3 面板对最新 1 章重跑
+       - 期望：LLM 返回 row.snapshot.readerLayer 4 字段（至少 1 字段）
+       - 字数限制：whatISaw/whatIKnow/whatImWondering 50-150 / keyUnderstanding 50-100
+       - 实测后填：[ ]
+
+□ [D-3] 验证 schema fallback（CK I-7）
+       - 跑 N3.3 时 LLM 漏返回 readerLayer
+       - 期望：row 仍正确保存（snapshot 含事实层 5 字段 · readerLayer = undefined）
+       - 不应报错
+       - 实测后填：[ ]
+
+□ [D-4] CharacterBible reader viewMode UI 验证
+       - 选中角色 · 点 'reader' tab
+       - 期望：每章一卡片 · 4 字段独立显示 · 无字段隐藏
+       - 旧 row（无 readerLayer）应显示 italic 提示
+       - 切到 timeline / relations 不报错
+       - 实测后填：[ ]
+
+□ [D-5] 主观评估（核心动机验收）
+       - 启动 N3.1 章节草稿（写下一章）
+       - 在 reader viewMode 看截至上一章读者已知 / 在猜
+       - 期望：主观感受 LLM 写新章对"读者悬念 / 已知"把握更准
+       - 实测后填：[ ]
+```
+
+### §5 后续 epic 依赖契约
+
+| 依赖 epic | 何时启动 | v5 提供的契约 |
+|---|---|---|
+| **gap-h epic**（交叉验证）| v5 epic 完成 + 用户 dogfood ≥ 1 周 | I-1 readerLayer optional · I-7 数据流透传（gap-h 直接读 row.snapshot.readerLayer） |
+| **N3.1 注入 epic**（读者层进 prompt）| v5 schema 稳定（≥ 1 月）+ tokens 预算允许 | I-1 注入时容忍 readerLayer 部分字段 undefined · I-6 修改 N3.1 需重新签字 |
+| **gap-g epic**（CharacterBible 体验升级）| 与 v5 正交 · 可并行 | I-4 视觉契约保持 · gap-g 可重设计 timeline / relations / reader 三视图 |
+
+### §6 erratum / lessons learned
+
+#### Lesson 1 · PRD 与代码现状对齐 · CA 的价值
+
+```
+preflight 文档假设的 6 处文件路径 / 字段命名 / schema 结构与代码不符（CA §1 修正全清单）。
+若直接进 PR-1（跳过 CA）· 必然引入：
+  - 文件路径错误 → 编译失败
+  - relationships vs relations → 类型不匹配
+  - JSON Schema 字段不存在 → prompt 改动失败
+
+CA 文档的 ~390 行投入，避免了至少 3 次 rollback。
+→ 教训：BMAD Stage 2 三件套（PRD + CA + CK）值得投入 · 即便看起来重复 docs。
+```
+
+#### Lesson 2 · F4 简化方案 · 守红线优先
+
+```
+PRD §6.1 设计 F4 在 SVG 下方加 conditional 详情区（依赖 selectedChapterIndex）。
+但 selectedChapterIndex 现状总传 null（CharacterBible 用 onSelectChapter 触发"重跑"非"选中"）。
+
+简化方案：F4 完全不改 · 所有 readerLayer 集中在 F5 'reader' viewMode。
+→ 守红线 R5（gap-b 视觉风格）+ I-4（不破坏 gap-b 视图）
+→ 多 +24 行 F5 (54 vs 估 30) · 但少 -20 行 F4 → 净改动持平
+→ 教训：实施时遇到设计与现状冲突 · 优先守红线 · 调整方案。
+```
+
+#### Lesson 3 · .gitignore 例外是 prompt JSON 进版本库的关键
+
+```
+fili-web 历史 .gitignore 第 6 行 `public/prompts/` 全 ignore prompt JSON。
+v5 epic 第一次让 prompt JSON 进版本库（仅 3.3.json）· 为此调整规则：
+  Before: public/prompts/   （全 ignore）
+          !public/prompts/.gitkeep （单文件例外）
+  After:  public/prompts/*  （顶层文件 ignore）
+          !public/prompts/.gitkeep
+          !public/prompts/novel/   （novel 子目录例外）
+          public/prompts/novel/*   （novel 内文件 ignore）
+          !public/prompts/novel/3.3.json  （3.3.json 单文件例外）
+
+git ignore 规则：父目录用 `/*` 模式 · 子例外才能生效。
+→ 教训：未来 v5 后续如有其它 prompt JSON 改动 · 需类似精细规则。
+```
+
+### §7 下一步建议（用户决策）
+
+```
+1. 用户 dogfood：实测 §4 D-1 ~ D-5 五项
+   → 实测数据填入本 section §4
+   → 如发现 bug · 启动 v5 hotfix（小 PR）
+
+2. 启动 gap-g epic（CharacterBible 体验升级）
+   → 与 v5 正交 · 可并行
+   → ~5h · BMAD Stage 2 + 3
+
+3. 启动 gap-h epic（交叉验证）
+   → 等用户 dogfood ≥ 1 周积累 readerLayer 数据后
+   → ~3-4h · 复用 v5 schema
+
+4. 收工 · v5 epic 完成 · 进入 cool-down
+```
+
+---
+
 ## 缺口 f · 新 method modules 推荐引擎注入（2026-05-07 完成 micro-PR · 不开 epic）
 
 ### Epic 总览
