@@ -267,7 +267,10 @@ export function Home() {
                 {activeStatus.sourceChunkCount > 0 && (
                   <span>· <strong className="text-fg-primary font-mono">{activeStatus.sourceChunkCount}</strong> 个原作章节</span>
                 )}
-                <span>· {activeCtx.durationMin} 分钟</span>
+                {/* 仅短剧 express 模式 durationMin > 0 · 小说/剧本不显示 0 分钟 */}
+                {activeCtx.durationMin > 0 && (
+                  <span>· <strong className="text-fg-primary font-mono">{activeCtx.durationMin}</strong> 分钟</span>
+                )}
               </div>
             </div>
             <div className="flex flex-col gap-2 shrink-0">
@@ -370,7 +373,7 @@ export function Home() {
                     <div className="font-medium truncate text-fg-primary">{p.name}</div>
                   </div>
                   <div className="text-caption-m text-fg-muted truncate mt-1">
-                    {p.concept} · {p.durationMin} 分钟 · {p.mode}
+                    {p.concept}{p.durationMin > 0 ? ` · ${p.durationMin} 分钟` : ''} · {p.mode}
                   </div>
                 </div>
                 <span className="text-caption-m text-fg-muted shrink-0">
