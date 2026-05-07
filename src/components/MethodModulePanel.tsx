@@ -7,7 +7,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import clsx from 'clsx';
-import { BookMarked, ToggleLeft, ToggleRight, AlertTriangle, Sparkles, Loader2, Bot, Ban, ShieldAlert, CheckCircle2 } from 'lucide-react';
+import { BookMarked, ToggleLeft, ToggleRight, AlertTriangle, Sparkles, Loader2, Bot, Ban, ShieldAlert, CheckCircle2, Search, ChevronDown, ChevronRight } from 'lucide-react';
 import {
   loadMethodModuleManifest,
   validateMethodModuleGenres,
@@ -49,6 +49,19 @@ function getModuleCompatLevel(
 
 const MAX_ENABLED = 3;
 
+/** category id → 中文 label。manifest 中目前 6 类。 */
+const CATEGORY_LABELS: Record<string, string> = {
+  character: '角色',
+  structure: '结构',
+  rhythm: '节奏',
+  craft: '文笔',
+  driver: '驱动',
+  dream: '意境',
+};
+
+/** category 排序顺序（推荐分组显示顺序）。 */
+const CATEGORY_ORDER = ['structure', 'character', 'rhythm', 'craft', 'driver', 'dream'];
+
 interface Props {
   value: string[]; // enabled module ids
   onChange: (next: string[]) => void;
@@ -66,6 +79,9 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
   const [llmRecs, setLlmRecs] = useState<ModuleRecommendation[]>([]);
   const [llmRunning, setLlmRunning] = useState(false);
   const [llmError, setLlmError] = useState<string | null>(null);
+  // gap-f 后续 · 微 PR：搜索 + category 分组
+  const [search, setSearch] = useState('');
+  const [collapsedCategories, setCollapsedCategories] = useState<Set<string>>(new Set());
   const settings = useSettings();
 
   useEffect(() => {
@@ -270,17 +286,54 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
             </div>
           )}
 
-          {modules
-            .slice()
-            // 推荐分高的靠前（似推荐分为准，同分后按原顺序）
-            .sort((a, b) => (recById.get(b.id)?.score ?? 0) - (recById.get(a.id)?.score ?? 0))
-            .map((mod) => {
+          {/* 搜索框 · 实时过滤 title / summary / id */}
+          <div className="relative">
+            <Search className="size-3.5 absolute left-2 top-1/2 -translate-y-1/2 text-fg-muted" />
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="搜索模块（标题 / 简介 / id）..."
+              className="w-full bg-surface border border-border-subtle rounded pl-7 pr-2 py-1.5 text-tight-sm focus:border-warning/40 focus:outline-none"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch('')}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-tight-xs text-fg-muted hover:text-fg-secondary"
+                title="清空搜索"
+              >×</button>
+            )}
+          </div>
+
+          {(() => {
+            const sorted = modules
+              .slice()
+              .sort((a, b) => (recById.get(b.id)?.score ?? 0) - (recById.get(a.id)?.score ?? 0));
+            const q = search.trim().toLowerCase();
+            const filtered = q
+              ? sorted.filter((m) =>
+                  m.id.toLowerCase().includes(q)
+                  || m.title.toLowerCase().includes(q)
+                  || m.summary.toLowerCase().includes(q),
+                )
+              : sorted;
+
+            if (filtered.length === 0) {
+              return (
+                <div className="text-tight-sm text-fg-muted italic py-2">
+                  {q ? `无匹配「${search}」的模块` : '暂无可用模块'}
+                </div>
+              );
+            }
+
+            // 单条 module 的渲染（与原逻辑保持一致）
+            const renderModule = (mod: MethodModuleItem) => {
               const checked = value.includes(mod.id);
               const isFull = !checked && value.length >= MAX_ENABLED;
               const conflictsActive = mod.conflictsWith.some((c) => value.includes(c));
               const rec = recById.get(mod.id);
               const strength = rec ? recommendationStrength(rec.score) : 'none';
-              // v2 阶段 2.3 · 题材兼容性等级（独立于推荐分；用于徽章 + 边框配色）
               const compat = ctx?.genres?.length
                 ? getModuleCompatLevel(mod, ctx.genres)
                 : { level: 'none' as const, hits: [] };
@@ -292,7 +345,6 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                   disabled={isFull && !checked}
                   className={clsx(
                     'w-full text-left px-2.5 py-2 rounded text-tight-sm transition-colors',
-                    // 已启用 + 题材冲突 → 红框；已启用 + 题材弱兼容 → 黄框
                     checked && compat.level === 'incompatible'
                       ? 'bg-danger/15 border border-danger/50 text-danger-100'
                       : checked && compat.level === 'warning'
@@ -330,14 +382,12 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                             title={rec?.reason}
                           >💡 推荐 {rec!.score}</span>
                         )}
-                        {/* P9-F LLM 来源徐章 */}
                         {rec?.source === 'llm' && (
                           <span
                             className="text-tight-2xs px-1 py-0 rounded bg-blue-500/15 text-blue-300 border border-blue-500/40 flex items-center gap-0.5"
                             title="LLM 背书推荐"
                           ><Bot className="size-2.5" /> AI</span>
                         )}
-                        {/* v2 阶段 2.3 · 题材兼容性徐章 */}
                         {compat.level === 'incompatible' && (
                           <span
                             className="text-tight-2xs px-1 py-0 rounded bg-danger/15 text-danger border border-danger/40 flex items-center gap-0.5"
@@ -374,7 +424,69 @@ export function MethodModulePanel({ value, onChange, collapsed = false, ctx }: P
                   </div>
                 </button>
               );
-            })}
+            };
+
+            // 搜索时 → 平铺过滤结果（不分组）
+            if (q) {
+              return (
+                <>
+                  <div className="text-tight-xs text-fg-muted px-1">
+                    匹配 {filtered.length} / {sorted.length} 个模块
+                  </div>
+                  {filtered.map(renderModule)}
+                </>
+              );
+            }
+
+            // 无搜索 → 按 category 分组渲染
+            const grouped = new Map<string, MethodModuleItem[]>();
+            for (const m of filtered) {
+              const cat = m.category || 'other';
+              if (!grouped.has(cat)) grouped.set(cat, []);
+              grouped.get(cat)!.push(m);
+            }
+            // 按 CATEGORY_ORDER 排序 · 未列出的 category 追加在后
+            const orderedCats = [
+              ...CATEGORY_ORDER.filter((c) => grouped.has(c)),
+              ...Array.from(grouped.keys()).filter((c) => !CATEGORY_ORDER.includes(c)),
+            ];
+
+            return orderedCats.map((cat) => {
+              const items = grouped.get(cat) ?? [];
+              const collapsed = collapsedCategories.has(cat);
+              const label = CATEGORY_LABELS[cat] ?? cat;
+              const enabledCount = items.filter((m) => value.includes(m.id)).length;
+              const recommendedCount = items.filter((m) => (recById.get(m.id)?.score ?? 0) >= 65).length;
+              return (
+                <div key={cat} className="border-t border-border-subtle/30 first:border-t-0 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCollapsedCategories((prev) => {
+                        const next = new Set(prev);
+                        if (collapsed) next.delete(cat); else next.add(cat);
+                        return next;
+                      });
+                    }}
+                    className="w-full flex items-center gap-1.5 px-1 py-1 text-tight-xs text-fg-secondary hover:bg-surface/40 rounded"
+                  >
+                    {collapsed ? <ChevronRight className="size-3 shrink-0" /> : <ChevronDown className="size-3 shrink-0" />}
+                    <span className="font-medium">{label}</span>
+                    <span className="text-fg-muted">({items.length})</span>
+                    {enabledCount > 0 && (
+                      <span className="text-warning ml-1">已启用 {enabledCount}</span>
+                    )}
+                    {recommendedCount > 0 && (
+                      <span className="text-warning/80 ml-1">💡 推荐 {recommendedCount}</span>
+                    )}
+                  </button>
+                  {!collapsed && (
+                    <div className="space-y-1.5 mt-0.5">{items.map(renderModule)}</div>
+                  )}
+                </div>
+              );
+            });
+          })()}
 
           {value.length >= MAX_ENABLED && (
             <div className="text-tight-xs text-warning/80 italic mt-2">
