@@ -17,7 +17,7 @@ import {
   ASSETS_LIST_NORMALIZE,
 } from '../components/normalizePresets';
 import { StoryboardPlanDiagnostics } from '../components/StoryboardPlanDiagnostics';
-import { Button } from '../components/ui';
+import { Button, Input } from '../components/ui';
 import { SelfCheckPanel } from '../components/SelfCheckPanel';
 import { ConsistencyPanel } from '../components/ConsistencyPanel';
 import { RunHistoryPanel } from '../components/RunHistoryPanel';
@@ -227,20 +227,20 @@ export function Pipeline() {
       {/* project context bar */}
       <section className="px-6 py-3 border-b border-border-subtle grid grid-cols-4 gap-3 text-body-m">
         <Field label="项目名">
-          <input className="input" value={project.ctx.name}
+          <Input value={project.ctx.name}
                  onChange={(e) => project.setCtx({ name: e.target.value })} />
         </Field>
         <Field label="一句话概念">
-          <input className="input" value={project.ctx.concept}
+          <Input value={project.ctx.concept}
                  onChange={(e) => project.setCtx({ concept: e.target.value })} />
         </Field>
         <Field label="单集时长（分钟）">
-          <input type="number" min={3} max={60} className="input"
+          <Input type="number" min={3} max={60}
                  value={project.ctx.durationMin}
                  onChange={(e) => project.setCtx({ durationMin: +e.target.value || 5 })} />
         </Field>
         <Field label="创作模式">
-          <input className="input" value={project.ctx.mode}
+          <Input value={project.ctx.mode}
                  onChange={(e) => project.setCtx({ mode: e.target.value })} />
         </Field>
       </section>

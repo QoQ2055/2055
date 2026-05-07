@@ -10,6 +10,7 @@ import {
   RotateCcw, Trash2,
 } from 'lucide-react';
 import clsx from 'clsx';
+import { Input, Textarea } from '../components/ui';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep, runStoryboardPhase2Loop } from '../pipeline/runner';
 import type {
@@ -414,8 +415,7 @@ export function Express() {
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="label">项目名</label>
-              <input
-                className="input w-full"
+              <Input
                 value={ctx.name}
                 onChange={(e) => project.setCtx({ name: e.target.value })}
                 placeholder="如：山门杀机·特别篇"
@@ -486,8 +486,7 @@ export function Express() {
           </div>
           <div>
             <label className="label">核心冲突 / 一句话设定（可选）</label>
-            <input
-              className="input w-full"
+            <Input
               value={ctx.coreConflict ?? ''}
               onChange={(e) => project.setCtx({ coreConflict: e.target.value })}
               placeholder="如：女修真者被宗门构陷，绝地反杀揭穿背叛"
@@ -545,12 +544,10 @@ export function Express() {
             </div>
             <span className="text-tight-xs text-fg-muted">{draft.length.toLocaleString()} 字</span>
           </div>
-          <textarea
+          <Textarea
             rows={10}
-            className={clsx(
-              'w-full bg-surface border rounded-md px-3 py-2 text-xs font-mono focus:outline-none',
-              draftErr ? 'border-danger/60' : 'border-border-subtle focus:border-brand-500',
-            )}
+            className="text-xs font-mono"
+            error={!!draftErr}
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             placeholder="粘贴 markdown 剧本（含场次、对白、动作）；非剧本文本可点 ✨ 转换…"
