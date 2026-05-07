@@ -9,7 +9,44 @@
 
 ---
 
-## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP + PR-1B + PR-2 完成）
+## ui-v3 epic · interaction-system（2026-05-07/08 启动 · PR-1 MVP + PR-1B + PR-2 + PR-3 全部完成 · epic 100%）
+
+### PR-3 · Design-system 应用指南（commit `aab212f`）
+
+**目标**：把 `DESIGN.md`（30KB 设计宪章）从"理论 token 表"翻译成"开发者每天用的决策树"。
+
+**新增文档**（5 文件 · 930 行 · `docs/design-system/`）：
+
+| 文档 | 行数 | 用途 |
+|---|---|---|
+| `README.md` | 60 | 总索引 + 阅读路线 + 不变量速查 |
+| `usage-application-layer.md` | 215 | 6 atoms 决策树 · button/input/textarea 选型 · token 速查 · anti-pattern 错例 |
+| `usage-feedback.md` | 215 | Toast/Tooltip/Skeleton/EmptyState/SidebarBadge 决策树 · 4 类 toast 语义 · alert→toast 迁移 |
+| `usage-shortcuts.md` | 195 | 当前快捷键清单 + 浏览器冲突表 + 决策树 + Layout/页面注册模板 |
+| `migration-checklist.md` | 245 | 老代码迁移流程 · 5 个 PowerShell 扫描命令 · 4 个真实替换样例 · "看似该改但不该改"边界 |
+
+**关键不变量验证**：
+
+| 不变量 | 检查 | 结果 |
+|---|---|---|
+| V3-I-6 docs 不动 src | git diff src/ | ✅ 0 修改 |
+| 一致性 | docs 内引用的 atom / 快捷键 / token 与 src 实装 1:1 对应 | ✅ 写时同步交叉核对 |
+| 不重复 DESIGN.md | docs 是"应用指南"非"宪章重写"· 数值/spec 都 cite DESIGN.md | ✅ |
+| BMAD 收尾闭环 | dogfood-log + design-system docs 双轨 · 自检清单 + 决策树 | ✅ |
+
+**Build 验证**：N/A（纯 docs · 无代码改动）
+
+**PR-3 dogfood 用户手测项**：
+
+```
+1. docs/design-system/README.md 顶部链接全部点击 · 4 子文档都能跳转
+2. usage-application-layer.md § 决策树 · 实测一段裸 button 走流程是否得到正确 atom 选型
+3. usage-feedback.md § Toast 决策树 · 实测一个错误反馈场景能否正确选 toast.error
+4. usage-shortcuts.md § 决策树 · 假设要加 Cmd+P · 走流程能否得到"应该不抢系统"的判定
+5. migration-checklist.md PowerShell 扫描命令 · 复制粘贴执行 · 应能列出仍待迁移的位置
+```
+
+---
 
 ### PR-2 · Sidebar status badge（commit `8b16d3b`）
 
