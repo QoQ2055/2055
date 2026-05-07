@@ -950,6 +950,62 @@
       "injectsTo": ["novel.3.1", "novel.3.2"],
       "estimatedTokens": 800,
       "conflictsWith": []
+    },
+    {
+      "id": "dual-line-narrative-template",
+      "title": "\u53cc\u7ebf\u53d9\u4e8b\u6a21\u677f \u00b7 \u5e73\u884c / \u5bf9\u6bd4 / \u4ea4\u53c9 6 \u6bb5\u7ed3\u6784",
+      "file": "dual-line-narrative-template.md",
+      "category": "structure",
+      "genreCompat": {
+        "recommended": ["mystery", "thriller", "romance", "history", "alt_history", "rebirth", "infinite", "fast_wear", "dark_fantasy", "intrigue", "palace", "era_drama", "fantasy", "scifi"],
+        "warnOnEnable": ["sweet", "campus", "youth", "farming"]
+      },
+      "summary": "\u586b\u8865 fili-web \u201c\u5355\u7ebf vs \u53cc\u7ebf\u201d \u7ed3\u6784\u76f2\u533a\u3002\u73b0\u6709\u6240\u6709\u7ed3\u6784\u6a21\u5757(kishotenketsu/heros-journey/save-the-cat/atu-301/seven-points-romance/twelve-step-mystery/truby-22-steps)\u90fd\u662f\u5355\u7ebf\u3002\u672c\u6a21\u5757\u7ed9\u53cc\u7ebf 6 \u6bb5\u7ed3\u6784\uff1a\u4e0a\u7ebf\u5efa\u7acb \u2192 \u4e0b\u7ebf\u5efa\u7acb+\u5bf9\u6bd4 \u2192 A\u5173\u952e\u8282\u70b9 \u2192 B\u5173\u952e\u8282\u70b9 \u2192 \u4ea4\u53c9\u70b9 \u2192 \u843d\u7248\u30024 \u7ef4\u5dee\u5f02\u5316(\u4e3b\u4f53/\u573a\u666f/\u8282\u594f/\u60c5\u7eea\u8272\u5f69)+3 \u7c7b\u4ea4\u53c9\u6a21\u5f0f(\u5408\u6d41/\u5bf9\u6bd4/\u51b2\u7a81)+4 \u7ef4\u89c6\u89c9\u5bf9\u6bd4(\u8272\u8c03/\u89c6\u89d2/\u666f\u522b/\u8fd0\u955c)\u3002\u9002\u5408\u53cc\u7537\u4e3b/\u53cc\u5973\u4e3b/\u5e73\u884c\u65f6\u7a7a/\u5bf9\u6bd4\u53d9\u4e8b/\u53cc\u89c6\u89d2\u60ac\u7591\u3002\u6982\u5ff5\u63d0\u53d6\u81ea Jaygo Creativity v28 \u89c6\u9891\u6a21\u677f 9\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.2.1", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 1100,
+      "conflictsWith": []
+    },
+    {
+      "id": "space-traverse-narrative",
+      "title": "\u7a7a\u95f4\u7a7f\u8d8a\u53d9\u4e8b \u00b7 \u951a\u70b9 + \u89e6\u53d1\u5668 + 5 \u6bb5\u7ed3\u6784",
+      "file": "space-traverse-narrative.md",
+      "category": "structure",
+      "genreCompat": {
+        "recommended": ["rebirth", "infinite", "fast_wear", "system", "scifi", "fantasy", "xianxia", "xuanhuan", "apocalypse", "alt_history", "dark_fantasy"],
+        "warnOnEnable": ["campus", "youth", "sweet", "farming", "ceo"]
+      },
+      "summary": "\u586b\u8865 fili-web \u7a7a\u95f4\u53d9\u4e8b\u76f2\u533a(\u7a7f\u8d8a/\u91cd\u751f/\u5f02\u4e16\u754c/\u7cfb\u7edf/\u65e0\u9650\u6d41/\u672b\u4e16\u6d41\u7684\u6838\u5fc3\u573a\u666f)\u30025 \u6bb5\u7ed3\u6784\uff1a\u5f53\u524d\u7a7a\u95f4\u951a\u5b9a \u2192 \u8f6c\u573a\u89e6\u53d1\u5668 \u2192 \u8f6c\u573a\u8fc7\u7a0b \u2192 \u65b0\u7a7a\u95f4\u5efa\u7acb \u2192 \u9002\u5e94\u8fc7\u7a0b\u30023 \u7c7b\u7a7f\u8d8a\u6a21\u5f0f(\u5355\u5411/\u53cc\u5411/\u591a\u7a7a\u95f4)+3 \u7c7b\u951a\u70b9(\u89c6\u89c9/\u77e5\u8bc6/\u60c5\u611f)\u3002\u9996\u7a7f vs N \u7a7f\u8282\u594f\u5dee\u5f02(\u9996\u7a7f\u9700 5-15 \u7ae0\u00b7N \u7a7f \u2264 3 \u7ae0)\u3002\u6982\u5ff5\u63d0\u53d6\u81ea Jaygo Creativity v28 \u89c6\u9891\u6a21\u677f 5\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.1.2", "novel.1.3", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 1050,
+      "conflictsWith": []
+    },
+    {
+      "id": "action-fight-storyboard",
+      "title": "\u52a8\u4f5c\u6253\u6597\u8282\u594f \u00b7 6 \u6bb5\u6218\u6597\u7ae0\u8282\u6a21\u677f",
+      "file": "action-fight-storyboard.md",
+      "category": "rhythm",
+      "genreCompat": {
+        "recommended": ["xianxia", "xuanhuan", "wuxia", "apocalypse", "system", "fantasy", "dark_fantasy", "scifi", "cyberpunk", "urban_super", "infinite"],
+        "warnOnEnable": ["sweet", "campus", "youth", "farming", "ceo"]
+      },
+      "summary": "\u586b\u8865 fili-web \u201c\u5355\u573a\u6218\u6597\u7ae0\u8282\u8282\u594f\u201d\u76f2\u533a\u3002\u73b0\u6709 combat-power-loop-formula \u504f\u4f53\u7cfb\u00b7pacing-emotional-curve \u504f\u5168\u4e66\u8282\u594f\u3002\u672c\u6a21\u5757 6 \u6bb5\u6218\u6597\u8282\u594f\uff1a\u5bf9\u5cd9 \u2192 \u8bd5\u63a2 \u2192 \u4ea4\u950b \u2192 \u53cd\u8f6c \u2192 \u9ad8\u6f6d \u2192 \u843d\u5e55\u30023 \u7c7b\u9ad8\u6f6d\u8bbe\u8ba1(\u7edd\u6740/\u53cd\u8d25/\u5171\u751f)+5 \u7c7b\u955c\u5934\u8bed\u8a00\u6587\u5b57\u5316(\u7279\u5199/\u4e2d\u666f/\u8fdc\u666f/\u63a8\u955c/\u62c9\u955c)\u3002\u4e0e combat-power-loop-formula \u3001supernatural-pack \u5f3a\u534f\u540c\u3002\u6982\u5ff5\u63d0\u53d6\u81ea Jaygo Creativity v28 \u89c6\u9891\u6a21\u677f 2\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.3.1", "novel.3.2", "novel.3.3"],
+      "estimatedTokens": 1100,
+      "conflictsWith": []
+    },
+    {
+      "id": "vlog-style-narrative",
+      "title": "Vlog \u5f0f\u7eaa\u5b9e\u53d9\u4e8b \u00b7 \u7b2c\u4e00\u4eba\u79f0\u6c89\u6d78\u8282\u594f",
+      "file": "vlog-style-narrative.md",
+      "category": "structure",
+      "genreCompat": {
+        "recommended": ["urban", "campus", "youth", "sweet", "ceo", "farming", "romance"],
+        "warnOnEnable": ["xianxia", "xuanhuan", "wuxia", "apocalypse", "thriller", "mystery"]
+      },
+      "summary": "\u586b\u8865 fili-web \u201c\u7b2c\u4e00\u4eba\u79f0\u7eaa\u5b9e\u8282\u594f\u201d \u76f2\u533a(\u90fd\u5e02/\u6821\u56ed/\u804c\u573a/\u7f8e\u98df/\u6cbb\u6108)\u30024 \u6bb5\u8282\u594f\uff1a\u5f00\u573a \u2192 \u65e5\u5e38(3-5 \u7247\u6bb5) \u2192 \u8f6c\u6298(\u610f\u5916/\u91cd\u9022/\u51b3\u5b9a) \u2192 \u6536\u5c3e(\u72ec\u767d/\u753b\u9762/\u94a9\u5b50)\u30025 \u7c7b\u6c89\u6d78\u6280\u5de7(\u5373\u65f6\u611f/\u65c1\u767d\u611f/\u955c\u5934\u611f/\u70df\u706b\u611f/\u7559\u767d\u611f)\u30023 \u7c7b\u4e0e\u4f20\u7edf\u7ed3\u6784\u5bf9\u63a5\u65b9\u5f0f\u3002\u6982\u5ff5\u63d0\u53d6\u81ea Jaygo Creativity v28 \u89c6\u9891\u6a21\u677f 4\u3002",
+      "injectsTo": ["novel.0", "novel.1.1", "novel.3.1", "novel.3.2"],
+      "estimatedTokens": 950,
+      "conflictsWith": []
     }
   ]
 }
