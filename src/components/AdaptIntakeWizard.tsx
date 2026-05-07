@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { BookCopy, X, ChevronLeft, ChevronRight, Plus, Trash2, FileText, Loader2 } from 'lucide-react';
 import clsx from 'clsx';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
+import { Input, Textarea } from './ui';
 import {
   ADAPT_SOURCE_TYPES, PLATFORMS, PROTAGONISTS, DURATIONS,
   buildConcept, sourceToLegacyAdaptationType,
@@ -184,12 +185,12 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                 {chunks.map((c, i) => (
                   <div key={i} className="card border-border-subtle p-3 space-y-2">
                     <div className="flex items-center gap-2">
-                      <input
+                      <Input
                         type="text"
                         value={c.title}
                         onChange={(e) => setChunks((arr) => arr.map((x, j) => j === i ? { ...x, title: e.target.value } : x))}
                         placeholder={`章节 ${i + 1} 标题`}
-                        className="flex-1 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
+                        className="flex-1 text-xs"
                       />
                       {chunks.length > 1 && (
                         <button
@@ -201,12 +202,12 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         </button>
                       )}
                     </div>
-                    <textarea
+                    <Textarea
                       rows={5}
                       value={c.raw}
                       onChange={(e) => setChunks((arr) => arr.map((x, j) => j === i ? { ...x, raw: e.target.value } : x))}
                       placeholder="粘贴本章原文（≥ 50 字）"
-                      className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-xs font-mono focus:outline-none focus:border-brand-500"
+                      className="text-xs font-mono"
                     />
                     <div className="text-tight-xs text-fg-muted">
                       字数 <span className={clsx('font-mono', c.raw.length >= 50 ? 'text-success' : 'text-warning')}>{c.raw.length}</span>
@@ -302,12 +303,11 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
           {step === 4 && (
             <>
               <div className="label">项目命名</div>
-              <input
+              <Input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder={suggestedName || '例如：山海经短剧改编'}
-                className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
                 autoFocus
               />
               {suggestedName && name !== suggestedName && (
