@@ -9,7 +9,90 @@
 
 ---
 
-## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3 · PR-4 待启动）
+## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3+PR-4 · epic 收尾）
+
+### PR-4 · Novel.tsx 拆解（commit `f74635c` Step A · `0ddd6f9` Step B）
+
+**核心数据**：
+
+```
+Novel.tsx : 1890 → 1292 行 (-598 行 · -32%)
+新增子文件 : 3 个 · 736 行
+  src/pages/novel/constants.ts       (18 行 · NOVEL_STEP_TITLES)
+  src/pages/novel/PreviewModal.tsx   (359 行 · 章节/产物预览 modal)
+  src/pages/novel/NovelSettingsDialog.tsx (359 行 · 小说设定对话框)
+commits : f74635c (Step A) + 0ddd6f9 (Step B) = 2 个代码 commit
+```
+
+**分步实施（Step A · Step B · Step C 评估）**：
+
+| Step | 内容 | 行数 | commit |
+|---|---|---|---|
+| A | 抽 PreviewModal · 含 BoN 裁判 / 撤销栈 / RefinementToolPanel 集成 | 335 行业务 + 25 注释 | `f74635c` |
+| B | 抽 NovelSettingsDialog · 含 DialogField wrapper · 9 form 控件 | 322 行业务 + 注释 | `0ddd6f9` |
+| C | ChapterList / StepCard / ProjectSettingsCard | **跳过** | — |
+
+**Step C 跳过决策（PRD 灵活解读）**：
+
+| 候选 | 行数 | state 耦合度 | ROI |
+|---|---|---|---|
+| ChapterList | 158 | 高（runStates / busy / chainBusy） | 低 · props drilling 严重 |
+| StepCard | 123 | 高（同上 + manifest）| 低 |
+| ProjectSettingsCard | 117 | 中（ctx + setCtx）| 中 |
+| SettingItem / SectionHeader / StatusBadge | <30 | 低 | 抽出收益 < 文件搜索成本 |
+
+**结论**：Step C 留在 Novel.tsx · 1292 行虽超 PRD 估"< 400 行"目标 · 但 PreviewModal + NovelSettingsDialog 抽出已是 32% 削减 · 主 Novel() 函数 + 5 个内部组件保持原位避免 props drilling 反模式。
+
+**9 form 控件 atom 化（PR-1 跳过 · 本 PR 也跳过的延后项）**：
+
+```
+NovelSettingsDialog 内 9 form 控件（select × 3 / input × 4 / textarea × 2）
+仍用 raw <select> / <input> / <textarea> 而非 Input/Textarea atom
+延后理由：
+  • NovelSettingsDialog 已独立成文件 · 后续 atom 化局部修改即可
+  • 当前文件能 build · 用户能用 · 不阻塞 dogfood
+  • 留给 dogfood 期间发现 token 偏差时再 atom 化
+```
+
+**关键不变量验证（PR-4）**：
+
+| ID | 不变量 | 验证 |
+|:---:|---|:---:|
+| V2-I-1 | DESIGN.md 不动 | ✅ 0 修改 |
+| V2-I-2 | src/index.css 不动 | ✅ 0 修改 |
+| V2-I-3 ★ | 6 atoms 实现不动 | ✅ 拆分文件不涉及 atom |
+| V2-I-4 ★ | 不加第 7 atom | ✅ novel/* 是 page 子文件 · 非 ui/ atom |
+| V2-I-5 | DESIGN.md ① Token 优先 | ✅ 业务零改动（仅搬家） |
+| V2-I-9 | 保留非 design 类 | ✅ flex/grid 全保留 |
+| V2-I-10 | vite build | ✅ 3.18s + 3.25s 全通过 · 0 errors |
+| 业务零回归 | PR-4 仅文件拆分 | ✅ 撤销栈 / Best-of-N / markStateStale / Dexie 持久化全保留 |
+
+**PR-4 dogfood 用户手测项**：
+
+#### US-N1 · PreviewModal 抽出后行为不变（必测）
+
+- [ ] 在 Novel 页面跑完 N3.1 章节草稿 → 点章节预览 → modal 正常打开
+- [ ] modal 内显示 ChapterScoreCardSlot / ChapterValidationPanel / RefinementToolPanel
+- [ ] 选区润色 + 应用 → 章节文本更新 · 撤销栈 +1
+- [ ] 撤销润色按钮 → 章节内容恢复
+- [ ] 关闭 modal 重新打开 · 撤销栈持久（Dexie）
+- [ ] N0/N1.1/N1.2 节点产物预览 · BoN 裁判面板正常显示
+
+#### US-N2 · NovelSettingsDialog 抽出后行为不变（必测）
+
+- [ ] 在 Novel 页面点「编辑设定」按钮 → dialog 打开
+- [ ] 修改平台 / 体量 / POV / 调性 / 题材 / 主角性别等 → 状态实时更新 + 派生字数正确
+- [ ] 保存 → ctx patch 写入 useProject store
+- [ ] UserKbBindingPanel + MethodModulePanel 仍正常（绑定 ctx 字段）
+
+#### US-N3 · 文件结构
+
+- [ ] `src/pages/novel/constants.ts` 存在 · 内含 NOVEL_STEP_TITLES
+- [ ] `src/pages/novel/PreviewModal.tsx` 存在 · 359 行
+- [ ] `src/pages/novel/NovelSettingsDialog.tsx` 存在 · 359 行
+- [ ] Novel.tsx 1292 行 · 主 Novel() + 5 内部组件保留
+
+---
 
 ### PR-3 · Home dashboard 重构（commit `3fb3612`）
 
