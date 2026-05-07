@@ -10,6 +10,8 @@ import { Wand2 } from 'lucide-react';
 import clsx from 'clsx';
 import { UserKbBindingPanel } from '../../components/UserKbBindingPanel';
 import { MethodModulePanel } from '../../components/MethodModulePanel';
+import { Input } from '../../components/ui/Input';
+import { Textarea } from '../../components/ui/Textarea';
 import {
   GENRES, NOVEL_PLATFORMS, NOVEL_POVS, NOVEL_TONES, NOVEL_SCALES,
   NOVEL_AUDIENCES, MAX_GENRES, PROTAGONISTS,
@@ -179,23 +181,23 @@ export function NovelSettingsDialog({
           {/* 总字数 / 章数 */}
           <div className="grid grid-cols-2 gap-3">
             <DialogField label="总字数（万字）*">
-              <input
-                type="number" min={1} step={5}
+              <Input
+                type="number" min={1} step={5} size="sm"
                 value={novelTotalWordsK}
                 onChange={(e) => setNovelTotalWordsK(Math.max(1, parseInt(e.target.value, 10) || 0))}
-                className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
+                className="w-full"
               />
             </DialogField>
             <DialogField label={`总章节数 *${chaptersTouched ? '（已手动）' : '（自动派生）'}`}>
               <div className="flex gap-1">
-                <input
-                  type="number" min={5} step={10}
+                <Input
+                  type="number" min={5} step={10} size="sm"
                   value={novelTotalChapters}
                   onChange={(e) => {
                     setChaptersTouched(true);
                     setNovelTotalChapters(Math.max(5, parseInt(e.target.value, 10) || 0));
                   }}
-                  className="flex-1 bg-surface border border-border-subtle rounded px-2 py-1.5"
+                  className="flex-1"
                 />
                 {chaptersTouched && (
                   <button className="btn-ghost text-xs" onClick={() => setChaptersTouched(false)}>自动</button>
@@ -276,30 +278,30 @@ export function NovelSettingsDialog({
           </DialogField>
 
           <DialogField label="核心冲突 *">
-            <textarea
+            <Textarea
               rows={2}
               value={coreConflict}
               onChange={(e) => setCoreConflict(e.target.value)}
               placeholder="主角 + 处境 + 目标 + 阻力"
-              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
+              className="w-full min-h-0"
             />
           </DialogField>
 
           <DialogField label="一句话简介 / 卖点（可选）">
-            <input
-              type="text" maxLength={120}
+            <Input
+              type="text" maxLength={120} size="sm"
               value={novelLogline}
               onChange={(e) => setNovelLogline(e.target.value)}
-              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
+              className="w-full"
             />
           </DialogField>
 
           <DialogField label="主角金手指 / 关键设定（可选）">
-            <textarea
+            <Textarea
               rows={2} maxLength={400}
               value={novelHook}
               onChange={(e) => setNovelHook(e.target.value)}
-              className="w-full bg-surface border border-border-subtle rounded px-2 py-1.5"
+              className="w-full min-h-0"
             />
           </DialogField>
 
@@ -356,4 +358,4 @@ function DialogField({ label, children }: { label: string; children: React.React
       {children}
     </div>
   );
-}
+}
