@@ -6,8 +6,15 @@
  *   • feedback 目录：src/components/ui/feedback/*
  *
  * 当前包含：
- *   • Toast / ToastContainer（替代 alert · 通过 store/toast.ts 调用）
- *   后续：Tooltip / Skeleton / EmptyState
+ *   • ToastContainer  全局 Toast 队列（在 Layout 渲染一次 · 通过 store/toast.ts 调用）
+ *   • Tooltip         hover 气泡（替代原生 title · a11y 友好）
+ *   • Skeleton + SkeletonText  加载占位符（替代手写 animate-pulse）
+ *   • EmptyState      空数据展示（替代散落的"暂无内容" div）
+ *
+ * 使用：参考各文件顶部 JSDoc。
  */
 
 export { ToastContainer } from './Toast';
+export { Tooltip, type TooltipProps } from './Tooltip';
+export { Skeleton, SkeletonText, type SkeletonProps } from './Skeleton';
+export { EmptyState, type EmptyStateProps } from './EmptyState';
