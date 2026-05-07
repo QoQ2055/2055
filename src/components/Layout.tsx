@@ -7,19 +7,22 @@
 // A colored "mode bar" at the top of the sidebar makes the active mode
 // instantly obvious — no more "wait, am I in Adaptation?" confusion.
 
+import { useEffect } from 'react';
 import { Outlet } from 'react-router-dom';
 import {
   Clapperboard, Settings as SettingsIcon, FlaskConical, Home as HomeIcon,
   FileText, Box, BookOpen, BookCopy, Workflow, Rocket, Edit3, Wand2, FileSearch,
-  Brain, Lightbulb,
+  Brain, Lightbulb, Command as CommandIcon,
 } from 'lucide-react';
 import type { ComponentType } from 'react';
 import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
+import { useCommandPalette } from '../store/commandPalette';
 import { getProjectModeMeta } from '../data/projectModes';
 import type { ModeNavItem } from '../data/projectModes';
 import { NavItem, NavSectionLabel } from './ui';
 import { ToastContainer } from './ui/feedback';
+import { CommandPalette } from './CommandPalette';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
@@ -30,6 +33,26 @@ export function Layout() {
   const hasKey = !!apiKey?.trim();
   const ctx = useProject((s) => s.ctx);
   const meta = getProjectModeMeta(ctx);
+  const togglePalette = useCommandPalette((s) => s.togglePalette);
+  const openPalette = useCommandPalette((s) => s.openPalette);
+
+  // ui-v3 PR-1 MVP · 全局 Cmd+K (mac) / Ctrl+K (win/linux) 监听
+  // V3-I-2 · 不与浏览器原生冲突：仅在非 input/textarea/contenteditable focus 时触发
+  //   • Chrome/Firefox 默认 Cmd+K = 聚焦地址栏 · 我们 preventDefault 抢回（应用内更高优先级）
+  //   • 不抢 Cmd+C/V/Z/A 等系统快捷键
+  useEffect(() => {
+    function handler(e: KeyboardEvent) {
+      const isCmdK = (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K');
+      if (!isCmdK) return;
+      // 检测当前 focus · 在 input/textarea/contenteditable 内时仍允许（用户期望 Cmd+K 打开面板）
+      // 但需避开浏览器原生地址栏行为
+      e.preventDefault();
+      e.stopPropagation();
+      togglePalette();
+    }
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [togglePalette]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -76,11 +99,24 @@ export function Layout() {
           <NavItem to="/settings" icon={<SettingsIcon className="size-4" />}>设置</NavItem>
         </nav>
 
-        <div className="p-3 border-t border-border-subtle text-caption-m text-fg-muted">
+        <div className="p-3 border-t border-border-subtle text-caption-m text-fg-muted space-y-2">
           <div className="flex items-center gap-1.5">
             <span className={`size-2 rounded-full ${hasKey ? 'bg-success' : 'bg-warning'}`} />
             {hasKey ? 'API Key 已配置' : '未配置 API Key'}
           </div>
+          {/* ui-v3 PR-1 MVP · Cmd+K 触发提示（点击也能打开） */}
+          <button
+            type="button"
+            onClick={openPalette}
+            className="flex items-center gap-1.5 text-tight-xs text-fg-muted hover:text-fg-secondary transition-colors w-full"
+            title="打开命令面板（Cmd+K / Ctrl+K）"
+          >
+            <CommandIcon className="size-3" />
+            <span>命令面板</span>
+            <kbd className="ml-auto text-tight-xs px-1 py-0.5 rounded border border-border-subtle font-mono">
+              ⌘K
+            </kbd>
+          </button>
         </div>
       </aside>
 
@@ -90,6 +126,8 @@ export function Layout() {
 
       {/* ui-v2 PR-2 · 全局 Toast 容器·替代 alert() */}
       <ToastContainer />
+      {/* ui-v3 PR-1 MVP · 全局命令面板（Cmd+K / Ctrl+K 触发） */}
+      <CommandPalette />
     </div>
   );
 }
