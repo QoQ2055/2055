@@ -1,7 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
-import { Plus, FolderOpen, Trash2, Download, Upload } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Plus, FolderOpen, Trash2, Download, Upload, BookOpen, Settings as SettingsIcon,
+  ArrowRight, Archive, Sparkles,
+} from 'lucide-react';
 import { Button } from '../components/ui';
+import { EmptyState } from '../components/ui/feedback';
 import { toast } from '../store/toast';
 import { db, type Project } from '../store/db';
 import { useSettings } from '../store/settings';
@@ -22,14 +26,39 @@ import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/project
 export function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const apiKey = useSettings((s) => s.apiKey);
-  // 仍读 activeCtx 仅为底部「模式统计」将它计入总数；
-  // UI 上不再以「当前活动项目」的形式展示。
   const activeCtx = useProject((s) => s.ctx);
+  const activeArtifacts = useProject((s) => s.artifacts);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardSourceType, setWizardSourceType] = useState<string>('novel_long');
   const [busy, setBusy] = useState(false);
   const navigate = useNavigate();
+
+  /** 当前活动项目摘要（PR-3 · ActiveProjectCard）· 无产物视为"空白" */
+  const activeStatus = useMemo(() => {
+    const artifactCount = Object.keys(activeArtifacts).length;
+    const hasContent = artifactCount > 0 || (activeCtx.source?.chunks?.length ?? 0) > 0;
+    return {
+      hasContent,
+      artifactCount,
+      sourceChunkCount: activeCtx.source?.chunks?.length ?? 0,
+    };
+  }, [activeArtifacts, activeCtx.source]);
+
+  /** 归档当前活动项目（PR-3 · ActiveProjectCard 「归档」按钮）*/
+  async function handleArchiveActive() {
+    if (!confirm(`归档「${activeCtx.name}」到历史项目？\n当前工作区会清空，可随时从下方载入。`)) return;
+    setBusy(true);
+    try {
+      await archiveCurrent();
+      await refreshList();
+      toast.success(`已归档「${activeCtx.name}」`);
+    } catch (e: any) {
+      toast.error('归档失败：' + (e?.message ?? e));
+    } finally {
+      setBusy(false);
+    }
+  }
 
   async function refreshList() {
     const rows = await db.projects.orderBy('createdAt').reverse().toArray();
@@ -154,37 +183,29 @@ export function Home() {
     input.click();
   }
 
+  const activeMode = getProjectMode(activeCtx as any);
+  const activeMeta = getModeMeta(activeMode);
+
   return (
-    <div className="max-w-5xl mx-auto p-8 space-y-8">
+    <div className="max-w-5xl mx-auto p-8 space-y-6">
+      {/* Header */}
       <header className="flex items-end justify-between gap-4">
         <div>
           <h1 className="text-heading-xl">影语 FLIL</h1>
           <p className="text-body-m text-fg-secondary mt-2">
             短剧 AI 流水线 · 八步剧本 → 资产 → 分镜（Seedance 2.0）
           </p>
-          <p className="text-caption-m text-fg-muted mt-1">
-            从「新建项目」开始，或从下方「历史项目」中载入以前的作品。
-          </p>
         </div>
-        <div className="flex gap-2 shrink-0">
-          <Button
-            variant="outline"
-            onClick={() => pickFile('active')}
-            disabled={busy}
-            title="从 .flil.json 导入为新项目"
-          >
-            <Upload className="size-4" /> 导入 .flil
-          </Button>
-          <Button
-            size="lg"
-            onClick={() => setDialogOpen(true)}
-            disabled={busy}
-          >
-            <Plus className="size-5" /> 新建项目
-          </Button>
-        </div>
+        <Button
+          size="lg"
+          onClick={() => setDialogOpen(true)}
+          disabled={busy}
+        >
+          <Plus className="size-5" /> 新建项目
+        </Button>
       </header>
 
+      {/* API Key warning */}
       {!apiKey && (
         <div className="card border-warning/40 bg-warning/5 p-4 text-body-m">
           <strong className="text-warning">⚠ 尚未配置 API Key</strong>
@@ -194,7 +215,91 @@ export function Home() {
         </div>
       )}
 
-      {/* History */}
+      {/* ① ActiveProjectCard · 仅当有产物 / source chunks 时显示 */}
+      {activeStatus.hasContent && (
+        <section
+          className="card p-5"
+          style={{ borderColor: `${activeMeta.accentHex}55` }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span
+                  className="size-2.5 rounded-full shrink-0"
+                  style={{ backgroundColor: activeMeta.accentHex }}
+                />
+                <span className="text-tight-xs font-medium uppercase tracking-wide" style={{ color: activeMeta.accentHex }}>
+                  当前工作区 · {activeMeta.label}
+                </span>
+              </div>
+              <h2 className="text-heading-m text-fg-primary truncate">{activeCtx.name}</h2>
+              <p className="text-body-s text-fg-secondary mt-1 line-clamp-2">{activeCtx.concept}</p>
+              <div className="flex items-center gap-4 mt-3 text-caption-m text-fg-muted">
+                <span><strong className="text-fg-primary font-mono">{activeStatus.artifactCount}</strong> 个产物</span>
+                {activeStatus.sourceChunkCount > 0 && (
+                  <span>· <strong className="text-fg-primary font-mono">{activeStatus.sourceChunkCount}</strong> 个原作章节</span>
+                )}
+                <span>· {activeCtx.durationMin} 分钟</span>
+              </div>
+            </div>
+            <div className="flex flex-col gap-2 shrink-0">
+              <Button
+                variant="primary"
+                onClick={() => navigate(getProjectModeMeta(activeCtx).defaultRoute)}
+                disabled={busy}
+              >
+                <ArrowRight className="size-4" /> 继续编辑
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleArchiveActive}
+                disabled={busy}
+                title="归档当前 · 工作区清空"
+              >
+                <Archive className="size-3.5" /> 归档
+              </Button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ② QuickActions · 4 块快捷入口 */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <QuickActionCard
+          icon={Sparkles}
+          label="新建项目"
+          desc="开始一段新的故事"
+          onClick={() => setDialogOpen(true)}
+          accent="primary"
+          disabled={busy}
+        />
+        <QuickActionCard
+          icon={Upload}
+          label="导入 .flil"
+          desc="从备份文件载入"
+          onClick={() => pickFile('active')}
+          disabled={busy}
+        />
+        <QuickActionCard
+          icon={BookOpen}
+          label="知识库 KB"
+          desc="管理 prompt 注入"
+          onClick={() => navigate('/kb')}
+          disabled={busy}
+        />
+        <QuickActionCard
+          icon={SettingsIcon}
+          label="设置"
+          desc="API Key + 偏好"
+          onClick={() => navigate('/settings')}
+          disabled={busy}
+        />
+      </section>
+
+      {/* ③ ModeStatsGrid（保留 · 4 mode counts · 见原 JSX 下方） */}
+
+      {/* ④ History */}
       <section className="card p-5">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-heading-m">历史项目（{projects.length}）</h2>
@@ -212,9 +317,12 @@ export function Home() {
           </div>
         </div>
         {projects.length === 0 ? (
-          <div className="text-body-s text-fg-muted py-8 text-center border border-dashed border-border-default rounded-md">
-            还没有归档项目。点上方「新建项目」开始；新建时若当前项目有产物会自动归档到这里。
-          </div>
+          <EmptyState
+            icon={Archive}
+            title="还没有归档项目"
+            description="点击右上角「新建项目」开始；新建时若当前项目有产物会自动归档到这里。"
+            compact
+          />
         ) : (
           <ul className="divide-y divide-border-subtle">
             {projects.map((p) => (
@@ -315,6 +423,47 @@ export function Home() {
         onSubmit={handleAdaptSubmit}
       />
     </div>
+  );
+}
+
+/**
+ * PR-3 · QuickActionCard 内部组件
+ * 4 块快捷入口卡片 · accent='primary' 时用主色突出（新建项目主 CTA）
+ */
+function QuickActionCard({
+  icon: Icon,
+  label,
+  desc,
+  onClick,
+  accent,
+  disabled,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  label: string;
+  desc: string;
+  onClick: () => void;
+  accent?: 'primary';
+  disabled?: boolean;
+}) {
+  const isPrimary = accent === 'primary';
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      className={
+        'card p-4 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed ' +
+        (isPrimary
+          ? 'border-action-primary/40 bg-action-primary/5 hover:bg-action-primary/10 hover:border-action-primary/60'
+          : 'hover:bg-elevated hover:border-border-default')
+      }
+    >
+      <Icon className={'size-5 mb-2 ' + (isPrimary ? 'text-action-primary' : 'text-fg-secondary')} />
+      <div className={'text-body-m font-medium ' + (isPrimary ? 'text-action-primary' : 'text-fg-primary')}>
+        {label}
+      </div>
+      <div className="text-tight-xs text-fg-muted mt-0.5 leading-snug">{desc}</div>
+    </button>
   );
 }
 
