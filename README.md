@@ -44,6 +44,27 @@ npm run dev
 2. 点「**项目**」「新建项目」选模式  进入对应工作台
 3. 写不动时点「**调试台**」单步调试任一 prompt
 
+## Git push 网络问题（中国大陆 / 受限网络）
+
+部分网络环境下 `git push origin main` 会报：
+
+```
+fatal: unable to access 'https://github.com/...':
+TLS connect error: error:0A000126:SSL routines::unexpected eof while reading
+```
+
+**永久解决**（一次性配置 · 全局生效 · 不破坏安全）：
+
+```powershell
+git config --global http.postBuffer 524288000
+git config --global http.version HTTP/1.1
+```
+
+原理：中间网络设备（GFW / 公司代理）对 HTTP/2 多路复用的连接处理不当 ·
+强制 HTTP/1.1 + 增大 buffer 即可绕过 SSL 截断。本仓库已实测验证有效（commit `f883764`）。
+
+如仍失败 · 备选：换网络环境（手机热点 / VPN）· 或改用 SSH `git@github.com:...`。
+
 ## 协作合约（AI 协作者必读）
 
 按读取顺序：
