@@ -18,11 +18,15 @@ import type { ComponentType } from 'react';
 import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
 import { useCommandPalette } from '../store/commandPalette';
+import { useShortcutHandbook } from '../store/shortcutHandbook';
+import { isEditingTarget, isCtrlOrCmd } from '../lib/shortcuts';
+import { toast } from '../store/toast';
 import { getProjectModeMeta } from '../data/projectModes';
 import type { ModeNavItem } from '../data/projectModes';
 import { NavItem, NavSectionLabel } from './ui';
 import { ToastContainer } from './ui/feedback';
 import { CommandPalette } from './CommandPalette';
+import { ShortcutHandbook } from './ShortcutHandbook';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
@@ -35,24 +39,41 @@ export function Layout() {
   const meta = getProjectModeMeta(ctx);
   const togglePalette = useCommandPalette((s) => s.togglePalette);
   const openPalette = useCommandPalette((s) => s.openPalette);
+  const showHandbook = useShortcutHandbook((s) => s.show);
 
-  // ui-v3 PR-1 MVP · 全局 Cmd+K (mac) / Ctrl+K (win/linux) 监听
-  // V3-I-2 · 不与浏览器原生冲突：仅在非 input/textarea/contenteditable focus 时触发
-  //   • Chrome/Firefox 默认 Cmd+K = 聚焦地址栏 · 我们 preventDefault 抢回（应用内更高优先级）
+  // ui-v3 PR-1 MVP / PR-1B · 全局快捷键路由器
+  // V3-I-2 · 不与浏览器原生冲突：
+  //   • Cmd+K / Ctrl+K · 抢应用内（preventDefault 覆盖地址栏聚焦）· 任意上下文
+  //   • Cmd+S / Ctrl+S · 抢应用内（preventDefault 覆盖浏览器保存页面）· toast 提示已自动保存
+  //   • ?           · 打开快捷键手册 · 仅非 input focus 时
   //   • 不抢 Cmd+C/V/Z/A 等系统快捷键
   useEffect(() => {
     function handler(e: KeyboardEvent) {
-      const isCmdK = (e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K');
-      if (!isCmdK) return;
-      // 检测当前 focus · 在 input/textarea/contenteditable 内时仍允许（用户期望 Cmd+K 打开面板）
-      // 但需避开浏览器原生地址栏行为
-      e.preventDefault();
-      e.stopPropagation();
-      togglePalette();
+      // Cmd+K / Ctrl+K · 命令面板 · 任意上下文（含 input focus）
+      if (isCtrlOrCmd(e, 'k')) {
+        e.preventDefault();
+        e.stopPropagation();
+        togglePalette();
+        return;
+      }
+      // Cmd+S / Ctrl+S · 阻拦浏览器原生保存 · 提示已自动保存（任意上下文）
+      if (isCtrlOrCmd(e, 's')) {
+        e.preventDefault();
+        e.stopPropagation();
+        toast.info('已自动保存 · 所有改动实时持久化到本地 IndexedDB');
+        return;
+      }
+      // ? · 快捷键手册 · 仅非 input focus 时（避免抢用户输入）
+      if (e.key === '?' && !isEditingTarget(e)) {
+        e.preventDefault();
+        e.stopPropagation();
+        showHandbook();
+        return;
+      }
     }
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [togglePalette]);
+  }, [togglePalette, showHandbook]);
 
   return (
     <div className="flex h-screen overflow-hidden">
@@ -128,6 +149,8 @@ export function Layout() {
       <ToastContainer />
       {/* ui-v3 PR-1 MVP · 全局命令面板（Cmd+K / Ctrl+K 触发） */}
       <CommandPalette />
+      {/* ui-v3 PR-1B · 全局快捷键手册（? 触发） */}
+      <ShortcutHandbook />
     </div>
   );
 }
