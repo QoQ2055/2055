@@ -117,7 +117,10 @@ export const MODE_NOVEL: ProjectModeMeta = {
   stages: ['novel'],
   defaultRoute: '/novel',
   navItems: [
-    { key: 'novel', to: '/novel', label: '小说工作台', icon: 'Edit3' },
+    // 「小说工作台」入口从侧栏移除（与 original/adaptation/express 三模式一致）：
+    // - /novel 是 novel 模式的 defaultRoute · 创建小说项目后会自动跳过去
+    // - 项目卡 / 模式选择都能直达
+    // 路由本身保留, 仍可通过 URL / 项目创建跳转访问。
   ],
 };
 
