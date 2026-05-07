@@ -31,6 +31,7 @@ import {
   type BookAnalysisStage1,
 } from '../pipeline/bookAnalyzer';
 import { createUserKbDoc } from '../store/userKb';
+import { Input, Textarea } from '../components/ui';
 
 interface DraftChapter extends ReferenceChapter {
   /** UI 局部 ID（不入分析参数） */
@@ -320,26 +321,26 @@ export function Analyzer() {
 
       {/* Book Meta */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-        <input
+        <Input
           type="text"
           placeholder="书名（可选）"
           value={bookMeta.title ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, title: e.target.value })}
-          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-auto"
         />
-        <input
+        <Input
           type="text"
           placeholder="作者（可选）"
           value={bookMeta.author ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, author: e.target.value })}
-          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-auto"
         />
-        <input
+        <Input
           type="text"
           placeholder="类型 / 流派（可选）"
           value={bookMeta.genre ?? ''}
           onChange={(e) => setBookMeta({ ...bookMeta, genre: e.target.value })}
-          className="bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
+          className="w-auto"
         />
       </div>
 
@@ -379,12 +380,12 @@ export function Analyzer() {
                     </option>
                   ))}
                 </select>
-                <input
+                <Input
                   type="text"
                   placeholder="章节标题（如：第一章·觉醒）"
                   value={ch.title ?? ''}
                   onChange={(e) => updateChapter(ch.uid, { title: e.target.value })}
-                  className="flex-1 min-w-[150px] bg-surface border border-border-subtle rounded px-2 py-1 text-xs focus:outline-none focus:border-brand-500"
+                  className="flex-1 min-w-[150px] text-xs"
                 />
                 <span className="text-tight-xs text-fg-muted">
                   {ch.text.length} 字
@@ -406,12 +407,12 @@ export function Analyzer() {
                 <span className="text-fg-secondary">分析重点：</span>
                 {tag.analysisFocus}
               </div>
-              <textarea
+              <Textarea
                 value={ch.text}
                 onChange={(e) => updateChapter(ch.uid, { text: e.target.value })}
                 placeholder="粘贴本章正文（建议 ≥ 500 字以保证分析质量）..."
                 rows={6}
-                className="w-full bg-surface border border-border-subtle rounded-md px-2 py-2 text-xs text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500 font-serif"
+                className="text-xs font-serif"
                 spellCheck={false}
               />
             </div>
@@ -841,18 +842,18 @@ function Stage1Field(props: { label: string; value: string; rows?: number; onCha
     <div>
       <div className="text-tight-xs text-fg-secondary mb-0.5">{props.label}</div>
       {props.rows && props.rows > 1 ? (
-        <textarea
+        <Textarea
           value={props.value}
           rows={props.rows}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-tight-sm text-fg-primary leading-relaxed focus:outline-none focus:border-brand-500"
+          className="text-tight-sm"
         />
       ) : (
-        <input
+        <Input
           type="text"
           value={props.value}
           onChange={(e) => props.onChange(e.target.value)}
-          className="w-full bg-surface border border-border-subtle rounded px-1.5 py-1 text-tight-sm text-fg-primary focus:outline-none focus:border-brand-500"
+          className="text-tight-sm"
         />
       )}
     </div>
