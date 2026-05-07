@@ -212,14 +212,14 @@ export function ScreenplayDoctorPanel(p: Props) {
         </div>
         <div className="flex items-center gap-1.5">
           {(phase.kind === 'diagnosing' || phase.kind === 'rewriting') && (
-            <button className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={stop}>
-              <X className="size-3 inline" /> 停止
-            </button>
+            <Button variant="outline" size="sm" onClick={stop}>
+              <X className="size-3" /> 停止
+            </Button>
           )}
           {(phase.kind === 'diagnosed' || phase.kind === 'parse_failed' || phase.kind === 'rewritten' || phase.kind === 'error') && (
-            <button className="text-tight-xs px-2 py-0.5 rounded border border-border-default text-fg-secondary hover:text-fg-primary hover:bg-elevated" onClick={reset} title="重置面板">
-              <RotateCcw className="size-3 inline" />
-            </button>
+            <Button variant="outline" size="sm" onClick={reset} title="重置面板">
+              <RotateCcw className="size-3" />
+            </Button>
           )}
         </div>
       </div>
@@ -376,9 +376,9 @@ export function ScreenplayDoctorPanel(p: Props) {
             <Button variant="secondary" size="sm" onClick={startDiagnose}>
               重试质检
             </Button>
-            <button className="text-xs px-2 py-1 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={reset}>
+            <Button variant="outline" size="sm" onClick={reset}>
               关闭
-            </button>
+            </Button>
           </div>
         </div>
       )}
@@ -403,15 +403,12 @@ export function ScreenplayDoctorPanel(p: Props) {
             {phase.rewritten}
           </pre>
           <div className="px-3 py-2 border-t border-border-subtle/70 flex items-center gap-2">
-            <button
-              className="px-3 py-1.5 rounded border border-success/50 text-success hover:bg-success/10 text-xs inline-flex items-center gap-1.5"
-              onClick={acceptRewrite}
-            >
+            <Button variant="primary" size="sm" onClick={acceptRewrite}>
               <FileText className="size-3.5" /> 应用到原文
-            </button>
-            <button className="text-xs px-2 py-1 rounded border border-border-default text-fg-secondary hover:bg-elevated" onClick={reset}>
+            </Button>
+            <Button variant="outline" size="sm" onClick={reset}>
               丢弃改写
-            </button>
+            </Button>
             <span className="ml-auto text-tight-xs text-fg-muted">
               将覆盖上方剧本输入框，原文不会保留
             </span>
