@@ -62,6 +62,29 @@ export interface CharacterSnapshot {
   keyEvents?: string[];
   /** 一句话本章末状态 ≤ 80 字，必填（永远生成）。 */
   summary?: string;
+  /**
+   * v6 · 双层存档读者层（dual-layer-archive）· 可选。
+   * 与事实层（relations / emotion / abilities / keyEvents / summary）平级。
+   * 旧 row（v5）/ LLM 漏返回时为 undefined（CK I-1）。
+   */
+  readerLayer?: ReaderLayerSnapshot;
+}
+
+/**
+ * v6 · 读者层快照（dual-layer-archive · CK I-1）。
+ *
+ * 全部字段可选：旧 row + LLM 漏返回 + schema fallback 兼容。
+ * 嵌套在 CharacterSnapshot.readerLayer 内 · 不进 dexie 索引（CK I-2）。
+ */
+export interface ReaderLayerSnapshot {
+  /** 读者本章字面看到的客观信息 · 50-150 字 · 不含推理 */
+  whatISaw?: string;
+  /** 读者已知 + 历史累积推理 · 50-150 字 */
+  whatIKnow?: string;
+  /** 读者还不知 / 在猜 / 在悬念 · 50-150 字 */
+  whatImWondering?: string;
+  /** 角色在读者认知里的核心理解 · 一句话 50-100 字 */
+  keyUnderstanding?: string;
 }
 
 /**

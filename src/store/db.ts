@@ -181,6 +181,19 @@ class CineDB extends Dexie {
       liveRefinementUndo: '++id, ts, [chapterIndex+source]',
       characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
     });
+    // v6: epic v5 · 双层存档（dual-layer-archive）
+    // CharacterSnapshot.readerLayer? 嵌套 JSON · 不进索引（CK I-2）。
+    // stores 字符串 = v5（CK I-3 严守 · CK 红线 #1 v1-v5 stores 0 变更）。
+    this.version(6).stores({
+      projects: '++id, name, createdAt, status',
+      artifacts: '++id, projectId, nodeId, ts, [projectId+nodeId]',
+      liveArtifacts: '&nodeId, stageId, ts',
+      runHistory: '++id, nodeId, ts, projectId, [projectId+nodeId], [nodeId+ts]',
+      userKbDocs: '++id, type, enabled, createdAt, [type+enabled]',
+      userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
+      liveRefinementUndo: '++id, ts, [chapterIndex+source]',
+      characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
+    });
   }
 }
 
