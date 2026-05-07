@@ -18,6 +18,7 @@ import {
 import clsx from 'clsx';
 import type { ProjectContext, CreateMode, ProjectMode } from '../pipeline/types';
 import { GenreAnchorPreview } from './GenreAnchorPreview';
+import { Textarea } from './ui';
 import {
   GENRES, MAX_GENRES, PLATFORMS, PROTAGONISTS, DURATIONS, ADAPT_SOURCE_TYPES,
   NOVEL_PLATFORMS, NOVEL_SCALES, NOVEL_POVS, NOVEL_AUDIENCES, NOVEL_TONES,
@@ -528,12 +529,11 @@ function OriginalForm(f: OriginalFormProps) {
       </Field>
 
       <Field label="一句话核心冲突" required hint="主角 + 处境 + 目标 + 阻力，e.g. 落魄少年重生立誓灭杀仇家">
-        <textarea
+        <Textarea
           rows={2}
           value={f.coreConflict}
           onChange={(e) => f.setCoreConflict(e.target.value)}
           placeholder="谁 + 在什么情境 + 要做什么 + 谁在阻挠"
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
@@ -860,12 +860,11 @@ function NovelForm(f: NovelFormProps) {
 
       {/* ── 核心冲突（必填）+ 卖点 + 金手指 ── */}
       <Field label="核心冲突" required hint="主角 + 处境 + 目标 + 阻力。novel_outliner 据此规划全书主线">
-        <textarea
+        <Textarea
           rows={2}
           value={f.coreConflict}
           onChange={(e) => f.setCoreConflict(e.target.value)}
           placeholder="例：落魄少年绑定签到系统，立誓在十年内灭杀屠戮全族的仇家，却发现敌方背后有更深的阴谋"
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
@@ -881,13 +880,12 @@ function NovelForm(f: NovelFormProps) {
       </Field>
 
       <Field label="主角金手指 / 关键设定（可选）" hint="≤ 200 字，会注入到世界观和人物 bible 生成 prompt 中">
-        <textarea
+        <Textarea
           rows={2}
           value={f.novelHook}
           onChange={(e) => f.setNovelHook(e.target.value)}
           placeholder="例：每杀一名同境界敌人可吞噬其修为；但每次吞噬会带回死者最痛苦的一段记忆"
           maxLength={400}
-          className="w-full bg-surface border border-border-subtle rounded-md px-3 py-2 text-sm focus:outline-none focus:border-brand-500"
         />
       </Field>
 
