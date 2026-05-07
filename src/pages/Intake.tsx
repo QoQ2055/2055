@@ -10,6 +10,7 @@ import {
   S0_NODE_ID, summarizeChunk, compileMaster, parseMaster, type ParsedMaster,
 } from '../pipeline/intake';
 import type { SourceChunk } from '../pipeline/types';
+import { Textarea } from '../components/ui';
 
 export function Intake() {
   const settings = useSettings();
@@ -215,7 +216,7 @@ export function Intake() {
 
           {bulkOpen && (
             <div className="p-3 border-b border-border-subtle space-y-2 bg-surface/50">
-              <textarea className="input min-h-[120px] text-xs font-mono"
+              <Textarea className="min-h-[120px] text-xs font-mono"
                         placeholder="粘贴原作全文（按「第 X 章」/「Chapter X」/「## 」自动切分；找不到时每 6000 字切一段）"
                         value={bulkText}
                         onChange={(e) => setBulkText(e.target.value)} />
@@ -409,9 +410,8 @@ function ChunkEditor({
             <span>原文</span>
             <span className="text-fg-muted text-tight-xs">建议每章 ≤8000 字（更长会被截断）</span>
           </div>
-          <textarea
-            className="input w-full font-mono text-xs"
-            style={{ minHeight: 240, resize: 'vertical' }}
+          <Textarea
+            className="font-mono text-xs min-h-[240px]"
             value={chunk.raw}
             onChange={(e) => onRaw(e.target.value)}
             placeholder="粘贴本章/段原文…"
