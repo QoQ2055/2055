@@ -9,9 +9,69 @@
 
 ---
 
-## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1 · PR-2/3/4 待启动）
+## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2 · PR-3/4 待启动）
 
-### Epic 总览
+### PR-2 · 辅助组件 feedback 目录（commit `1805642` `5522ea1`）
+
+**4 个 feedback 组件 + 9 处 alert() 清零**：
+
+| 组件 | 文件 | 用途 | 集成状态 |
+|---|---|---|---|
+| `Toast` | `src/store/toast.ts` + `feedback/Toast.tsx` | 替代浏览器原生 alert · 4 kind (info/success/warning/error) · color-blind 友好(每 kind 不同 icon) | ✅ Home 7 + Screenplay 2 = 9 处 |
+| `Tooltip` | `feedback/Tooltip.tsx` | hover 气泡 · 替代原生 title · aria-describedby a11y | ⏳ 待 dogfood 期间扩展（183 处 title= 候选）|
+| `Skeleton` + `SkeletonText` | `feedback/Skeleton.tsx` | 加载占位符 · 3 variant (text/circle/box) · aria-busy | ⏳ 待 dogfood 集成（42 处 animate-pulse 候选）|
+| `EmptyState` | `feedback/EmptyState.tsx` | 空数据展示 · icon + title + description + action | ⏳ 待 dogfood 集成（31 处"暂无内容"候选）|
+
+**关键不变量验证**：
+
+| ID | 不变量 | 验证 |
+|:---:|---|:---:|
+| V2-I-3 ★ | 6 atoms 实现不动 | ✅ feedback/* 隔离目录 · 不污染 ui/{Button,Input,...}.tsx |
+| V2-I-4 ★ | 不加第 7 atom | ✅ feedback/* 不算 atom · 是辅助组件 |
+| V2-I-1 | DESIGN.md 不动 | ✅ 0 修改 |
+| V2-I-2 | src/index.css 不动 | ✅ 0 修改 |
+| V2-I-8 | a11y prop | ✅ Toast role/aria-live/aria-label · Tooltip aria-describedby · Skeleton aria-busy/aria-label · EmptyState role |
+| ⑥ 色盲友好 | DESIGN.md ⑥ | ✅ Toast 4 kind 不同 icon (Info/CheckCircle/AlertTriangle/XCircle) |
+| V2-I-10 | vite build | ✅ 1948 modules · 0 errors · 3.22s |
+
+**PR-2 完成数据**：
+
+```
+新增文件 : 4 (toast store + 3 atom files + 1 barrel)
+修改文件 : 3 (Layout + Home + Screenplay)
+新增代码 : ~430 行
+真违反修复 : 9 alert() (浏览器原生 modal · 阻塞 UI · UX 差)
+完成时间 : ~30 min (vs PRD 估 2-3h · 大幅低于因 atom 设计简洁)
+commits : 1805642 + 5522ea1 = 2 个 commit
+```
+
+**PR-2 dogfood 用户手测项**：
+
+#### US-T1 · Toast 替代 alert（必测）
+
+- [ ] 在 Home 页创建项目失败 → 右上角 Toast 红色 error（不再是浏览器 alert 阻塞气泡）
+- [ ] 导入项目成功 → 右上角 Toast 绿色 success · 4s 自动消失
+- [ ] error Toast 不自动消失 · 点击 X 才关闭
+- [ ] 多个 Toast 堆叠 · 上面的先消失（按 createdAt 倒序）
+
+#### US-T2 · Toast a11y（必测）
+
+- [ ] 屏幕阅读器（macOS VoiceOver / Windows Narrator）：
+  - error → "alert" 角色 + 立即朗读
+  - success/info/warning → "status" 角色 + polite 朗读
+- [ ] 键盘 Tab 到 Toast X 按钮 · Enter 关闭
+
+#### US-T3 · Toast 色盲友好（DESIGN.md ⑥）
+
+- [ ] 关闭浏览器色彩 / 用色盲模拟器：4 kind 仅靠 icon 也能区分
+  - info：圆形 i
+  - success：圆形勾
+  - warning：三角!
+  - error：圆形 X
+
+### PR-1 · application-layer-overhaul（commit `e592fd3` ~ `81696a3` · 12 commit）
+
+#### Epic 总览
 
 | 维度 | 实测 | 备注 |
 |---|---|---|
