@@ -60,8 +60,8 @@ import { isEditingTarget } from '../lib/shortcuts';
 // ui-v3 PR-1C · 替代 native confirm
 import { confirm as confirmDialog } from '../store/confirm';
 
-// gap-e · 导出抽屉
-import { ExportDrawer } from '../components/ExportDrawer';
+// gap-e · 导出抽屉·全局 store
+import { useExportDrawer } from '../store/exportDrawer';
 
 interface RunState { status: NodeStatus; streamed: string; error?: string }
 
@@ -89,8 +89,8 @@ export function Novel() {
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
   const [draftUpTo, setDraftUpTo] = useState<number | ''>('');
   const [polishMode, setPolishMode] = useState<NovelPolishMode>('default');
-  // gap-e · 导出抽屉开关
-  const [exportOpen, setExportOpen] = useState(false);
+  // gap-e PR-2 · 导出抽屉提升到全局 store
+  const showExport = useExportDrawer((s) => s.show);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -529,11 +529,11 @@ export function Novel() {
               <Square className="size-4 mr-1" /> 中止
             </button>
           )}
-          {/* gap-e · 导出抽屉触发 */}
+          {/* gap-e PR-2 · 导出抽屉触发 · 全局 store */}
           <button
-            onClick={() => setExportOpen(true)}
+            onClick={() => showExport('novel')}
             className="btn-ghost"
-            title="导出小说 / 资产 · 5 种格式"
+            title="导出小说 / 资产 · 5 种格式（Cmd+K 也可调起）"
           >
             <FileDown className="size-4 mr-1" /> 导出…
           </button>
@@ -879,13 +879,6 @@ export function Novel() {
         />
       )}
 
-      {/* gap-e · 导出抽屉 · 默认高亮小说类 */}
-      <ExportDrawer
-        open={exportOpen}
-        onClose={() => setExportOpen(false)}
-        context={{ ctx, artifacts: project.artifacts }}
-        mode="novel"
-      />
     </div>
   );
 }

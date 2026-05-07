@@ -9,7 +9,7 @@ import { ManualInjectDialog } from '../components/ManualInjectDialog';
 import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
 import clsx from 'clsx';
 import { confirm as confirmDialog } from '../store/confirm';
-import { ExportDrawer } from '../components/ExportDrawer';
+import { useExportDrawer } from '../store/exportDrawer';
 import { loadManifest } from '../pipeline/manifest';
 import { runStep } from '../pipeline/runner';
 import { runTargetedSelfCheck, type SelfCheckReport } from '../pipeline/selfCheck';
@@ -46,8 +46,8 @@ export function Screenplay(props: ScreenplayProps = {}) {
   const [error, setError] = useState('');
   const [activeIdx, setActiveIdx] = useState(1);
   const [injectOpen, setInjectOpen] = useState(false);
-  // gap-e · 导出抽屉开关
-  const [exportOpen, setExportOpen] = useState(false);
+  // gap-e PR-2 · 导出抽屉提升到全局 store
+  const showExport = useExportDrawer((s) => s.show);
 
   // 把当前阶段最终剧本镜像写入 screenplay.7（让资产/分镜阶段能直接消费）
   function mirrorFinalScreenplayToS7(): boolean {
@@ -323,11 +323,11 @@ export function Screenplay(props: ScreenplayProps = {}) {
             >
               <Download className="size-4" /> 导入剧本
             </button>
-            {/* gap-e · 下载剧本…·与 exportToAssets“进入资产阶段”同名异义 · 用 FileDown 区分 */}
+            {/* gap-e PR-2 · 下载剧本…·全局 store · 与 exportToAssets“进入资产阶段”同名异义 · FileDown 区分 */}
             <button
               className="btn-outline"
-              onClick={() => setExportOpen(true)}
-              title="下载剧本为 .fdx / .fountain 等业界标准格式"
+              onClick={() => showExport('screenplay')}
+              title="下载剧本为 .fdx / .fountain 等业界标准格式（Cmd+K 也可调起）"
             >
               <FileDown className="size-4" /> 下载剧本…
             </button>
@@ -537,14 +537,6 @@ export function Screenplay(props: ScreenplayProps = {}) {
           />
         ) : null}
       </main>
-
-      {/* gap-e · 导出抽屉 · 默认高亮剧本类 */}
-      <ExportDrawer
-        open={exportOpen}
-        onClose={() => setExportOpen(false)}
-        context={{ ctx: project.ctx, artifacts: project.artifacts }}
-        mode="screenplay"
-      />
 
       <ManualInjectDialog
         open={injectOpen}

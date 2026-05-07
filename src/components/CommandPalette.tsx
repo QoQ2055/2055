@@ -25,10 +25,11 @@ import { useNavigate } from 'react-router-dom';
 import {
   Search, Home as HomeIcon, BookOpen, FileText, BookCopy,
   Wand2, FileSearch, Settings as SettingsIcon, FlaskConical,
-  Brain, Lightbulb, type LucideIcon,
+  Brain, Lightbulb, FileDown, Film, type LucideIcon,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { useCommandPalette } from '../store/commandPalette';
+import { useExportDrawer } from '../store/exportDrawer';
 import { toast } from '../store/toast';
 
 interface CommandContext {
@@ -39,7 +40,7 @@ interface Command {
   id: string;
   label: string;
   description?: string;
-  group: 'navigate' | 'tools';
+  group: 'navigate' | 'tools' | 'actions';
   icon: LucideIcon;
   keywords?: string[];
   action: (ctx: CommandContext) => void;
@@ -147,6 +148,34 @@ const COMMANDS: Command[] = [
     keywords: ['settings', '设置', 'api', 'config'],
     action: ({ navigate }) => navigate('/settings'),
   },
+  // gap-e PR-2 · 导出动作类命令 · 调起 ExportDrawer
+  {
+    id: 'export-all',
+    label: '导出产物…',
+    description: '打开导出抽屉 · 5 种创作产物格式',
+    group: 'actions',
+    icon: FileDown,
+    keywords: ['export', 'download', '导出', '下载', '产物', 'md', 'docx', 'fdx', 'fountain', 'csv'],
+    action: () => useExportDrawer.getState().show('all'),
+  },
+  {
+    id: 'export-novel',
+    label: '导出小说…',
+    description: '.md / .docx · 优先高亮小说类格式',
+    group: 'actions',
+    icon: BookOpen,
+    keywords: ['export', 'novel', '小说', '导出', 'md', 'docx', 'word', 'markdown'],
+    action: () => useExportDrawer.getState().show('novel'),
+  },
+  {
+    id: 'export-screenplay',
+    label: '下载剧本…',
+    description: '.fdx / .fountain · 优先高亮剧本类格式',
+    group: 'actions',
+    icon: Film,
+    keywords: ['export', 'screenplay', '剧本', 'fdx', 'fountain', 'final draft', '下载'],
+    action: () => useExportDrawer.getState().show('screenplay'),
+  },
 ];
 
 /**
@@ -167,6 +196,7 @@ function filterCommands(query: string): Command[] {
 const GROUP_LABELS: Record<Command['group'], string> = {
   navigate: '跳转',
   tools: '工具',
+  actions: '动作',
 };
 
 export function CommandPalette() {

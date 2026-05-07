@@ -21,7 +21,7 @@ import {
 } from '../store/projectExport';
 import { NewProjectDialog } from '../components/NewProjectDialog';
 import { AdaptIntakeWizard } from '../components/AdaptIntakeWizard';
-import { ExportDrawer } from '../components/ExportDrawer';
+import { useExportDrawer } from '../store/exportDrawer';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
 import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/projectModes';
 
@@ -34,8 +34,8 @@ export function Home() {
   const [wizardOpen, setWizardOpen] = useState(false);
   const [wizardSourceType, setWizardSourceType] = useState<string>('novel_long');
   const [busy, setBusy] = useState(false);
-  // gap-e · 导出抽屉·针对当前活动项目的 5 种创作产物格式
-  const [exportOpen, setExportOpen] = useState(false);
+  // gap-e PR-2 · 导出抽屉提升到全局 store · toolbar 与 Cmd+K 命令面板共享
+  const showExport = useExportDrawer((s) => s.show);
   const navigate = useNavigate();
 
   /** 当前活动项目摘要（PR-3 · ActiveProjectCard）· 无产物视为"空白" */
@@ -278,7 +278,7 @@ export function Home() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setExportOpen(true)}
+                onClick={() => showExport('all')}
                 disabled={busy || !activeStatus.hasContent}
                 title="导出小说 / 剧本 / 资产 · 5 种格式"
               >
@@ -457,13 +457,6 @@ export function Home() {
         onSubmit={handleAdaptSubmit}
       />
 
-      {/* gap-e · 创作产物导出抽屉 · 针对当前活动项目 */}
-      <ExportDrawer
-        open={exportOpen}
-        onClose={() => setExportOpen(false)}
-        context={{ ctx: activeCtx, artifacts: activeArtifacts }}
-        mode="all"
-      />
     </div>
   );
 }

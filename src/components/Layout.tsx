@@ -30,10 +30,34 @@ import { CommandPalette } from './CommandPalette';
 import { ShortcutHandbook } from './ShortcutHandbook';
 import { SidebarBadge } from './SidebarBadge';
 import { ConfirmDialog } from './ConfirmDialog';
+import { ExportDrawer } from './ExportDrawer';
+import { useExportDrawer } from '../store/exportDrawer';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
 };
+
+/**
+ * gap-e PR-2 · 全局 ExportDrawer 包装
+ *
+ * 从 useExportDrawer 读 open/mode · 从 useProject 读 ctx/artifacts ·
+ * 解耦"调用方"与"项目数据源"· 任何入口都可一行调用 useExportDrawer.getState().show(mode)。
+ */
+function GlobalExportDrawer() {
+  const open = useExportDrawer((s) => s.open);
+  const mode = useExportDrawer((s) => s.mode);
+  const hide = useExportDrawer((s) => s.hide);
+  const ctx = useProject((s) => s.ctx);
+  const artifacts = useProject((s) => s.artifacts);
+  return (
+    <ExportDrawer
+      open={open}
+      onClose={hide}
+      context={{ ctx, artifacts }}
+      mode={mode}
+    />
+  );
+}
 
 export function Layout() {
   const apiKey = useSettings((s) => s.apiKey);
@@ -178,6 +202,8 @@ export function Layout() {
       <ShortcutHandbook />
       {/* ui-v3 PR-1C · 全局确认对话框（替代 native confirm()） */}
       <ConfirmDialog />
+      {/* gap-e PR-2 · 全局导出抽屉（toolbar + Cmd+K 命令面板共享） */}
+      <GlobalExportDrawer />
     </div>
   );
 }
