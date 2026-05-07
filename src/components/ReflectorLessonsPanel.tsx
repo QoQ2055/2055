@@ -17,6 +17,7 @@ import { ChevronDown, ChevronUp, Brain, AlertTriangle, X } from 'lucide-react';
 import clsx from 'clsx';
 import { useSettings } from '../store/settings';
 import { useReflectorLessonsPanel } from '../store/reflectorLessonsPanel';
+import { Button } from './ui';
 import {
   listLessonsByStatus,
   updateLessonStatus,
@@ -277,9 +278,9 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
           <h3 className="text-sm font-medium">
             Reflector lesson · 第 {lesson.chapterIndex} 章 · {SIGNAL_TYPE_LABELS[lesson.signalType]}
           </h3>
-          <button onClick={onClose} aria-label="关闭" className="p-1 hover:bg-surface-2 rounded">
+          <Button variant="ghost" iconOnly onClick={onClose} aria-label="关闭">
             <X className="size-4" />
-          </button>
+          </Button>
         </div>
 
         <label className="block text-xs">

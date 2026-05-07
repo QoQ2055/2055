@@ -17,6 +17,7 @@ import {
   ASSETS_LIST_NORMALIZE,
 } from '../components/normalizePresets';
 import { StoryboardPlanDiagnostics } from '../components/StoryboardPlanDiagnostics';
+import { Button } from '../components/ui';
 import { SelfCheckPanel } from '../components/SelfCheckPanel';
 import { ConsistencyPanel } from '../components/ConsistencyPanel';
 import { RunHistoryPanel } from '../components/RunHistoryPanel';
@@ -469,9 +470,9 @@ function StepRow(p: StepRowProps) {
   return (
     <li>
       <div className="px-4 py-3 flex items-center gap-3">
-        <button onClick={p.onToggle} className="text-fg-muted hover:text-fg-primary">
+        <Button variant="ghost" iconOnly onClick={p.onToggle} aria-label={p.expanded ? '折叠' : '展开'}>
           {p.expanded ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
-        </button>
+        </Button>
         <StatusIcon status={status} />
         <div className="flex-1 min-w-0">
           <div className="text-body-m font-medium truncate text-fg-primary">

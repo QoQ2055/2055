@@ -13,6 +13,7 @@ import { useProject } from '../store/project';
 import { MarkdownView } from '../components/MarkdownView';
 import { ManualInjectDialog } from '../components/ManualInjectDialog';
 import { SCREENPLAY_FINAL_NORMALIZE } from '../components/normalizePresets';
+import { Button } from '../components/ui';
 
 type Tab = 'roles' | 'scenes' | 'props';
 
@@ -307,9 +308,9 @@ function GateCard(p: GateCardProps) {
   return (
     <div className="card overflow-hidden">
       <header className="px-4 py-3 border-b border-border-subtle flex items-center gap-3">
-        <button onClick={p.onToggle} className="text-fg-muted hover:text-fg-primary">
+        <Button variant="ghost" iconOnly onClick={p.onToggle} aria-label={p.open ? '折叠' : '展开'}>
           {p.open ? <ChevronDown className="size-4" /> : <ChevronRight className="size-4" />}
-        </button>
+        </Button>
         <Search className="size-4 text-primary-400" />
         <div className="flex-1 min-w-0">
           <div className="text-sm font-semibold flex items-center gap-2">
