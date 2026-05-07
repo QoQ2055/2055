@@ -54,6 +54,9 @@ import { NOVEL_STEP_TITLES } from './novel/constants';
 import { PreviewModal } from './novel/PreviewModal';
 import { NovelSettingsDialog } from './novel/NovelSettingsDialog';
 
+// ui-v3 PR-1B · 局部 J/K 章节切换快捷键
+import { isEditingTarget } from '../lib/shortcuts';
+
 interface RunState { status: NodeStatus; streamed: string; error?: string }
 
 export function Novel() {
@@ -111,6 +114,28 @@ export function Novel() {
   const volumeMeta = (project.artifacts['novel.4']?.meta ?? {}) as Partial<NovelVolumeLoopMeta>;
   const draftMeta = (project.artifacts['novel.6']?.meta ?? {}) as Partial<NovelChapterLoopMeta>;
   const polishMeta = (project.artifacts['novel.7']?.meta ?? {}) as Partial<NovelChapterLoopMeta>;
+
+  // ui-v3 PR-1B Step2 · J / K 章节切换快捷键（局部 · 仅 /novel 生效）
+  // V3-I-2 不抢系统：仅纯 J/K（不含 modifier）· 输入态自动禁用
+  // V3-I-1 路由不动：仅修改 selectedChapterIdx · 不调用 navigate
+  // 边界：1..chapters.length · 首次按键时从 1 开始 · K 不会跌破 1 · J 不会超 length
+  useEffect(() => {
+    if (chapters.length === 0) return;
+    function handler(e: KeyboardEvent) {
+      if (isEditingTarget(e)) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return;
+      const key = e.key.toLowerCase();
+      if (key !== 'j' && key !== 'k') return;
+      e.preventDefault();
+      setSelectedChapterIdx((cur) => {
+        const start = cur ?? 0;
+        if (key === 'j') return Math.min(chapters.length, start + 1);
+        return Math.max(1, start - 1);
+      });
+    }
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [chapters.length]);
 
   /* ── helpers ───────────────────────────────────────────────── */
 
