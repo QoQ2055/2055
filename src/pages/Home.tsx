@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { Plus, FolderOpen, Trash2, Download, Upload } from 'lucide-react';
 import { Button } from '../components/ui';
+import { toast } from '../store/toast';
 import { db, type Project } from '../store/db';
 import { useSettings } from '../store/settings';
 import { useProject } from '../store/project';
@@ -46,7 +47,7 @@ export function Home() {
       // Route to the new project's mode-specific default workbench.
       navigate(getProjectModeMeta(ctx).defaultRoute);
     } catch (e: any) {
-      alert('创建失败：' + (e.message ?? e));
+      toast.error('创建失败：' + (e.message ?? e));
     } finally {
       setBusy(false);
     }
@@ -75,7 +76,7 @@ export function Home() {
       setWizardOpen(false);
       navigate('/intake');
     } catch (e: any) {
-      alert('创建失败：' + (e.message ?? e));
+      toast.error('创建失败：' + (e.message ?? e));
     } finally {
       setBusy(false);
     }
@@ -92,7 +93,7 @@ export function Home() {
       const loadedCtx = useProject.getState().ctx;
       navigate(getProjectModeMeta(loadedCtx).defaultRoute);
     } catch (e: any) {
-      alert('载入失败：' + (e.message ?? e));
+      toast.error('载入失败：' + (e.message ?? e));
     } finally {
       setBusy(false);
     }
@@ -110,7 +111,7 @@ export function Home() {
       const { filename, blob } = await exportArchivedProjectFile(id);
       downloadBlob(filename, blob);
     } catch (e: any) {
-      alert('导出失败：' + (e?.message ?? e));
+      toast.error('导出失败：' + (e?.message ?? e));
     } finally {
       setBusy(false);
     }
@@ -129,14 +130,14 @@ export function Home() {
         }
         const summary = await importAsActiveProject(pkg);
         await refreshList();
-        alert(`导入成功\n项目: ${summary.projectName}\n资产: ${summary.artifactCount}\n运行历史: ${summary.runHistoryCount}`);
+        toast.success(`导入成功\n项目: ${summary.projectName}\n资产: ${summary.artifactCount}\n运行历史: ${summary.runHistoryCount}`);
       } else {
         const id = await importAsArchivedProject(pkg);
         await refreshList();
-        alert(`已导入为历史项目 #${id}：${pkg.ctx.name}`);
+        toast.success(`已导入为历史项目 #${id}：${pkg.ctx.name}`);
       }
     } catch (e: any) {
-      alert('导入失败：' + (e?.message ?? e));
+      toast.error('导入失败：' + (e?.message ?? e));
     } finally {
       setBusy(false);
     }

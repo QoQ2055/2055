@@ -19,6 +19,7 @@ import { useProject } from '../store/project';
 import { getProjectModeMeta } from '../data/projectModes';
 import type { ModeNavItem } from '../data/projectModes';
 import { NavItem, NavSectionLabel } from './ui';
+import { ToastContainer } from './ui/feedback';
 
 const ICON_MAP: Record<ModeNavItem['icon'], ComponentType<{ className?: string }>> = {
   FileText, BookCopy, Box, Workflow, Rocket, BookOpen, Wand2: FileText, Edit3,
@@ -86,6 +87,9 @@ export function Layout() {
       <main className="flex-1 overflow-auto">
         <Outlet />
       </main>
+
+      {/* ui-v2 PR-2 · 全局 Toast 容器·替代 alert() */}
+      <ToastContainer />
     </div>
   );
 }

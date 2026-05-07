@@ -22,6 +22,7 @@ import type { ArtifactMap, Manifest, ManifestStep, NodeArtifact, NodeStatus, Sta
 import { useSettings, type SettingsState } from '../store/settings';
 import { useProject } from '../store/project';
 import { MarkdownView } from '../components/MarkdownView';
+import { toast } from '../store/toast';
 
 interface ScreenplayProps {
   stageId?: StageId;       // 'screenplay' | 'adapt'
@@ -69,7 +70,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
   function exportToAssets() {
     const ok = mirrorFinalScreenplayToS7();
     if (!ok) {
-      alert('当前阶段尚未生成最终剧本（' + (isAdapt ? 'adapt.6' : 'screenplay.7') + '），无法导出。');
+      toast.warning('当前阶段尚未生成最终剧本（' + (isAdapt ? 'adapt.6' : 'screenplay.7') + '），无法导出。');
       return;
     }
     navigate('/assets');
@@ -136,7 +137,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
     const isAdaptation = project.ctx.createMode === 'adaptation';
     // 改编模式必须先有 S0
     if (isAdaptation && !project.artifacts[S0_NODE_ID]) {
-      alert('改编模式需要先完成 S0 原作档案 (Intake 页)。点顶部「去原作摄入」。');
+      toast.warning('改编模式需要先完成 S0 原作档案 (Intake 页)。点顶部「去原作摄入」。');
       return;
     }
     setChainBusy(true);
