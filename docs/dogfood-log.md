@@ -9,7 +9,96 @@
 
 ---
 
-## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2 · PR-3/4 待启动）
+## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3 · PR-4 待启动）
+
+### PR-3 · Home dashboard 重构（commit `3fb3612`）
+
+**5 区块布局**：
+
+```
+┌──────────────────────────────────────────────────┐
+│ Header: title + 新建项目 (主 CTA)                │
+├──────────────────────────────────────────────────┤
+│ ⚠ API Key 警告条（仅未配置时）                   │
+├──────────────────────────────────────────────────┤
+│ ① ActiveProjectCard (NEW · 仅有产物时)           │
+│   mode tag · name · concept · 产物数 · 章节数    │
+│   [继续编辑] (primary) + [归档] (outline)        │
+├──────────────────────────────────────────────────┤
+│ ② QuickActions Grid (NEW · 4 块)                 │
+│   新建(primary 强调) · 导入 · KB · 设置          │
+├──────────────────────────────────────────────────┤
+│ ③ HistorySection (重构)                          │
+│   list / EmptyState atom (PR-2 集成)             │
+├──────────────────────────────────────────────────┤
+│ ④ ModeStatsGrid (保留 · 4 mode counts)           │
+└──────────────────────────────────────────────────┘
+```
+
+**主要改动**：
+
+| 项 | before | after |
+|---|---|---|
+| 顶部 CTA | "导入" + "新建" 双按钮 | 仅"新建项目"主 CTA · 导入移到 QuickActions |
+| 当前活动项目 | 不显示（注释说"不再以活动项目形式展示"）| ActiveProjectCard · 产物数 / 原作章节数 / 主 CTA "继续编辑" |
+| 快捷入口 | 无 | 4 块 QuickActions（新建/导入/KB/设置）|
+| 历史空状态 | 手写 div + dashed border | `<EmptyState>` atom (PR-2 · icon + title + description) |
+| 用户体验 | 落地页 → 必须先看历史项目找入口 | 落地页 → 立即看到当前在做什么 + 4 块入口直达 |
+
+**关键不变量验证（PR-3）**：
+
+| ID | 不变量 | 验证 |
+|:---:|---|:---:|
+| V2-I-1 | DESIGN.md 不动 | ✅ 0 修改 |
+| V2-I-2 | src/index.css 不动 | ✅ 0 修改 |
+| V2-I-3 ★ | 6 atoms 实现不动 | ✅ Home.tsx 仅消费 Button + EmptyState |
+| V2-I-4 ★ | 不加第 7 atom | ✅ QuickActionCard 是 Home 内部组件 · 不导出 · 不进 ui/ |
+| V2-I-5 | DESIGN.md ① Token 优先 | ✅ 用 action-primary/elevated/border-default token |
+| V2-I-7 | error/loading/disabled prop | ✅ 所有按钮用 disabled={busy} |
+| V2-I-8 | a11y prop | ✅ Button iconOnly 全 aria-label |
+| V2-I-9 | 保留非 design 类 | ✅ flex/grid/space-* utility |
+| V2-I-10 | vite build | ✅ 3.14s · 0 errors |
+
+**PR-3 完成数据**：
+
+```
+修改文件 : 1 (src/pages/Home.tsx · 320 → 487 行)
+新增代码 : ~167 行（含 ActiveProjectCard 区块 ~46 行 + QuickActions ~30 行 + handleArchiveActive ~14 行 + QuickActionCard 内部组件 ~38 行 + 类型/imports/计算）
+新增 atom 集成 : EmptyState (PR-2) ✓
+新增内部组件 : QuickActionCard（仅本文件 · 不进 ui/）
+完成时间 : ~25 min（vs PRD 估 3-4h · 大幅低于因聚焦最小有感重构）
+commits : 3fb3612 = 1 个 commit
+```
+
+**PR-3 dogfood 用户手测项**：
+
+#### US-D1 · ActiveProjectCard（必测）
+
+- [ ] 新建项目后回到首页 → ActiveProjectCard 显示项目名 + concept + 0 个产物
+- [ ] 跑完 S1 步骤回到首页 → 产物数 +1
+- [ ] 改编模式 + 上传章节 → 显示 N 个原作章节
+- [ ] 点击「继续编辑」→ 跳转到正确的 mode-specific 工作台
+- [ ] 点击「归档」→ confirm 弹窗 → 归档成功 toast + ActiveProjectCard 消失（无活动产物）
+
+#### US-D2 · QuickActions（必测）
+
+- [ ] 4 块 card 显示 · 新建项目用 primary 主色背景
+- [ ] hover 时 card 背景变深 · 鼠标 cursor 变手型
+- [ ] busy 时 card disabled · 视觉变灰
+- [ ] 点击各 card 跳转：新建 → Dialog · 导入 → File Picker · KB → /kb · 设置 → /settings
+
+#### US-D3 · EmptyState（必测）
+
+- [ ] 清空所有归档项目 → 历史卡片显示 EmptyState：Archive icon + "还没有归档项目" + 引导文案
+- [ ] 创建首个项目并归档 → EmptyState 消失 · list 显示
+
+#### US-D4 · 视觉权重（DESIGN.md ⑨）
+
+- [ ] 落地视线动线：标题 → ActiveProjectCard → QuickActions → 历史
+- [ ] 活动项目存在时 · ActiveProjectCard 主色边框是焦点
+- [ ] 4 QuickActions 中 · 新建项目最显眼（primary 主色）
+
+---
 
 ### PR-2 · 辅助组件 feedback 目录（commit `1805642` `5522ea1`）
 
