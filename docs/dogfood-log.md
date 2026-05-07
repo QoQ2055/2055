@@ -9,6 +9,111 @@
 
 ---
 
+## ui-v3 epic · interaction-system（2026-05-07 启动 · PR-1 MVP 完成）
+
+### PR-1 MVP · Command Palette 骨架（commit `64fc359`）
+
+**核心数据**：
+
+```
+新增文件 : 2
+  src/store/commandPalette.ts       (54 行 · zustand · open/query/selectedIndex)
+  src/components/CommandPalette.tsx (367 行 · modal + 搜索 + 键盘导航 + 11 命令)
+
+修改文件 : 1
+  src/components/Layout.tsx (+30 -2 · 全局 Cmd+K 监听 + sidebar 触发按钮 + 渲染)
+
+commits : 64fc359 (1 个代码 commit)
+build   : ✅ 3.25s · 0 errors
+```
+
+**MVP 范围（PRD US-1 子集 · PR-1B 待补）**：
+
+| 功能 | MVP | PR-1B 待补 |
+|---|:---:|:---:|
+| Cmd+K (mac) / Ctrl+K (win) 全局触发 | ✅ | — |
+| Search input · substring fuzzy 过滤 | ✅ | fuse.js 升级 |
+| ArrowUp/Down 导航 + Enter 执行 + Esc 关闭 | ✅ | — |
+| 命令分组渲染（跳转 / 工具）| ✅ | — |
+| 11 nav 命令（首页 + 6 工坊 + 4 工具）| ✅ | — |
+| 完整快捷键系统（J/K/S/?）| — | ✅ |
+| 快捷键手册 modal（?  键触发）| — | ✅ |
+| Novel 页快捷键（章节切换）| — | ✅ |
+| "新建项目" 命令（需跨组件 dialog state） | — | ✅ |
+| "切换主题" 命令（settings 暂无 theme 字段） | — | ✅（v3 后续 epic）|
+
+**11 命令池（MVP）**：
+
+```
+跳转 group (5):
+  • 首页 (/)            • 小说工坊 (/novel)     • 剧本工坊 (/screenplay)
+  • 改编工坊 (/adapt)   • 知识库 (/kb)
+
+工具 group (6):
+  • 拆书分析 (/analyzer) • 润色工坊 (/refinery) • 调试台 (/playground)
+  • 方法论 (/methods)   • Reflector Lessons (/lessons) • 设置 (/settings)
+```
+
+**关键不变量验证（PR-1 MVP）**：
+
+| ID | 不变量 | 验证 |
+|:---:|---|:---:|
+| V3-I-1 | Command Palette 不改路由表 | ✅ router.tsx 0 修改 · 仅 useNavigate 跳已有路径 |
+| V3-I-2 | 快捷键不与浏览器原生冲突 | ✅ 仅捕获 Cmd+K · 不抢 Cmd+C/V/Z/A 等 |
+| V3-I-3 | Sidebar badge 不改 NavItem 路径 | ✅ NavItem 0 修改 · 仅在 footer 加触发按钮 |
+| V3-I-4 | Toast 替换不静默吞错 | ✅ executeCommand try/catch + console.error + toast.error |
+| V3-I-5 | Dexie schema 不变 | ✅ commandPalette store 是 zustand · 非 Dexie |
+| V3-I-6 | docs 不改 src | N/A（PR-1 是 src 改动） |
+| V3-I-7 | Sidebar badge 遵守 DESIGN.md ⑥ | ✅ kbd 用 border + text-fg-muted · 非纯色块 |
+| V2-I-3 ★ | 6 atoms 实现不动 | ✅ CommandPalette 是新 component · 不改 atoms |
+| V2-I-4 ★ | 不加第 7 atom | ✅ CommandPalette 是 page-level component · 非 ui/ atom |
+| V2-I-9 | 保留 console.error | ✅ executeCommand 出错 console.error 保留 |
+
+**DESIGN.md token 使用核查**：
+
+```
+✅ bg-canvas / bg-elevated / border-border-subtle / text-fg-{primary,secondary,muted}
+✅ text-primary-400（选中态 icon · semantic 而非 brand-500）
+✅ rounded / size-* / kbd font-mono · 全用 token
+✅ 0 处 brand-* / cyan-* / violet-* hardcode
+```
+
+**PR-1 MVP dogfood 用户手测项**：
+
+#### US-CP1 · 触发 + 关闭（必测）
+
+- [ ] Win: 按 Ctrl+K → 命令面板打开 · input 自动 focus
+- [ ] Mac: 按 Cmd+K → 同上
+- [ ] 浏览器原生地址栏 Ctrl+K 行为被覆盖（preventDefault 生效）
+- [ ] 按 ESC → 面板关闭 · query 清空
+- [ ] 点击 backdrop → 面板关闭
+- [ ] 再按一次 Cmd+K（已打开时） → 面板关闭（toggle）
+
+#### US-CP2 · 搜索 + 导航（必测）
+
+- [ ] 输入 "novel" → 列表过滤为「小说工坊」
+- [ ] 输入 "小说" → 同上（中文 keyword 命中）
+- [ ] 输入 "n3" → 同上（keyword 命中 description 中的 N3.2）
+- [ ] 输入 "xxxnotfound" → "没有找到匹配的命令"
+- [ ] ↓ 键 → 选中下移 · 滚动到可见
+- [ ] ↑ 键 → 选中上移
+- [ ] 鼠标 hover 命令 → 选中态切换
+- [ ] Enter → 跳转到选中命令的目标路由 · 面板关闭
+
+#### US-CP3 · sidebar 触发按钮（次测）
+
+- [ ] sidebar 底部"命令面板 ⌘K"按钮可见
+- [ ] 点击 → 同 Cmd+K 触发
+- [ ] hover → text-fg-muted → text-fg-secondary 颜色切换
+
+#### US-CP4 · 不变量回归（必测）
+
+- [ ] 路由不变 · 所有 NavItem 跳转正常（V3-I-1 · V3-I-3）
+- [ ] Toast 仍可用（之前 alert→toast 替换不回退 · V3-I-4）
+- [ ] vite build 0 errors（已验证）
+
+---
+
 ## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1+PR-2+PR-3+PR-4 · epic 收尾）
 
 ### PR-4 · Novel.tsx 拆解（commit `f74635c` Step A · `0ddd6f9` Step B）
