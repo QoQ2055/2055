@@ -1,0 +1,312 @@
+﻿{
+  "version": "1.0",
+  "sourceDir": "F:\\下载文件\\八步",
+  "generated": "2026-04-27T15:43:40.646Z",
+  "stages": [
+    {
+      "id": "screenplay",
+      "nameZh": "剧本",
+      "mode": "serial",
+      "steps": [
+        {
+          "id": "screenplay.1",
+          "index": 1,
+          "title": "破题与核心动作",
+          "prompt": "prompts/screenplay/1.json",
+          "outFormat": "markdown",
+          "sysLen": 9143,
+          "usrLen": 169
+        },
+        {
+          "id": "screenplay.2",
+          "index": 2,
+          "title": "梗概草稿",
+          "prompt": "prompts/screenplay/2.json",
+          "outFormat": "markdown",
+          "sysLen": 9107,
+          "usrLen": 169
+        },
+        {
+          "id": "screenplay.3",
+          "index": 3,
+          "title": "人物深度与弧光",
+          "prompt": "prompts/screenplay/3.json",
+          "outFormat": "markdown",
+          "sysLen": 11441,
+          "usrLen": 169
+        },
+        {
+          "id": "screenplay.4",
+          "index": 4,
+          "title": "前史与世界观",
+          "prompt": "prompts/screenplay/4.json",
+          "outFormat": "markdown",
+          "sysLen": 6160,
+          "usrLen": 169
+        },
+        {
+          "id": "screenplay.5",
+          "index": 5,
+          "title": "结构大纲",
+          "prompt": "prompts/screenplay/5.json",
+          "outFormat": "markdown",
+          "sysLen": 16889,
+          "usrLen": 169
+        },
+        {
+          "id": "screenplay.6",
+          "index": 6,
+          "title": "场次拆解",
+          "prompt": "prompts/screenplay/6.json",
+          "outFormat": "markdown",
+          "sysLen": 12331,
+          "usrLen": 270
+        },
+        {
+          "id": "screenplay.7",
+          "index": 7,
+          "title": "场景写作",
+          "prompt": "prompts/screenplay/7.json",
+          "outFormat": "markdown",
+          "sysLen": 22326,
+          "usrLen": 270
+        },
+        {
+          "id": "screenplay.8",
+          "index": 8,
+          "title": "剧本医生",
+          "prompt": "prompts/screenplay/8.json",
+          "outFormat": "json",
+          "sysLen": 12897,
+          "usrLen": 169
+        }
+      ]
+    },
+    {
+      "id": "adapt",
+      "nameZh": "改编",
+      "mode": "serial",
+      "steps": [
+        {
+          "id": "adapt.1",
+          "index": 1,
+          "title": "改编梗概",
+          "prompt": "prompts/adapt/1.json",
+          "outFormat": "markdown",
+          "sysLen": 896,
+          "usrLen": 128
+        },
+        {
+          "id": "adapt.2",
+          "index": 2,
+          "title": "人物适配表",
+          "prompt": "prompts/adapt/2.json",
+          "outFormat": "json",
+          "sysLen": 1531,
+          "usrLen": 128
+        },
+        {
+          "id": "adapt.3",
+          "index": 3,
+          "title": "短剧化结构大纲",
+          "prompt": "prompts/adapt/3.json",
+          "outFormat": "markdown",
+          "sysLen": 1293,
+          "usrLen": 128
+        },
+        {
+          "id": "adapt.4",
+          "index": 4,
+          "title": "场次拆解",
+          "prompt": "prompts/adapt/4.json",
+          "outFormat": "markdown",
+          "sysLen": 698,
+          "usrLen": 128
+        },
+        {
+          "id": "adapt.5",
+          "index": 5,
+          "title": "场景写作",
+          "prompt": "prompts/adapt/5.json",
+          "outFormat": "markdown",
+          "sysLen": 723,
+          "usrLen": 128
+        },
+        {
+          "id": "adapt.6",
+          "index": 6,
+          "title": "改编剧本医生",
+          "prompt": "prompts/adapt/6.json",
+          "outFormat": "json",
+          "sysLen": 1188,
+          "usrLen": 128
+        }
+      ]
+    },
+    {
+      "id": "assets",
+      "nameZh": "资产提取",
+      "mode": "gate-then-parallel",
+      "steps": [
+        {
+          "id": "assets.1",
+          "index": 1,
+          "title": "资产扫描（完整性闸）",
+          "prompt": "prompts/assets/1.json",
+          "outFormat": "markdown",
+          "sysLen": 1367,
+          "usrLen": 2771
+        },
+        {
+          "id": "assets.2",
+          "index": 2,
+          "title": "角色资产 V3.0",
+          "prompt": "prompts/assets/2.json",
+          "outFormat": "json",
+          "sysLen": 1971,
+          "usrLen": 2771
+        },
+        {
+          "id": "assets.3",
+          "index": 3,
+          "title": "场景资产 V3.0",
+          "prompt": "prompts/assets/3.json",
+          "outFormat": "json",
+          "sysLen": 2105,
+          "usrLen": 2771
+        },
+        {
+          "id": "assets.4",
+          "index": 4,
+          "title": "道具资产 V3.0",
+          "prompt": "prompts/assets/4.json",
+          "outFormat": "json",
+          "sysLen": 1664,
+          "usrLen": 2771
+        }
+      ]
+    },
+    {
+      "id": "storyboard",
+      "nameZh": "分镜",
+      "mode": "plan-then-loop",
+      "steps": [
+        {
+          "id": "storyboard.1",
+          "index": 1,
+          "title": "Phase A-D 单元规划",
+          "prompt": "prompts/storyboard/1.json",
+          "outFormat": "markdown",
+          "sysLen": 18471,
+          "usrLen": 5096
+        },
+        {
+          "id": "storyboard.2",
+          "index": 2,
+          "title": "Phase E-G 逐单元 Seedance prompt",
+          "prompt": "prompts/storyboard/2.json",
+          "outFormat": "markdown",
+          "sysLen": 44524,
+          "usrLen": 4117
+        }
+      ]
+    },
+    {
+      "id": "novel",
+      "nameZh": "小说",
+      "mode": "serial",
+      "steps": [
+        {
+          "id": "novel.0",
+          "index": 0,
+          "title": "题材选题探索",
+          "prompt": "prompts/novel/0.json",
+          "outFormat": "markdown",
+          "sysLen": 953,
+          "usrLen": 186
+        },
+        {
+          "id": "novel.1",
+          "index": 1,
+          "title": "世界观文档",
+          "prompt": "prompts/novel/1.1.json",
+          "outFormat": "markdown",
+          "sysLen": 1131,
+          "usrLen": 138
+        },
+        {
+          "id": "novel.2",
+          "index": 2,
+          "title": "人物 Bible",
+          "prompt": "prompts/novel/1.2.json",
+          "outFormat": "markdown",
+          "sysLen": 1160,
+          "usrLen": 184
+        },
+        {
+          "id": "novel.3",
+          "index": 3,
+          "title": "全书分卷规划",
+          "prompt": "prompts/novel/2.1.json",
+          "outFormat": "markdown",
+          "sysLen": 1096,
+          "usrLen": 346
+        },
+        {
+          "id": "novel.4",
+          "index": 4,
+          "title": "单卷分章明细 (循环)",
+          "prompt": "prompts/novel/2.2.json",
+          "outFormat": "markdown",
+          "sysLen": 1171,
+          "usrLen": 285
+        },
+        {
+          "id": "novel.5",
+          "index": 5,
+          "title": "伏笔表",
+          "prompt": "prompts/novel/2.3.json",
+          "outFormat": "markdown",
+          "sysLen": 1369,
+          "usrLen": 262
+        },
+        {
+          "id": "novel.6",
+          "index": 6,
+          "title": "章节草稿 (循环, 墨刃)",
+          "prompt": "prompts/novel/3.1.json",
+          "outFormat": "markdown",
+          "sysLen": 2181,
+          "usrLen": 707
+        },
+        {
+          "id": "novel.7",
+          "index": 7,
+          "title": "章节润色 (循环, 三模式)",
+          "prompt": "prompts/novel/3.2.json",
+          "outFormat": "markdown",
+          "sysLen": 1359,
+          "usrLen": 277
+        },
+        {
+          "id": "novel.8",
+          "index": 8,
+          "title": "角色状态提取（循环）",
+          "prompt": "prompts/novel/3.3.json",
+          "outFormat": "json",
+          "sysLen": 937,
+          "usrLen": 200
+        },
+        {
+          "id": "novel.9",
+          "index": 9,
+          "title": "Reflector · 失败反思 lesson 提炼（v6 ACE-lite）",
+          "prompt": "prompts/novel/9.json",
+          "outFormat": "json",
+          "sysLen": 800,
+          "usrLen": 200
+        }
+      ]
+    }
+  ]
+}

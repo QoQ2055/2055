@@ -46,6 +46,17 @@ export interface SettingsState {
     userKbStyle: number;
     transition: number;
   }>;
+  /**
+   * v6 epic · ACE-lite Reflector 触发阈值。默认 enabled=false（CK v6 I-4 · opt-in）。
+   * N3.2 润色完成后 · 若 enabled · 检查信号阈值满足时触发 novel.9 Reflector LLM step。
+   */
+  reflectorThresholds: {
+    enabled: boolean;
+    scoreCardMin: number;                 // ScoreCard 任一维度 < 此值触发
+    consistencyCheckTriggerOnAny: boolean; // ConsistencyReport 含 issues 即触发
+    readerLayerStaleChapterCount: number; // readerLayer.whatImWondering 跨 N 章不变触发
+    userFeedbackEnabled: boolean;
+  };
   set: (patch: Partial<SettingsState>) => void;
   reset: () => void;
 }
@@ -70,6 +81,14 @@ const DEFAULTS = {
   enableCharacterStateExtraction: false,
   enableTransitionScoring: true,
   scoreCardWeights: undefined,
+  // v6 epic · ACE-lite Reflector 默认 disabled（CK I-4 · 用户主动 opt-in）
+  reflectorThresholds: {
+    enabled: false,
+    scoreCardMin: 6,
+    consistencyCheckTriggerOnAny: true,
+    readerLayerStaleChapterCount: 5,
+    userFeedbackEnabled: true,
+  },
 };
 
 export const useSettings = create<SettingsState>()(

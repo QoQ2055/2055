@@ -2,6 +2,7 @@ import Dexie, { type Table } from 'dexie';
 import type { CreateMode, AdaptationType, ProjectMode, SourceChunk } from '../pipeline/types';
 import type { UserKbDoc, UserKbFeedback } from './userKb';
 import type { CharacterStateRecord } from './characterStates';
+import type { ReflectorLesson } from './reflectorLessons';
 
 export interface Project {
   id?: number;
@@ -130,6 +131,8 @@ class CineDB extends Dexie {
   liveRefinementUndo!: Table<LiveRefinementUndoEntry, number>;
   /** v5 · 阶段 b · 角色状态跨章节追踪（gap-b） */
   characterStates!: Table<CharacterStateRecord, number>;
+  /** v6 · ACE-lite · Reflector lessons 待审阅队列（CK I-2 add-only） */
+  reflectorLessons!: Table<ReflectorLesson, number>;
 
   constructor() {
     super('FLIL');
@@ -193,6 +196,19 @@ class CineDB extends Dexie {
       userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
       liveRefinementUndo: '++id, ts, [chapterIndex+source]',
       characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
+    });
+    // v7: epic v6 · ACE-lite Reflector lessons（ace-lite-feedback-loop）
+    // reflectorLessons 表 add-only（CK v6 I-2）· v6 stores 字符串完全保留（CK 红线 #1 v1-v6 stores 0 变更 · CK v6 I-2）。
+    this.version(7).stores({
+      projects: '++id, name, createdAt, status',
+      artifacts: '++id, projectId, nodeId, ts, [projectId+nodeId]',
+      liveArtifacts: '&nodeId, stageId, ts',
+      runHistory: '++id, nodeId, ts, projectId, [projectId+nodeId], [nodeId+ts]',
+      userKbDocs: '++id, type, enabled, createdAt, [type+enabled]',
+      userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
+      liveRefinementUndo: '++id, ts, [chapterIndex+source]',
+      characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
+      reflectorLessons: '++id, projectId, chapterIndex, signalType, status, ts, [projectId+status], [projectId+chapterIndex]',
     });
   }
 }

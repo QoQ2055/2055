@@ -5,11 +5,15 @@ dist
 *.log
 public/prompts/*
 !public/prompts/.gitkeep
+# v6 epic · prompts/manifest.json 需进版本库（注册 novel.9 step · 与 prompts JSON 例外同模式）
+!public/prompts/manifest.json
 # v5 epic · gap-c R1 豁免 · 仅 N3.3 prompt 进版本库（CK I-6）
 # 说明：父目录用 /* 模式 · 子目录例外才能生效（git ignore 规则）
 !public/prompts/novel/
 public/prompts/novel/*
 !public/prompts/novel/3.3.json
+# v6 epic · ACE-lite Reflector prompt · gap-c R1 不豁免（NEW prompt · 非修改）
+!public/prompts/novel/9.json
 
 # TS incremental build cache
 *.tsbuildinfo

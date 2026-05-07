@@ -845,6 +845,21 @@ async function runChapterLoopShared(opts: RunChapterLoopShared): Promise<NodeArt
         } catch (e) {
           console.warn('[gap-b] 角色状态提取异常（第 ' + ch.index + ' 章不阻塞）:', e);
         }
+
+        // v6 epic · ACE-lite Reflector hook（CK I-8 不阻塞 polish loop）
+        if (settings.reflectorThresholds?.enabled) {
+          try {
+            const { runReflector } = await import('./reflector');
+            void runReflector({
+              project, artifacts, settings,
+              projectId: 0, chapterIndex: ch.index, source: 'novel.7',
+              activeModuleIds: [], // PR-2 UI 接入时再传实际 active modules
+              signal,
+            }).catch((e) => console.warn('[v6] reflector failed (第 ' + ch.index + ' 章不阻塞):', e));
+          } catch (e) {
+            console.warn('[v6] reflector hook import failed:', e);
+          }
+        }
       }
 
       const intermediate = assembleChapterArtifact({
