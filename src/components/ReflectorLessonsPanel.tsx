@@ -17,7 +17,7 @@ import { ChevronDown, ChevronUp, Brain, AlertTriangle, X } from 'lucide-react';
 import clsx from 'clsx';
 import { useSettings } from '../store/settings';
 import { useReflectorLessonsPanel } from '../store/reflectorLessonsPanel';
-import { Button } from './ui';
+import { Button, Input, Textarea } from './ui';
 import {
   listLessonsByStatus,
   updateLessonStatus,
@@ -285,44 +285,42 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
 
         <label className="block text-xs">
           <div className="text-fg-muted mb-1">Lesson 内容（可编辑 · 100-300 字）</div>
-          <textarea
+          <Textarea
             value={content}
             onChange={(e) => setContent(e.target.value)}
             rows={8}
-            className="w-full px-2 py-1 border border-border-subtle rounded bg-surface-1 text-sm"
           />
         </label>
 
         <label className="block text-xs">
           <div className="text-fg-muted mb-1">建议写入的 method module（id · 可改 / 可留空）</div>
-          <input
+          <Input
             type="text"
             value={suggested}
             onChange={(e) => setSuggested(e.target.value)}
             placeholder="e.g. anti-ai-flavor-rules"
-            className="w-full px-2 py-1 border border-border-subtle rounded bg-surface-1 text-sm font-mono"
+            className="font-mono"
           />
         </label>
 
         <label className="block text-xs">
           <div className="text-fg-muted mb-1">审阅备注（可选）</div>
-          <input
+          <Input
             type="text"
             value={reviewNote}
             onChange={(e) => setReviewNote(e.target.value)}
             placeholder="备注或说明"
-            className="w-full px-2 py-1 border border-border-subtle rounded bg-surface-1 text-sm"
           />
         </label>
 
         {(lesson.status === 'approved' || lesson.status === 'committed') && (
           <label className="block text-xs">
             <div className="text-fg-muted mb-1">已 commit 到（手动填 · 形如 "anti-ai-flavor-rules:L120-130"）</div>
-            <input
+            <Input
               type="text"
               value={committedTo}
               onChange={(e) => setCommittedTo(e.target.value)}
-              className="w-full px-2 py-1 border border-border-subtle rounded bg-surface-1 text-sm font-mono"
+              className="font-mono"
             />
           </label>
         )}
