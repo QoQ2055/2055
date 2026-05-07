@@ -28,13 +28,12 @@ export function Layout() {
   const apiKey = useSettings((s) => s.apiKey);
   const hasKey = !!apiKey?.trim();
   const ctx = useProject((s) => s.ctx);
-  const projectName = ctx.name || '未命名';
   const meta = getProjectModeMeta(ctx);
 
   return (
     <div className="flex h-screen overflow-hidden">
       <aside className="w-sidebar shrink-0 border-r border-border-subtle bg-canvas flex flex-col">
-        {/* Logo + mode color band */}
+        {/* Logo */}
         <div className="border-b border-border-subtle">
           <div className="flex items-center gap-2 px-4 py-3">
             <Clapperboard className="size-5 text-primary-500" />
@@ -44,22 +43,6 @@ export function Layout() {
                 FILM LANGUAGE INTEGRATED LEARNING
               </div>
             </div>
-          </div>
-          {/* Mode strip — color encodes the active mode at a glance */}
-          <div
-            className="px-4 py-2 flex items-center gap-2 text-caption-m"
-            style={{
-              backgroundColor: `${meta.accentHex}15`,
-              borderTop: `2px solid ${meta.accentHex}`,
-            }}
-            title={meta.tagline}
-          >
-            <span
-              className="size-2 rounded-full shrink-0"
-              style={{ backgroundColor: meta.accentHex }}
-            />
-            <span className="font-medium text-fg-primary">{meta.longLabel}</span>
-            <span className="text-fg-muted truncate">· {projectName}</span>
           </div>
         </div>
 
