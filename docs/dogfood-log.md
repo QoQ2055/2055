@@ -9,6 +9,144 @@
 
 ---
 
+## ui-v2 epic · application-layer-overhaul（2026-05-07 完成 PR-1 · PR-2/3/4 待启动）
+
+### Epic 总览
+
+| 维度 | 实测 | 备注 |
+|---|---|---|
+| **背景** | 6 atoms 已锁定（Button/Input/Textarea/Card/Modal/NavItem/Tabs）· DESIGN.md 30K + src/index.css 7K 成熟 design system · 但应用层多处 raw `<button>` / `<input>` / `<textarea>` 未贯彻 token | 见 preflight §1 |
+| **目标** | 应用层 audit 替换 raw → 6 atoms · 修 DESIGN.md ① "Token 优先" 违反 · 不动 atoms 实现 · 不加第 7 atom | PRD §0 |
+| **范围** | 11 文件 · 50 处 atom 化（17 button + 33 form 控件）+ 28 处真违反清除 | 见 §2 |
+| **红线** | **0 豁免** · V2-I-1 ~ V2-I-10 全守（含 ★4 锁定不变量） | code-knowledge-ui-v2 |
+| **PR 数** | PR-1 (本节) + PR-2 辅助组件 + PR-3 Home dashboard + PR-4 Novel 拆解 = 4 PR | epic plan |
+| **Commits（PR-1）** | demo `e592fd3` → 11 commit batch → 收尾 `81696a3` = **12 个代码 commit** | git log |
+| **完成时间（PR-1）** | ~3h（vs PRD 估 5-6h · 因深度 audit 后实际工作量精简）| 跨 2 session |
+| **vite build** | ✅ 12/12 连续通过 · 0 errors（baseline 1945 modules · 无变化） | 每 commit 验证 |
+
+### §1 audit 偏差链（4 次方向修正）
+
+> BMAD CA 阶段反复揭示 preflight 估算与现实差距 · 都通过用户透明决策修正：
+
+| 阶段 | preflight 估 | 实测 | 处理 |
+|---|---|---|---|
+| Stage 0 v1 | "design system 缺失"（误判）| 已存在 30K DESIGN.md + 7K index.css | v2 修正方向：应用层贯彻 |
+| Stage 2 PRD | "30-50 替换点" | grep 揭示 127 处替换点 | PRD 上调到 6 PR · 后精修 |
+| PR-1 启动 | "127 处全 audit（5-6h）" | 12 真违反 + 84 合规 raw + 30 form | Option C：修真违反 + Top 6 atom |
+| form 控件 | "18 input + 2 textarea = 20" | 60 input + 16 textarea = 76 | 优先真违反 + 跳合规 raw |
+
+**最终 PR-1 实施范围**：50 处 atom 化（不全做 127 处 · surgical changes 原则）。
+
+### §2 PR-1 文件级 ledger
+
+| 文件 | atom 化 | 真违反修复 | commit |
+|---|:---:|:---:|---|
+| `ScreenplayDoctorPanel.tsx` | 8 button (全清) | 3 cyan/violet 直接色 | `e592fd3` `f9aeab1` |
+| `ReflectorLessonsPanel.tsx` | 1 button + 4 form (全清) | - | `d9a84af` `c43a53d` |
+| `Assets.tsx` | 1 toggle button | - | `d9a84af` |
+| `Pipeline.tsx` | 1 toggle + 4 input = 5 | - | `d9a84af` `81696a3` |
+| `Intake.tsx` | 2 textarea | 2 .input class bug | `2734db9` |
+| `NewProjectDialog.tsx` | 9 form (3 textarea + 6 input · 全清) | 9 brand-500 直接色 | `ec4c482` `5a72d49` |
+| `UserKbUploadDialog.tsx` | 4 form (2 input + 2 textarea) | 2 .input class bug | `d22d2e8` |
+| `Analyzer.tsx` | 7 form (5 input + 2 textarea) | 5 brand-500 直接色 | `cc05bc2` |
+| `ChapterFeedbackButton.tsx` | 2 textarea | 2 .input class bug | `764750c` |
+| `Refinery.tsx` | 1 textarea | 1 brand-500 | `764750c` |
+| `AdaptIntakeWizard.tsx` | 3 form (全清) | 3 brand-500 | `c56f831` |
+| `Express.tsx` | 3 form (2 input + 1 textarea) | 1 brand-500（textarea）| `81696a3` |
+| **总** | **50 处** | **28 真违反** | 12 commit |
+
+### §3 真违反分类（28 处全清）
+
+```
+DESIGN.md ① "Token 优先 · 永不写裸值" 违反:
+  cyan/violet 直接色阶  : 3 处 (ScreenplayDoctorPanel)
+  brand-500 直接色阶    : 19 处 (NewProjectDialog 9 + Analyzer 5 + AdaptIntakeWizard 3 + Refinery 1 + Express 1)
+  .input class 误用     : 6 处 (Intake 2 + UserKbUploadDialog 2 + ChapterFeedbackButton 2)
+  ─────────────────────
+  共                    : 28 处
+```
+
+### §4 跳过项（surgical changes 原则）
+
+```
+Settings.tsx       15 input  · 已用 .input token class · 全合规
+Novel.tsx          9 控件   · PR-4 拆解时合并处理
+Playground.tsx     2 textarea· 特殊 layout (bg-canvas + resize-none)
+Screenplay.tsx     1 textarea· inline editor (bg-canvas + h-[60vh])
+ManualInjectDialog 1 textarea· 复杂 clsx conditional className
+3 search input              · 紧凑 search box layout
+84 处合规 raw button         · 用 btn-* token class · Button.tsx 注释明示"不主动迁移"
+```
+
+### §5 不变量验证（V2-I-1 ~ V2-I-10）
+
+| ID | 不变量 | 状态 |
+|:---:|---|:---:|
+| V2-I-1 | DESIGN.md 不动 | ✅ 0 修改 |
+| V2-I-2 | src/index.css 不动 | ✅ 0 修改 |
+| V2-I-3 | 6 atoms 实现不动 | ✅ src/components/ui/*.tsx 无 commit |
+| V2-I-4 | 不加第 7 atom | ✅ 仅消费现有 atoms |
+| V2-I-5 | DESIGN.md ① Token 优先 | ✅ 28 处违反清零 |
+| V2-I-6 | 6 atoms 之一封装规则 | ✅ 替换均通过 atom |
+| V2-I-7 | error/loading/disabled 用 prop | ✅ Express textarea 用 error prop |
+| V2-I-8 | aria-label 必要 | ✅ iconOnly button 全加 aria-label |
+| V2-I-9 | 保留非 design 类 | ✅ flex-1/whitespace-nowrap/font-mono/font-serif/min-h-[Xpx] |
+| V2-I-10 | vite build 0 errors | ✅ 12/12 通过 |
+
+### §6 PR-2/3/4 预留位
+
+```
+PR-2 辅助组件 (next):
+  + Toast (替换 9 处 alert())
+  + Tooltip (替换原生 title)
+  + Skeleton (loading state)
+  + EmptyState (空数据展示)
+  目录：src/components/ui/feedback/ (与 6 atoms 隔离 · V2-I-4 不变)
+
+PR-3 Home dashboard 重构 (5 区块设计)
+PR-4 Novel.tsx 拆解 (89K → 5 文件 < 400 行)
+```
+
+### §7 dogfood 用户手测项（PR-1 完成后 · 待用户验证）
+
+#### US-1 · 视觉一致性（必测）
+
+- [ ] 打开 `/intake` → 标题 input + 章节 textarea 视觉与 NewProjectDialog 一致
+- [ ] 打开 `/express` → 项目名 + 核心冲突 input + 剧本 textarea 一致
+- [ ] 打开 `/analyzer` → 书名/作者/类型 3 input + chapter textarea 一致
+- [ ] 打开 KB 上传对话框 → title/tags input + 内容 textarea 一致
+
+#### US-2 · 修复验证（必测）
+
+- [ ] ScreenplayDoctor 启动质检 / 应用医生改写 / 重试质检 button 颜色为 secondary（teal · 不再是 cyan/violet）
+- [ ] NewProjectDialog 所有 input/textarea focus 边框为 action-primary 色（不再是 brand-500）
+- [ ] Refinery 原文 textarea focus 同上
+
+#### US-3 · 错误状态（PR-1 引入）
+
+- [ ] Express 粘贴格式错误剧本 → textarea 边框红色 (error prop · 通过 .input-error class)
+- [ ] 任意 form 失焦 → focus ring 消失 · 不留遗漏
+
+### Git commits（按时间正序）
+
+```
+e592fd3  refactor(ui-v2 PR-1 demo): ScreenplayDoctor 3 直接色
+f9aeab1  refactor(ui-v2 PR-1): ScreenplayDoctor 5 剩余（全清）
+d9a84af  refactor(ui-v2 PR-1): 3 iconOnly toggle/close
+2734db9  refactor(ui-v2 PR-1): Intake 2 textarea
+ec4c482  refactor(ui-v2 PR-1): NewProjectDialog 3 textarea
+5a72d49  refactor(ui-v2 PR-1): NewProjectDialog 6 input
+c43a53d  refactor(ui-v2 PR-1): ReflectorLessonsPanel 4 form
+d22d2e8  refactor(ui-v2 PR-1): UserKbUploadDialog 4 form
+cc05bc2  refactor(ui-v2 PR-1): Analyzer 7 form
+764750c  refactor(ui-v2 PR-1): ChapterFeedbackButton 2 + Refinery 1 textarea
+c56f831  refactor(ui-v2 PR-1): AdaptIntakeWizard 3 form
+81696a3  refactor(ui-v2 PR-1): Express 3 + Pipeline 4 form（收尾）
+            ↓ 总结 commit (本节): docs(dogfood): record ui-v2 PR-1 close + 50 atom 化 ledger
+```
+
+---
+
 ## ui-v1 epic · 资产路由化（asset-routing）（2026-05-07 完成 PR-1+PR-2+PR-3 · 用户 dogfood 待启动）
 
 ### Epic 总览
