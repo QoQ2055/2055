@@ -26,8 +26,10 @@ import { useProject } from '../store/project';
 import { MarkdownView } from '../components/MarkdownView';
 import { toast } from '../store/toast';
 
+type ScreenplayStage = Extract<StageId, 'screenplay' | 'adapt'>;
+
 interface ScreenplayProps {
-  stageId?: StageId;       // 'screenplay' | 'adapt'
+  stageId?: ScreenplayStage;
   totalSteps?: number;     // 8 for screenplay, 6 for adapt
   title?: string;          // header title
   subtitle?: string;
@@ -35,7 +37,7 @@ interface ScreenplayProps {
 }
 
 export function Screenplay(props: ScreenplayProps = {}) {
-  const stageId: StageId = props.stageId ?? 'screenplay';
+  const stageId: ScreenplayStage = props.stageId ?? 'screenplay';
   const totalSteps = props.totalSteps ?? 8;
   const stepLabel = props.stepLabel ?? 'S';
   const isAdapt = stageId === 'adapt';
