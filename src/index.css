@@ -161,3 +161,35 @@
     @apply font-reading text-body-reading text-fg-primary max-w-reading mx-auto;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   ui-v6 PR-1 (Studio Calm A.1) · Modal 微动效
+   - 不引入新 token · 不动 atom API
+   - .anim-modal-backdrop · 遮罩淡入 150ms
+   - .anim-modal-panel    · 主面板 fade + 微 scale + translateY 150ms
+   - cubic-bezier(0.16, 1, 0.3, 1) ≈ Vercel/Linear 弹性曲线
+   - prefers-reduced-motion 下自动禁用动效（无障碍兜底）
+   ═══════════════════════════════════════════════════════════════ */
+@layer utilities {
+  @keyframes cf-modal-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes cf-modal-scale-in {
+    from { opacity: 0; transform: scale(0.96) translateY(-4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .anim-modal-backdrop {
+    animation: cf-modal-fade-in 150ms ease-out;
+  }
+  .anim-modal-panel {
+    animation: cf-modal-scale-in 150ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform-origin: center top;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .anim-modal-backdrop,
+    .anim-modal-panel {
+      animation: none;
+    }
+  }
+}

@@ -332,14 +332,14 @@ export function CommandPalette() {
 
   return (
     <div
-      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4"
+      className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm flex items-start justify-center pt-[15vh] px-4 anim-modal-backdrop"
       onClick={closePalette}
       role="dialog"
       aria-modal="true"
       aria-label="命令面板"
     >
       <div
-        className="bg-canvas border border-border-subtle rounded-lg shadow-2xl w-full max-w-xl flex flex-col max-h-[70vh]"
+        className="bg-canvas border border-border-subtle rounded-lg shadow-2xl w-full max-w-xl flex flex-col max-h-[70vh] anim-modal-panel"
         onClick={(e) => e.stopPropagation()}
       >
         {/* 搜索框 */}

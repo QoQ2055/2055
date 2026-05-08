@@ -52,7 +52,7 @@ export function ConfirmDialog() {
 
   return (
     <div
-      className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+      className="fixed inset-0 z-[70] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 anim-modal-backdrop"
       onClick={reject}
       role="dialog"
       aria-modal="true"
@@ -60,7 +60,7 @@ export function ConfirmDialog() {
       aria-describedby={options.message ? 'confirm-dialog-message' : undefined}
     >
       <div
-        className="bg-canvas border border-border-subtle rounded-lg max-w-md w-full shadow-xl"
+        className="bg-canvas border border-border-subtle rounded-lg max-w-md w-full shadow-xl anim-modal-panel"
         onClick={(e) => e.stopPropagation()}
       >
         {/* header + title */}

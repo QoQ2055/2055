@@ -61,10 +61,10 @@ export function Modal({
       role="dialog"
       aria-modal="true"
       aria-label={ariaLabel}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/60 p-4 backdrop-blur-[2px]"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-overlay/60 p-4 backdrop-blur-[2px] anim-modal-backdrop"
       onClick={closeOnBackdrop ? (e) => { if (e.target === e.currentTarget) onClose(); } : undefined}
     >
-      <div className={`modal-container w-full ${SIZE_CLASS[size]} max-h-[92vh] flex flex-col ${className}`.trim()}>
+      <div className={`modal-container w-full ${SIZE_CLASS[size]} max-h-[92vh] flex flex-col anim-modal-panel ${className}`.trim()}>
         {children}
       </div>
     </div>
