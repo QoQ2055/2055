@@ -21,3 +21,5 @@ public/prompts/novel/*
 # Local scratch files (kept locally, not versioned)
 _tmp_*.txt
 scan.cjs
+# Dev-only dogfood spike scripts (Vite dev mode only · import('/src/...') won't work in prod build)
+public/__*-spike.js

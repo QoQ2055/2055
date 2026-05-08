@@ -11,11 +11,13 @@
 
 ## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6 完成 · 共 10 commit）
 
+> **2026-05-08 16:00 token-sweep 闭环验证**：基于 `tailwind.config.ts` 实际定义的 palette（primary {50-900} · secondary {400/500/600} · brand {50/100/400/500/600/700} · success/warning/danger/info {DEFAULT/hover/active/50/100/200} · canvas/surface/elevated/overlay/fg-*/border-* 单档），跑 9 类 invalid class 静默丢弃扫雷（包括 secondary 越界 / 语义色 ≥300 / 单档加数字 / brand 越界 / primary 0/950 / action-primary 加数字 / 渐变 from-/to-/via- 同类 / fg-N / border-XX-N），**全 0 hits**。token sweep 工作彻底闭环 · 之后 ui 改动直接消费现有 palette 即可。
+
 ### PR-6 · token sweep 2 / brand-{200,300,800,900} 失效修复（commit `ed716b6`）
 
 **目标**：肃清 v5 之前残留的 `brand-200/300/800/900` 无效 Tailwind class · 全部映射到 `primary-200/300/800/900` 已有同档 · 让对应 UI 颜色实际渲染（而非降级到无背景/默认色）。
 
-**根因**：`tailwind.config.cjs` 仅定义 `primary-{50,100,200,300,400,500,600,700,800,900}` · DESIGN.md token 表里写的是 brand 字样但 token 名是 primary · 早期组件用了 brand-N 文字记忆 · Tailwind 静默丢弃 → 视觉降级。
+**根因**：`tailwind.config.ts` 仅定义 `primary-{50,100,200,300,400,500,600,700,800,900}` · brand 别名只覆盖 `{50,100,400,500,600,700}`（无 200/300/800/900）· 早期组件用了 brand-N 文字记忆 · Tailwind 静默丢弃 → 视觉降级。
 
 **实装范围**：
 
