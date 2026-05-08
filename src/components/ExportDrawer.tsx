@@ -179,7 +179,7 @@ export function ExportDrawer({
     >
       {/* 遮罩 */}
       <div
-        className="flex-1 bg-black/60 backdrop-blur-sm"
+        className="flex-1 bg-black/60 backdrop-blur-sm anim-modal-backdrop"
         onClick={onClose}
       />
 

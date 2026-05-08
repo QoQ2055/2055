@@ -146,8 +146,8 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
-      <div className="bg-surface border border-border-subtle rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 anim-modal-backdrop">
+      <div className="bg-surface border border-border-subtle rounded-lg shadow-2xl w-full max-w-3xl max-h-[90vh] flex flex-col anim-modal-panel">
         {/* header */}
         <header className="px-5 py-3 border-b border-border-subtle flex items-center gap-2">
           <Upload className="size-4 text-primary-500" />

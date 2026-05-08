@@ -106,11 +106,11 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
 
       {open && (
         <div
-          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4"
+          className="fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 anim-modal-backdrop"
           onClick={() => !submitting && setOpen(false)}
         >
           <div
-            className="bg-canvas border border-border-subtle rounded-lg w-full max-w-xl max-h-[85vh] flex flex-col"
+            className="bg-canvas border border-border-subtle rounded-lg w-full max-w-xl max-h-[85vh] flex flex-col anim-modal-panel"
             onClick={(e) => e.stopPropagation()}
           >
             <header className="px-4 py-3 border-b border-border-subtle flex items-center gap-2">

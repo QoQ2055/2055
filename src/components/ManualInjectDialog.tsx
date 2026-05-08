@@ -211,10 +211,10 @@ export function ManualInjectDialog(p: ManualInjectDialogProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 anim-modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) p.onCancel(); }}
     >
-      <div className="w-full max-w-3xl card p-0 max-h-[92vh] flex flex-col">
+      <div className="w-full max-w-3xl card p-0 max-h-[92vh] flex flex-col anim-modal-panel">
         <div className="flex items-center justify-between px-5 py-3 border-b border-border-subtle shrink-0">
           <div>
             <h2 className="text-base font-semibold flex items-center gap-2">
