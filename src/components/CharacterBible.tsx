@@ -107,13 +107,13 @@ export function CharacterBible() {
   }
 
   return (
-    <section className="rounded border border-border-subtle bg-surface-1" aria-label="角色 Bible 跨章节追踪">
+    <section className="rounded border border-border-subtle bg-surface" aria-label="角色 Bible 跨章节追踪">
       <button
         type="button"
         onClick={toggleCollapse}
         aria-expanded={!collapsed}
         aria-controls="character-bible-body"
-        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-surface-2 transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-elevated transition focus:outline-none focus:ring-2 focus:ring-violet-400"
       >
         <span className="flex items-center gap-2 font-medium">
           <Users className="size-4 text-violet-500" />
@@ -148,7 +148,7 @@ export function CharacterBible() {
           <div className="flex items-center gap-2 flex-wrap">
             <label className="text-xs text-fg-muted">角色：</label>
             <select
-              className="text-xs border border-border-subtle rounded px-2 py-1 bg-surface-1"
+              className="text-xs border border-border-subtle rounded px-2 py-1 bg-surface"
               value={selectedCharacter ?? ''}
               onChange={(e) => selectCharacter(e.target.value || null)}
               aria-label="选择角色"
@@ -180,7 +180,7 @@ export function CharacterBible() {
                 onClick={() => setViewMode('timeline')}
                 className={clsx(
                   'text-xs px-2 py-1 rounded',
-                  viewMode === 'timeline' ? 'bg-violet-500 text-white' : 'bg-surface-2 hover:bg-surface-3',
+                  viewMode === 'timeline' ? 'bg-violet-500 text-white' : 'bg-elevated hover:bg-elevated',
                 )}
               >
                 时间线
@@ -192,7 +192,7 @@ export function CharacterBible() {
                 onClick={() => setViewMode('relations')}
                 className={clsx(
                   'text-xs px-2 py-1 rounded',
-                  viewMode === 'relations' ? 'bg-violet-500 text-white' : 'bg-surface-2 hover:bg-surface-3',
+                  viewMode === 'relations' ? 'bg-violet-500 text-white' : 'bg-elevated hover:bg-elevated',
                 )}
               >
                 关系图
@@ -205,7 +205,7 @@ export function CharacterBible() {
                 onClick={() => setViewMode('reader')}
                 className={clsx(
                   'text-xs px-2 py-1 rounded',
-                  viewMode === 'reader' ? 'bg-violet-500 text-white' : 'bg-surface-2 hover:bg-surface-3',
+                  viewMode === 'reader' ? 'bg-violet-500 text-white' : 'bg-elevated hover:bg-elevated',
                 )}
               >
                 读者层
@@ -243,7 +243,7 @@ export function CharacterBible() {
                 timeline.map((rec) => (
                   <div
                     key={`reader-${rec.chapterIndex}`}
-                    className="rounded border border-border-subtle px-3 py-2 bg-surface-1"
+                    className="rounded border border-border-subtle px-3 py-2 bg-surface"
                   >
                     <div className="text-xs font-medium mb-1 flex items-center gap-2">
                       <span>第 {rec.chapterIndex} 章</span>

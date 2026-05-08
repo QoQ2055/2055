@@ -107,7 +107,7 @@ export function ReflectorLessons() {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as LessonStatus | 'all')}
-            className="border border-border-subtle rounded px-2 py-1 bg-surface-1"
+            className="border border-border-subtle rounded px-2 py-1 bg-surface"
           >
             {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
           </select>
@@ -115,7 +115,7 @@ export function ReflectorLessons() {
           <select
             value={signalFilter}
             onChange={(e) => setSignalFilter(e.target.value as SignalType | 'all')}
-            className="border border-border-subtle rounded px-2 py-1 bg-surface-1"
+            className="border border-border-subtle rounded px-2 py-1 bg-surface"
           >
             <option value="all">全部</option>
             {Object.entries(SIGNAL_TYPE_LABELS).map(([v, label]) => <option key={v} value={v}>{label}</option>)}
@@ -124,7 +124,7 @@ export function ReflectorLessons() {
           <select
             value={String(projectFilter)}
             onChange={(e) => setProjectFilter(e.target.value === 'all' ? 'all' : Number(e.target.value))}
-            className="border border-border-subtle rounded px-2 py-1 bg-surface-1"
+            className="border border-border-subtle rounded px-2 py-1 bg-surface"
           >
             <option value="all">全部 ({projectIds.length})</option>
             {projectIds.map((pid) => <option key={pid} value={pid}>项目 #{pid}</option>)}
@@ -177,7 +177,7 @@ function StatBadge({ label, count, className }: { label: string; count: number; 
 
 function LessonCard({ rec, onSelect }: { rec: ReflectorLesson; onSelect: () => void }) {
   return (
-    <div className="rounded border border-border-subtle bg-surface-1 px-3 py-2 text-xs hover:border-violet-500/40 transition-colors">
+    <div className="rounded border border-border-subtle bg-surface px-3 py-2 text-xs hover:border-violet-500/40 transition-colors">
       <div className="flex items-center gap-2 mb-1 flex-wrap">
         <span className="font-medium">项目 #{rec.projectId} · 第 {rec.chapterIndex} 章</span>
         <span className="px-1 rounded bg-violet-500/15 text-violet-700">{SIGNAL_TYPE_LABELS[rec.signalType]}</span>
@@ -188,7 +188,7 @@ function LessonCard({ rec, onSelect }: { rec: ReflectorLesson; onSelect: () => v
       </div>
       <div className="text-fg-muted line-clamp-2 mb-1">{rec.lessonContent}</div>
       {rec.suggestedModule && (
-        <div className="text-fg-muted mb-1">建议: <code className="px-1 rounded bg-surface-2">{rec.suggestedModule}</code></div>
+        <div className="text-fg-muted mb-1">建议: <code className="px-1 rounded bg-elevated">{rec.suggestedModule}</code></div>
       )}
       {rec.committedTo && (
         <div className="text-sky-700 mb-1">已 commit: <code className="px-1 rounded bg-sky-500/10">{rec.committedTo}</code></div>
@@ -196,7 +196,7 @@ function LessonCard({ rec, onSelect }: { rec: ReflectorLesson; onSelect: () => v
       <button
         type="button"
         onClick={onSelect}
-        className="px-2 py-0.5 rounded bg-surface-2 hover:bg-surface-3"
+        className="px-2 py-0.5 rounded bg-elevated hover:bg-elevated"
       >
         详情 / 编辑
       </button>

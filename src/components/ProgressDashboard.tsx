@@ -38,7 +38,7 @@ export function ProgressDashboard() {
 
   return (
     <section
-      className="rounded border border-border-subtle bg-surface-1"
+      className="rounded border border-border-subtle bg-surface"
       aria-label="进度可视化面板"
     >
       {/* Header bar */}
@@ -47,7 +47,7 @@ export function ProgressDashboard() {
         onClick={toggleCollapse}
         aria-expanded={!collapsed}
         aria-controls="progress-dashboard-body"
-        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-surface-2 transition focus:outline-none focus:ring-2 focus:ring-sky-400"
+        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-elevated transition focus:outline-none focus:ring-2 focus:ring-sky-400"
       >
         <span className="flex items-center gap-2 font-medium">
           <BarChart3 className="size-4 text-sky-500" />

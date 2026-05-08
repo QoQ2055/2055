@@ -103,13 +103,13 @@ export function ReflectorLessonsPanel() {
   }
 
   return (
-    <section className="rounded border border-border-subtle bg-surface-1" aria-label="Reflector 待审阅 lessons">
+    <section className="rounded border border-border-subtle bg-surface" aria-label="Reflector 待审阅 lessons">
       <button
         type="button"
         onClick={toggleCollapse}
         aria-expanded={!collapsed}
         aria-controls="reflector-lessons-body"
-        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-surface-2 transition focus:outline-none focus:ring-2 focus:ring-violet-400"
+        className="w-full flex items-center justify-between px-3 py-2 text-sm hover:bg-elevated transition focus:outline-none focus:ring-2 focus:ring-violet-400"
       >
         <span className="flex items-center gap-2 font-medium">
           <Brain className="size-4 text-violet-500" />
@@ -137,7 +137,7 @@ export function ReflectorLessonsPanel() {
           <div className="flex items-center gap-2 flex-wrap text-xs">
             <label className="text-fg-muted">状态:</label>
             <select
-              className="border border-border-subtle rounded px-2 py-1 bg-surface-1"
+              className="border border-border-subtle rounded px-2 py-1 bg-surface"
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value as LessonStatus | 'all')}
               aria-label="按状态过滤"
@@ -149,7 +149,7 @@ export function ReflectorLessonsPanel() {
 
             <label className="text-fg-muted ml-2">信号:</label>
             <select
-              className="border border-border-subtle rounded px-2 py-1 bg-surface-1"
+              className="border border-border-subtle rounded px-2 py-1 bg-surface"
               value={signalTypeFilter}
               onChange={(e) => setSignalTypeFilter(e.target.value as SignalType | 'all')}
               aria-label="按信号类型过滤"
@@ -171,7 +171,7 @@ export function ReflectorLessonsPanel() {
               {lessons.map((rec) => (
                 <div
                   key={`lesson-${rec.id}`}
-                  className="rounded border border-border-subtle px-3 py-2 bg-surface-1 text-xs"
+                  className="rounded border border-border-subtle px-3 py-2 bg-surface text-xs"
                 >
                   <div className="flex items-center gap-2 mb-1 flex-wrap">
                     <span className="font-medium">第 {rec.chapterIndex} 章</span>
@@ -184,13 +184,13 @@ export function ReflectorLessonsPanel() {
                   </div>
                   <div className="text-fg-muted line-clamp-2 mb-1">{rec.lessonContent}</div>
                   {rec.suggestedModule && (
-                    <div className="text-fg-muted">建议: <code className="px-1 rounded bg-surface-2">{rec.suggestedModule}</code></div>
+                    <div className="text-fg-muted">建议: <code className="px-1 rounded bg-elevated">{rec.suggestedModule}</code></div>
                   )}
                   <div className="flex items-center gap-1 mt-2">
                     <button
                       type="button"
                       onClick={() => selectLesson(rec.id ?? null)}
-                      className="px-2 py-0.5 rounded bg-surface-2 hover:bg-surface-3"
+                      className="px-2 py-0.5 rounded bg-elevated hover:bg-elevated"
                     >
                       详情
                     </button>
@@ -276,7 +276,7 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 anim-modal-backdrop" onClick={onClose}>
       <div
-        className="bg-surface-1 border border-border-subtle rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 space-y-3 anim-modal-panel"
+        className="bg-surface border border-border-subtle rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 space-y-3 anim-modal-panel"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
@@ -331,7 +331,7 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
         )}
 
         <div className="text-[10px] text-fg-muted">
-          信号上下文：<code className="px-1 bg-surface-2 rounded">{JSON.stringify(lesson.signalContext)}</code>
+          信号上下文：<code className="px-1 bg-elevated rounded">{JSON.stringify(lesson.signalContext)}</code>
         </div>
 
         <div className="flex items-center gap-2 pt-2 border-t border-border-subtle flex-wrap">
@@ -339,7 +339,7 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
             type="button"
             onClick={() => save()}
             disabled={busy}
-            className="text-xs px-3 py-1 rounded bg-surface-2 hover:bg-surface-3 disabled:opacity-50"
+            className="text-xs px-3 py-1 rounded bg-elevated hover:bg-elevated disabled:opacity-50"
           >
             保存修改
           </button>
@@ -372,7 +372,7 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
                 'text-xs px-3 py-1 rounded',
                 committedTo.trim()
                   ? 'bg-sky-500/20 text-sky-700 hover:bg-sky-500/30'
-                  : 'bg-surface-2 text-fg-muted opacity-50',
+                  : 'bg-elevated text-fg-muted opacity-50',
               )}
               title={!committedTo.trim() ? '需先填"已 commit 到"路径' : undefined}
             >
@@ -382,7 +382,7 @@ export function ReflectorLessonModal(props: ReflectorLessonModalProps): JSX.Elem
           <button
             type="button"
             onClick={onClose}
-            className="text-xs px-3 py-1 rounded bg-surface-2 hover:bg-surface-3 ml-auto"
+            className="text-xs px-3 py-1 rounded bg-elevated hover:bg-elevated ml-auto"
           >
             取消
           </button>
