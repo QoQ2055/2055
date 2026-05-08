@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 ui-v6 PR-7 push 节点 · commit pending）
+# Dogfood 自测清单（2026-05-08 ui-v6 PR-8 push 节点 · commit pending）
 
-> 本文档汇总 2026-05-07/08 三 session 内完成的 15 个 PR 的所有 US-* 用户手测场景。最新六节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit) · ⑬ ui-v6 PR-7 bundle code-split (1 commit)。
+> 本文档汇总 2026-05-07/08 三 session 内完成的 16 个 PR 的所有 US-* 用户手测场景。最新七节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit) · ⑬ ui-v6 PR-7 bundle code-split (1 commit) · ⑭ ui-v6 PR-8 hover prefetch (1 commit)。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -460,9 +460,40 @@ Get-ChildItem src -Recurse -Include *.ts,*.tsx | Where-Object { $_.FullName -not
 
 ---
 
+## ⑭ ui-v6 PR-8 · hover prefetch · commit pending
+
+### US-A18 · sidebar hover 预取（必测）
+
+前置：启动 `npm run dev` · 打开 DevTools Network 面板 · Filter `JS` · 勾选 "Disable cache" 验证冷启动。
+
+- [ ] 首次加载 `/`（Home）· Network 中仅看到：vendor-react / vendor-icons / vendor-storage / index / Home / runner 几个 chunk
+- [ ] **hover** sidebar "拆书分析"（不点击）· 200-500ms 内 Network 出现 `Analyzer-*.js` 请求·状态 200
+- [ ] **hover** "润色工坊" · Network 出现 `Refinery-*.js`
+- [ ] **hover** "调试台" · Network 出现 `Playground-*.js`
+- [ ] **hover** "知识库" / "方法论" / "Reflector Lessons" / "设置" · 各自出现对应 chunk
+- [ ] hover 同一个 nav 两次 · 第二次 Network **不重复请求**（幂等必证）
+- [ ] 在一个 chunk 已预取后 · 点击该 nav · 不闪现"加载中..." fallback（或闪现时间 < 50ms）
+- [ ] 未 hover 过的 nav（如 `/intake`）· 直接点击 · 仍可能闪现 fallback（这是预期不为 bug）
+
+### US-A19 · 不变量回归
+
+```powershell
+# 验证 prefetch 注册表与 router.tsx 路由表路径一致（避免遗漏 / 错配）
+Get-Content src\router.prefetch.ts | Select-String -Pattern "^\s*'/.*':" | ForEach-Object { ($_ -replace "^\s*'(.*?)':.*",'$1').Trim() } | Sort-Object
+# 应输出: / /adapt /analyzer /assets /express /intake /kb /lessons /methods /novel /pipeline /playground /refinery /screenplay /settings  (16 项)
+```
+
+- [ ] 路径表 16 项 · 与 router.tsx 中的 14 路由 + index + catch-all 一致（catch-all `*` 不入 prefetch）
+- [ ] NavItem.tsx onMouseEnter 调用顺序：prefetchRoute -> userOnMouseEnter（子测试）
+  - [ ] 随便在一个 NavItem 传 onMouseEnter prop · hover 后该 prop 仍被调用
+- [ ] DESIGN.md 14 token 0 增删 · 6 atom API 0 破坏· 路由 0 改 · dexie 0 改 · 业务逻辑 0 改
+- [ ] vite build 0 errors · 与 PR-7 同 chunk 数（+1 module 仅 prefetch.ts 本身 · 不产生新 chunk）
+
+---
+
 ## 总体不变量回归（所有 PR 共同检查）
 
-跑完上面 13 节后 · 最后一并检查：
+跑完上面 14 节后 · 最后一并检查：
 
 ```powershell
 # 6 atoms API 0 破坏（实现可有兼容扩展 · API 不破）

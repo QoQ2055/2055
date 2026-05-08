@@ -9,11 +9,49 @@
 
 ---
 
-## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6+PR-7 完成 · 共 11 commit）
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6+PR-7+PR-8 完成 · 共 12 commit）
 
 > **2026-05-08 16:00 token-sweep 闭环验证**：基于 `tailwind.config.ts` 实际定义的 palette（primary {50-900} · secondary {400/500/600} · brand {50/100/400/500/600/700} · success/warning/danger/info {DEFAULT/hover/active/50/100/200} · canvas/surface/elevated/overlay/fg-*/border-* 单档），跑 9 类 invalid class 静默丢弃扫雷（包括 secondary 越界 / 语义色 ≥300 / 单档加数字 / brand 越界 / primary 0/950 / action-primary 加数字 / 渐变 from-/to-/via- 同类 / fg-N / border-XX-N），**全 0 hits**。token sweep 工作彻底闭环 · 之后 ui 改动直接消费现有 palette 即可。
 
-### PR-7 · bundle code-split / vendor 分组 + 路由级 lazy（commit pending）
+### PR-8 · 路由 chunk hover 预取 / 消除 lazy 闪现（commit pending）
+
+**目标**：在 PR-7 路由 lazy 的体验代价（首次访问每个路由闪现"加载中..."）上做最后一公里优化 · sidebar nav 在用户 hover 时就开始下载该路由 chunk · 真实点击时已 cached · 闪现消失。
+
+**根因**：PR-7 把 14 路由全 React.lazy 化 · 用户首次访问 X 路由必触发 `import('./pages/X')` · 中速网络下 200-500ms 白屏。但用户从 hover sidebar 到 click 通常有 100-300ms 延迟 · 这段时间正好可以用来预取。
+
+**实装范围**：
+
+```
+src/router.prefetch.ts（NEW · 71 行）
+  · prefetchers 注册表：14 路径 → dynamic import 函数（与 router.tsx 完全一致 · Rollup dedup）
+  · prefetchRoute(path) 幂等 + 失败可重试（Set 去重 · catch 时回滚 set）
+  · requestIdleCallback 推迟到主线程空闲再下载（200ms timeout fallback）
+  · 不支持 RIC 的浏览器走 setTimeout(_, 0)
+  · _resetPrefetchCache() 测试钩子
+
+src/components/ui/NavItem.tsx（+18 / -2）
+  · import prefetchRoute
+  · onMouseEnter 内部包装：to 是字符串时调 prefetchRoute(to) · 再调用用户的 onMouseEnter（如有）
+  · 全 app NavItem 一处改动 · 所有 sidebar nav 自动生效（Layout 内 8 个 NavItem 全覆盖）
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1969 modules（+1 for prefetch.ts · was 1968）· 2.60s · TS 0 错
+chunk 数与 PR-7 一致（dynamic import 字符串 dedup 验证：prefetch.ts 与 router.tsx 共享 chunk hash）
+```
+
+**不变量**：
+- 路由路径 0 改 · DESIGN.md 14 token 0 增删
+- atom API 0 破坏（NavItem 仅扩展 onMouseEnter 行为 · 已传 onMouseEnter 的调用方仍正常工作 · forwarded）
+- dexie schema 0 改 · 业务逻辑 0 改
+- **行为变化**：hover sidebar nav 触发 idle-callback 网络请求（DevTools Network 可见）· 真实点击后 fallback 闪现概率大幅下降
+
+**用户手测项**：见 dogfood-checklist.md ⑭ ui-v6 PR-8 节（US-A18 / US-A19）
+
+---
+
+### PR-7 · bundle code-split / vendor 分组 + 路由级 lazy（commit `f1dc7b9`）
 
 **目标**：把单一 1188.9 KB 的 `index.js` 怪兽拆成 vendor 长缓存 chunk + 14 个路由按需加载 chunk · 大幅降低首屏成本 + 提升缓存命中率。
 

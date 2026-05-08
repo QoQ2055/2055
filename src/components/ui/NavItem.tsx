@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { NavLink, type NavLinkProps } from 'react-router-dom';
+import { prefetchRoute } from '../../router.prefetch';
 
 /**
  * Design system NavItem · DESIGN.md components.nav.item
@@ -46,9 +47,26 @@ export function NavItem({
 }: NavItemProps) {
   // 折叠态文本作为 title（仅当 children 是 string）· 提供悬停提示
   const titleText = collapsed && typeof children === 'string' ? children : undefined;
+
+  // ui-v6 PR-8 · hover 触发路由 chunk 预取 · 真实点击时已 cached · 消除 fallback 闪现
+  // 仅当 to 是字符串路径时触发（router.prefetch 注册表用字符串 key）
+  // 兼容用户传入的 onMouseEnter（如有 · 先调用我们的 prefetch · 再调用用户的）
+  const userOnMouseEnter = rest.onMouseEnter;
+  const handleMouseEnter = React.useCallback(
+    (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+      const to = rest.to;
+      if (typeof to === 'string') {
+        prefetchRoute(to);
+      }
+      userOnMouseEnter?.(e);
+    },
+    [rest.to, userOnMouseEnter],
+  );
+
   return (
     <NavLink
       {...rest}
+      onMouseEnter={handleMouseEnter}
       title={titleText}
       className={({ isActive }) => {
         const base = collapsed
