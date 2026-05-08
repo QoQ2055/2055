@@ -82,12 +82,19 @@ export function ReflectorLessons() {
 
   return (
     <div className="h-full flex flex-col">
-      {/* 顶部 · summary + 标题 */}
-      <header className="border-b border-border-subtle px-4 py-3 shrink-0 space-y-2">
-        <div className="flex items-center gap-2 flex-wrap">
-          <Lightbulb className="size-4 text-violet-500 shrink-0" />
-          <h1 className="text-sm font-semibold">Reflector Lessons (v6 · ACE-lite · 全局)</h1>
-          <div className="ml-auto flex items-center gap-2 text-tight-sm">
+      {/* Studio Calm PR-5 · Hero header (与 Settings 对称) · 图标徽章 + 标题 + 状态计数徽章组 */}
+      <header className="border-b border-border-subtle px-6 py-4 shrink-0 space-y-3">
+        <div className="flex items-start gap-3">
+          <div className="size-10 rounded-lg bg-violet-500/10 border border-violet-500/30 flex items-center justify-center shrink-0">
+            <Lightbulb className="size-5 text-violet-500" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-heading-l">Reflector Lessons</h1>
+            <p className="text-body-s text-fg-secondary mt-0.5">
+              v6 · ACE-lite 反馈闭环 · 跨项目全局表 · 需手动审阅 + commit 到 method module
+            </p>
+          </div>
+          <div className="flex items-center gap-1.5 shrink-0 flex-wrap justify-end">
             <StatBadge label="待审阅" count={counts.pending} className="bg-amber-500/15 text-amber-700" />
             <StatBadge label="已批准" count={counts.approved} className="bg-emerald-500/15 text-emerald-700" />
             <StatBadge label="已驳回" count={counts.rejected} className="bg-rose-500/15 text-rose-700" />

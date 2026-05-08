@@ -30,6 +30,21 @@ export function KnowledgeBase() {
 
   return (
     <div className="h-full flex flex-col">
+      {/* Studio Calm PR-5 · Hero header (与 Settings/Lessons 对称) */}
+      <header className="border-b border-border-subtle px-6 py-4 shrink-0">
+        <div className="flex items-start gap-3">
+          <div className="size-10 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center shrink-0">
+            <Library className="size-5 text-primary-400" />
+          </div>
+          <div className="min-w-0">
+            <h1 className="text-heading-l">知识库</h1>
+            <p className="text-body-s text-fg-secondary mt-0.5">
+              三路供给：我的资料库（上传范文/反例）· 章节反馈（汇总不满意点）· 内置 KB（写作/视觉/镜头红线）
+            </p>
+          </div>
+        </div>
+      </header>
+
       {/* 顶部 tab 栏 */}
       <nav className="border-b border-border-subtle px-4 flex items-center gap-1 shrink-0">
         <TabButton active={tab === 'user'} onClick={() => setTab('user')}>
