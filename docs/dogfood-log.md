@@ -9,6 +9,131 @@
 
 ---
 
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1 完成 · A.1-A.4 4 commit）
+
+### PR-1 · Studio Calm A.1-A.4（commits `4a9ba58` / `fe30f17` / `c3fd315` / `2053f1d`）
+
+**目标**：把"功能完整但视觉拥挤、交互直白"的 fili-web 升级到"工作室级安静、每一帧都自信"的 Studio Calm 美学。**严守 V2-I-2 token 体系不动 + V2-I-3/4 atom API 不破坏 + V2-I-7 路由不删**·只动 layout / 节奏 / 微动效 / 折叠组织。
+
+**实装范围**：
+
+```
+A.1 · Modal 微动效统一（commit 4a9ba58 · 5 文件 · +40 / -8）
+  src/index.css                 · @layer utilities · +2 keyframes (cf-modal-fade-in 150ms + cf-modal-scale-in 150ms cubic-bezier(0.16,1,0.3,1)) + 2 utility class · prefers-reduced-motion 兜底
+  src/components/ui/Modal.tsx   · backdrop + panel 加 anim-modal-backdrop / anim-modal-panel
+  src/components/ConfirmDialog.tsx · 同上 (hand-rolled modal)
+  src/components/CommandPalette.tsx · 同上
+  src/components/ShortcutHandbook.tsx · 同上
+  → 4 modal 全场统一 150ms 进场动效 · 0 API 改 · 0 token 改
+
+A.2 · Home 重排（commit fe30f17 · 1 文件 · +89 / -66）
+  src/pages/Home.tsx
+    容器: max-w-5xl → max-w-6xl · space-y-6 → space-y-8 · px-8 py-10
+    Header: 加 Sparkles + tracking-[0.18em] uppercase 'Filmcraft Studio' 装饰
+    ActiveProjectCard: card → card+gradient(135deg accent10%→透明) · p-5 → p-7 · 数字栏改 heading-s/font-mono · "产物/原作章节/分钟" 三栏带分隔线
+    ModeStatsGrid: 从底部 L416 上移到 ActiveProjectCard 后(分类导览前置) · card-flat 紧凑
+    QuickActionCard: 大卡片 (p-4 + icon-mb-2 + label + desc 两行) → 紧凑工具条 (px-3 py-3 horizontal · icon + label · desc 改可选)
+    历史项目: card p-5→p-6 · li py-3→py-4 + hover:bg-elevated/40 微底色
+    底部冗余 ModeStatsGrid section 删除
+    → 信息密度 -25% · 每屏元素数从 ~14 → ~10
+
+A.3 · Novel toolbar 收纳（commit c3fd315 · 1 文件 · +66 / -17）
+  src/pages/Novel.tsx
+    新增 advancedToolbarOpen useState · 默认 false
+    主 toolbar 收纳到只剩: 状态徽章组(条件显示已激活 Best-of-N×N 反思 / 硬闸) + 齿轮按钮(SlidersHorizontal · aria-expanded/controls) + 中止/导出/首页
+    Best-of-N 完整控件 + 硬批准闸完整控件 → 移到 advancedToolbarOpen 折叠区(card-flat p-3 anim-modal-panel)
+    → 主 toolbar 视觉密度 -50% · 用户已激活的开关在折叠态以小徽章可见 · 不丢信息
+
+A.4 · Sidebar 折叠 Cmd+B（commit 2053f1d · 3 文件 · +147 / -48）
+  src/components/ui/NavItem.tsx
+    NavItem 加可选 collapsed?: boolean (V2-I-3 兼容扩展) · 折叠态 SIZE_CLASS_COLLAPSED (h-7/8 w-7/8 居中) + title 提示
+    NavSectionLabel 加可选 collapsed?: boolean · 折叠态渲染为 mx-2 my-2 border-t 分隔线
+    → 默认 collapsed=false 等同旧版 · API 0 破坏
+
+  src/components/Layout.tsx
+    新增 sidebarCollapsed useState · localStorage 持久化 cf-sidebar-collapsed (try/catch SSR 兜底)
+    keydown handler 加 Cmd+B / Ctrl+B 切换 (preventDefault 抢 Chrome bookmark bar)
+    aside 加 transition-[width] duration-200 · w-14 (折叠) vs w-sidebar (展开)
+    Logo 区双分支: 折叠态 vertical Clapperboard + PanelLeft 展开按钮 / 展开态 inline Clapperboard + 标题 + PanelLeftClose 折叠按钮
+    nav 全部 NavItem / NavSectionLabel 透传 collapsed prop
+    底部状态区双分支: 折叠态 dot + 命令面板 icon-only / 展开态完整 "API Key 已配置" + ⌘K 命令面板按钮
+
+  src/components/ShortcutHandbook.tsx
+    全局快捷键组加 { keys: [mod, 'B'], desc: '折叠 / 展开侧边栏' } 条目
+```
+
+### Build / TS 实测
+
+| 命令 | 实测 |
+|---|---|
+| `npx vite build` | ✅ 0 errors · ~3.2s · index-Dl8oH_om.js 1132.52 kB (gzip 382.04 kB) · index-DNFpa1Ez.css 58.96 kB |
+| `npx tsc --noEmit` 新增错误 | 0（仅长期存在的 `error TS2688: Cannot find type definition file for 'node'` 与本 PR 无关） |
+| `git diff origin/main..HEAD --stat src/store/db.ts` | 空（V6-D-1 dexie 0 改） |
+| `git diff origin/main..HEAD --stat src/router.tsx` | 空（V2-I-7 路由 0 改） |
+| `git diff origin/main..HEAD --stat src/data/projectModes.ts` | 空（mode meta 0 改） |
+
+### 不变量验证（CK §2-§3）
+
+| ID | 不变量 | 验证方式 | 实测 |
+|---|---|---|---|
+| V2-I-2 | DESIGN.md token 体系 0 增删 | grep `--cf-` in src/index.css L14-L49 | ✅ 14 token 完整 · 仅在 @layer utilities 加 keyframes & utility class（不引入 token） |
+| V2-I-3 | 6 atom (Button/Input/Textarea/Select/Modal/NavItem/Tabs) API 0 破坏 | NavItem.tsx + Modal.tsx 改动 | ✅ NavItem 加可选 collapsed prop（默认 false 等同旧版）· Modal atom 仅在 className 加 anim utility · 调用方零改动 |
+| V2-I-4 | atom 视觉规范不破 | DESIGN.md 对比 | ✅ NavItem h-8 / h-7 SIZE_CLASS 不变 · folded 用 SIZE_CLASS_COLLAPSED 平行扩展 |
+| V2-I-7 | 路由表 0 改 | git diff src/router.tsx | ✅ 0 行 |
+| V6-D-1 | dexie schema 0 改 | git diff src/store/db.ts | ✅ 0 行 |
+
+### dogfood 用户手测项（必跑）
+
+#### US-A1 · Modal 微动效（必测）
+
+- [ ] Cmd+K 打开命令面板 → 看到面板淡入 + 微 scale 进场（150ms · 不刺眼）
+- [ ] ? 打开快捷键手册 → 同上 · 进场无突兀
+- [ ] 删除归档项目 → ConfirmDialog 进场动效一致
+- [ ] 系统设置开启"减少动态效果"（mac System Settings / Win 辅助功能）→ 刷新 → 4 modal 进场无动效（瞬现 · prefers-reduced-motion 兜底生效）
+
+#### US-A2 · Home 重排（必测）
+
+- [ ] / 路由 · header 顶部看到 ✦ 'Filmcraft Studio' uppercase 装饰
+- [ ] 有产物的活动项目 · ActiveProjectCard 背景有 mode accent 微渐变 · 数字栏（产物/原作章节/分钟）大字 mono 显示
+- [ ] 4 mode counts 紧凑卡片在 active 卡片**下方**（不再在底部）
+- [ ] 4 个 QuickActionCard 已变为紧凑工具条（横向 icon + label · 不再两行）
+- [ ] 历史项目 hover · 行底色微变 · 行高比 v5 高
+- [ ] 底部不再出现重复的 mode counts grid
+
+#### US-A3 · Novel toolbar 收纳（必测）
+
+前置：进入任意 novel 项目
+
+- [ ] 顶部 toolbar 默认仅看到"中止 / 导出 / 项目首页 + 齿轮按钮"
+- [ ] 点击齿轮 → 展开折叠区 · 看到完整 Best-of-N + 反思裁判 + 硬批准闸控件 · 折叠区有 fade+scale 进场动效
+- [ ] 开启 Best-of-N + 反思 + 硬批准闸 → 关闭折叠区（再点齿轮）→ toolbar 出现 "🎯 ×3 反思" + "🛡 硬闸" 两个状态徽章
+- [ ] aria-expanded 切换：DevTools 选中齿轮按钮 · 看 aria-expanded="true/false" 跟随
+- [ ] 不影响实际运行：Best-of-N 开启时 N1.1 仍并行 N 候选 + LLM 裁判（功能不动）
+
+#### US-A4 · Sidebar 折叠 Cmd+B（必测）
+
+- [ ] 任意页面按 Cmd+B → sidebar 从 w-sidebar (224px) 平滑过渡到 w-14 (56px) · 仅 icon · 200ms
+- [ ] 再按 Cmd+B → 展开
+- [ ] 折叠态 hover 任意 NavItem → 出现 title 提示文字
+- [ ] 折叠态 NavSectionLabel "工具/资产/设置" 字消失 · 改为短分隔线
+- [ ] 折叠态底部命令面板按钮变为 icon-only · 仍可点击调起命令面板
+- [ ] 折叠态点 sidebar 顶部 PanelLeft icon → 展开（相当于 Cmd+B）
+- [ ] 展开态点 PanelLeftClose icon → 折叠（相当于 Cmd+B）
+- [ ] 设折叠态 → 关闭浏览器标签 → 重开 fili → sidebar 仍折叠（cf-sidebar-collapsed localStorage 持久化）
+- [ ] ? 快捷键手册 → 看到 "Cmd+B 折叠 / 展开侧边栏" 新条目
+
+### Git commits（按时间正序）
+
+```
+4a9ba58  feat(ui-v6 PR-1 Studio Calm A.1): Modal 微动效统一 (5 files · +40/-8)
+fe30f17  feat(ui-v6 PR-1 Studio Calm A.2): Home 重排 (1 file · +89/-66)
+c3fd315  feat(ui-v6 PR-1 Studio Calm A.3): Novel toolbar 收纳 (1 file · +66/-17)
+2053f1d  feat(ui-v6 PR-1 Studio Calm A.4): Sidebar 折叠 Cmd+B (3 files · +147/-48)
+            ↓ PR-1 commit (本文)：docs(dogfood): record ui-v6 PR-1 Studio Calm completion
+```
+
+---
+
 ## ui-v5 epic · 全局对话框（2026-05-08 PR-1 完成 · Cmd+K "新建项目" 收尾 PR-1B 延后项）
 
 ### PR-1 · 项目对话框全局化 + Cmd+K "新建项目"（commit `6ff1fc0`）

@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 push 节点 · commit `f883764`）
+# Dogfood 自测清单（2026-05-08 ui-v6 PR-1 push 节点 · 最新 commit `2053f1d`）
 
-> 本文档汇总 2026-05-07/08 两 session 内完成的 6 个 PR 的所有 US-* 用户手测场景。
+> 本文档汇总 2026-05-07/08 三 session 内完成的 8 个 PR 的所有 US-* 用户手测场景。最近一节 ⑧ ui-v6 PR-1 Studio Calm 4 commit (A.1-A.4) 视觉/交互美化。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -232,14 +232,61 @@ npm run dev
 
 ---
 
+## ⑧ ui-v6 PR-1 · Studio Calm A.1-A.4 · commits `4a9ba58` `fe30f17` `c3fd315` `2053f1d`
+
+### US-A1 · Modal 微动效（必测）
+
+- [ ] Cmd+K 打开命令面板 → 面板 fade + 微 scale 进场（150ms · 不刺眼）
+- [ ] ? 打开快捷键手册 → 进场动效一致
+- [ ] 删除归档项目 → ConfirmDialog 进场动效一致
+- [ ] 任意 NewProjectDialog / AdaptIntakeWizard 等使用 Modal atom 的地方 → 进场动效一致
+- [ ] 系统开启"减少动态效果"（mac/Win 辅助功能）→ 刷新 → 4 modal 瞬现无动效（prefers-reduced-motion 兜底）
+
+### US-A2 · Home 重排（必测）
+
+- [ ] / 路由 · header 顶部看到 ✦ 'Filmcraft Studio' uppercase 装饰
+- [ ] 有产物的活动项目 · ActiveProjectCard 背景有 mode accent 微渐变 · 数字栏（产物/原作章节/分钟）大字 mono 显示带分隔线
+- [ ] 4 mode counts 紧凑卡片在 active 卡片**下方**（不再在底部）
+- [ ] 4 个 QuickActionCard 已变为紧凑工具条（横向 icon + label · 不再两行）
+- [ ] 历史项目 hover · 行底色微变 · 行高比 v5 高
+- [ ] 底部不再出现重复的 mode counts grid
+- [ ] 整页 max-w 拓宽 · 间距加大 · 视觉密度 -25%
+
+### US-A3 · Novel toolbar 收纳（必测）
+
+前置：进入任意 novel 项目
+
+- [ ] 顶部 toolbar 默认仅看到"中止 / 导出 / 项目首页 + 齿轮按钮"
+- [ ] 点击齿轮 → 展开折叠区 · 看到完整 Best-of-N + 反思裁判 + 硬批准闸控件 · 折叠区有 fade+scale 进场动效
+- [ ] 开启 Best-of-N + 反思 + 硬批准闸 → 关闭折叠区（再点齿轮）→ toolbar 出现 "🎯 ×3 反思" + "🛡 硬闸" 两个状态徽章
+- [ ] aria-expanded 切换：DevTools 选中齿轮按钮 · aria-expanded="true/false" 跟随
+- [ ] 不影响实际运行：Best-of-N 开启时 N1.1 仍并行 N 候选 + LLM 裁判（功能不动）
+
+### US-A4 · Sidebar 折叠 Cmd+B（必测）
+
+- [ ] 任意页面按 Cmd+B → sidebar 从 w-sidebar (224px) 平滑过渡到 w-14 (56px) · 仅 icon · 200ms
+- [ ] 再按 Cmd+B → 展开
+- [ ] 折叠态 hover 任意 NavItem → 出现 title 提示文字
+- [ ] 折叠态 NavSectionLabel "工具/资产/设置" 字消失 · 改为短分隔线
+- [ ] 折叠态底部命令面板按钮变为 icon-only · 仍可点击调起命令面板
+- [ ] 折叠态点 sidebar 顶部 PanelLeft icon → 展开
+- [ ] 展开态点 PanelLeftClose icon → 折叠
+- [ ] 设折叠态 → 关闭浏览器标签 → 重开 fili → sidebar 仍折叠（`cf-sidebar-collapsed` localStorage 持久化）
+- [ ] ? 快捷键手册 → 看到 "Cmd+B 折叠 / 展开侧边栏" 新条目
+
+---
+
 ## 总体不变量回归（所有 PR 共同检查）
 
-跑完上面 7 节后 · 最后一并检查：
+跑完上面 8 节后 · 最后一并检查：
 
 ```powershell
-# 6 atoms 实现 0 修改
-git diff origin/main..HEAD -- src/components/ui/Button.tsx src/components/ui/Input.tsx src/components/ui/Textarea.tsx src/components/ui/NavItem.tsx
-→ 应无输出（push 后 origin/main = HEAD · 输出为空 = 0 修改）
+# 6 atoms API 0 破坏（实现可有兼容扩展 · API 不破）
+# ui-v6 PR-1 后 NavItem 加了可选 collapsed prop · 默认 false 等同旧版 · 调用方零改动
+# Modal atom 仅在 className 加 anim-modal-* utility · API 不变
+# 验证方式：检查既有 NavItem / Modal 调用方仍可不传 collapsed / 不带 anim class 工作
+grep -r "NavItem\b" src/ --include="*.tsx" | grep -v "collapsed=" | head
+→ 大量旧调用 · 仍正常渲染（默认 collapsed=false）
 
 # Dexie schema 0 修改
 git diff origin/main..HEAD -- src/store/db.ts
@@ -248,6 +295,11 @@ git diff origin/main..HEAD -- src/store/db.ts
 # 路由 0 修改（router.tsx）
 git diff origin/main..HEAD -- src/router.tsx
 → 应无输出
+
+# DESIGN.md token 0 增删（V2-I-2）
+# index.css L14-L49 14 个 --cf-* token · ui-v6 PR-1 仅在 @layer utilities 加 keyframes & utility class
+git diff origin/main..HEAD -- src/index.css | Select-String '\-\-cf\-'
+→ 应无输出（无 token 行变更）
 
 # vite build 通过
 npx vite build
