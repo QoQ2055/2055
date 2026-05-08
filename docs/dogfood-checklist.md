@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 ui-v6 PR-1 push 节点 · 最新 commit `2053f1d`）
+# Dogfood 自测清单（2026-05-08 ui-v6 PR-3 push 节点 · 最新 commit `1d5fd9a`）
 
-> 本文档汇总 2026-05-07/08 三 session 内完成的 8 个 PR 的所有 US-* 用户手测场景。最近一节 ⑧ ui-v6 PR-1 Studio Calm 4 commit (A.1-A.4) 视觉/交互美化。
+> 本文档汇总 2026-05-07/08 三 session 内完成的 10 个 PR 的所有 US-* 用户手测场景。最新三节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit)。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -276,9 +276,78 @@ npm run dev
 
 ---
 
+## ⑨ ui-v6 PR-2 · 动效闭环 · commit `b50dfcd`
+
+> A.1 盲点修补 + ExportDrawer keyframe 实装 · 7 个 hand-rolled modal/drawer 全覆盖
+
+### US-A5 · 6 个 hand-rolled modal 动效（必测）
+
+逐个触发以下 modal · 应**统一**有 fade + 微 scale + translateY 150ms 进场（与 A.1 4 个 Modal atom 一致）：
+
+- [ ] Home → 右上角 + 改编卡 / Cmd+K「新建项目」→ **NewProjectDialog**
+- [ ] 改编流程 → 摄入向导 → **AdaptIntakeWizard**
+- [ ] 任意流水线节点 →「手动注入」按钮（如 R1 / S0 等）→ **ManualInjectDialog**
+- [ ] Novel 读章 → 章节卡 →「不满意」按钮 → **ChapterFeedbackButton modal**
+- [ ] /lessons 任意条目 →「待审阅 lessons」编辑 → **ReflectorLessonsPanel modal**
+- [ ] /kb 上传资料按钮 → **UserKbUploadDialog**
+- [ ] 系统开启"减少动态效果"→ 6 modal 全部瞬现无动效
+
+### US-A6 · ExportDrawer 滑入动效（必测）
+
+- [ ] Cmd+K → 输 "导出" → 选小说 / 剧本 / 资产 → ExportDrawer 从右侧 **200ms 弹性滑入**（之前是瞬时出现 · bug 修复）
+- [ ] 遮罩同步 fade-in（`anim-modal-backdrop` 150ms）
+- [ ] 关闭 drawer（点遮罩 / X）→ 立即消失（无退场动效 · 与 atom Modal 一致）
+- [ ] 系统开启"减少动态效果"→ drawer 瞬现无滑入
+
+### US-A7 · 不变量回归
+
+- [ ] DESIGN.md 14 个 token 0 增删（仅 `@layer utilities` 加 keyframe + utility）
+- [ ] 6 atom API 0 破坏（仅给 hand-rolled className 追加 utility class）
+- [ ] 路由 / dexie schema / 业务逻辑 0 改
+
+---
+
+## ⑩ ui-v6 PR-3 · Studio Calm C.1 + C.2 · commits `d30bf15` `1d5fd9a`
+
+### US-A8 · Screenplay header 紧凑化 + 状态徽章（必测）
+
+前置：进入任意 screenplay 项目（或 adapt 改编模式）
+
+- [ ] header padding 比 v5 紧凑（py-3 · 不再 py-4）
+- [ ] 副标题一行显示「项目：N · 概念：C · D 分钟」+（未配 API Key 时）⚠ 警告
+- [ ] **不再有独立的 ctx mini-bar 行**（原 L385 那行已删除 · 视觉密度 -1 行）
+- [ ] header 右侧工具区前出现状态徽章组：
+  - [ ] 始终可见：`{改编|剧本} · N 步` 浅灰徽章
+  - [ ] settings.enableEditorialRounds = ON → 多一个 `📝 R1↔R9` primary 蓝徽章
+  - [ ] hover 徽章 → tooltip 解释
+- [ ] 改长项目名 / 长概念至溢出 → header 不破版 · 副标题正确 truncate（`min-w-0 + truncate`）
+
+### US-A9 · Settings 视觉重排（必测）
+
+前置：访问 /settings
+
+- [ ] 顶部 hero header · 左侧 10×10 圆角图标徽章（SettingsIcon · primary tint 背景）+ 右侧标题与隐私提示
+- [ ] 4 个 section heading 各带 lucide 图标：
+  - [ ] 🎨 Palette · 主题外观
+  - [ ] 🔑 KeyRound · DeepSeek API
+  - [ ] 🔧 Workflow · 流水线默认
+  - [ ] ✨ Sparkles · 增强模式
+- [ ] 容器宽度变宽（max-w-4xl · 比之前 max-w-3xl 更舒展）
+- [ ] 测试连通：
+  - [ ] 配 OK 的 API Key + Base URL → 测试连通 → 结果 pre **绿色边框 + 绿色背景 + 绿色文字**（success token）
+  - [ ] 故意配错 Key → 测试连通 → 结果 pre **红色边框 + 红色背景 + 红色文字**（danger token）
+
+### US-A10 · 不变量回归
+
+- [ ] Settings 页所有现有功能不变（API Key / 温度 / KB / 评分卡权重等仍可调可保存）
+- [ ] Screenplay 仍可一键全跑 / 单步重跑 / 导入剧本 / 下载剧本 / 进入资产阶段
+- [ ] 路由 / dexie schema / atom API / token 0 改
+
+---
+
 ## 总体不变量回归（所有 PR 共同检查）
 
-跑完上面 8 节后 · 最后一并检查：
+跑完上面 10 节后 · 最后一并检查：
 
 ```powershell
 # 6 atoms API 0 破坏（实现可有兼容扩展 · API 不破）

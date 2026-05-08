@@ -9,7 +9,100 @@
 
 ---
 
-## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1 完成 · A.1-A.4 4 commit）
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3 完成 · 共 7 commit）
+
+### PR-3 · Studio Calm C.1 + C.2（commits `d30bf15` / `1d5fd9a`）
+
+**目标**：把 A.3 Novel toolbar 收纳的对称视觉沿用到 Screenplay · Settings 页加 hero + section 图标徽章 · 完成 Studio Calm 跨页面一致性收口。
+
+**实装范围**：
+
+```
+C.1 · Screenplay header 紧凑化 + 状态徽章（commit d30bf15 · 1 文件 · +33 / -18）
+  src/pages/Screenplay.tsx
+    · header py-4 → py-3 · padding 紧凑化（与 Novel A.3 对称）
+    · 副标题合并原独立 ctx mini-bar 信息：项目/概念/时长 + 未配 API Key 警告
+    · 删除 L385-392 独立 ctx mini-bar 行 · 视觉密度 -1 行
+    · 新增状态徽章组（header 工具区前）：
+        - {改编|剧本} · N 步（始终可见 · border-subtle 浅灰）
+        - 📝 R1↔R9（settings.enableEditorialRounds = ON 时 · primary tint）
+    · truncate + min-w-0 防长项目名/长概念溢出破版
+
+C.2 · Settings 页视觉重排（commit 1d5fd9a · 1 文件 · +39 / -13）
+  src/pages/Settings.tsx
+    · 新增 5 个 lucide 图标 import（SettingsIcon / Palette / KeyRound / Workflow / Sparkles）
+    · Hero header：左侧 size-10 圆角图标徽章（primary tint 背景 + border） + 右侧标题 + 隐私提示
+    · 4 个 section heading 各加 lucide 图标（行内 size-4 primary-400）：
+        - Palette · 主题外观
+        - KeyRound · DeepSeek API
+        - Workflow · 流水线默认
+        - Sparkles · 增强模式（来自 ShadowScript 影语沉淀）
+    · 测试连通结果 pre 按 ✅ / ❌ 前缀自动着色：
+        - ✅ → border-success/40 + bg-success/5 + text-success
+        - ❌ → border-danger/40 + bg-danger/5 + text-danger
+        - 其它（流式中间态）→ 保持原 border-default + text-fg-secondary
+    · 容器 max-w-3xl → max-w-4xl · space-y-8 → space-y-7
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 3.19~3.20s · TS 0 新增错误
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 仅消费现有 success / danger / primary token
+- 6 atom API 0 破坏 · 全部仅消费 atom（card / btn / input / Field 等）
+- 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+
+**用户手测项**：见 dogfood-checklist.md ⑩ ui-v6 PR-3 节（US-A8 / US-A9 / US-A10）
+
+---
+
+### PR-2 · 动效闭环 · 7 hand-rolled modal/drawer 全覆盖（commit `b50dfcd`）
+
+**目标**：A.1 仅覆盖 4 个用 Modal atom 的弹窗 · grep 发现 7 个 hand-rolled modal/drawer 的动效空缺 · 本 PR 完成闭环。
+
+**A.1 盲点修补**：
+```
+6 modal 加 anim-modal-backdrop + anim-modal-panel：
+  src/components/AdaptIntakeWizard.tsx       · L118 backdrop + L121 panel
+  src/components/ChapterFeedbackButton.tsx   · L109 backdrop + L113 panel
+  src/components/ManualInjectDialog.tsx      · L214 backdrop + L217 panel
+  src/components/NewProjectDialog.tsx        · L243 backdrop + L246 panel
+  src/components/ReflectorLessonsPanel.tsx   · L277 backdrop + L279 panel
+  src/components/UserKbUploadDialog.tsx      · L149 backdrop + L150 panel
+```
+
+**B.2 ExportDrawer 滑入动效实装**：
+```
+src/index.css · @layer utilities · 新增：
+  @keyframes cf-drawer-slide-in-right (200ms cubic-bezier(0.16,1,0.3,1) · opacity + translateX 16px → 0)
+  .animate-slide-in-right + .anim-drawer-slide-in 共享同一 animation
+  prefers-reduced-motion 兜底扩展到 drawer keyframe
+
+src/components/ExportDrawer.tsx · backdrop 加 anim-modal-backdrop（淡入与 modal 一致）
+
+注：drawer 之前用了 .animate-slide-in-right 类名但 CSS 从未定义 · 实际是瞬时出现的 bug · 本 PR 修复
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 3.20~3.28s
+```
+
+**顺手清债 · commit `850701b`（chore · 与 PR-2 同 push）**：
+- `@types/node` 之前未列入 package.json · 干净 npm i 后 build 因 TS2688 挂 · 显式加入 devDependencies@^20
+- `Screenplay.tsx` stageId 类型 `StageId` → `Extract<StageId, 'screenplay'|'adapt'>` · 修 6 处 `invalidateFrom(stageId,...)` TS2345（router 上游本来只传这两个 · 注释也明确）
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 仅 @layer utilities 加 keyframe + utility class
+- 6 atom API 0 破坏 · 7 处 hand-rolled 仅给 className 追加 utility class
+- 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- prefers-reduced-motion 兜底覆盖全部 4 个动效 utility（modal-backdrop / modal-panel / slide-in-right / drawer-slide-in）
+
+**用户手测项**：见 dogfood-checklist.md ⑨ ui-v6 PR-2 节（US-A5 / US-A6 / US-A7）
+
+---
 
 ### PR-1 · Studio Calm A.1-A.4（commits `4a9ba58` / `fe30f17` / `c3fd315` / `2053f1d`）
 
