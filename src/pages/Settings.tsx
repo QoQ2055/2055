@@ -1,5 +1,8 @@
 import { useState } from 'react';
-import { Eye, EyeOff, RotateCcw, Save, Sun, Moon, Monitor } from 'lucide-react';
+import {
+  Eye, EyeOff, RotateCcw, Save, Sun, Moon, Monitor,
+  Settings as SettingsIcon, Palette, KeyRound, Workflow, Sparkles,
+} from 'lucide-react';
 import clsx from 'clsx';
 import { useSettings, type ThemeMode } from '../store/settings';
 import { chatStream } from '../llm/deepseek';
@@ -32,25 +35,35 @@ export function Settings() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto p-8 space-y-8">
-      <header>
-        <h1 className="text-heading-l">设置</h1>
-        <p className="text-body-m text-fg-secondary mt-2">
-          所有配置仅保存在浏览器 <code className="code px-1 bg-elevated rounded">localStorage</code>，永不上传任何服务器。
-        </p>
+    <div className="max-w-4xl mx-auto p-8 space-y-7">
+      {/* Studio Calm C.2 · Hero header · 图标 + 标题 + 隐私提示 */}
+      <header className="flex items-start gap-3">
+        <div className="size-10 rounded-lg bg-primary-500/10 border border-primary-500/30 flex items-center justify-center shrink-0">
+          <SettingsIcon className="size-5 text-primary-400" />
+        </div>
+        <div>
+          <h1 className="text-heading-l">设置</h1>
+          <p className="text-body-m text-fg-secondary mt-1">
+            所有配置仅保存在浏览器 <code className="code px-1 bg-elevated rounded">localStorage</code>，永不上传任何服务器。
+          </p>
+        </div>
       </header>
 
       {/* ui-v4 PR-1 · 主题切换 · 3 档 segment */}
       <section className="card p-5 space-y-3">
-        <h2 className="text-heading-m">主题外观</h2>
+        <h2 className="text-heading-m flex items-center gap-2">
+          <Palette className="size-4 text-primary-400" /> 主题外观
+        </h2>
         <p className="text-body-s text-fg-muted">
-          切换亮/暗主题 · 也可随随系统 prefers-color-scheme · 快捷键：Cmd+K 输入“主题”。
+          切换亮/暗主题 · 也可随随系统 prefers-color-scheme · 快捷键：Cmd+K 输入「主题」。
         </p>
         <ThemeSegment value={s.theme} onChange={s.setTheme} />
       </section>
 
       <section className="card p-5 space-y-4">
-        <h2 className="text-heading-m">DeepSeek API</h2>
+        <h2 className="text-heading-m flex items-center gap-2">
+          <KeyRound className="size-4 text-primary-400" /> DeepSeek API
+        </h2>
 
         <div className="grid grid-cols-2 gap-4">
           <Field label="Base URL">
@@ -108,14 +121,25 @@ export function Settings() {
         </div>
 
         {testResult && (
-          <pre className="code mt-3 whitespace-pre-wrap rounded-md border border-border-default bg-canvas p-3 text-fg-secondary">
+          <pre
+            className={clsx(
+              'code mt-3 whitespace-pre-wrap rounded-md border p-3',
+              testResult.startsWith('✅')
+                ? 'border-success/40 bg-success/5 text-success'
+                : testResult.startsWith('❌')
+                ? 'border-danger/40 bg-danger/5 text-danger'
+                : 'border-border-default bg-canvas text-fg-secondary',
+            )}
+          >
             {testResult}
           </pre>
         )}
       </section>
 
       <section className="card p-5 space-y-4">
-        <h2 className="text-heading-m">流水线默认</h2>
+        <h2 className="text-heading-m flex items-center gap-2">
+          <Workflow className="size-4 text-primary-400" /> 流水线默认
+        </h2>
         <div className="grid grid-cols-3 gap-4">
           <Field label="并发数（分镜循环）">
             <input type="number" min="1" max="8" className="input"
@@ -139,7 +163,9 @@ export function Settings() {
 
       <section className="card p-5 space-y-4">
         <div>
-          <h2 className="text-heading-m">增强模式（来自 ShadowScript 影语沉淀）</h2>
+          <h2 className="text-heading-m flex items-center gap-2">
+            <Sparkles className="size-4 text-primary-400" /> 增强模式（来自 ShadowScript 影语沉淀）
+          </h2>
           <p className="text-caption-m text-fg-muted mt-1.5">
             两项增强会<strong>增加 token 消耗</strong>（约 +30~80% / step），但<strong>显著提升</strong>剧本去 AI 味与分镜工业化程度。
           </p>
