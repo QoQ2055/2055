@@ -303,17 +303,40 @@ export function Screenplay(props: ScreenplayProps = {}) {
 
   return (
     <div className="h-full flex flex-col">
-      <header className="px-6 py-4 border-b border-border-subtle flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <FileText className="size-5 text-primary-500" />
-          <div>
-            <h1 className="text-lg font-semibold">{props.title ?? '剧本工作台 · 八步法'}</h1>
-            <p className="text-xs text-fg-muted">
-              {props.subtitle ?? '单步 / 通过 / 修改 / 重跑 / 自检 · 修改任一步会自动把下游标记为 stale'}
+      {/* Studio Calm C.1 · 紧凑化 header (py-3) · 副标题合并 ctx mini-bar 信息 · 加状态徽章组 */}
+      <header className="px-6 py-3 border-b border-border-subtle flex items-center justify-between gap-4">
+        <div className="flex items-center gap-3 min-w-0">
+          <FileText className="size-5 text-primary-500 shrink-0" />
+          <div className="min-w-0">
+            <h1 className="text-lg font-semibold truncate">{props.title ?? '剧本工作台 · 八步法'}</h1>
+            <p className="text-tight-sm text-fg-muted truncate">
+              <span className="text-fg-muted">项目：</span>{project.ctx.name}
+              <span className="text-fg-muted"> · 概念：</span>{project.ctx.concept}
+              <span className="text-fg-muted"> · </span>{project.ctx.durationMin} 分钟
+              {!settings.apiKey && (
+                <span className="ml-2 text-warning">⚠ 未配置 API Key（请到「设置」填入）</span>
+              )}
             </p>
+          </div>
         </div>
-      </div>
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
+        {/* Studio Calm C.1 · 状态徽章组 · 一眼可见当前模式与 R1↔R9 启用状态 */}
+        <div className="flex items-center gap-1.5">
+          <span
+            className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-tight-xs font-medium border border-border-subtle bg-surface text-fg-secondary"
+            title={isAdapt ? '改编模式 · A1..A6 六步' : `剧本模式 · ${stepLabel}1..${stepLabel}${totalSteps} ${totalSteps} 步`}
+          >
+            {isAdapt ? '改编' : '剧本'} · {totalSteps} 步
+          </span>
+          {settings.enableEditorialRounds && (
+            <span
+              className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-tight-xs font-medium border border-primary/60 bg-primary/10 text-primary-500"
+              title="已启用编辑轮：R1 指令书 → 各步生成 → R9 总编裁决"
+            >
+              📝 R1↔R9
+            </span>
+          )}
+        </div>
         {chainBusy ? (
           <button className="btn-outline" onClick={stop}><Square className="size-4" /> 停止</button>
         ) : (
@@ -381,15 +404,7 @@ export function Screenplay(props: ScreenplayProps = {}) {
         </section>
       )}
 
-      {/* Project ctx mini-bar */}
-      <section className="px-6 py-2 border-b border-border-subtle flex items-center gap-3 text-xs text-fg-secondary">
-        <span><span className="text-fg-muted">项目：</span>{project.ctx.name}</span>
-        <span className="text-fg-muted">·</span>
-        <span><span className="text-fg-muted">概念：</span>{project.ctx.concept}</span>
-        <span className="text-fg-muted">·</span>
-        <span><span className="text-fg-muted">时长：</span>{project.ctx.durationMin} 分钟</span>
-        <span className="ml-auto text-fg-muted">在「流水线」页可修改项目上下文</span>
-      </section>
+      {/* Studio Calm C.1 · ctx mini-bar 已合并到 header 副标题 · 删除冗余行 · 视觉密度 -1 行 */}
 
       {/* DAG strip */}
       <nav className="px-6 py-3 border-b border-border-subtle overflow-x-auto">
