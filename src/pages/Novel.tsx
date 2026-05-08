@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import {
   Edit3, Play, Square, Loader2, CheckCircle2, Circle, AlertTriangle,
   BookOpen, Eye, ChevronRight, RotateCcw, Wand2, Sparkles,
-  Shield, ShieldCheck, ShieldAlert, FileDown,
+  Shield, ShieldCheck, ShieldAlert, FileDown, SlidersHorizontal,
 } from 'lucide-react';
 import clsx from 'clsx';
 import { UserKbBindingPanel } from '../components/UserKbBindingPanel';
@@ -84,6 +84,9 @@ export function Novel() {
   const [bestOfNReflection, setBestOfNReflection] = useState(false);
   // P5 硬批准闸：开启后，上游未批准时下游节点无法运行（软警告 → 硬阻断）
   const [hardGate, setHardGate] = useState(false);
+  // ui-v6 PR-1 Studio Calm A.3 · toolbar 高级运行设置（Best-of-N + 硬批准闸）折叠 / 展开
+  // 默认折叠 · 用户点齿轮按钮展开 · 已激活的开关在折叠态以小徽章显示
+  const [advancedToolbarOpen, setAdvancedToolbarOpen] = useState(false);
   // 章节面板 UI 状态
   const [chapterFilter, setChapterFilter] = useState<'all' | 'pending' | 'failed'>('all');
   const [selectedChapterIdx, setSelectedChapterIdx] = useState<number | null>(null);
@@ -454,6 +457,63 @@ export function Novel() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          {/* Studio Calm A.3 · 状态徽章组 · 折叠态可见已激活的开关 */}
+          {!advancedToolbarOpen && (useBestOfN || hardGate) && (
+            <div className="flex items-center gap-1.5">
+              {useBestOfN && (
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-tight-xs font-medium border border-warning/60 bg-warning/10 text-warning"
+                  title={`Best-of-N ×${bestOfNCount}${bestOfNReflection ? ' + 反思裁判' : ''}`}
+                >
+                  🎯 ×{bestOfNCount}{bestOfNReflection && ' 反思'}
+                </span>
+              )}
+              {hardGate && (
+                <span
+                  className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-tight-xs font-medium border border-success/60 bg-success/10 text-success"
+                  title="硬闸：上游未批准时下游节点被阻断"
+                >
+                  🛡 硬闸
+                </span>
+              )}
+            </div>
+          )}
+          {/* Studio Calm A.3 · 高级设置齿轮 · 切换折叠区 */}
+          <button
+            onClick={() => setAdvancedToolbarOpen(!advancedToolbarOpen)}
+            className={clsx(
+              'btn-ghost',
+              advancedToolbarOpen && 'bg-elevated text-fg-primary',
+            )}
+            title="高级运行设置：Best-of-N + 硬批准闸"
+            aria-expanded={advancedToolbarOpen}
+            aria-controls="novel-advanced-toolbar"
+          >
+            <SlidersHorizontal className="size-4" />
+          </button>
+          {chainBusy && (
+            <button onClick={stop} className="btn-ghost text-warning">
+              <Square className="size-4 mr-1" /> 中止
+            </button>
+          )}
+          {/* gap-e PR-2 · 导出抽屉触发 · 全局 store */}
+          <button
+            onClick={() => showExport('novel')}
+            className="btn-ghost"
+            title="导出小说 / 资产 · 5 种格式（Cmd+K 也可调起）"
+          >
+            <FileDown className="size-4 mr-1" /> 导出…
+          </button>
+          <Link to="/" className="btn-ghost"><ChevronRight className="size-4 mr-1" /> 项目首页</Link>
+        </div>
+      </header>
+
+      {/* Studio Calm A.3 · 高级运行设置折叠区 · Best-of-N + 硬批准闸 · 微动效 */}
+      {advancedToolbarOpen && (
+        <section
+          id="novel-advanced-toolbar"
+          className="card-flat p-3 anim-modal-panel flex flex-wrap items-center gap-3"
+        >
           {/* Best-of-N 开关 */}
           <div
             className={clsx(
@@ -524,22 +584,11 @@ export function Novel() {
             />
             <label htmlFor="hard-gate-toggle" className="cursor-pointer">🛡 硬批准闸</label>
           </div>
-          {chainBusy && (
-            <button onClick={stop} className="btn-ghost text-warning">
-              <Square className="size-4 mr-1" /> 中止
-            </button>
-          )}
-          {/* gap-e PR-2 · 导出抽屉触发 · 全局 store */}
-          <button
-            onClick={() => showExport('novel')}
-            className="btn-ghost"
-            title="导出小说 / 资产 · 5 种格式（Cmd+K 也可调起）"
-          >
-            <FileDown className="size-4 mr-1" /> 导出…
-          </button>
-          <Link to="/" className="btn-ghost"><ChevronRight className="size-4 mr-1" /> 项目首页</Link>
-        </div>
-      </header>
+          <span className="ml-auto text-tight-xs text-fg-muted">
+            高级运行设置 · 不影响已生成内容 · 关闭面板不重置选项
+          </span>
+        </section>
+      )}
 
       <ProjectSettingsCard
         ctx={ctx}
