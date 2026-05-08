@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 ui-v6 PR-6 push 节点 · 最新 commit `ed716b6`）
+# Dogfood 自测清单（2026-05-08 ui-v6 PR-7 push 节点 · commit pending）
 
-> 本文档汇总 2026-05-07/08 三 session 内完成的 14 个 PR 的所有 US-* 用户手测场景。最新五节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit)。
+> 本文档汇总 2026-05-07/08 三 session 内完成的 15 个 PR 的所有 US-* 用户手测场景。最新六节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit) · ⑬ ui-v6 PR-7 bundle code-split (1 commit)。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -431,9 +431,38 @@ Get-ChildItem src -Recurse -Include *.tsx,*.ts | Select-String -Pattern 'brand-(
 
 ---
 
+## ⑬ ui-v6 PR-7 · bundle code-split / vendor + route lazy · commit pending
+
+### US-A16 · 路由 lazy 切换体验（必测）
+
+前置：已跑过 `npm run build && npm run preview` 或者 `npm run dev`（dev 也走相同 lazy 行为）
+
+- [ ] 首次访问 `/`（Home）→ 看到 Home 内容 · 中间不应卡死或白屏 >300ms（vendor 已加载就不会闪 fallback）
+- [ ] 用 sidebar 点击切到 `/novel` → 短暂闪现"加载中..."（128 KB chunk · 中速网络 200-500ms）→ 显示 Novel
+- [ ] 同一会话内再次切回 `/novel` → 不再闪现 fallback（已缓存 + parsed）
+- [ ] 依次切 `/screenplay` → `/adapt` → 第二次不闪 fallback（两个共享同 chunk · dedup 验证）
+- [ ] 切到 `/settings` `/lessons` `/kb` `/analyzer` `/assets` `/intake` `/express` `/refinery` `/playground` `/methods` `/pipeline` 全部加载成功 · 0 console 报错
+- [ ] DevTools Network 面板：访问 Home 时仅下载 vendor-* + index + Home 几个 chunk · 不应一次性下 1 MB+
+
+### US-A17 · 不变量回归
+
+```powershell
+# 0 eager 引用 pages/* 外露（防止 lazy 失效）
+Get-ChildItem src -Recurse -Include *.ts,*.tsx | Where-Object { $_.FullName -notlike '*router.tsx' } | Select-String -Pattern "from\s+['""].*pages/(Home|Settings|Playground|Pipeline|Screenplay|Assets|KnowledgeBase|Intake|Express|Novel|Refinery|Analyzer|MethodModules|ReflectorLessons)['""]" | Measure-Object | % Count
+→ 0
+```
+
+- [ ] 跑上面验证 → 返回 0
+- [ ] 路由路径 0 改（14 条 + index + catch-all 都在）
+- [ ] DESIGN.md 14 token 0 增删 · 6 atom API 0 破坏
+- [ ] dexie schema 0 改 · 业务逻辑 0 改
+- [ ] vite build 0 errors · 入口 index.js < 60 KB · 任何路由 chunk < 600 KB
+
+---
+
 ## 总体不变量回归（所有 PR 共同检查）
 
-跑完上面 12 节后 · 最后一并检查：
+跑完上面 13 节后 · 最后一并检查：
 
 ```powershell
 # 6 atoms API 0 破坏（实现可有兼容扩展 · API 不破）

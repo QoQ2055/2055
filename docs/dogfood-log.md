@@ -9,9 +9,71 @@
 
 ---
 
-## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6 完成 · 共 10 commit）
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6+PR-7 完成 · 共 11 commit）
 
 > **2026-05-08 16:00 token-sweep 闭环验证**：基于 `tailwind.config.ts` 实际定义的 palette（primary {50-900} · secondary {400/500/600} · brand {50/100/400/500/600/700} · success/warning/danger/info {DEFAULT/hover/active/50/100/200} · canvas/surface/elevated/overlay/fg-*/border-* 单档），跑 9 类 invalid class 静默丢弃扫雷（包括 secondary 越界 / 语义色 ≥300 / 单档加数字 / brand 越界 / primary 0/950 / action-primary 加数字 / 渐变 from-/to-/via- 同类 / fg-N / border-XX-N），**全 0 hits**。token sweep 工作彻底闭环 · 之后 ui 改动直接消费现有 palette 即可。
+
+### PR-7 · bundle code-split / vendor 分组 + 路由级 lazy（commit pending）
+
+**目标**：把单一 1188.9 KB 的 `index.js` 怪兽拆成 vendor 长缓存 chunk + 14 个路由按需加载 chunk · 大幅降低首屏成本 + 提升缓存命中率。
+
+**根因**：`vite.config.ts` 之前没配 `manualChunks` · 所有 react / lucide / dexie / markdown / 14 路由全部塞进单一 index.js · 用户改 1 行 UI 都让全套 1.1 MB 失效。
+
+**实装范围**：
+
+```
+src/router.tsx（+39 / -16）
+  · 14 路由全部转 React.lazy + Suspense<RouteFallback>
+  · Screenplay + Adapt 来自同一模块 · Rollup 自动 dedup 为单 chunk
+  · RouteFallback 组件极简："加载中..." + animate-pulse + py-page-y · 0 新依赖
+
+vite.config.ts（+15 / -0）
+  · 新增 build.rollupOptions.output.manualChunks 4 组：
+      vendor-react     [react, react-dom, react-router-dom]
+      vendor-icons     [lucide-react]
+      vendor-storage   [dexie]
+      vendor-markdown  [react-markdown, remark-gfm]
+  · chunkSizeWarningLimit 500 -> 600（给 vendor-react 留余地）
+```
+
+**build 实测对比**：
+
+| chunk | before | after | gzip before | gzip after |
+| --- | --- | --- | --- | --- |
+| **入口 index.js** | **1188.9 KB** | **57.89 KB** (-95.1%) | 382.87 KB | 19.86 KB (-94.8%) |
+| vendor-react | (合在 index) | 206.97 KB | - | 67.57 KB |
+| vendor-markdown | (合在 index) | 157.32 KB | - | 47.73 KB |
+| vendor-storage | (合在 index) | 96.29 KB | - | 32.41 KB |
+| vendor-icons | (合在 index) | 40.51 KB | - | 7.83 KB |
+| Home（按需）| (合在 index) | 48.48 KB | - | 14.88 KB |
+| Novel（最大路由 · 按需）| (合在 index) | 131.30 KB | - | 48.16 KB |
+| ... 12 个其他路由 chunk | - | 3.5 - 35 KB | - | 0.6 - 12 KB |
+
+**首屏成本（访问 Home）**：
+- before：1188.9 KB / gzip 382.87 KB 单一阻塞下载
+- after：vendor-react 207 + vendor-icons 41 + vendor-storage 96 + index 58 + Home 48 = **451 KB / gzip 142 KB**（-62% bytes / -63% gzip）
+- 且 vendor-* 4 个 chunk 后续访问全部走浏览器缓存（用户改 UI 代码不让其失效）
+
+**重访成本（vendor 已缓存 · 切到任意其他路由）**：
+- before：仍 1188.9 KB（HTTP 304 但仍走完整解析）
+- after：仅下载新路由 chunk 3.5-131 KB · 大多数路由 <30 KB
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 2.66s · TS 0 错
+0 eager 引用 pages/* 外露（grep 验证）· lazy 完全独立
+仅 Novel chunk 131 KB 接近警告阈值 · 在 600 KB 限内 · 无警告
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · `tailwind.config.ts` 0 改 · 6 atom API 0 破坏
+- 路由路径 0 改（仍是 `/intake` `/screenplay` `/adapt` `/assets` 等 14 条）
+- dexie schema 0 改 · 业务逻辑 0 改
+- **行为变化**：路由切换时短暂闪现"加载中..."（首次访问该路由时；缓存后无闪现）· 这是 lazy 的代价 · 可后续加 prefetch 优化
+
+**用户手测项**：见 dogfood-checklist.md ⑬ ui-v6 PR-7 节（US-A16 / US-A17）
+
+---
 
 ### PR-6 · token sweep 2 / brand-{200,300,800,900} 失效修复（commit `ed716b6`）
 
