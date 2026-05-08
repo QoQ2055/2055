@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 ui-v6 PR-3 push 节点 · 最新 commit `1d5fd9a`）
+# Dogfood 自测清单（2026-05-08 ui-v6 PR-6 push 节点 · 最新 commit `ed716b6`）
 
-> 本文档汇总 2026-05-07/08 三 session 内完成的 10 个 PR 的所有 US-* 用户手测场景。最新三节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit)。
+> 本文档汇总 2026-05-07/08 三 session 内完成的 14 个 PR 的所有 US-* 用户手测场景。最新五节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit)。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -345,9 +345,95 @@ npm run dev
 
 ---
 
+## ⑪ ui-v6 PR-5 · /lessons + /kb hero header 对称 · commit `fa7f0e7`
+
+### US-A11 · 三页 hero 视觉对称（必测）
+
+前置：依次访问 `/settings` · `/lessons` · `/kb`
+
+- [ ] 三个页面顶部都出现 hero header 行：
+  - [ ] 左侧 size-10 圆角图标徽章（`rounded-xl` · primary tint 背景 · 同色阶 border）
+  - [ ] 徽章内 lucide 图标：Settings · BookOpenCheck · Library
+  - [ ] 右侧主标题（text-2xl/3xl bold）+ 副标题（text-fg-secondary）
+- [ ] 三个 hero 视觉权重一致：徽章尺寸 / 圆角 / 内边距 / 主副标题层级 完全对齐
+- [ ] `/lessons` 标题右侧有状态计数徽章组（lessons 总数 / 最近 7 天新增）
+- [ ] `/kb` 副标题正确说明三层（全局 KB / 用户 KB / 项目 KB）职能
+- [ ] 窄屏（<768px）三个 hero 不破版 · 副标题 truncate 而非换行后挤压徽章
+
+### US-A12 · 不变量回归
+
+- [ ] `/lessons` 原有功能不变（lessons 列表 / 详情 / 删除 / 标签筛选 等仍可用）
+- [ ] `/kb` 原有功能不变（全局/用户/项目三层切换 / 上传 / 绑定 等仍可用）
+- [ ] DESIGN.md 14 token 0 增删（仅消费现有 primary / fg / border token）
+- [ ] 6 atom API 0 破坏 · 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+
+---
+
+## ⑫ token sweep · bg-surface-N + brand-N 失效 class 修复 · commits `3e582ca` `ed716b6`
+
+> **背景**：`bg-surface-1/2/3` 与 `brand-200/300/800/900` 在 `tailwind.config.cjs` 中 **不存在** · 之前 27 + 33 = 60 处使用都被 Tailwind 静默丢弃 → 视觉降级（无背景 / 继承父色）。本节确认修复后这些位置**真的能看到**正确颜色。
+
+### US-A13 · bg-surface-N 修复（必测）
+
+前置：依次访问下列页面 · 仔细观察卡片层级是否有"明明是不同层 surface 却看着一样"的现象。
+
+- [ ] `/analyzer` 页（拆书工作台）
+  - [ ] 章节结构卡 / 位置洞察卡 / 动作栏 → 卡片底色（surface）与抬起卡（surface-elevated）有可见层级差
+  - [ ] 不应该出现"卡片完全透明 · 直接看到外层背景"的位置
+- [ ] 角色 Bible 抽屉（任意 novel 项目内打开）
+  - [ ] 角色卡片 / 关系网格底色正确渲染
+- [ ] Progress Dashboard（任意 novel 项目内打开）
+  - [ ] 各 section 卡片底色按层级区分
+- [ ] ReflectorLessons 面板（侧栏抽屉）
+  - [ ] lessons 列表条目底色正确渲染（不是透明）
+
+### US-A14 · brand-N 修复（必测）
+
+前置：依次触发下列含 brand-N 用法的 UI · 确认主色阶（primary 蓝）真实出现。
+
+- [ ] **AdaptIntakeWizard**（剧本/改编入口 → 改编模式 4 步向导）
+  - [ ] 当前步骤指示条 · 已完成步骤 checkmark · 高亮的"下一步"按钮 → 全部呈品牌蓝
+- [ ] **ChapterFeedbackButton**（novel 章节 → 反馈按钮 → modal → 负样本片段）
+  - [ ] "标记为负样本片段"按钮 hover/active 态有明显蓝色边框 + 浅蓝背景
+- [ ] **FeedbackInsights**（章节反馈汇总面板）
+  - [ ] 选中的 feedback 卡片 / 当前查看详情指示器 → 蓝色边框/背景
+- [ ] **GenreAnchorPreview**（题材锚点预览 · novel 设定面板）
+  - [ ] 紧凑模式徽章 / 完整模式高亮锚点 → 蓝色色阶
+- [ ] **MarkdownView**（任何 markdown 渲染处 · 如 lessons 详情）
+  - [ ] inline `code` / blockquote 边条 / 链接 → 配色不再是黑白灰
+- [ ] **RefinementToolPanel**（章节润色工具集面板）
+  - [ ] 选中的润色维度按钮 / 当前操作进度 → 品牌蓝
+- [ ] **UserKbBindingPanel**（/kb → 用户 KB → 绑定面板）
+  - [ ] 已选条目 checkmark + 高亮边框 → 蓝色
+- [ ] **UserKbLibrary**（/kb → 用户 KB 主面板）
+  - [ ] 当前激活的筛选 chip / 选中文档卡 → 蓝色
+- [ ] **UserKbUploadDialog**（/kb → 上传按钮）
+  - [ ] 拖放区 hover 态 / "提炼中"进度指示 / 主操作按钮 → 蓝色
+- [ ] **/analyzer 动作栏 + 章节结构 + 位置洞察** → 主操作按钮 / 选中态 → 蓝色
+- [ ] **/assets**（资产工作台） → 完整性扫描进度条 / 三路并发指示器 / 当前查看资产卡 → 蓝色
+- [ ] **/express 快速分镜**（题材选择 + 选项按钮）→ 选中题材按钮 / 选中选项按钮 → 蓝色
+- [ ] **/intake 章节编辑器** → 当前编辑章节高亮 / 摘要视图主标题 → 蓝色
+
+### US-A15 · 不变量回归
+
+```powershell
+# 验证 0 残留
+Get-ChildItem src -Recurse -Include *.tsx,*.ts | Select-String -Pattern 'bg-surface-[123]\b' | Measure-Object | % Count
+→ 0
+Get-ChildItem src -Recurse -Include *.tsx,*.ts | Select-String -Pattern 'brand-(200|300|800|900)\b' | Measure-Object | % Count
+→ 0
+```
+
+- [ ] 跑上面两条 → 都返回 0
+- [ ] DESIGN.md 14 token 0 增删 · `tailwind.config.cjs` 0 改
+- [ ] 6 atom API 0 破坏 · 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- [ ] 视觉**回归**：所有改过的文件原本"能看见"的颜色仍然在；新"看见"的颜色都是 token 矩阵正确的同色阶平移
+
+---
+
 ## 总体不变量回归（所有 PR 共同检查）
 
-跑完上面 10 节后 · 最后一并检查：
+跑完上面 12 节后 · 最后一并检查：
 
 ```powershell
 # 6 atoms API 0 破坏（实现可有兼容扩展 · API 不破）

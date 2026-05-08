@@ -9,7 +9,125 @@
 
 ---
 
-## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3 完成 · 共 7 commit）
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6 完成 · 共 10 commit）
+
+### PR-6 · token sweep 2 / brand-{200,300,800,900} 失效修复（commit `ed716b6`）
+
+**目标**：肃清 v5 之前残留的 `brand-200/300/800/900` 无效 Tailwind class · 全部映射到 `primary-200/300/800/900` 已有同档 · 让对应 UI 颜色实际渲染（而非降级到无背景/默认色）。
+
+**根因**：`tailwind.config.cjs` 仅定义 `primary-{50,100,200,300,400,500,600,700,800,900}` · DESIGN.md token 表里写的是 brand 字样但 token 名是 primary · 早期组件用了 brand-N 文字记忆 · Tailwind 静默丢弃 → 视觉降级。
+
+**实装范围**：
+
+```
+33 处 invalid class · 15 文件（grep `brand-(200|300|800|900)\b` 全清零）
+  src/components/AdaptIntakeWizard.tsx
+  src/components/ChapterFeedbackButton.tsx
+  src/components/FeedbackInsights.tsx
+  src/components/GenreAnchorPreview.tsx
+  src/components/MarkdownView.tsx
+  src/components/RefinementToolPanel.tsx
+  src/components/UserKbBindingPanel.tsx
+  src/components/UserKbLibrary.tsx
+  src/components/UserKbUploadDialog.tsx
+  src/pages/Analyzer.tsx
+  src/pages/Assets.tsx
+  src/pages/Express.tsx
+  src/pages/Intake.tsx
+  src/pages/KnowledgeBase.tsx (顺带 hero header 周边)
+  src/pages/ReflectorLessons.tsx (顺带 hero header 周边)
+
+替换矩阵（逐档同色阶映射 · 不改视觉权重）：
+  bg-brand-200       → bg-primary-200
+  text-brand-300     → text-primary-300
+  border-brand-300   → border-primary-300
+  bg-brand-800       → bg-primary-800
+  text-brand-800     → text-primary-800
+  text-brand-900     → text-primary-900
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 3.21s
+grep -r "brand-\(200\|300\|800\|900\)\b" src/ → 0 hits
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 仅纠正消费方拼写
+- 6 atom API 0 破坏 · 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- 视觉**实**变化：原本静默降级（无色/继承）的位置现在正确渲染品牌主色阶 → 改编向导 / 章节反馈 / 题材锚点 / 资料库等次级 UI 视觉权重恢复
+
+**用户手测项**：见 dogfood-checklist.md ⑫ token sweep 节（US-A12）
+
+---
+
+### PR-5 · /lessons + /kb hero header 对称（commit `fa7f0e7`）
+
+**目标**：补齐 Studio Calm C.2 在剩余两个一级路由的视觉对称 · 让 Settings / Lessons / KB 三个"信息密集型"页面共享同一 hero 模式（size-10 圆角图标徽章 + 主标题 + 副标题）。
+
+**实装范围**：
+
+```
+src/pages/ReflectorLessons.tsx · L75-107（+33 / -1）
+  · 新增 hero header：size-10 BookOpenCheck 图标徽章（primary tint）+ 标题 + 副标题
+  · 紧贴标题右侧加状态计数徽章组（lessons 数 / 最近 7 天新增）
+  · 与 Settings hero 完全对称（同 size-10 / 同 rounded-xl / 同 primary tint）
+
+src/pages/KnowledgeBase.tsx · L23-57（+34 / -1）
+  · 新增 hero header：size-10 Library 图标徽章（primary tint）+ 标题 + 副标题
+  · 副标题简述"全局 KB / 用户 KB / 项目 KB 三层"职能
+  · 与 Settings / Lessons hero 完全对称
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 3.18s
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 仅消费现有 primary / fg / border token
+- 6 atom API 0 破坏 · 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- 三个一级页面（Settings / Lessons / KB）hero 视觉一致性闭环
+
+**用户手测项**：见 dogfood-checklist.md ⑪ ui-v6 PR-5 节（US-A11）
+
+---
+
+### PR-4 · token sweep 1 / bg-surface-{1,2,3} 失效修复（commit `3e582ca`）
+
+**目标**：肃清 v3-v5 残留的 `bg-surface-1/2/3` 无效 Tailwind class · 全部映射到已存在的 `bg-surface` / `bg-surface-elevated` token。
+
+**根因**：DESIGN.md token 表 14 项里 surface 系列只有 `--cf-surface` / `--cf-surface-elevated` 两档 · 早期 mock 时拍脑袋写了 `bg-surface-1/2/3` · Tailwind 静默丢弃。
+
+**实装范围**：
+
+```
+27 处 invalid class · 4 文件（grep `bg-surface-[123]\b` 全清零）
+  src/components/CharacterBible.tsx
+  src/components/ProgressDashboard.tsx
+  src/components/ReflectorLessonsPanel.tsx
+  src/pages/Analyzer.tsx
+
+替换矩阵：
+  bg-surface-1 → bg-surface              （最浅层 · 卡片底）
+  bg-surface-2 → bg-surface-elevated     （中层 · 抬起卡片）
+  bg-surface-3 → bg-surface-elevated     （最深层 · 同 elevated · 不再单列）
+```
+
+**build 实测**：
+```
+npm run build → 0 errors · 1968 modules · 3.20s
+grep -r "bg-surface-[123]\b" src/ → 0 hits
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 仅纠正消费方拼写
+- 6 atom API 0 破坏 · 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- 视觉**实**变化：拆书分析 / 角色 Bible / 进度仪表盘 / 课程面板的卡片层级现在正确渲染（之前是透明降级）
+
+**用户手测项**：见 dogfood-checklist.md ⑫ token sweep 节（US-A13）
+
+---
 
 ### PR-3 · Studio Calm C.1 + C.2（commits `d30bf15` / `1d5fd9a`）
 
