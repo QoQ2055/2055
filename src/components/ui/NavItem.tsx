@@ -24,6 +24,11 @@ export interface NavItemProps extends Omit<NavLinkProps, 'className' | 'children
   icon?: React.ReactNode;
   className?: string;
   children?: React.ReactNode;
+  /**
+   * Studio Calm A.4 · 折叠态：仅显示 icon · children 文本以 title 提示出现
+   * V2-I-3 兼容扩展 · 默认 false 时行为完全等同旧版 · 不影响既有调用
+   */
+  collapsed?: boolean;
 }
 
 const SIZE_CLASS: Record<Size, string> = {
@@ -31,14 +36,24 @@ const SIZE_CLASS: Record<Size, string> = {
   md: 'h-8 px-3 text-body-m gap-2',
 };
 
+const SIZE_CLASS_COLLAPSED: Record<Size, string> = {
+  sm: 'h-7 w-7 justify-center',
+  md: 'h-8 w-8 justify-center',
+};
+
 export function NavItem({
-  size = 'md', icon, className = '', children, ...rest
+  size = 'md', icon, className = '', children, collapsed = false, ...rest
 }: NavItemProps) {
+  // 折叠态文本作为 title（仅当 children 是 string）· 提供悬停提示
+  const titleText = collapsed && typeof children === 'string' ? children : undefined;
   return (
     <NavLink
       {...rest}
+      title={titleText}
       className={({ isActive }) => {
-        const base = `inline-flex items-center rounded-sm font-medium transition-colors ${SIZE_CLASS[size]}`;
+        const base = collapsed
+          ? `inline-flex items-center rounded-sm font-medium transition-colors ${SIZE_CLASS_COLLAPSED[size]}`
+          : `inline-flex items-center rounded-sm font-medium transition-colors ${SIZE_CLASS[size]}`;
         const state = isActive
           ? 'bg-primary-500/10 text-primary-400 font-semibold'
           : 'text-fg-secondary hover:bg-elevated hover:text-fg-primary';
@@ -46,19 +61,30 @@ export function NavItem({
       }}
     >
       {icon}
-      <span className="truncate">{children}</span>
+      {!collapsed && <span className="truncate">{children}</span>}
     </NavLink>
   );
 }
 
 /** 侧栏分组标签（"通用"那种），label-m 排版 (DESIGN.md sectionLabel) */
+export interface NavSectionLabelProps extends React.HTMLAttributes<HTMLDivElement> {
+  /** Studio Calm A.4 · 折叠态：渲染为分隔线 · 隐藏文字 */
+  collapsed?: boolean;
+}
 export function NavSectionLabel({
-  className = '', ...rest
-}: React.HTMLAttributes<HTMLDivElement>) {
+  className = '', collapsed = false, children, ...rest
+}: NavSectionLabelProps) {
+  if (collapsed) {
+    return (
+      <div className={`mx-2 my-2 border-t border-border-subtle ${className}`.trim()} {...rest} />
+    );
+  }
   return (
     <div
       className={`px-3 pt-4 pb-1 text-label-m uppercase text-fg-muted ${className}`.trim()}
       {...rest}
-    />
+    >
+      {children}
+    </div>
   );
 }

@@ -43,6 +43,7 @@ const GROUPS: ShortcutGroup[] = [
       { keys: [mod, 'K'], desc: '打开命令面板（搜索 + 跳转）' },
       { keys: ['?'], desc: '显示本快捷键手册' },
       { keys: [mod, 'S'], desc: '提示已自动保存（无需手动）' },
+      { keys: [mod, 'B'], desc: '折叠 / 展开侧边栏' },
       { keys: ['Esc'], desc: '关闭弹层 / 退出当前 modal' },
     ],
   },
