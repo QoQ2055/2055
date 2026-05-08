@@ -215,11 +215,15 @@ export function Home() {
   const activeMeta = getModeMeta(activeMode);
 
   return (
-    <div className="max-w-5xl mx-auto p-8 space-y-6">
-      {/* Header */}
+    <div className="max-w-6xl mx-auto px-8 py-10 space-y-8">
+      {/* Header · Studio Calm A.2 · 加 sparkles 装饰 + tracking + mt 推大 */}
       <header className="flex items-end justify-between gap-4">
         <div>
-          <h1 className="text-heading-xl">影语 FLIL</h1>
+          <div className="flex items-center gap-2 mb-3 text-action-primary">
+            <Sparkles className="size-4" />
+            <span className="text-tight-xs font-medium uppercase tracking-[0.18em]">Filmcraft Studio</span>
+          </div>
+          <h1 className="text-heading-xl tracking-tight">影语 FLIL</h1>
           <p className="text-body-m text-fg-secondary mt-2">
             短剧 AI 流水线 · 八步剧本 → 资产 → 分镜（Seedance 2.0）
           </p>
@@ -243,33 +247,51 @@ export function Home() {
         </div>
       )}
 
-      {/* ① ActiveProjectCard · 仅当有产物 / source chunks 时显示 */}
+      {/* ① ActiveProjectCard · Studio Calm A.2 · 背景渐变 + p-7 + 数字放大 */}
       {activeStatus.hasContent && (
         <section
-          className="card p-5"
-          style={{ borderColor: `${activeMeta.accentHex}55` }}
+          className="card p-7 relative overflow-hidden"
+          style={{
+            borderColor: `${activeMeta.accentHex}66`,
+            backgroundImage: `linear-gradient(135deg, ${activeMeta.accentHex}0d 0%, transparent 60%)`,
+          }}
         >
-          <div className="flex items-start gap-4">
+          <div className="flex items-start gap-5">
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
+              <div className="flex items-center gap-2 mb-2">
                 <span
                   className="size-2.5 rounded-full shrink-0"
                   style={{ backgroundColor: activeMeta.accentHex }}
                 />
-                <span className="text-tight-xs font-medium uppercase tracking-wide" style={{ color: activeMeta.accentHex }}>
+                <span className="text-tight-xs font-medium uppercase tracking-[0.14em]" style={{ color: activeMeta.accentHex }}>
                   当前工作区 · {activeMeta.label}
                 </span>
               </div>
               <h2 className="text-heading-m text-fg-primary truncate">{activeCtx.name}</h2>
-              <p className="text-body-s text-fg-secondary mt-1 line-clamp-2">{activeCtx.concept}</p>
-              <div className="flex items-center gap-4 mt-3 text-caption-m text-fg-muted">
-                <span><strong className="text-fg-primary font-mono">{activeStatus.artifactCount}</strong> 个产物</span>
+              <p className="text-body-s text-fg-secondary mt-1.5 line-clamp-2">{activeCtx.concept}</p>
+              {/* Studio Calm · 数字放大 · mono + heading-s */}
+              <div className="flex items-center gap-5 mt-4">
+                <div>
+                  <div className="text-heading-s font-mono text-fg-primary leading-none">{activeStatus.artifactCount}</div>
+                  <div className="text-tight-xs text-fg-muted mt-1">产物</div>
+                </div>
                 {activeStatus.sourceChunkCount > 0 && (
-                  <span>· <strong className="text-fg-primary font-mono">{activeStatus.sourceChunkCount}</strong> 个原作章节</span>
+                  <>
+                    <span className="h-7 w-px bg-border-subtle" />
+                    <div>
+                      <div className="text-heading-s font-mono text-fg-primary leading-none">{activeStatus.sourceChunkCount}</div>
+                      <div className="text-tight-xs text-fg-muted mt-1">原作章节</div>
+                    </div>
+                  </>
                 )}
-                {/* 仅短剧 express 模式 durationMin > 0 · 小说/剧本不显示 0 分钟 */}
                 {activeCtx.durationMin > 0 && (
-                  <span>· <strong className="text-fg-primary font-mono">{activeCtx.durationMin}</strong> 分钟</span>
+                  <>
+                    <span className="h-7 w-px bg-border-subtle" />
+                    <div>
+                      <div className="text-heading-s font-mono text-fg-primary leading-none">{activeCtx.durationMin}</div>
+                      <div className="text-tight-xs text-fg-muted mt-1">分钟</div>
+                    </div>
+                  </>
                 )}
               </div>
             </div>
@@ -304,12 +326,44 @@ export function Home() {
         </section>
       )}
 
-      {/* ② QuickActions · 4 块快捷入口 */}
-      <section className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      {/* ② Studio Calm A.2 · ModeStatsGrid 上移 · 4 mode counts 作为分类导览 */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+        {(() => {
+          const all = [activeCtx, ...projects];
+          const counts: Record<string, number> = {};
+          for (const c of all) {
+            const m = getProjectMode(c as any);
+            counts[m] = (counts[m] ?? 0) + 1;
+          }
+          const modes: Array<'original' | 'adaptation' | 'express' | 'novel'> =
+            ['original', 'adaptation', 'express', 'novel'];
+          return modes.map((m) => {
+            const meta = getModeMeta(m);
+            return (
+              <div
+                key={m}
+                className="card-flat px-3 py-2.5"
+                style={{ borderColor: `${meta.accentHex}33` }}
+              >
+                <div className="flex items-center gap-1.5 text-body-s font-medium text-fg-primary">
+                  <span className="size-2 rounded-full" style={{ backgroundColor: meta.accentHex }} />
+                  {meta.label}
+                  <span className="ml-auto text-fg-secondary font-mono text-tight-sm">{counts[m] ?? 0}</span>
+                </div>
+                <div className="text-tight-xs normal-case tracking-normal text-fg-muted mt-1 leading-snug">
+                  {meta.workflow}
+                </div>
+              </div>
+            );
+          });
+        })()}
+      </section>
+
+      {/* ③ Studio Calm A.2 · QuickActions 紧凑工具条 · desc 删除 · 4 列 inline */}
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-2">
         <QuickActionCard
           icon={Sparkles}
           label="新建项目"
-          desc="开始一段新的故事"
           onClick={() => openCreate()}
           accent="primary"
           disabled={busy}
@@ -317,31 +371,26 @@ export function Home() {
         <QuickActionCard
           icon={Upload}
           label="导入 .flil"
-          desc="从备份文件载入"
           onClick={() => pickFile('active')}
           disabled={busy}
         />
         <QuickActionCard
           icon={BookOpen}
           label="知识库 KB"
-          desc="管理 prompt 注入"
           onClick={() => navigate('/kb')}
           disabled={busy}
         />
         <QuickActionCard
           icon={SettingsIcon}
           label="设置"
-          desc="API Key + 偏好"
           onClick={() => navigate('/settings')}
           disabled={busy}
         />
       </section>
 
-      {/* ③ ModeStatsGrid（保留 · 4 mode counts · 见原 JSX 下方） */}
-
-      {/* ④ History */}
-      <section className="card p-5">
-        <div className="flex items-center justify-between mb-4">
+      {/* ④ History · Studio Calm A.2 · p-5 → p-6 · 行高加大 */}
+      <section className="card p-6">
+        <div className="flex items-center justify-between mb-5">
           <h2 className="text-heading-m">历史项目（{projects.length}）</h2>
           <div className="flex items-center gap-2">
             <Button
@@ -366,7 +415,7 @@ export function Home() {
         ) : (
           <ul className="divide-y divide-border-subtle">
             {projects.map((p) => (
-              <li key={p.id} className="py-3 flex items-center justify-between gap-3">
+              <li key={p.id} className="py-4 flex items-center justify-between gap-3 transition-colors hover:bg-elevated/40 -mx-2 px-2 rounded">
                 <div className="min-w-0 flex-1">
                   <div className="flex items-center gap-2">
                     <ModeTag ctx={p} />
@@ -413,39 +462,7 @@ export function Home() {
         )}
       </section>
 
-      <section className="grid grid-cols-4 gap-3">
-        {(() => {
-          // Per-mode project counts: gives users a feel for how their work
-          // is distributed across modes at a glance.
-          const all = [activeCtx, ...projects];
-          const counts: Record<string, number> = {};
-          for (const c of all) {
-            const m = getProjectMode(c as any);
-            counts[m] = (counts[m] ?? 0) + 1;
-          }
-          const modes: Array<'original' | 'adaptation' | 'express' | 'novel'> =
-            ['original', 'adaptation', 'express', 'novel'];
-          return modes.map((m) => {
-            const meta = getModeMeta(m);
-            return (
-              <div
-                key={m}
-                className="card p-3"
-                style={{ borderColor: `${meta.accentHex}33` }}
-              >
-                <div className="flex items-center gap-1.5 text-body-s font-medium text-fg-primary">
-                  <span className="size-2 rounded-full" style={{ backgroundColor: meta.accentHex }} />
-                  {meta.label}
-                  <span className="ml-auto text-fg-secondary font-mono">{counts[m] ?? 0}</span>
-                </div>
-                <div className="text-label-m normal-case tracking-normal text-fg-muted mt-1.5 leading-snug">
-                  {meta.workflow}
-                </div>
-              </div>
-            );
-          });
-        })()}
-      </section>
+      {/* Studio Calm A.2 · 原底部 ModeStatsGrid 已上移到 ActiveProjectCard 后 · 不再重复 */}
 
       <NewProjectDialog
         open={dialogOpen}
@@ -481,7 +498,8 @@ function QuickActionCard({
 }: {
   icon: React.ComponentType<{ className?: string }>;
   label: string;
-  desc: string;
+  /** Studio Calm A.2 · 紧凑模式可省略 desc · 仅展示 icon + label */
+  desc?: string;
   onClick: () => void;
   accent?: 'primary';
   disabled?: boolean;
@@ -493,17 +511,22 @@ function QuickActionCard({
       onClick={onClick}
       disabled={disabled}
       className={
-        'card p-4 text-left transition-colors disabled:opacity-50 disabled:cursor-not-allowed ' +
+        // Studio Calm A.2 · p-4 → p-3 · 紧凑工具条样式 · transition-all 加 hover scale
+        'card-flat px-3 py-3 text-left transition-all duration-150 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2.5 ' +
         (isPrimary
           ? 'border-action-primary/40 bg-action-primary/5 hover:bg-action-primary/10 hover:border-action-primary/60'
           : 'hover:bg-elevated hover:border-border-default')
       }
     >
-      <Icon className={'size-5 mb-2 ' + (isPrimary ? 'text-action-primary' : 'text-fg-secondary')} />
-      <div className={'text-body-m font-medium ' + (isPrimary ? 'text-action-primary' : 'text-fg-primary')}>
-        {label}
+      <Icon className={'size-4 shrink-0 ' + (isPrimary ? 'text-action-primary' : 'text-fg-secondary')} />
+      <div className="min-w-0 flex-1">
+        <div className={'text-body-s font-medium truncate ' + (isPrimary ? 'text-action-primary' : 'text-fg-primary')}>
+          {label}
+        </div>
+        {desc && (
+          <div className="text-tight-xs text-fg-muted leading-snug truncate">{desc}</div>
+        )}
       </div>
-      <div className="text-tight-xs text-fg-muted mt-0.5 leading-snug">{desc}</div>
     </button>
   );
 }
