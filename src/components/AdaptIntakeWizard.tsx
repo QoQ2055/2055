@@ -158,7 +158,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                     className={clsx(
                       'text-left rounded-md border p-3 transition-colors',
                       adaptSourceType === opt.value
-                        ? 'border-brand-500/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+                        ? 'border-primary-800/60 bg-primary-500/10 ring-1 ring-primary-500/30'
                         : 'border-border-subtle hover:border-border-default hover:bg-surface',
                     )}
                   >
@@ -243,7 +243,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         className={clsx(
                           'px-2.5 py-1 text-xs rounded-md border transition-colors',
                           durationMin === d.value
-                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                            ? 'border-primary-800/60 bg-primary-500/15 text-primary-200'
                             : 'border-border-subtle hover:border-border-default text-fg-secondary',
                         )}
                         title={d.hint}
@@ -265,7 +265,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         className={clsx(
                           'text-left rounded-md border p-2.5 transition-colors',
                           platform === pl.value
-                            ? 'border-brand-500/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+                            ? 'border-primary-800/60 bg-primary-500/10 ring-1 ring-primary-500/30'
                             : 'border-border-subtle hover:border-border-default hover:bg-surface',
                         )}
                       >
@@ -287,7 +287,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         className={clsx(
                           'px-2 py-1.5 text-xs rounded-md border transition-colors',
                           protagonistGender === opt.value
-                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                            ? 'border-primary-800/60 bg-primary-500/15 text-primary-200'
                             : 'border-border-subtle hover:border-border-default text-fg-secondary',
                         )}
                       >
@@ -313,7 +313,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
               {suggestedName && name !== suggestedName && (
                 <button
                   type="button"
-                  className="btn-ghost text-tight-sm mt-1 text-brand-300 hover:bg-primary-500/10"
+                  className="btn-ghost text-tight-sm mt-1 text-primary-300 hover:bg-primary-500/10"
                   onClick={() => setName(suggestedName)}
                 >
                   使用建议名「{suggestedName}」

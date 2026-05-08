@@ -226,7 +226,7 @@ export function Assets() {
               className={clsx(
                 'flex items-center gap-2 px-4 py-2 text-sm rounded-t-md border-b-2 transition-colors',
                 isActive
-                  ? 'border-brand-500 text-fg-primary bg-surface/60'
+                  ? 'border-primary-200 text-fg-primary bg-surface/60'
                   : 'border-transparent text-fg-secondary hover:text-fg-primary',
               )}
             >
@@ -536,7 +536,7 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
 
 function StatusBadge({ status, stale, hasArtifact }: { status: NodeStatus; stale?: boolean; hasArtifact: boolean }) {
   if (status === 'running')
-    return <span className="inline-flex items-center gap-1 text-tight-xs text-brand-300"><Loader2 className="size-3 animate-spin" /> 运行中</span>;
+    return <span className="inline-flex items-center gap-1 text-tight-xs text-primary-300"><Loader2 className="size-3 animate-spin" /> 运行中</span>;
   if (status === 'error')
     return <span className="text-tight-xs px-1.5 py-0.5 rounded bg-danger/15 text-danger border border-danger/30">错误</span>;
   if (stale && hasArtifact)

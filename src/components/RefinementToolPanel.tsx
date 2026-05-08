@@ -178,7 +178,7 @@ export function RefinementToolPanel({
               className={
                 'flex flex-col items-center gap-0.5 px-2 py-2 text-xs rounded-md border transition-colors ' +
                 (isActive
-                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  ? 'border-primary-500/60 bg-primary-500/15 text-primary-200'
                   : isDimmed
                     ? 'border-border-subtle bg-surface/30 text-fg-muted cursor-wait'
                     : 'border-border-subtle hover:border-border-default hover:bg-surface text-fg-secondary') +

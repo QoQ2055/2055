@@ -112,13 +112,13 @@ export function GenreAnchorPreview({ genres, compact, className }: GenreAnchorPr
   return (
     <div
       className={
-        'mt-2 rounded-md border border-brand-500/30 bg-primary-500/5 px-3 py-2.5 space-y-2 ' +
+        'mt-2 rounded-md border border-primary-200/30 bg-primary-500/5 px-3 py-2.5 space-y-2 ' +
         (className ?? '')
       }
     >
       {/* 标题行 */}
       <div className="flex items-center justify-between flex-wrap gap-1">
-        <div className="text-xs font-medium text-brand-300">
+        <div className="text-xs font-medium text-primary-300">
           🎯 题材锚点
           <span className="ml-1.5 text-fg-muted font-normal">{merged.labels.join(' + ')}</span>
         </div>

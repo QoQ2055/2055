@@ -133,7 +133,7 @@ export function UserKbLibrary() {
                   className={clsx(
                     'text-tight-sm px-2 py-0.5 rounded border transition-colors',
                     filter === opt.value
-                      ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                      ? 'border-primary-200 bg-primary-500/15 text-primary-300'
                       : 'border-border-default text-fg-secondary hover:text-fg-primary',
                   )}
                 >
@@ -363,7 +363,7 @@ function DetailTab({ active, onClick, children }: { active: boolean; onClick: ()
       onClick={onClick}
       className={clsx(
         'px-2 py-1 border-b-2 -mb-px transition-colors',
-        active ? 'border-brand-500 text-fg-primary' : 'border-transparent text-fg-muted hover:text-fg-secondary',
+        active ? 'border-primary-200 text-fg-primary' : 'border-transparent text-fg-muted hover:text-fg-secondary',
       )}
     >
       {children}

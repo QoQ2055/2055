@@ -187,7 +187,7 @@ export function UserKbUploadDialog({ initialType = 'trend', onClose, onSaved }: 
                         className={clsx(
                           'text-xs px-2.5 py-1.5 rounded border transition-colors',
                           type === t
-                            ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                            ? 'border-primary-200 bg-primary-500/15 text-primary-300'
                             : 'border-border-default text-fg-secondary hover:text-fg-primary',
                         )}
                         title={`${m.description}\n注入到：${m.injectsTo.join('、')}${supported ? '' : '\n⚠ 暂不支持 LLM 自动提炼，需手动填'}`}
@@ -372,7 +372,7 @@ function StepIndicator({ current, step, children }: { current: Step; step: Step;
   return (
     <span className={clsx(
       'px-1.5 py-0.5 rounded transition-colors',
-      active && 'bg-primary-500/20 text-brand-300',
+      active && 'bg-primary-500/20 text-primary-300',
       done && 'text-success',
       !active && !done && 'text-fg-muted',
     )}>

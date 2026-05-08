@@ -471,7 +471,7 @@ export function Express() {
                     className={clsx(
                       'text-tight-sm px-2 py-1 rounded border transition',
                       active
-                        ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                        ? 'border-brand-500 bg-primary-500/15 text-primary-300'
                         : 'border-border-subtle text-fg-secondary hover:border-neutral-600',
                     )}
                     onClick={() => {
@@ -879,7 +879,7 @@ function ChoiceRow(p: {
             className={clsx(
               'text-tight-sm px-2.5 py-1 rounded border transition',
               active
-                ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                ? 'border-brand-500 bg-primary-500/15 text-primary-300'
                 : 'border-border-subtle text-fg-secondary hover:border-neutral-600',
             )}
             onClick={() => p.onChange(opt.value)}

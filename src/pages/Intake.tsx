@@ -579,7 +579,7 @@ function MasterPreview({
         <Section title="genre">
           <div className="flex flex-wrap gap-1.5 items-center">
             {master.genreType && (
-              <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300">
+              <span className="px-1.5 py-0.5 rounded border border-primary-200/40 bg-primary-500/10 text-primary-300">
                 {master.genreType}
               </span>
             )}

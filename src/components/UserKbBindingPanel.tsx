@@ -76,7 +76,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
           target="_blank"
           rel="noreferrer"
           onClick={(e) => e.stopPropagation()}
-          className="text-tight-sm text-brand-300 hover:text-brand-200 flex items-center gap-0.5"
+          className="text-tight-sm text-primary-300 hover:text-primary-200 flex items-center gap-0.5"
         >
           管理 <ExternalLink className="size-3" />
         </a>
@@ -90,7 +90,7 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
           {!loading && docs.length === 0 && (
             <div className="text-tight-sm text-fg-muted italic py-2">
               还没上传过任何资料。前往「
-              <a href="#/kb" target="_blank" rel="noreferrer" className="text-brand-300 underline">
+              <a href="#/kb" target="_blank" rel="noreferrer" className="text-primary-300 underline">
                 知识库 → 我的资料库
               </a>
               」上传爆款要点 / 范文 / 反例后即可绑定。
@@ -116,12 +116,12 @@ export function UserKbBindingPanel({ value, onChange, collapsed = false }: Props
                           className={clsx(
                             'w-full text-left px-2 py-1 rounded text-tight-sm flex items-center gap-2 transition-colors',
                             checked
-                              ? 'bg-primary-500/15 text-brand-200 border border-brand-500/40'
+                              ? 'bg-primary-500/15 text-primary-200 border border-primary-800/40'
                               : 'border border-transparent hover:bg-surface',
                           )}
                         >
                           {checked ? (
-                            <ToggleRight className="size-3.5 shrink-0 text-brand-300" />
+                            <ToggleRight className="size-3.5 shrink-0 text-primary-300" />
                           ) : (
                             <ToggleLeft className="size-3.5 shrink-0 text-fg-muted" />
                           )}

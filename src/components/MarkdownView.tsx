@@ -14,12 +14,12 @@ export function MarkdownView({ content, className }: { content: string; classNam
           ul: (p) => <ul className="list-disc pl-5 my-2 text-sm text-fg-secondary space-y-1" {...p} />,
           ol: (p) => <ol className="list-decimal pl-5 my-2 text-sm text-fg-secondary space-y-1" {...p} />,
           blockquote: (p) => (
-            <blockquote className="border-l-2 border-brand-500/60 pl-3 my-2 text-sm text-fg-secondary italic" {...p} />
+            <blockquote className="border-l-2 border-primary-500/60 pl-3 my-2 text-sm text-fg-secondary italic" {...p} />
           ),
           code: ({ className, children, ...rest }) => {
             const inline = !className;
             return inline
-              ? <code className="px-1 py-0.5 rounded bg-elevated text-[0.85em] text-brand-300" {...rest}>{children}</code>
+              ? <code className="px-1 py-0.5 rounded bg-elevated text-[0.85em] text-primary-300" {...rest}>{children}</code>
               : <code className="block p-3 rounded bg-canvas border border-border-subtle text-xs overflow-auto" {...rest}>{children}</code>;
           },
           hr: () => <hr className="my-4 border-border-subtle" />,

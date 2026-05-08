@@ -453,7 +453,7 @@ function OriginalForm(f: OriginalFormProps) {
                         className={clsx(
                           'px-2 py-1 text-xs rounded-md border transition-colors',
                           picked
-                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                            ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                             : capped
                               ? 'border-border-subtle bg-surface/50 text-fg-muted cursor-not-allowed'
                               : 'border-border-subtle hover:border-border-default hover:bg-surface text-fg-secondary',
@@ -483,7 +483,7 @@ function OriginalForm(f: OriginalFormProps) {
                 className={clsx(
                   'px-2 py-1.5 text-xs rounded-md border transition-colors',
                   f.protagonistGender === opt.value
-                    ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                    ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                     : 'border-border-subtle hover:border-border-default text-fg-secondary',
                 )}
               >
@@ -497,7 +497,7 @@ function OriginalForm(f: OriginalFormProps) {
           <select
             value={f.platform}
             onChange={(e) => f.setPlatform(e.target.value)}
-            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-xs focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-xs focus:outline-none focus:border-primary-300"
           >
             {PLATFORMS.map((pl) => (
               <option key={pl.value} value={pl.value}>{pl.label}</option>
@@ -516,7 +516,7 @@ function OriginalForm(f: OriginalFormProps) {
               className={clsx(
                 'px-2 py-1 text-xs rounded-md border transition-colors',
                 f.durationMin === d.value
-                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                   : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
               title={d.hint}
@@ -666,7 +666,7 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelPlatform}
             onChange={(e) => f.setNovelPlatform(e.target.value)}
-            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-primary-300"
           >
             {NOVEL_PLATFORMS.map((pl) => (
               <option key={pl.value} value={pl.value}>
@@ -688,7 +688,7 @@ function NovelForm(f: NovelFormProps) {
                 className={clsx(
                   'flex-1 px-2 py-1.5 text-xs rounded-md border transition-colors',
                   f.novelAudience === opt.value
-                    ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                    ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                     : 'border-border-subtle hover:border-border-default text-fg-secondary',
                 )}
               >{opt.label}</button>
@@ -708,7 +708,7 @@ function NovelForm(f: NovelFormProps) {
               className={clsx(
                 'px-2 py-1.5 text-xs rounded-md border transition-colors text-center',
                 f.novelScale === s.value
-                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                   : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
             >
@@ -762,7 +762,7 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelPov}
             onChange={(e) => f.setNovelPov(e.target.value)}
-            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-primary-300"
           >
             {NOVEL_POVS.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -777,7 +777,7 @@ function NovelForm(f: NovelFormProps) {
           <select
             value={f.novelTone}
             onChange={(e) => f.setNovelTone(e.target.value)}
-            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-brand-500"
+            className="w-full bg-surface border border-border-subtle rounded-md px-2 py-1.5 text-sm focus:outline-none focus:border-primary-300"
           >
             {NOVEL_TONES.map((opt) => (
               <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -815,7 +815,7 @@ function NovelForm(f: NovelFormProps) {
                         className={clsx(
                           'px-2 py-1 text-xs rounded-md border transition-colors',
                           picked
-                            ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                            ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                             : capped
                               ? 'border-border-subtle bg-surface/50 text-fg-muted cursor-not-allowed'
                               : 'border-border-subtle hover:border-border-default hover:bg-surface text-fg-secondary',
@@ -844,7 +844,7 @@ function NovelForm(f: NovelFormProps) {
               className={clsx(
                 'px-2 py-1.5 text-xs rounded-md border transition-colors',
                 f.protagonistGender === opt.value
-                  ? 'border-brand-500/60 bg-primary-500/15 text-brand-200'
+                  ? 'border-primary-300/60 bg-primary-500/15 text-primary-200'
                   : 'border-border-subtle hover:border-border-default text-fg-secondary',
               )}
             >
@@ -919,7 +919,7 @@ function SmallCard({
       className={clsx(
         'text-left rounded-md border p-3 transition-colors',
         active
-          ? 'border-brand-500/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+          ? 'border-primary-300/60 bg-primary-500/10 ring-1 ring-primary-500/30'
           : 'border-border-subtle hover:border-border-default hover:bg-surface',
       )}
     >

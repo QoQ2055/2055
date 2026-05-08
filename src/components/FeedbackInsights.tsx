@@ -312,7 +312,7 @@ export function FeedbackInsights() {
               className={clsx(
                 'text-tight-sm px-2 py-0.5 rounded border transition-colors',
                 filterIssue === 'all'
-                  ? 'border-brand-500 bg-primary-500/15 text-brand-300'
+                  ? 'border-primary-200 bg-primary-500/15 text-primary-300'
                   : 'border-border-default text-fg-secondary hover:text-fg-primary',
               )}
             >

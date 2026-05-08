@@ -1035,7 +1035,7 @@ function ProjectSettingsCard({
             <div>
               <span className="text-fg-muted">📚 知识库绑定：</span>
               <span className="text-fg-secondary">{ctx.userKbDocIds.length} 条资料</span>
-              <Link to="/kb" className="ml-2 text-tight-sm text-brand-300 hover:text-brand-200">
+              <Link to="/kb" className="ml-2 text-tight-sm text-primary-300 hover:text-primary-200">
                 管理 →
               </Link>
             </div>
@@ -1132,7 +1132,7 @@ function StepCard({
   return (
     <div className={clsx(
       'rounded border p-3 transition-colors space-y-2',
-      approved ? 'border-emerald-700/60 bg-success/5' : 'border-border-subtle hover:border-border-default',
+      approved ? 'border-primary-800/60 bg-success/5' : 'border-border-subtle hover:border-border-default',
     )}>
       <div className="flex items-start justify-between gap-2">
         <div className="text-sm font-medium leading-tight flex items-center gap-1.5 flex-wrap">

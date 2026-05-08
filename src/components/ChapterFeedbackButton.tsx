@@ -181,7 +181,7 @@ export function ChapterFeedbackButton({ chapterIndex, nodeId, chapterTitle, onSu
                       <label className="block text-fg-secondary">负样本片段（可选）</label>
                       <button
                         onClick={captureSelection}
-                        className="btn-ghost text-tight-sm text-brand-300 hover:text-brand-200"
+                        className="btn-ghost text-tight-sm text-primary-300 hover:text-primary-200"
                         title="先在章节正文里用鼠标高亮一段，再点这里抓取"
                       >
                         🖍 抓取选中文字

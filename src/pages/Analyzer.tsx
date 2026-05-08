@@ -460,7 +460,7 @@ export function Analyzer() {
               type="button"
               onClick={run}
               disabled={!canRun}
-              className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+              className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-primary-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
             >
               <Play className="size-4" /> 开始拆书分析
             </button>
@@ -481,7 +481,7 @@ export function Analyzer() {
                 type="button"
                 onClick={runStage1}
                 disabled={!canRun}
-                className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-brand-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm rounded-md border border-brand-500/40 bg-primary-500/15 hover:bg-primary-500/25 text-primary-200 font-medium inline-flex items-center gap-1.5 disabled:opacity-40 disabled:cursor-not-allowed"
               >
                 <Play className="size-4" /> {stage1Result ? '重跑' : '运行'} Stage 1：框架扫描
               </button>
@@ -531,7 +531,7 @@ export function Analyzer() {
       {analysisMode === 'two-stage' && stage1Result && (
         <div className="rounded-md border border-brand-500/30 bg-primary-500/5 p-3 space-y-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-brand-200">
+            <h3 className="text-sm font-semibold text-primary-200">
               📝 Stage 1 框架扫描结果（可手动修订后运行 Stage 2）
             </h3>
             <button
@@ -573,7 +573,7 @@ export function Analyzer() {
                     const tag = findChapterTag(cf.tag);
                     return (
                       <div key={i} className="flex items-start gap-2 text-tight-sm">
-                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300 text-tight-2xs">
+                        <span className="shrink-0 px-1 py-0 rounded border border-brand-500/40 bg-primary-500/10 text-primary-300 text-tight-2xs">
                           {tag?.label ?? cf.tag}
                         </span>
                         <input
@@ -671,7 +671,7 @@ export function Analyzer() {
                   'px-2 py-1 text-tight-sm rounded border inline-flex items-center gap-1 disabled:opacity-60 ' +
                   (savedKbId !== null
                     ? 'border-success/40 bg-success/15 text-success-200'
-                    : 'border-brand-500/40 bg-primary-500/10 hover:bg-primary-500/20 text-brand-200')
+                    : 'border-brand-500/40 bg-primary-500/10 hover:bg-primary-500/20 text-primary-200')
                 }
               >
                 {savingKb ? (
@@ -783,7 +783,7 @@ export function Analyzer() {
                       className="rounded border border-border-subtle bg-surface/30 p-2 space-y-1"
                     >
                       <div className="flex items-center gap-2 flex-wrap text-tight-sm">
-                        <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-brand-300">
+                        <span className="px-1.5 py-0.5 rounded border border-brand-500/40 bg-primary-500/10 text-primary-300">
                           {tag.label}
                         </span>
                         <span className="text-fg-muted">{tag.position}</span>
