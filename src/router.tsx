@@ -20,6 +20,11 @@ const Refinery          = lazy(() => import('./pages/Refinery').then(m => ({ def
 const Analyzer          = lazy(() => import('./pages/Analyzer').then(m => ({ default: m.Analyzer })));
 const MethodModules     = lazy(() => import('./pages/MethodModules').then(m => ({ default: m.MethodModules })));
 const ReflectorLessons  = lazy(() => import('./pages/ReflectorLessons').then(m => ({ default: m.ReflectorLessons })));
+// MM1 PR-2 · multi-format expansion · 4 路由骨架（0 LLM · 仅工作流元数据展示）
+const FeatureFilm       = lazy(() => import('./pages/FeatureFilm').then(m => ({ default: m.FeatureFilm })));
+const ShortFilm         = lazy(() => import('./pages/ShortFilm').then(m => ({ default: m.ShortFilm })));
+const UltraShortFilm    = lazy(() => import('./pages/UltraShortFilm').then(m => ({ default: m.UltraShortFilm })));
+const Series            = lazy(() => import('./pages/Series').then(m => ({ default: m.Series })));
 
 // 极简 loading 占位 · 用 fg-muted token · 不引入新依赖
 const RouteFallback = () => (
@@ -49,6 +54,11 @@ export const router = createHashRouter([
       { path: 'playground',     element: wrap(<Playground />) },
       { path: 'methods',        element: wrap(<MethodModules />) },
       { path: 'lessons',        element: wrap(<ReflectorLessons />) },
+      // MM1 PR-2 · 4 multi-format 骨架路由（0 LLM · 仅工作流元数据展示）
+      { path: 'feature-film',   element: wrap(<FeatureFilm />) },
+      { path: 'short-film',     element: wrap(<ShortFilm />) },
+      { path: 'ultrashort-film', element: wrap(<UltraShortFilm />) },
+      { path: 'series',         element: wrap(<Series />) },
       { path: 'settings',       element: wrap(<Settings />) },
       { path: '*',              element: <Navigate to="/" replace /> },
     ],
