@@ -5,10 +5,14 @@ import {
   ArrowRight, Archive, Sparkles, FileDown,
   // MM1 PR-3 · format explore section icons
   Film, Clapperboard, Zap, Layers, Construction,
+  // MM5 PR-3 · continuity dashboard
+  Database,
 } from 'lucide-react';
 // MM1 PR-3 · multi-format expansion · 4 manifest 数据源
 import { ALL_FORMATS, type FormatManifest } from '../data/formats';
-import { Button } from '../components/ui';
+// MM5 PR-3 · continuity dashboard · v8 4 表第一个产品消费者
+import { Button, Modal, ModalHeader, ModalTitle, ModalBody, ModalFooter } from '../components/ui';
+import { ContinuityDashboardPanel } from '../components/ContinuityDashboardPanel';
 import { EmptyState } from '../components/ui/feedback';
 import { toast } from '../store/toast';
 import { confirm } from '../store/confirm';
@@ -43,6 +47,8 @@ export function Home() {
   const openWizard = useProjectDialog((s) => s.openWizard);
   const closeAllDialogs = useProjectDialog((s) => s.closeAll);
   const [busy, setBusy] = useState(false);
+  // MM5 PR-3 · 连续性看板 modal 状态
+  const [continuityOpen, setContinuityOpen] = useState(false);
   // gap-e PR-2 · 导出抽屉提升到全局 store · toolbar 与 Cmd+K 命令面板共享
   const showExport = useExportDrawer((s) => s.show);
   const navigate = useNavigate();
@@ -407,7 +413,23 @@ export function Home() {
         </div>
       </section>
 
-      {/* ⑤ History · Studio Calm A.2 · p-5 → p-6 · 行高加大 */}
+      {/* ⑤ MM5 PR-3 · 连续性看板入口（v8 schema 首个产品消费者 · 0 LLM） */}
+      <section className="flex items-center gap-2">
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => setContinuityOpen(true)}
+          disabled={busy}
+          title="读取 v8 连续性表 · 显示伏笔 / 角色弧光 / 世界观规则 / 节奏诊断 4 表统计 · 0 LLM 接入"
+        >
+          <Database className="size-3.5" /> 连续性看板
+        </Button>
+        <span className="text-tight-xs text-fg-muted">
+          MM5 epic · 4 张连续性表只读视图 · 写入路径 Coming Soon
+        </span>
+      </section>
+
+      {/* ⑥ History · Studio Calm A.2 · p-5 → p-6 · 行高加大 */}
       <section className="card p-6">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-heading-m">历史项目（{projects.length}）</h2>
@@ -498,6 +520,29 @@ export function Home() {
         onCancel={closeAllDialogs}
         onSubmit={handleAdaptSubmit}
       />
+
+      {/* MM5 PR-3 · 连续性看板 modal · projectId=0 = 活动项目 sentinel · 与 recordRun 约定一致 */}
+      <Modal
+        open={continuityOpen}
+        onClose={() => setContinuityOpen(false)}
+        size="lg"
+        ariaLabel="连续性看板"
+      >
+        <ModalHeader onClose={() => setContinuityOpen(false)}>
+          <ModalTitle>v8 连续性看板</ModalTitle>
+        </ModalHeader>
+        <ModalBody>
+          <ContinuityDashboardPanel projectId={0} projectName={activeCtx.name} />
+        </ModalBody>
+        <ModalFooter>
+          <span className="mr-auto text-tight-xs text-fg-muted">
+            MM5 epic · 4 表只读视图 · 写入路径 PR-4+ Coming Soon
+          </span>
+          <Button variant="ghost" size="sm" onClick={() => setContinuityOpen(false)}>
+            关闭
+          </Button>
+        </ModalFooter>
+      </Modal>
 
     </div>
   );
