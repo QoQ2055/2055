@@ -1,6 +1,6 @@
-# Dogfood 自测清单（2026-05-08 ui-v6 PR-8 push 节点 · commit pending）
+# Dogfood 自测清单（2026-05-09 ui-v6 PR-9 push 节点 · commit pending）
 
-> 本文档汇总 2026-05-07/08 三 session 内完成的 16 个 PR 的所有 US-* 用户手测场景。最新七节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit) · ⑬ ui-v6 PR-7 bundle code-split (1 commit) · ⑭ ui-v6 PR-8 hover prefetch (1 commit)。
+> 本文档汇总 2026-05-07/08/09 四 session 内完成的 17 个 PR 的所有 US-* 用户手测场景。最新八节：⑧ ui-v6 PR-1 Studio Calm A.1-A.4 (4 commit) · ⑨ ui-v6 PR-2 动效闭环 (1 commit) · ⑩ ui-v6 PR-3 Studio Calm C.1+C.2 (2 commit) · ⑪ ui-v6 PR-5 /lessons + /kb hero header (1 commit) · ⑫ token sweep bg-surface-N + brand-N (2 commit) · ⑬ ui-v6 PR-7 bundle code-split (1 commit) · ⑭ ui-v6 PR-8 hover prefetch (1 commit) · ⑮ ui-v6 PR-9 Novel modal lazy (1 commit)。
 >
 > 来源：`docs/dogfood-log.md` 各 PR 节的"dogfood 用户手测项"。本文档是**单页可勾选汇总** · 跑完后把结果写回 `dogfood-log.md` 对应 PR 节的 erratum 子节。
 >
@@ -457,6 +457,28 @@ Get-ChildItem src -Recurse -Include *.ts,*.tsx | Where-Object { $_.FullName -not
 - [ ] DESIGN.md 14 token 0 增删 · 6 atom API 0 破坏
 - [ ] dexie schema 0 改 · 业务逻辑 0 改
 - [ ] vite build 0 errors · 入口 index.js < 60 KB · 任何路由 chunk < 600 KB
+
+---
+
+## ⑮ ui-v6 PR-9 · Novel chunk modal lazy 拆分 · commit pending
+
+### US-A20 · /novel modal/dialog 按需加载（必测）
+
+前置：`npm run dev` · DevTools Network · 勾 Disable cache。
+
+- [ ] 进入 `/novel` · Network 仅看到 `Novel-*.js`（应 ~80 KB · 不含 PreviewModal/NovelSettingsDialog）
+- [ ] 不点设置 / 预览 · 验证 PreviewModal-*.js / NovelSettingsDialog-*.js **未加载**
+- [ ] 点页面顶部 ⚙ 设置按钮 → Network 出现 `NovelSettingsDialog-*.js` 请求 · modal 正常打开 · 内容渲染完整
+- [ ] 关闭设置 · 再点开 → modal 即时打开 · Network **不重复请求**（缓存）
+- [ ] 章节列表中点 👁 预览 → Network 出现 `PreviewModal-*.js` · modal 打开 · 内容渲染完整
+- [ ] 业务回归：设置 dialog 保存能正确更新 ctx · 预览 modal 显示文本无丢失
+- [ ] 0 console 报错
+
+```powershell
+# 确认 chunk 边界
+Get-ChildItem dist\assets -Filter '*.js' | Where-Object { $_.Name -match 'Novel|Preview' } | Select Name,@{n='KB';e={[math]::Round($_.Length/1KB,1)}}
+# 应输出 3 行: Novel-*.js (~80) / NovelSettingsDialog-*.js (~34) / PreviewModal-*.js (~19)
+```
 
 ---
 

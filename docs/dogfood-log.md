@@ -9,11 +9,60 @@
 
 ---
 
-## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6+PR-7+PR-8 完成 · 共 12 commit）
+## ui-v6 epic · Studio Calm 美化（2026-05-08 PR-1+PR-2+PR-3+PR-4+PR-5+PR-6+PR-7+PR-8+PR-9 完成 · 共 13 commit）
 
 > **2026-05-08 16:00 token-sweep 闭环验证**：基于 `tailwind.config.ts` 实际定义的 palette（primary {50-900} · secondary {400/500/600} · brand {50/100/400/500/600/700} · success/warning/danger/info {DEFAULT/hover/active/50/100/200} · canvas/surface/elevated/overlay/fg-*/border-* 单档），跑 9 类 invalid class 静默丢弃扫雷（包括 secondary 越界 / 语义色 ≥300 / 单档加数字 / brand 越界 / primary 0/950 / action-primary 加数字 / 渐变 from-/to-/via- 同类 / fg-N / border-XX-N），**全 0 hits**。token sweep 工作彻底闭环 · 之后 ui 改动直接消费现有 palette 即可。
 
-### PR-8 · 路由 chunk hover 预取 / 消除 lazy 闪现（commit pending）
+### PR-9 · Novel chunk modal/dialog lazy 拆分（commit pending）
+
+**目标**：PR-7 后 Novel chunk 仍是最大单 chunk（131.30 KB）· 拆出仅条件渲染的 modal/dialog · 进一步降低 /novel 路由首次访问成本。
+
+**根因**：`PreviewModal`（16 KB 源 · 仅 `previewNode &&` 时挂载）+ `NovelSettingsDialog`（15 KB 源 · 仅 `editSettings &&` 时挂载）原本随 Novel.tsx eager 打入 Novel chunk · 多数用户首次访问 /novel 时不会立即打开这两个 modal · 浪费首屏带宽。
+
+**实装范围**：
+
+```
+src/pages/Novel.tsx（+10 / -3）
+  · import { lazy, Suspense } from 'react'
+  · PreviewModal / NovelSettingsDialog 改 React.lazy
+  · 两个 conditional render 块外包 <Suspense fallback={null}>
+  · fallback={null} OK：modal 自带 backdrop · 短暂等待无 UX 影响
+```
+
+**build 实测对比**：
+
+| chunk | before | after | gzip before | gzip after |
+| --- | --- | --- | --- | --- |
+| **Novel base** | **131.30 KB** | **79.91 KB (-39%)** | **48.16 KB** | **29.24 KB (-39%)** |
+| PreviewModal（懒）| (合) | 18.67 KB | - | 7.30 KB |
+| NovelSettingsDialog（懒）| (合) | 34.16 KB | - | 14.30 KB |
+| **总和** | 131.30 | 132.74 (+1.4 KB · lazy boundary) | 48.16 | 50.84 (+2.7 KB) |
+
+**关键洞察**：lazy boundary overhead 仅 +1.4 KB · 但首屏 /novel 节省 51.39 KB（-39%）· NovelSettingsDialog lazy chunk 反映 transitive deps（UserKbBindingPanel + MethodModulePanel）从 Novel 主 chunk 移出 · 这些 panel 仅在打开设置 dialog 时才需要。
+
+**用户场景体验**：
+- 进入 /novel：少下 51 KB · 首屏快
+- 第一次点 ⚙ 设置按钮：lazy 加载 NovelSettingsDialog · ~100-200ms（modal 自带过渡 · 无 fallback 闪现）
+- 第一次点章节预览：lazy 加载 PreviewModal · 同上
+- 第二次起：缓存命中 · 0 延迟
+
+**build 实测**：
+```
+npm run build → 0 errors · 1969 modules（与 PR-8 同 · 仅 chunk 边界改动）· TS 0 错
+新增 chunks: PreviewModal-*.js 18.67 KB / NovelSettingsDialog-*.js 34.16 KB
+Novel chunk: 131.30 -> 79.91 KB (-39%)
+```
+
+**不变量**：
+- DESIGN.md 14 token 0 增删 · 6 atom API 0 破坏
+- 路由 0 改 · dexie schema 0 改 · 业务逻辑 0 改
+- Novel.tsx 公开行为 0 改（内部仅 import 形式从 eager 改为 lazy + Suspense 包裹）
+
+**用户手测项**：见 dogfood-checklist.md ⑮ ui-v6 PR-9 节（US-A20）
+
+---
+
+### PR-8 · 路由 chunk hover 预取 / 消除 lazy 闪现（commit `d02610a`）
 
 **目标**：在 PR-7 路由 lazy 的体验代价（首次访问每个路由闪现"加载中..."）上做最后一公里优化 · sidebar nav 在用户 hover 时就开始下载该路由 chunk · 真实点击时已 cached · 闪现消失。
 

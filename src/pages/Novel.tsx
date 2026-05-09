@@ -2,7 +2,7 @@
 // 三阶段流水线：设定（N1.1/N1.2）→ 大纲（N2.1/N2.2/N2.3）→ 章节（N3.1/N3.2）。
 // 复用 runStep（serial 节点）+ novelLoop 自定义循环器（N2.2 / N3.1 / N3.2）。
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Edit3, Play, Square, Loader2, CheckCircle2, Circle, AlertTriangle,
@@ -51,8 +51,11 @@ import {
 
 // PR-4 · 拆出 sub-components（src/pages/novel/）
 import { NOVEL_STEP_TITLES } from './novel/constants';
-import { PreviewModal } from './novel/PreviewModal';
-import { NovelSettingsDialog } from './novel/NovelSettingsDialog';
+// ui-v6 PR-9 · 两个 modal/dialog 仅条件渲染 · lazy 化拆出 Novel chunk
+// PreviewModal 16 KB · NovelSettingsDialog 15 KB · 合计 31 KB 源码 → 减小 Novel chunk
+// fallback={null}：modal 自带 backdrop · 短暂等待无 UX 影响
+const PreviewModal = lazy(() => import('./novel/PreviewModal').then(m => ({ default: m.PreviewModal })));
+const NovelSettingsDialog = lazy(() => import('./novel/NovelSettingsDialog').then(m => ({ default: m.NovelSettingsDialog })));
 
 // ui-v3 PR-1B · 局部 J/K 章节切换快捷键
 import { isEditingTarget } from '../lib/shortcuts';
@@ -597,14 +600,16 @@ export function Novel() {
       />
 
       {editSettings && (
-        <NovelSettingsDialog
-          ctx={ctx}
-          onClose={() => setEditSettings(false)}
-          onSave={(patch) => {
-            project.setCtx(patch);
-            setEditSettings(false);
-          }}
-        />
+        <Suspense fallback={null}>
+          <NovelSettingsDialog
+            ctx={ctx}
+            onClose={() => setEditSettings(false)}
+            onSave={(patch) => {
+              project.setCtx(patch);
+              setEditSettings(false);
+            }}
+          />
+        </Suspense>
       )}
 
       {/* ── Phase 0 · 选题 ─────────────────────────────────── */}
@@ -918,14 +923,16 @@ export function Novel() {
 
       {/* ── Preview modal ────────────────────────────────────────── */}
       {previewNode && (
-        <PreviewModal
-          target={previewNode}
-          chapters={chapters}
-          draftMeta={draftMeta}
-          polishMeta={polishMeta}
-          artifacts={project.artifacts}
-          onClose={() => setPreviewNode(null)}
-        />
+        <Suspense fallback={null}>
+          <PreviewModal
+            target={previewNode}
+            chapters={chapters}
+            draftMeta={draftMeta}
+            polishMeta={polishMeta}
+            artifacts={project.artifacts}
+            onClose={() => setPreviewNode(null)}
+          />
+        </Suspense>
       )}
 
     </div>
