@@ -1,4 +1,4 @@
-﻿# AGENTS.md · fili-web 协作者导航
+# AGENTS.md · fili-web 协作者导航
 
 > Last refreshed: 2026-05-06 · 对应 CHANGELOG `Unreleased / 阶段 2.10`（最新一项是 DESIGN.md 设计系统全量重塑 · C 档位 · v0.1.1-alpha）
 > 此文件给 AI 协作者（Cascade / Claude / Cursor / Copilot）和后加入的人类读。
@@ -320,7 +320,7 @@ npx vite build 2>&1 | Select-String -Pattern '^error|built'
 
 ### 协作系统强化（2026-05-06）
 
-- **品牌对齐**：folder + package.json `cineforge-web` → `fili-web`；HTML title / Dexie DB 保留 `FLIL` 品牌（数据零迁移）。同仓结构另有 sibling：`C:\Users\QvQ\CascadeProjects\fili-sniff` （Python webhook 逆向代理）。
+- **品牌对齐**：folder + package.json `fili-web` → `fili-web`；HTML title / Dexie DB 保留 `FLIL` 品牌（数据零迁移）。同仓结构另有 sibling：`C:\Users\QvQ\CascadeProjects\fili-sniff` （Python webhook 逆向代理）。
 - **新增 skill**：`skill-authoring`（L3 完整 · + trigger）+ `image-prompt-craft`（L2 备用 · 无 trigger）。
 - **新增 workflow**：`/dogfood-check` + `/vet-skill <url>`。
 - **决策心法**：`coding-standards.md` 增 VFM 金规则 + ADL 优先序（抽自 openclaw proactive-agent + 他外部 skill 评估）。

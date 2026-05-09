@@ -370,7 +370,7 @@ export function PreviewModal({
               />
               <p className="mt-2 text-tight-xs text-fg-muted leading-snug">
                 💡 点「应用」后会{selection ? '替换选区文本' : '覆写全章内容'}。顺安全起见，顶栏「撤销润色」按钮可逐步回退。
-                多工具可链式使用（先精炼→再润色→再调节奏）；不同于 cineforge 的 N3.2 批量润色节点。
+                多工具可链式使用（先精炼→再润色→再调节奏）；不同于 fili-web 的 N3.2 批量润色节点。
               </p>
             </div>
           </details>

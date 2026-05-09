@@ -1,4 +1,4 @@
-﻿# 内部参考手册 · DeepSeek V4 调优手册
+# 内部参考手册 · DeepSeek V4 调优手册
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/novelgenius-deep-enhancement-plan-original.md` 提炼
@@ -39,7 +39,7 @@
 
 ## 二、Thinking Mode 关键技术
 
-### 2.1 启用方式（cineforge 当前未支持，重点）
+### 2.1 启用方式（fili-web 当前未支持，重点）
 
 ```ts
 // 在 ai.chat.completions.create() 调用中：
@@ -75,7 +75,7 @@
 - `"high"`（默认）/ `"max"`（复杂任务自动升级）有效
 - `"low"` / `"medium"` 会被映射到 `"high"`
 
-### 2.4 流式输出处理（cineforge 当前未处理）
+### 2.4 流式输出处理（fili-web 当前未处理）
 
 V4 Thinking 内容在 SSE delta 的 `reasoning_content` 字段中：
 
@@ -86,7 +86,7 @@ const reasoning: string = delta?.reasoning_content ?? '';  // 思维链
 const content: string = delta?.content ?? '';              // 正式回答
 ```
 
-cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 thinking 后**思维链内容会丢失**。
+fili-web 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 thinking 后**思维链内容会丢失**。
 
 ---
 
@@ -98,7 +98,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ✅ **应该写**："你的叙述从不使用对比否定句式。你只描述发生了什么，而非没有发生什么。'你保持警惕'，而非'你没有放松警惕'。"
 
-→ **印证 cineforge 现有 `@public/methods/anti-ai-flavor.md` 设计方向正确**。
+→ **印证 fili-web 现有 `@public/methods/anti-ai-flavor.md` 设计方向正确**。
 
 ### 3.2 指令的最优注入位置
 
@@ -162,7 +162,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ## 五、response_format JSON 模式
 
-### 5.1 启用方式（cineforge 当前未支持）
+### 5.1 启用方式（fili-web 当前未支持）
 
 ```ts
 {
@@ -211,7 +211,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 | 现有单步 + temp 0.7 | 10/10 | 0/8 | 提温无效 |
 | **两阶段法** | **0/10** | **8/8** | 完全原创 |
 
-### 6.3 在 cineforge 中的潜在应用
+### 6.3 在 fili-web 中的潜在应用
 
 - **用户上传 KB 文档时**：用户可能上传"参考小说样本"，避免 LLM 直接复制原文 → 适合两阶段法
 - **方法模块推荐时**：从参考作品提取结构模式，注入到当前项目而不污染情节
@@ -223,7 +223,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ### 7.1 LLM 客户端层（`@src/llm/deepseek.ts`）
 
-| 能力 | cineforge 现状 | 资料建议 | 优先级 |
+| 能力 | fili-web 现状 | 资料建议 | 优先级 |
 |---|---|---|---|
 | `extra_body.thinking` | ❌ 不支持 | 启用 thinking mode 的核心 | **P1 高** |
 | `extra_body.reasoning_effort` | ❌ 不支持 | thinking 强度控制 | **P1 高** |
@@ -233,7 +233,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ### 7.2 Prompt 工程层
 
-| 能力 | cineforge 现状 | 资料建议 | 价值 |
+| 能力 | fili-web 现状 | 资料建议 | 价值 |
 |---|---|---|---|
 | 角色沉浸式 prompt | ✅ `anti-ai-flavor` 已采用 | 印证设计方向 | ✓ |
 | 思维模式 prompt 中英版 | ❌ 没有 | 直接可复用 | ⭐⭐⭐ |
@@ -242,7 +242,7 @@ cineforge 当前 `@src/llm/deepseek.ts:81` 只读 `delta.content`，启用 think
 
 ### 7.3 功能层
 
-| 功能 | cineforge 现状 | 备注 |
+| 功能 | fili-web 现状 | 备注 |
 |---|---|---|
 | 伏笔追踪系统 | ⚠ `plot-coherence-scaffold` 模块提及，无独立 UI/数据结构 | 可作为新功能 |
 | 多方案备选生成 | ❌ | 提升用户控制感 |

@@ -13,7 +13,7 @@
 | 非文本 UI 元素 (图标 / 边框 / focus ring) | **3:1** | — |
 | 装饰性图形 | 无要求 | — |
 
-**CineForge 级别**: V1 至少 AA, 主要场景争取 AAA.
+**影语 FLIL 级别**: V1 至少 AA, 主要场景争取 AAA.
 
 ---
 
@@ -134,7 +134,7 @@ WCAG 不要求色盲测试, 但推荐:
 ### 5.2 语义色对色盲测试
 - 最常见色盲: 红绿色盲 (deuteranomaly/protanomaly) ~8% 男性
 - 工具: https://www.color-blindness.com/coblis-color-blindness-simulator/
-- CineForge success (#22c55e) + error (#ef4444) 在红绿色盲下会**看起来几乎一样**. 必须配图标/文字.
+- 影语 FLIL success (#22c55e) + error (#ef4444) 在红绿色盲下会**看起来几乎一样**. 必须配图标/文字.
 
 ---
 
@@ -144,12 +144,12 @@ WCAG 不要求色盲测试, 但推荐:
 - 纯黑 (#000) + 纯白 (#fff) 对比度 21:1, 理论最大
 - **但**: 散光用户在暗色大背景下看强白字会 "halation" (光晕)
 - 推荐: 底 `#0a0a0a` ~ `#15151c`, 字 `#f0f0f0` ~ `#f4edf8`
-- CineForge primary `#120b19` + neutral50 `#f4edf8` 对比度 ~15.8:1, 符合
+- 影语 FLIL primary `#120b19` + neutral50 `#f4edf8` 对比度 ~15.8:1, 符合
 
 ### 6.2 饱和色慎用
 - 暗底上饱和红/橙/霓虹绿会 "闪眼", 长时间阅读疲劳
 - 用柔和色 (降低饱和度 10-20%)
-- CineForge accent `#c084fc` 是中等饱和的霓虹紫, 可接受
+- 影语 FLIL accent `#c084fc` 是中等饱和的霓虹紫, 可接受
 
 ### 6.3 不用纯白 shadow
 - `0 4px 8px rgba(255,255,255,0.1)` 在暗底 looks 奇怪
@@ -180,7 +180,7 @@ WCAG 不要求色盲测试, 但推荐:
 
 ---
 
-## 8. AAA 增强清单 (可选, CineForge 可逐步追求)
+## 8. AAA 增强清单 (可选, 影语 FLIL 可逐步追求)
 
 - 正文对比度提到 7:1+
 - Focus 状态 2px 以上可见线

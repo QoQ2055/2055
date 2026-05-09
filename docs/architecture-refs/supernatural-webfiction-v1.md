@@ -1,4 +1,4 @@
-﻿# 架构蓝本 · 超自然网文 AI 创作系统（架构实现部分）
+# 架构蓝本 · 超自然网文 AI 创作系统（架构实现部分）
 
 > **归档日期**：2026-05-06
 > **原始来源**：`F:\下载文件\AI技术分享\skill分享\超自然网络小说AI创作方法论_提炼版.md`（320 行）
@@ -23,12 +23,12 @@
 
 当前 `compose.ts` 已实现类似分层：
 - 元数据层 ≈ 方法论模块注入（提供 ATU / 英雄之旅编码）
-- 情境层 ≈ 前文摘要 + MemDir 当前状态（但 cineforge 单用户无 MemDir，用节点产物链条代替）
+- 情境层 ≈ 前文摘要 + MemDir 当前状态（但 fili-web 单用户无 MemDir，用节点产物链条代替）
 - 任务层 ≈ 节点原生 prompt
 - 约束层 ≈ 用户 KB 的 antiPattern + styleGuide
 - 输出层 ≈ 节点 prompt 的输出格式要求
 
-**差异**：cineforge 没有"元数据层的 ALMEF 编码"这一步。如果未来要做 ATU / 英雄之旅节拍跟踪，可考虑在 `ProjectContext` 加 `currentBeat: { atuCode, heroStage, fsmSequence }` 字段，由上层节点维护，下层节点读取。
+**差异**：fili-web 没有"元数据层的 ALMEF 编码"这一步。如果未来要做 ATU / 英雄之旅节拍跟踪，可考虑在 `ProjectContext` 加 `currentBeat: { atuCode, heroStage, fsmSequence }` 字段，由上层节点维护，下层节点读取。
 
 ---
 
@@ -106,7 +106,7 @@
 
 ## 五、与 Master Writer V4 的对比
 
-| 维度 | Master Writer V4 | 超自然网文方法论 | cineforge 现状 |
+| 维度 | Master Writer V4 | 超自然网文方法论 | fili-web 现状 |
 |---|---|---|---|
 | 架构模式数 | 16 个（M1–M16） | 3 个（AAPT / HCC / 三工具） | 节点流水线 |
 | Agent 化 | ✅ 多 Agent | ❌ 单 Agent | 单 LLM 流水线 |

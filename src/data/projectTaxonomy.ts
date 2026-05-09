@@ -26,7 +26,7 @@ export interface GenreAnchor {
   /**
    * 人称运用细则（30-100 字）。
    * 例：恐怖第一人称要求"3 句以上不连续以'我'起句"。
-   * cineforge 通过 novelPov 选具体视角，本字段补充"如何在该视角下细粒度切换"。
+   * fili-web 通过 novelPov 选具体视角，本字段补充"如何在该视角下细粒度切换"。
    */
   pronounUsage?: string;
   /**
@@ -122,9 +122,9 @@ export function findGenre(value: string): GenreItem | undefined {
  *
  * 设计原则：
  * - 与 GENRES 数组解耦，便于独立维护 / 后续扩展更多题材
- * - 仅覆盖 cineforge 主战场题材（其余题材后续按需补充）
+ * - 仅覆盖 fili-web 主战场题材（其余题材后续按需补充）
  * - 数据提炼自天命平台 19 题材规范（docs/internal-notes/genre-anchor-system-spec.md）
- *   并改写为 cineforge 体系契合版本（剔除天命已被 cineforge novelPov / novelTone /
+ *   并改写为 fili-web 体系契合版本（剔除天命已被 fili-web novelPov / novelTone /
  *   novelPlatform / novelScale 覆盖的字段）
  *
  * 多题材组合时由 compose.ts/buildGenreAnchorPreamble() 合并去重。

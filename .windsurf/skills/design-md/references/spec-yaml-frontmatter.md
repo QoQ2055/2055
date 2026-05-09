@@ -9,7 +9,7 @@
 ```yaml
 ---
 version: alpha               # 可选. 当前只有 "alpha" 一个值
-name: <string>               # 必需. 设计系统名字 (e.g. "CineForge Dark")
+name: <string>               # 必需. 设计系统名字 (e.g. "影语 FLIL Dark")
 description: <string>        # 可选. 一句话描述
 colors: { ... }              # 推荐. 调色板 tokens
 typography: { ... }          # 推荐. 排版 tokens
@@ -322,13 +322,13 @@ components:
 
 ---
 
-## 8. 完整示例 (CineForge 风格, 仅作 schema demo)
+## 8. 完整示例 (影语 FLIL 风格, 仅作 schema demo)
 
 ```yaml
 ---
 version: alpha
-name: CineForge Dark
-description: 创剧 CineForge 暗夜霓虹设计系统, 短剧创作者专用
+name: 影语 FLIL Dark
+description: 创剧 影语 FLIL 暗夜霓虹设计系统, 短剧创作者专用
 
 colors:
   # 品牌

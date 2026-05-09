@@ -1,5 +1,5 @@
 ---
-project: CineForge Web
+project: 影语 FLIL
 stage: v3 (planning)
 author: QvQ
 date: 2026-05-06
@@ -12,11 +12,11 @@ related:
   - CHANGELOG.md (Unreleased / 阶段 2.x · 11 阶段累积)
 ---
 
-# CineForge Web · v3 Product Brief
+# 影语 FLIL · v3 Product Brief
 
 ## 1. One-line 定位（修正 README 的过时版）
 
-CineForge 是 **单人创作者 + AI 协作的工作台**，承载 4 种创作模式：
+影语 FLIL 是 **单人创作者 + AI 协作的工作台**，承载 4 种创作模式：
 
 - ✅ **短剧/剧本**（八步剧本→资产→分镜，dogfood 闭环已验证）
 - 🚧 **小说**（v2 已成型 1867 行 / v3 收口）

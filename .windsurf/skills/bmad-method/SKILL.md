@@ -1,11 +1,11 @@
-﻿---
+---
 name: bmad-method
-description: BMAD-METHOD v6.3.0 方法论蒸馏版 (蒸馏自 https://github.com/bmad-code-org/BMAD-METHOD, 日期 2026-04-23). 用于 brownfield 重构 (如 CineForge 网页版从 Electron 迁移) 或 greenfield 新项目. 覆盖 4 阶段 (Analysis / Planning / Solutioning / Implementation) 共 30+ workflow (product-brief / create-prd / create-architecture / create-epics-and-stories / dev-story 等). 触发词:"按 BMAD 走" / "bmad-help" / "下一步做什么" / "写 PRD" / "出架构" / "分 story" / "做 project context" / "document project" / "DP" / "GPC" / "CP" / "CA" / "CE" / "DS"
+description: BMAD-METHOD v6.3.0 方法论蒸馏版 (蒸馏自 https://github.com/bmad-code-org/BMAD-METHOD, 日期 2026-04-23). 用于 brownfield 重构 (如 影语 FLIL 网页版从 Electron 迁移) 或 greenfield 新项目. 覆盖 4 阶段 (Analysis / Planning / Solutioning / Implementation) 共 30+ workflow (product-brief / create-prd / create-architecture / create-epics-and-stories / dev-story 等). 触发词:"按 BMAD 走" / "bmad-help" / "下一步做什么" / "写 PRD" / "出架构" / "分 story" / "做 project context" / "document project" / "DP" / "GPC" / "CP" / "CA" / "CE" / "DS"
 ---
 
-# BMAD-METHOD 方法论 · CineForge Web 定制版
+# BMAD-METHOD 方法论 · 影语 FLIL 定制版
 
-> ⚠️ **入仓残留问题提示（v0 蒸馏版）**：本 SKILL 为外部 LLM 对 BMAD 代码仓读后的个人蒸馏作品，未经上游官方背书。使用前请走瞅 https://github.com/bmad-code-org/BMAD-METHOD 核对术语与阶段依赖。原文中提及的 `feedback_workflow_l1l2l3.md` 在本仓中 **不存在**，CineForge Web 的实际反馈循环请以 `@C:\Users\QvQ\CascadeProjects\fili-web\AGENTS.md` 为准。
+> ⚠️ **入仓残留问题提示（v0 蒸馏版）**：本 SKILL 为外部 LLM 对 BMAD 代码仓读后的个人蒸馏作品，未经上游官方背书。使用前请走瞅 https://github.com/bmad-code-org/BMAD-METHOD 核对术语与阶段依赖。原文中提及的 `feedback_workflow_l1l2l3.md` 在本仓中 **不存在**，影语 FLIL 的实际反馈循环请以 `@C:\Users\QvQ\CascadeProjects\fili-web\AGENTS.md` 为准。
 
 ## 这 Skill 是什么
 
@@ -58,7 +58,7 @@ description: BMAD-METHOD v6.3.0 方法论蒸馏版 (蒸馏自 https://github.com
 | **CB** | `bmad-product-brief` | 想法清晰了, 出 1-2 页产品简报 | `product-brief.md` |
 | **WB** | `bmad-prfaq` | 想法还不确定, 要压力测试(Amazon Working Backwards 法) | prfaq 文档 |
 
-**brownfield 场景 (CineForge Web)**: 先 **DP → GPC**, 然后看情况决定跳 CB 还是直接进阶段 2.
+**brownfield 场景 (影语 FLIL)**: 先 **DP → GPC**, 然后看情况决定跳 CB 还是直接进阶段 2.
 
 ---
 
@@ -69,9 +69,9 @@ description: BMAD-METHOD v6.3.0 方法论蒸馏版 (蒸馏自 https://github.com
 | **CP** | `bmad-create-prd` | **必做**. 做 PRD (产品需求文档) | CB(推荐) | `prd.md` |
 | **VP** | `bmad-validate-prd` | CP 后, 独立对话验证 PRD 质量 | CP | PRD 验证报告 |
 | **EP** | `bmad-edit-prd` | VP 报告有问题, 回来改 | VP | 更新的 PRD |
-| **CU** | `bmad-create-ux-design` | UI 重的项目做 (CineForge Web 必做) | CP | UX 设计文档 |
+| **CU** | `bmad-create-ux-design` | UI 重的项目做 (影语 FLIL 必做) | CP | UX 设计文档 |
 
-**CineForge 路径**: `CP → VP → (EP) → CU`.
+**影语 FLIL 路径**: `CP → VP → (EP) → CU`.
 
 ---
 
@@ -115,11 +115,11 @@ SP (sprint-planning) → CS (create-story) → VS (validate-story) → DS (dev-s
 |:---:|---|---|
 | **QQ** | `bmad-quick-dev` | 跳过 SP→CS→DS, **一步从 intent 到 code**. 适合 L1/L2 级改动 |
 
-`QQ` 对应 CineForge 里小型修改场景（bug fix / 单点调整），跳过完整 PRD→Architecture→Story 流水线。
+`QQ` 对应 影语 FLIL 里小型修改场景（bug fix / 单点调整），跳过完整 PRD→Architecture→Story 流水线。
 
 ---
 
-## Solo Dev · CineForge Web Brownfield 推荐路径
+## Solo Dev · 影语 FLIL Brownfield 推荐路径
 
 **场景**: 已有 Electron v1.2.0 在跑, 要做网页版. 产品形态=对话式 agent 类似 OiiOii. API Key 用户自带.
 
@@ -195,7 +195,7 @@ SP (sprint-planning) → CS (create-story) → VS (validate-story) → DS (dev-s
 
 **时间预估** (solo dev · 半天/对话节奏):
 - 阶段 1-3 (DP→IR): **约 2-3 周纯规划**
-- 阶段 4 story 循环: 看 epic 数 · CineForge 预估 8-12 个 epic · 每 epic 5-15 story · 总 50-150 story
+- 阶段 4 story 循环: 看 epic 数 · 影语 FLIL 预估 8-12 个 epic · 每 epic 5-15 story · 总 50-150 story
 
 ---
 
@@ -221,13 +221,13 @@ SP (sprint-planning) → CS (create-story) → VS (validate-story) → DS (dev-s
 
 ---
 
-## CineForge Web 项目特定配置
+## 影语 FLIL 项目特定配置
 
-**这 skill 适用到 `E:\CineForge-Web\` 项目时, 默认 config**:
+**这 skill 适用到 `E:\影语 FLIL-Web\` 项目时, 默认 config**:
 
 ```yaml
-# E:\CineForge-Web\_bmad\bmm\config.yaml (未来生成)
-project_name: CineForge Web
+# E:\影语 FLIL-Web\_bmad\bmm\config.yaml (未来生成)
+project_name: 影语 FLIL
 user_name: [用户]
 communication_language: zh-Hans  # 中文
 document_output_language: zh-Hans  # 中文
@@ -300,12 +300,12 @@ A: 官方装法会把 264 个 skill 文件灌入 `.claude/skills/`, slash comman
 **Q: 本 skill 会不会过时?**
 A: 会. BMAD v6 还在快速迭代 (29 releases). 建议每 2-3 个月去 GitHub 看有无 major 更新, 决定是否重新蒸馏本 skill 或切官方装法. 当前版本: **v6.3.0 · 2026-04-10 发布**.
 
-**Q: BMAD 和 CineForge 现有 L1/L2/L3 协议冲突吗?**
+**Q: BMAD 和 影语 FLIL 现有 L1/L2/L3 协议冲突吗?**
 A: 不冲突, 互补:
 - L1 (bug/micro-tweak) → 对应 BMAD `bmad-quick-dev` (QQ)
 - L2 (模块内新功能) → 对应 BMAD `bmad-dev-story` 单 story 循环
 - L3 (新模块/大重构) → 对应 BMAD 完整 4 阶段流水线
-CineForge L3 的"新对话 + 设计备忘"正好是 BMAD 的"fresh chat per workflow"原则.
+影语 FLIL L3 的"新对话 + 设计备忘"正好是 BMAD 的"fresh chat per workflow"原则.
 
 **Q: 为什么蒸馏? 直接读源仓库不就行了吗?**
 A: 源仓库 589 文件 · 264 skill. 每次 Claude 对话都要花 ~30 分钟爬结构才能用. 蒸馏后本 SKILL.md 1 遍读懂方法论, 直接进入工作. 适合 solo dev 节奏.
@@ -315,7 +315,7 @@ A: 源仓库 589 文件 · 264 skill. 每次 Claude 对话都要花 ~30 分钟�
 ## 给下次对话
 
 如果你(Claude)被新对话加载了本 skill, 默认做法:
-1. 先确认项目根是 `E:\CineForge-Web\` (或其他项目, 按情况)
+1. 先确认项目根是 `E:\影语 FLIL-Web\` (或其他项目, 按情况)
 2. 查 `docs/planning/` 目录看已有哪些产物 (project-context.md / product-brief.md / prd.md / architecture.md / epics.md)
 3. 找出"缺的那一步", 建议用户**开新对话**执行对应 workflow
 4. 如果所有前置产物都有了, 推荐进入阶段 4 的 story cycle

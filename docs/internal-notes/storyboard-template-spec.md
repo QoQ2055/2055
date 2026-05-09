@@ -1,4 +1,4 @@
-﻿# 内部参考手册 · AI 视频分镜模板规范
+# 内部参考手册 · AI 视频分镜模板规范
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/storyboard-prompt-sample-half-blood-original.txt`（24 镜成品样本）反向提炼
@@ -174,7 +174,7 @@ interface StoryboardShot {
 **作用**：作为"质量约束的最低要求"，无论怎么发挥都不能踩破这条线。
 
 **反哺潜力**：
-- 不直接适用，但**"质量底线（hard floor）"思想**可作为 cineforge 章节生成的"5 句不可破"自检项
+- 不直接适用，但**"质量底线（hard floor）"思想**可作为 fili-web 章节生成的"5 句不可破"自检项
 
 ### 4.5 "起幅 / 落幅"（vs 节拍）
 

@@ -1,8 +1,8 @@
-﻿# 影语 FLIL
+# 影语 FLIL
 
 > **单人创作者 + AI 协作工作台**，承载 4 种创作模式  纯前端零后端  浏览器本地存储
 
-CineForge 把 DeepSeek API 包装成 manifest 驱动的多阶段创作流水线，
+影语 FLIL 把 DeepSeek API 包装成 manifest 驱动的多阶段创作流水线，
 配套静态 KB / 用户 KB / 方法论模块三层知识注入，
 输出剧本 / 资产 / 分镜 / 小说 / 拆书报告。
 

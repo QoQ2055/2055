@@ -206,7 +206,7 @@ function shouldInjectAntiDecoration(stageId: StageId, step: ManifestStep): boole
 
 /**
  * 全局创作硬约束（7 条）— 提炼自天命网文 AI 平台的小说初稿生成器规范，
- * 改写为 cineforge 体系契合版本。覆盖所有"叙事正文创作"节点，是不依赖
+ * 改写为 fili-web 体系契合版本。覆盖所有"叙事正文创作"节点，是不依赖
  * 具体方法模块的最低基线，与 anti-ai-flavor 等可选模块互补。
  *
  * Reference:

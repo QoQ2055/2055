@@ -1,10 +1,10 @@
-﻿# 内部参考手册 · 网文创作流水线规范
+# 内部参考手册 · 网文创作流水线规范
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/tianming-platform-prompts-original.txt` 提炼
 > **目的**：为 fili-web 提供完整的"拆书 → 素材 → 设计 → 创作 → 校验"6 阶段流水线参考
 > **运行时状态**：❌ 内部蓝图 / 待按需落地
-> **使用方式**：未来扩展 cineforge 流水线节点（`novel.x.x` 节点系统）时的参考蓝图
+> **使用方式**：未来扩展 fili-web 流水线节点（`novel.x.x` 节点系统）时的参考蓝图
 
 ---
 
@@ -19,7 +19,7 @@
    ↓
 阶段 4：创作规划     ← 4 层（战略大纲/分卷/章节/蓝图）
    ↓
-阶段 5：初稿生成     ← 章节正文（cineforge 已有）
+阶段 5：初稿生成     ← 章节正文（fili-web 已有）
    ↓
 阶段 6：润色 + 校验   ← 6 大润色工具集 + 一致性校验（独立手册）
 ```
@@ -52,7 +52,7 @@
 - **不复述原书情节**，输出可直接作为新作创作参考的方法论
 - JSON 格式输出
 
-### 2.4 cineforge 落地建议
+### 2.4 fili-web 落地建议
 
 新建独立功能（**不**作为 craft 层方法模块）：
 - 输入：参考小说 + 章节按位置标签注入
@@ -86,11 +86,11 @@
 - **禁止**「某配角」「另一敌人」等模糊指代
 - **禁止**引入新的无名角色
 
-→ 这一规则**直接对应 cineforge `plot-coherence-scaffold` 的章节连续性思想**。
+→ 这一规则**直接对应 fili-web `plot-coherence-scaffold` 的章节连续性思想**。
 
-### 3.4 cineforge 落地建议
+### 3.4 fili-web 落地建议
 
-阶段 2 在 cineforge 现有 `extractKb.ts` 基础上扩展：
+阶段 2 在 fili-web 现有 `extractKb.ts` 基础上扩展：
 - 新 KB 类型：`materialDesign`（素材设计）
 - 包含 worldview / characters / plot 三个子结构
 - 与现有 `worldHardSchema` / `voiceCard` 等 KB 类型整合
@@ -118,9 +118,9 @@
 - 与上下文创作素材保持一致，不出现逻辑矛盾
 - 独特性和记忆点，避免通用模板化
 
-### 4.3 与 cineforge 现有方法模块的对应
+### 4.3 与 fili-web 现有方法模块的对应
 
-| 天命 5 子模块 | cineforge 现有 | gap |
+| 天命 5 子模块 | fili-web 现有 | gap |
 |---|---|---|
 | 世界观规则 | ✅ `world-building-9-pillars` 部分覆盖 | 需增加"硬规则 vs 软规则区分"小节 |
 | 角色规则 | ✅ `character-three-elements-method` / MBTI 系列 | 需增加"长期驱动力闭环"约束 |
@@ -128,7 +128,7 @@
 | 位置规则 | ❌ 没有 | **建议补建**：地点叙事功能模块 |
 | 剧情规则 | ⚠ `plot-coherence-scaffold` 部分覆盖 | 缺"事件节点 4 要素"格式化 |
 
-### 4.4 cineforge 落地建议
+### 4.4 fili-web 落地建议
 
 不必新建 5 个独立模块，而是：
 - 给现有相关模块**补充语义边界小节**
@@ -169,9 +169,9 @@
 |---|---|---|---|---|
 | 字数 | 10-40 / 20-60 | 50-120 | 60-140 | 120-260 |
 
-### 5.4 cineforge 落地建议
+### 5.4 fili-web 落地建议
 
-cineforge 现有 `webfiction-pacing-pack` 已覆盖**节奏部分**，但缺整体的 4 层规划体系。建议：
+fili-web 现有 `webfiction-pacing-pack` 已覆盖**节奏部分**，但缺整体的 4 层规划体系。建议：
 - 新建 `pipeline/types.ts` 中的层级类型 `OutlineLevel = 'strategic' | 'volume' | 'chapter' | 'blueprint'`
 - 新建 craft 层方法模块 `four-level-outline`（4 层规划方法论）
 - 节点系统增加 `novel.1.x` 子节点对应 4 层
@@ -193,9 +193,9 @@ cineforge 现有 `webfiction-pacing-pack` 已覆盖**节奏部分**，但缺整�
    （行动结果/信息揭示/关系变化/冲突升级）
 ```
 
-### 6.2 cineforge 印证
+### 6.2 fili-web 印证
 
-约束 5-7 与 cineforge `anti-ai-flavor` 模块的"反 AI 文风"思想完全一致 → **印证现有方向正确**。
+约束 5-7 与 fili-web `anti-ai-flavor` 模块的"反 AI 文风"思想完全一致 → **印证现有方向正确**。
 
 可考虑将这 7 条提升到 `compose.ts` 的**全局硬约束层**（不依赖具体方法模块），作为所有章节生成的最低标准。
 
@@ -230,9 +230,9 @@ interface CheckResult {
 }
 ```
 
-### 7.4 cineforge 落地建议
+### 7.4 fili-web 落地建议
 
-cineforge 现有 `ChapterFeedback` 系统接收用户反馈，可扩展为：
+fili-web 现有 `ChapterFeedback` 系统接收用户反馈，可扩展为：
 - **自动校验**（LLM-as-judge 模式）：基于项目设定数据自动跑全章节扫描
 - **混合校验**：自动校验 + 用户反馈补充
 - 校验结果存入 Dexie 新表 `chapterChecks`
@@ -240,7 +240,7 @@ cineforge 现有 `ChapterFeedback` 系统接收用户反馈，可扩展为：
 
 ---
 
-## 八、cineforge 落地路线图（按优先级）
+## 八、fili-web 落地路线图（按优先级）
 
 | 优先级 | 阶段 | 工时 |
 |---|---|---|

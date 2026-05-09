@@ -273,7 +273,7 @@ const Button = styled.button`
 - 组件密集需要 props 驱动样式
 - 需要 JS 动态切换主题 (如 A/B 测试)
 
-**CineForge V1 不推荐 CSS-in-JS**: 额外 runtime 开销, solo dev 用 Tailwind 最快.
+**影语 FLIL V1 不推荐 CSS-in-JS**: 额外 runtime 开销, solo dev 用 Tailwind 最快.
 
 ---
 
@@ -351,7 +351,7 @@ themes:
 | CSS Custom Props | ✓ | ✓ (可动态改) | 需要主题切换 |
 | CSS-in-JS | - | ✓ (JS runtime) | 组件密集 · 需要 JS 驱动样式 |
 
-CineForge V1: **Tailwind + 少量 CSS Custom Props** (动态状态色).
+影语 FLIL V1: **Tailwind + 少量 CSS Custom Props** (动态状态色).
 
 ---
 

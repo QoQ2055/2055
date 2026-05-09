@@ -315,11 +315,11 @@ components:
 
 ---
 
-## 6. CineForge-Web 推荐
+## 6. 影语 FLIL-Web 推荐
 
-**CineForge-Web 属于"创作工具"**, 推荐**暗色霓虹** 风格 (类 NightShade, 但 accent 用更暖的紫/粉色调, 和 "短剧/戏剧" 氛围搭).
+**影语 FLIL-Web 属于"创作工具"**, 推荐**暗色霓虹** 风格 (类 NightShade, 但 accent 用更暖的紫/粉色调, 和 "短剧/戏剧" 氛围搭).
 
-具体参见本 SKILL 工作流应用时, 用 §4.1 Greenfield 流程结合 CineForge-Web 的具体品牌访谈结果生成.
+具体参见本 SKILL 工作流应用时, 用 §4.1 Greenfield 流程结合 影语 FLIL-Web 的具体品牌访谈结果生成.
 
 ---
 

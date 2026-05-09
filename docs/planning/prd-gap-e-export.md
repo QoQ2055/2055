@@ -1,5 +1,5 @@
-﻿---
-project: CineForge Web
+---
+project: 影语 FLIL
 prdId: v3-gap-e-export
 gapCode: e
 stage: v3 (planning)
@@ -30,7 +30,7 @@ related:
 
 ### 0.1 项目当前态（v2 阶段 2.10）
 
-CineForge Web 已交付 11 阶段累积底层基建（详见
+影语 FLIL 已交付 11 阶段累积底层基建（详见
 `@C:\Users\QvQ\CascadeProjects\fili-web\CHANGELOG.md`）：
 
 - 4 种创作模式（短剧 ✅ dogfood 闭环 / 改编 ✓ / 特殊·分镜 ✓ / 小说 🚧 v3 收口）
@@ -98,7 +98,7 @@ QvQ 用工具写完 ≥ 10 章 / ≥ 5 万字小说（v3 dogfood 收尾态硬指
 
 ### 1.2 根因
 
-CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.flil.json`，给协作 AI 接力 / 跨设备同步用），**从未支持"创作者维度的产物交付"**（成品文件给外部读者 / 平台 / 同事用）。两个维度长期混淆，brief §4.1 第一次明确分离。
+影语 FLIL 长期只把"导出"理解为**开发者维度的项目归档**（`.flil.json`，给协作 AI 接力 / 跨设备同步用），**从未支持"创作者维度的产物交付"**（成品文件给外部读者 / 平台 / 同事用）。两个维度长期混淆，brief §4.1 第一次明确分离。
 
 ### 1.3 不解决的代价
 
@@ -152,10 +152,10 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 
 | 维度 | 描述 |
 |---|---|
-| 身份 | 单人创作者，CineForge Web 唯一真实用户（brief §3 / §6 已锁定 for-self 定位） |
+| 身份 | 单人创作者，影语 FLIL 唯一真实用户（brief §3 / §6 已锁定 for-self 定位） |
 | 设备 | Windows 桌面 + Chrome / Edge，1280px desktop-first（DESIGN.md spacing.roles.contentMaxWidth） |
 | 已有习惯 | Final Draft 桌面版 / Word / Excel / Numbers 都能用；不写命令行；不愿装 npm 包做格式转换 |
-| 触达 CineForge 的频次 | v3 dogfood 期间预计每周 2-4 次，每次 1-3 小时 |
+| 触达 影语 FLIL 的频次 | v3 dogfood 期间预计每周 2-4 次，每次 1-3 小时 |
 | **关键期望** | "我刚写完一部小说 / 一个剧本 / 一组资产，**点一下就能拿到能直接投出去的文件**"——成功定义就是**离开浏览器后这个文件能用** |
 | **关键厌恶** | "复制粘贴 10 章"、"装一堆插件转格式"、"打开 .flil.json 看到一坨 manifest 字段一脸懵"、"按钮叫导出但其实是页内跳转" |
 
@@ -370,7 +370,7 @@ CineForge 长期只把"导出"理解为**开发者维度的项目归档**（`.fl
 ### FR-8 · 剧本元素分类映射规则（FR-3 / FR-4 共用）
 
 > markdown → fdx Paragraph Type / fountain element 的统一识别表。
-> screenplay.7 markdown 由 `@C:\Users\QvQ\CascadeProjects\fili-web\public\prompts\screenplay\7.json` prompt 输出，CineForge 历史 prompt 习惯输出**带 markdown 装饰的剧本式文本**。
+> screenplay.7 markdown 由 `@C:\Users\QvQ\CascadeProjects\fili-web\public\prompts\screenplay\7.json` prompt 输出，影语 FLIL 历史 prompt 习惯输出**带 markdown 装饰的剧本式文本**。
 
 | 行模式（regex hint） | fdx Type | fountain encoding | 备注 |
 |---|---|---|---|
@@ -986,7 +986,7 @@ console.assert(localStorage.getItem('FLIL.settings') === before.settings);
 | **`.txt` 纯文本** | `.md` 已可被 .txt 阅读器打开 | 永不 |
 | **`.rtf`** | 字段碎片严重，Word 已用 .docx | 永不 |
 | **`.epub`** | 需要打包 zip + manifest，引入 jszip 依赖（NFR-2 拒绝） | v3.x 之后 |
-| **`.html`（独立浏览器查看）** | `.md` 在 Cineforge 内的 PreviewModal 已可视 | 永不 |
+| **`.html`（独立浏览器查看）** | `.md` 在 影语 FLIL 内的 PreviewModal 已可视 | 永不 |
 
 ### 10.2 流程范围外
 
@@ -1021,7 +1021,7 @@ console.assert(localStorage.getItem('FLIL.settings') === before.settings);
 
 ### 10.5 收口承诺
 
-> 本 PRD 落地后，CineForge Web 在"导出"维度的能力图谱：
+> 本 PRD 落地后，影语 FLIL 在"导出"维度的能力图谱：
 >
 > - **创作者交付层（本 PRD 新增）**：`.md` / `.docx` / `.fdx` / `.fountain` / `.csv` 五种业界标准产物
 > - **开发者归档层（保留不动）**：`.flil.json` 项目包（v1 schema）

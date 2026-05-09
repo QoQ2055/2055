@@ -1,10 +1,10 @@
-﻿# 内部参考手册 · 章节润色工具集规范
+# 内部参考手册 · 章节润色工具集规范
 
 > **创建日期**：2026-05-06
 > **来源**：从 `@docs/reference-works/tianming-platform-prompts-original.txt` 提炼（6 大润色 prompts）
 > **目的**：为 fili-web 的"章节后处理 / 润色"流水线提供细分工具集蓝图
 > **运行时状态**：❌ 内部蓝图 / 待按需落地
-> **优先级**：⭐⭐ 中等（cineforge 现有 `anti-ai-flavor` 已覆盖部分功能，此处提供更细分的工具集）
+> **优先级**：⭐⭐ 中等（fili-web 现有 `anti-ai-flavor` 已覆盖部分功能，此处提供更细分的工具集）
 
 ---
 
@@ -89,7 +89,7 @@
 
 ---
 
-## 三、与 cineforge 现有 `anti-ai-flavor` 的关系
+## 三、与 fili-web 现有 `anti-ai-flavor` 的关系
 
 ### 3.1 范围对比
 
@@ -129,7 +129,7 @@ LLM 生成章节正文
 
 ---
 
-## 四、cineforge 落地蓝图
+## 四、fili-web 落地蓝图
 
 ### 4.1 新增 `RefinementToolPanel` 组件
 
@@ -204,7 +204,7 @@ interface RefinementSession {
 
 ## 五、扩展：其他可能的润色维度
 
-天命的 6 大工具集已经相当完整，但 cineforge 可考虑额外补充：
+天命的 6 大工具集已经相当完整，但 fili-web 可考虑额外补充：
 
 | 工具 | 用途 | 价值 |
 |---|---|---|

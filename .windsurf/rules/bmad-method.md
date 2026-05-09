@@ -1,4 +1,4 @@
-﻿---
+---
 trigger: model_decision
 description: BMAD-METHOD v6.3.0 方法论蒸馏（来自外部 LLM 个人作品，非官方背书；使用前请核对上游）。覆盖 4 阶段 30+ workflow（Analysis / Planning / Solutioning / Implementation），用于 brownfield 重构或 greenfield 新项目。仅在用户显式触发时激活——触发词包括「按 BMAD 走」、「bmad-help」、「下一步做什么」、「写 PRD」、「出架构」、「分 story」、「做 project context」、「document project」，以及代号 DP / GPC / CP / CA / CE / DS / QQ。**用户只是问技术问题或写普通代码时不要激活**。
 ---
@@ -36,7 +36,7 @@ description: BMAD-METHOD v6.3.0 方法论蒸馏（来自外部 LLM 个人作品�
 
 ## 与本项目的关系
 
-CineForge Web 已经过 brownfield 阶段（v2 资料库改造），当前在 v2 阶段 2.x 增量演进。
+影语 FLIL 已经过 brownfield 阶段（v2 资料库改造），当前在 v2 阶段 2.x 增量演进。
 适合的 BMAD 入口主要是：
 
 - **QQ**（quick-dev）：bug 修复 / 小改动

@@ -1,5 +1,5 @@
-﻿---
-project: CineForge Web
+---
+project: 影语 FLIL
 archId: v3-gap-e-export
 gapCode: e
 stage: v3 (planning)
@@ -694,7 +694,7 @@ export function buildNovelDocx(d: ExportSourceData): { filename: string; blob: B
 <head>
 <meta charset="UTF-8">
 <meta name="ProgId" content="Word.Document">
-<meta name="Generator" content="CineForge Web">
+<meta name="Generator" content="影语 FLIL">
 <!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View></w:WordDocument></xml><![endif]-->
 <title>${esc(d.ctx.name || '未命名项目')}</title>
 <style>

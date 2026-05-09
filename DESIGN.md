@@ -1,6 +1,6 @@
 ---
 version: 0.2.0-alpha
-name: CineForge Web
+name: 影语 FLIL
 description: AI 辅助剧本与小说工作台 · 暖橙 + warm stone 中性色 · 创作工具温度
 status: alpha
 
@@ -540,11 +540,11 @@ components:
           text:      '#ffffff'
 ---
 
-# CineForge Web · Design System
+# 影语 FLIL · Design System
 
 ## Overview
 
-CineForge 是面向单人创作者的 AI 辅助剧本与小说工作台。设计系统采用 **暖橙
+影语 FLIL 是面向单人创作者的 AI 辅助剧本与小说工作台。设计系统采用 **暖橙
 + 中性温暖灰（warm stone）** 双色调，配以友好圆角与舒展行高，给"创作型工具"
 该有的温度感——让用户在长时间凝视屏幕时不被工程师工业风的灰冷压迫。
 
@@ -559,7 +559,7 @@ sans 紧凑排版（bodyM / captionM / codeM），小说章节 / KB 长文用 re
 
 ## Colors
 
-> 品牌底调：暖橙 `primary.500` 是 CineForge 核心识别色，承担 CTA / 进度 /
+> 品牌底调：暖橙 `primary.500` 是 影语 FLIL 核心识别色，承担 CTA / 进度 /
 > 聚焦。中性侧选 **warm stone**（比 zinc 偏暖 8°）——配合橙 primary，给创作
 > 工具应有的"温度感"，避开纯灰冷的工程师审美。
 
@@ -599,7 +599,7 @@ sans 紧凑排版（bodyM / captionM / codeM），小说章节 / KB 长文用 re
 
 ## Typography
 
-CineForge 同时承载**创作内容**（小说 / 剧本正文）与**工程界面**（节点 /
+影语 FLIL 同时承载**创作内容**（小说 / 剧本正文）与**工程界面**（节点 /
 artifact / 路径），排版阶梯需要兼顾"阅读舒展"与"信息密度"两种心智。
 
 ### 11 级阶梯使用决策

@@ -235,7 +235,7 @@ components:
     activeBorderWidth: "3px"
     activeBorderPosition: "left"              # left | bottom | right
     
-    # Icon-only nav (CineForge 左窄栏)
+    # Icon-only nav (影语 FLIL 左窄栏)
     iconOnlyWidth: "60px"
     iconSize: "24px"
     iconPaddingY: "{spacing.3}"
@@ -253,7 +253,7 @@ components:
 ### Nav / Sidebar
 
 **变体**:
-- **Icon-only** (60px 宽): CineForge 主导航, 纯图标, hover 出 tooltip
+- **Icon-only** (60px 宽): 影语 FLIL 主导航, 纯图标, hover 出 tooltip
 - **Full** (240px 宽): 未来子页面导航, 图标 + 文字
 
 **活动态**:
@@ -265,7 +265,7 @@ components:
 - 背景变 `{colors.secondary}` (色调差)
 - 文字变 neutral50
 
-**顺序**: 最常用功能在上. CineForge 左栏: 首页 → 项目列表 → 资产库 → 回收站 → 新项目 (底部).
+**顺序**: 最常用功能在上. 影语 FLIL 左栏: 首页 → 项目列表 → 资产库 → 回收站 → 新项目 (底部).
 ```
 
 ---

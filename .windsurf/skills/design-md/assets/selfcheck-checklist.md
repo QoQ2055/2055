@@ -165,9 +165,9 @@
 
 ---
 
-## 📌 对 CineForge-Web 的快速 audit 预览
+## 📌 对 影语 FLIL-Web 的快速 audit 预览
 
-(本 SKILL 首次应用到 CineForge-Web 时应跑一遍)
+(本 SKILL 首次应用到 影语 FLIL-Web 时应跑一遍)
 
 预期 P0 全绿:
 - 结构完整 ✅ (因为用模板)
