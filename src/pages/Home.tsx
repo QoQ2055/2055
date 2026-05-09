@@ -3,7 +3,11 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Plus, FolderOpen, Trash2, Download, Upload, BookOpen, Settings as SettingsIcon,
   ArrowRight, Archive, Sparkles, FileDown,
+  // MM1 PR-3 · format explore section icons
+  Film, Clapperboard, Zap, Layers, Construction,
 } from 'lucide-react';
+// MM1 PR-3 · multi-format expansion · 4 manifest 数据源
+import { ALL_FORMATS, type FormatManifest } from '../data/formats';
 import { Button } from '../components/ui';
 import { EmptyState } from '../components/ui/feedback';
 import { toast } from '../store/toast';
@@ -388,7 +392,22 @@ export function Home() {
         />
       </section>
 
-      {/* ④ History · Studio Calm A.2 · p-5 → p-6 · 行高加大 */}
+      {/* ④ MM1 PR-3 · 格式探索 · 4 个新格式骨架路由入口（0 LLM · Coming Soon） */}
+      <section>
+        <div className="flex items-baseline justify-between mb-2.5">
+          <h2 className="text-heading-m text-fg-primary">格式探索</h2>
+          <span className="text-tight-xs text-fg-muted">
+            MM1 epic · 工作流元数据展示 · LLM 接入 Coming Soon
+          </span>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5">
+          {ALL_FORMATS.map((m) => (
+            <FormatExploreCard key={m.id} manifest={m} />
+          ))}
+        </div>
+      </section>
+
+      {/* ⑤ History · Studio Calm A.2 · p-5 → p-6 · 行高加大 */}
       <section className="card p-6">
         <div className="flex items-center justify-between mb-5">
           <h2 className="text-heading-m">历史项目（{projects.length}）</h2>
@@ -488,6 +507,47 @@ export function Home() {
  * PR-3 · QuickActionCard 内部组件
  * 4 块快捷入口卡片 · accent='primary' 时用主色突出（新建项目主 CTA）
  */
+/**
+ * MM1 PR-3 · 格式探索卡 · 4 路 Link 入口（不调 LLM · 仅导航）
+ *
+ * 风格与 QuickActionCard 对齐 · 但用 Link 替代 button · hover 加 primary 边框。
+ */
+const FORMAT_ICON_MAP: Record<FormatManifest['id'], React.ComponentType<{ className?: string }>> = {
+  feature:    Film,
+  short:      Clapperboard,
+  ultrashort: Zap,
+  series:     Layers,
+};
+
+function FormatExploreCard({ manifest }: { manifest: FormatManifest }) {
+  const Icon = FORMAT_ICON_MAP[manifest.id];
+  const groups = manifest.paths ?? manifest.phases ?? [];
+  const totalSteps = groups.reduce((acc, g) => acc + g.steps.length, 0);
+  return (
+    <Link
+      to={manifest.routePath}
+      className="card-flat px-3 py-3 transition-all duration-150 flex flex-col gap-1.5 hover:bg-elevated hover:border-primary-300 group"
+    >
+      <div className="flex items-center gap-2">
+        <Icon className="size-4 shrink-0 text-fg-secondary group-hover:text-primary-600 transition-colors" />
+        <div className="text-body-s font-medium text-fg-primary truncate flex-1">
+          {manifest.nameZh}
+        </div>
+        <Construction
+          className="size-3 shrink-0 text-warning"
+          aria-label="Coming Soon"
+        />
+      </div>
+      <div className="flex items-center justify-between gap-2 ml-6">
+        <span className="text-tight-xs text-fg-muted truncate">{manifest.duration}</span>
+        <span className="text-tight-xs text-fg-muted font-mono shrink-0">
+          {groups.length > 1 ? `${groups.length}×` : ''}{totalSteps}步
+        </span>
+      </div>
+    </Link>
+  );
+}
+
 function QuickActionCard({
   icon: Icon,
   label,
