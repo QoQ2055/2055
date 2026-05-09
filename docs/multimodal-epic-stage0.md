@@ -195,9 +195,11 @@ fili-web 从**文字剧本生产工具**扩展为**短剧工业化生产管线**
 
 ---
 
-### epic MM5 · continuity-table 持久化（dexie schema v7）
+### epic MM5 · continuity-table 持久化（dexie schema v8）
 
-**目标**：dexie schema v6 → v7 · 新增 4 张连续性表 · 每个 chat step 的 `save` 自动 `update_continuity_table` · 解决跨会话状态丢失。
+> **修订（2026-05-09）**：原计划 v7 已被 ACE-lite reflectorLessons（commit `cc41dad` 之前合入）占用 · 本 epic 顺延至 v8。
+
+**目标**：dexie schema v7 → v8 · 新增 4 张连续性表 · 每个 chat step 的 `save` 自动 `update_continuity_table` · 解决跨会话状态丢失。
 
 **产物**：
 
@@ -210,8 +212,8 @@ fili-web 从**文字剧本生产工具**扩展为**短剧工业化生产管线**
 
 **迁移脚本（决策 A · 狠）**：
 ```ts
-this.version(7).stores({
-  // v1-v6 表全部保留（stores 字符串追加）
+this.version(8).stores({
+  // v1-v7 表全部保留（stores 字符串追加）
   foreshadowTable: '++id, projectId, status, [projectId+status]',
   characterArcTable: '++id, projectId, characterName, [projectId+characterName]',
   worldContinuityTable: '++id, projectId, domain, [projectId+domain]',
@@ -227,14 +229,14 @@ this.version(7).stores({
 - 代码注释中可写 "inspired by continuity-table concept · re-designed schema"
 
 **技术路径**：
-- Dexie v6→v7 迁移测试（用户 dogfood 前跑 `storage.test.ts` 验证无丢）
+- Dexie v7→v8 迁移测试（用户 dogfood 前跑 `storage.test.ts` 验证无丢）
 - 添加 `src/store/continuity/*.ts` atom · CRUD API
 - SelfCheckPanel / AssetFactory / Storyboard 各自消费对应表
 - `/project-settings` 加"导出所有连续性表为 JSON"按钮 · 用户可离线备份
 
 **不变量**：
-- dexie v1-v6 stores 字符串 0 改（严守"CK 红线 #1"）· 仅追加 v7 4 张新表
-- 旧项目（dexie v6 数据）在 v7 下完全可读 · 只是 4 张新表为空
+- dexie v1-v7 stores 字符串 0 改（严守"CK 红线 #1"）· 仅追加 v8 4 张新表
+- 旧项目（dexie v7 数据）在 v8 下完全可读 · 只是 4 张新表为空
 - `npm run build` 0 errors · storage.test.ts 必须全过
 
 **预估**：5-8 commit · 1 session
@@ -257,7 +259,7 @@ MM4 (分镜板) ────┘
 ```
 
 **推荐顺序**（最小风险路径）：
-1. **MM5 先行**（不碰 UI · 仅 schema v7 + 迁移脚本 · 最快反馈迁移正确性）
+1. **MM5 先行**（不碰 UI · 仅 schema v8 + 迁移脚本 · 最快反馈迁移正确性）
 2. **MM1 平行**（直接吃 LAYER 1 · 最安全 · 快速扩大产品能力）
 3. **MM2**（MM1 完成后 · 新格式消费 MM2 自检）
 4. **MM3 资产工厂**（最大产品 gap · 依赖 MM1 的长片/剧集做测试数据）
@@ -271,7 +273,7 @@ MM4 (分镜板) ────┘
 
 源于 fili-web 历史 CK 红线 + ui-v6 epic 沉淀：
 
-1. **CK 红线 #1 · dexie stores 字符串 v1-v7 全部严守追加**（v7 仅 `+foreshadowTable / +characterArcTable / +worldContinuityTable / +rhythmDiagnosticTable` · 不改既有表任一字段）
+1. **CK 红线 #1 · dexie stores 字符串 v1-v8 全部严守追加**（v8 仅 `+foreshadowTable / +characterArcTable / +worldContinuityTable / +rhythmDiagnosticTable` · 不改既有表任一字段）
 2. **DESIGN.md 14 token 0 增删**（MM1-MM4 所有 UI 只消费现有 token · MM5 不涉及 UI）
 3. **6 atom API 0 破坏**（useSettings / useProject / useExportDrawer / useConfirm / useShortcuts / useKbBinding · 6 个核心 atom 的公开 API 严守不改）
 4. **路由 0 删除**（只可新增 · 不可删除 · 不可改路径 · 保已发布产品的 bookmark 兼容）
@@ -287,7 +289,7 @@ MM4 (分镜板) ────┘
 | --- | --- | --- |
 | IP 合规破线 · 无意复用 CineForge 命名 | 🔴 高 | `npm run ip-guard` 每次 commit 前跑 · CI 强制 · dogfood-log 每 PR 声明 |
 | LLM 预算失控（用户一键点"生成全部"烧 ¥100+）| 🔴 高 | 预算护栏必须上 · 默认保守值（每项目 ¥20 上限 · 超出需确认） |
-| Dexie v7 迁移失败 · 用户数据丢 | 🔴 高 | v7 上线前 · 手动备份 dexie 数据 + 写 storage.test.ts 覆盖 v6→v7 · 线上 feature flag 分阶段启用 |
+| Dexie v8 迁移失败 · 用户数据丢 | 🔴 高 | v8 上线前 · 手动备份 dexie 数据 + 写 storage.test.ts 覆盖 v7→v8 · 线上 feature flag 分阶段启用 |
 | 5 epic 并行开发分支冲突 | 🟡 中 | 推荐串行 MM5 → MM1 → MM2 → MM3 → MM4 · 每 epic 完全合入后再开下一个 |
 | bundle 回退（MM3/MM4 代码量大 · 或新 chunk 超限）| 🟡 中 | 每 PR build-stats 对比基线 · 回退 > 10% 必须优化才合入 |
 | 视频模型 API 快速过时（Sora 2 / Veo 4 等）| 🟡 中 | ModelAdapter 抽象层 · 5 模型 ≠ 硬编码 · 用户可自定义模型模板 · 未来扩展 |
@@ -303,7 +305,7 @@ MM4 (分镜板) ────┘
 - [ ] 用户确认所有决策 · 不再变更
 - [ ] Stage 0 commit 推送到 origin/main（当前 HEAD：`cc41dad` · PR-9）
 
-验收通过后 · 下一 session 开 **MM5 PR-1**（dexie v7 迁移 · 最小风险切入点）。
+验收通过后 · 下一 session 开 **MM5 PR-1**（dexie v8 迁移 · 最小风险切入点）。
 
 ---
 
@@ -334,3 +336,4 @@ MM4 (分镜板) ────┘
 ## 修订记录
 
 - **v1.0（2026-05-09）**：初稿 · 5 epic 全上 · 决策锁定 · 等用户确认后启动 MM5 PR-1
+- **v1.1（2026-05-09）**：MM5 dexie schema 起点修正 v7 → v8（v7 已被 ACE-lite reflectorLessons 占用 · commit `cc41dad`）
