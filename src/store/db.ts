@@ -3,6 +3,12 @@ import type { CreateMode, AdaptationType, ProjectMode, SourceChunk } from '../pi
 import type { UserKbDoc, UserKbFeedback } from './userKb';
 import type { CharacterStateRecord } from './characterStates';
 import type { ReflectorLesson } from './reflectorLessons';
+import type {
+  ForeshadowRow,
+  CharacterArcRow,
+  WorldRuleRow,
+  RhythmDiagnosticRow,
+} from './continuity/types';
 
 export interface Project {
   id?: number;
@@ -133,6 +139,14 @@ class CineDB extends Dexie {
   characterStates!: Table<CharacterStateRecord, number>;
   /** v6 · ACE-lite · Reflector lessons 待审阅队列（CK I-2 add-only） */
   reflectorLessons!: Table<ReflectorLesson, number>;
+  /** v8 · MM5 epic · 伏笔追踪表（multimodal continuity layer · add-only） */
+  foreshadowTable!: Table<ForeshadowRow, number>;
+  /** v8 · MM5 epic · 角色弧光表（多 epoch 跨章节状态轨迹） */
+  characterArcTable!: Table<CharacterArcRow, number>;
+  /** v8 · MM5 epic · 世界观规则表（domain-rule + 违规记录） */
+  worldContinuityTable!: Table<WorldRuleRow, number>;
+  /** v8 · MM5 epic · 节奏诊断表（场次 tension/emotion + 警报） */
+  rhythmDiagnosticTable!: Table<RhythmDiagnosticRow, number>;
 
   constructor() {
     super('FLIL');
@@ -209,6 +223,31 @@ class CineDB extends Dexie {
       liveRefinementUndo: '++id, ts, [chapterIndex+source]',
       characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
       reflectorLessons: '++id, projectId, chapterIndex, signalType, status, ts, [projectId+status], [projectId+chapterIndex]',
+    });
+    // v8: epic MM5 PR-1 · 多模态连续性表（multimodal continuity layer）
+    //
+    // 设计原则（inspired by continuity-table concept · re-designed schema · IP tier 2 自写）：
+    //   - 4 张 add-only 表 · 每张独立索引 · 不与现有表交叉
+    //   - 表名 / 字段名 / 枚举值全部 fili-web 自写 · 不复用任何外部独创命名
+    //   - 升级 callback 留空 · 旧项目数据 0 触碰 · 4 张新表默认空 · 首次使用按需写入
+    //
+    // CK 红线 #1（v1-v7 stores 字符串 0 改）严守 · 仅在尾部追加 4 行新表声明。
+    // CK I-2（add-only · 永不删表 / 永不删字段）严守 · 后续 epic 只可追加新字段（用 ?: 可选）。
+    this.version(8).stores({
+      projects: '++id, name, createdAt, status',
+      artifacts: '++id, projectId, nodeId, ts, [projectId+nodeId]',
+      liveArtifacts: '&nodeId, stageId, ts',
+      runHistory: '++id, nodeId, ts, projectId, [projectId+nodeId], [nodeId+ts]',
+      userKbDocs: '++id, type, enabled, createdAt, [type+enabled]',
+      userKbFeedback: '++id, projectId, chapterIndex, createdAt, [projectId+chapterIndex]',
+      liveRefinementUndo: '++id, ts, [chapterIndex+source]',
+      characterStates: '++id, projectId, chapterIndex, characterName, ts, stale, [projectId+chapterIndex], [projectId+characterName], [projectId+chapterIndex+characterName]',
+      reflectorLessons: '++id, projectId, chapterIndex, signalType, status, ts, [projectId+status], [projectId+chapterIndex]',
+      // v8 add-only · 4 张连续性表
+      foreshadowTable: '++id, projectId, status, setupChapter, payoffChapter, [projectId+status], [projectId+setupChapter]',
+      characterArcTable: '++id, projectId, characterName, epoch, chapter, [projectId+characterName], [projectId+characterName+epoch]',
+      worldContinuityTable: '++id, projectId, domain, chapter, [projectId+domain]',
+      rhythmDiagnosticTable: '++id, projectId, chapter, sceneIdx, [projectId+chapter], [projectId+chapter+sceneIdx]',
     });
   }
 }
