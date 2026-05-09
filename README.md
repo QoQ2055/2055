@@ -148,6 +148,18 @@ fili-web/
 - 部署到任意静态托管（Vercel / Netlify / GitHub Pages / 本地 `file://`）均可
 - 项目级别 `.flil.json` 导入导出在 Home 页
 
-## License
+## License + Attribution
 
-私有项目（无正式 license）。
+**项目本体**：私有项目（无正式 license）· 仅供单人创作者本地使用。
+
+**第三方资料**（MIT 直引 · 详见 `@docs/methodology/README.md`）：
+
+| 资料 | 来源 | 许可 | 路径 |
+|---|---|---|---|
+| 长片格式 SKILL | `shanyin-screenwriting-master` | MIT · @山音 | `@docs/methodology/format-feature.md` |
+| 叙事短片格式 SKILL | `shanyin-screenwriting-master` | MIT · @山音 | `@docs/methodology/format-short.md` |
+| 概念超短片格式 SKILL | `shanyin-screenwriting-master` | MIT · @山音 | `@docs/methodology/format-ultrashort.md` |
+| 剧集格式 SKILL | `shanyin-screenwriting-master` | MIT · @山音 | `@docs/methodology/format-series.md` |
+
+致谢：上述 4 份 SKILL 由 @山音 以 MIT 协议开源 · 是 fili-web 多格式扩展（MM1 epic）的方法论基石。
+合规细则见 `@docs/ip-tier-policy.md`（IP 治理三档分类）+ `@docs/multimodal-epic-stage0.md`（5 epic 范围）。
