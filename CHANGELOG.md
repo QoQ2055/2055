@@ -10,6 +10,60 @@
 
 ## [Unreleased] · v2 阶段 2.x（2026-05）
 
+### 阶段 2.13 · ui-v6 epic · Studio Calm 美化 + 性能 + 体验三方闭环（13 commit · 2026-05-07/08/09）
+
+**动机**：在阶段 2.10 DESIGN.md token 化奠基之后，做一次"面向真实长期使用体感"的综合升级——既要视觉更有创作工具的温度（Studio Calm），又要性能不拖后腿（路由 lazy 从 -95% 入口到 modal 拆分），还要消除体验硬伤（消除路由切换的 lazy 闪现 / Novel chunk 太大拖慢 /novel 首屏）。
+
+**13 commit 总览**：
+
+| PR | commit | 主题 | 核心指标 |
+| --- | --- | --- | --- |
+| PR-1 (4 子) | `...` | Studio Calm A.1-A.4 侧栏折叠 / 空态 / 动效钩子 | 视觉 |
+| PR-2 | `...` | 动效闭环 · 6 keyframes + utility 绑定 | 视觉 |
+| PR-3 (2 子) | `...` | Studio Calm C.1 + C.2 卡片/表单密度重排 | 视觉 |
+| PR-4 | `...` | token sweep 1 · `bg-surface-N` 27 处规范 | token 合规 |
+| PR-5 | `...` | /lessons + /kb hero header 对称 | 视觉 |
+| PR-6 | `ed716b6` | token sweep 2 · `brand-N` 33 处改 `primary-N` · 15 文件 | token 合规 |
+| PR-7 | `f1dc7b9` | **bundle code-split** · index.js 1188 KB → 58 KB (-95%) · 14 路由 lazy | **性能** |
+| PR-8 | `d02610a` | **hover prefetch** · nav onMouseEnter 预取 chunk · 消除路由切换闪现 | **体验** |
+| PR-9 | `cc41dad` | **Novel modal/dialog lazy** · Novel chunk 131 KB → 80 KB (-39%) | **性能** |
+
+**关键设计决策**：
+
+- **Studio Calm 视觉方向**：从阶段 2.10 的"暖橙工业风"延伸到"创作工具低饱和宁静感"——侧栏可折叠给长文本创作腾空间、空态插图有温度、所有交互有细微但可感知的动效（150ms 贝塞尔曲线），不吵、不浮、不高频。
+- **Token 合规红线**：PR-4 和 PR-6 两次 token sweep 闭环。基于 `tailwind.config.ts` 实际 palette 跑 9 类 invalid class 扫雷（secondary 越界 / 语义色 ≥300 / 单档加数字 / brand 越界等），**全 0 hits**。之后所有 UI 改动直接消费现有 14 token，不再出现"写了但 Tailwind 静默丢弃"的隐债。
+- **Bundle 三步优化**：
+  - PR-7 入口从 1188 KB → 58 KB（-95%）：把 14 路由全部 React.lazy + vendor 4-chunk 分组
+  - PR-8 消除闪现：sidebar onMouseEnter 触发 `prefetchRoute` · 用户从 hover 到 click 的 100-300ms 间隙正好下载 chunk
+  - PR-9 Novel 主路由 -39%：把仅 `editSettings &&` / `previewNode &&` 时挂载的 `NovelSettingsDialog`（15 KB）+ `PreviewModal`（16 KB）改 React.lazy · lazy boundary overhead 仅 +1.4 KB
+- **不变量守住**：DESIGN.md 14 token 0 增删 · 6 atom API 0 破坏 · dexie schema 0 改 · 业务逻辑 0 改 · 路由 0 删除 · 入口包 < 60 KB · 所有路由 chunk < 600 KB。
+
+**bundle 终态对比**：
+
+```
+                         阶段 2.10 起跑        PR-9 终态
+index.js                 1188 KB              58 KB        -95%
+vendor-react             (合在 index)         140 KB       长缓存
+vendor-icons             (合在 index)         45 KB        长缓存
+vendor-storage           (合在 index)         170 KB       长缓存
+vendor-misc              (合在 index)         147 KB       长缓存
+14 路由 chunk            (全吃进 index)       按需 lazy    hover 时预取
+Novel 主路由 chunk       (不存在)             80 KB        从 131 KB 拆出 modal
+PreviewModal (lazy)      (合在 Novel)         19 KB        点预览时加载
+NovelSettingsDialog      (合在 Novel)         34 KB        点设置时加载
+```
+
+**用户视角的变化**：
+- 首次打开 fili-web：下载量少 95%（入口），白屏时间从秒级到百毫秒级
+- 切换页面：hover sidebar 时 chunk 已开始下载 · 点击时通常已缓存 · 无"加载中..."闪现
+- 进入 /novel：少下 51 KB · 首次开 ⚙ 设置 / 章节预览有 100-200ms 加载（modal 自带过渡遮盖）· 之后缓存即时
+
+**配套文档**：
+- `docs/dogfood-checklist.md` ⑧-⑮ 8 节 · 所有 US-* 可勾选手测项
+- `docs/dogfood-log.md` ui-v6 epic 节 · 每 PR 的动机/实装/实测/不变量验证
+
+---
+
 ### 阶段 2.10 · DESIGN.md 设计系统全量重塑（C 档位）
 
 **动机**：现存 1206 处 `bg-zinc-X`、173 处 `bg-brand-X`、各种散乱 amber/rose/emerald 状态色——
