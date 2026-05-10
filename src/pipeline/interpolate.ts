@@ -262,8 +262,13 @@ export function interpolate(template: string, scope: InterpolateScope): string {
 // hard-coded examples baked into the original payload.
 // (The original payloads have e.g. "一句话概念: 仙侠爱情短剧" and "5分钟" hard-wired.)
 export function applyProjectContext(text: string, ctx: ProjectContext): string {
+  // MM1 PR-4 · 把 hardcoded 'narrative_short' 替换为 ctx.formatId（默认仍 narrative_short）
+  // 让 screenplay system prompt 的 4 分支（concept_short / narrative_short / feature / series）
+  // 由 ProjectContext 控制 · 而不是 prompt JSON 里写死。现有项目缺省值 = 'narrative_short' 零行为变化。
+  const formatId = ctx.formatId ?? 'narrative_short';
   let out = text
     .replace(/一句话概念:\s*[^\n]+/g, `一句话概念: ${ctx.concept}`)
+    .replace(/体量:\s*[^\n]+/g, `体量: ${formatId}`)
     .replace(/单集时长:\s*\*\*\d+\s*分钟\*\*/g, `单集时长: **${ctx.durationMin}分钟**`)
     .replace(/单集时长:\s*\d+\s*分钟/g, `单集时长: ${ctx.durationMin}分钟`)
     .replace(/创作模式:\s*[^\n]+/g, `创作模式: ${ctx.mode}`);

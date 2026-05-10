@@ -105,6 +105,13 @@ export interface ProjectContext {
   visualStyle?: string;                                         // 'wuxia_ink' | 'cyberpunk' | ...
   /** 项目类型：normal=完整流水线；express=特殊项目（仅资产+分镜） */
   projectType?: 'normal' | 'express';
+  /**
+   * MM1 epic · 剧本格式分支（注入到 screenplay/{1..8}.json user msg 的 `体量:` 字段）。
+   * screenplay system prompt 已内置 4 分支（What-If 超短/How-to-Tell 超短/叙事短片/电影长片/剧集），
+   * 由本字段决定走哪一支。缺省 = 'narrative_short'（与历史 hardcode 一致 · 现有项目零行为变化）。
+   * 4 路由通过 setCtx({ formatId }) 切换 · 见 pages/ShortFilm.tsx 等。
+   */
+  formatId?: 'narrative_short' | 'feature' | 'concept_short' | 'series';
   // ─────── 小说创作专用字段（projectMode='novel' 时必填） ───────
   /** 小说平台范式：'qidian' | 'fanqie' | 'jjwxc' | 'zongheng' | 'kindle' | 'web_free' */
   novelPlatform?: string;
