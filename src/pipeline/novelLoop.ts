@@ -862,6 +862,30 @@ async function runChapterLoopShared(opts: RunChapterLoopShared): Promise<NodeArt
         }
       }
 
+      // MM5 PR-5 · v8 连续性提取 hook（CK I-8 fire-and-forget · 独立 opt-in · 不阻塞 polish loop）
+      // 与 enableCharacterStateExtraction 平行 · 任一开启都可独立触发；本 hook 仅 polish mode 触发。
+      if (mode === 'polish' && settings.enableContinuityExtraction) {
+        try {
+          const chapterContent = art.content; // 当前 polish 后产出
+          const chapterTitle = ch.title;
+          const chapterIndex = ch.index;
+          void import('./continuity').then(({ extractContinuityFromChapter }) =>
+            extractContinuityFromChapter({
+              projectId: 0, // 活动项目 sentinel · 与 recordRun 一致
+              chapterIndex,
+              chapterTitle,
+              chapterContent,
+              settings,
+              signal,
+            }),
+          ).then((r) => {
+            if (!r.ok) console.warn('[MM5 PR-5] continuity 提取失败（第 ' + ch.index + ' 章不阻塞）:', r.error);
+          }).catch((e) => console.warn('[MM5 PR-5] continuity hook 异常（第 ' + ch.index + ' 章不阻塞）:', e));
+        } catch (e) {
+          console.warn('[MM5 PR-5] continuity hook 启动失败:', e);
+        }
+      }
+
       const intermediate = assembleChapterArtifact({
         step, chapters, chapterContents, chapterTitles, chapterModesOut,
         completedChapters: [...completedSet],

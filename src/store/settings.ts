@@ -42,6 +42,12 @@ export interface SettingsState {
   enableScoreCard: boolean;         // 节点产出后显示 6 维评分（前 4 维自动跑，LLM 维度按需重算）
   /** gap-b · N3.2 润色完成后自动提取角色状态、N3.1 草稿注入上一章状态摘要。默认 false 避免被动产生 token 费用。 */
   enableCharacterStateExtraction: boolean;
+  /**
+   * MM5 PR-5 · N3.2 润色完成后自动提取连续性元素（伏笔 / 角色弧光 / 世界观规则 / 节奏诊断）
+   * · 落入 v8 4 表 · 看板自动反映。fire-and-forget 不阻塞主流程。
+   * · 默认 false （避免被动产生 token 费用 · CK I-4 opt-in）。
+   */
+  enableContinuityExtraction: boolean;
   /** gap-c · 第 7 维 transition 衔接顺畅度评分（仅当提供上一章原文时起作用）。默认 true。 */
   enableTransitionScoring: boolean;
   scoreCardWeights?: Partial<{      // 7 维度自定义权重（默认等权 1.0），缺省 = 等权
@@ -89,6 +95,7 @@ const DEFAULTS = {
   enableSelfCheckContext: true,
   enableScoreCard: true,
   enableCharacterStateExtraction: false,
+  enableContinuityExtraction: false,
   enableTransitionScoring: true,
   scoreCardWeights: undefined,
   // v6 epic · ACE-lite Reflector 默认 disabled（CK I-4 · 用户主动 opt-in）

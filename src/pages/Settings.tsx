@@ -239,6 +239,22 @@ export function Settings() {
         </label>
 
         <ScoreCardWeightSliders />
+
+        {/* MM5 PR-5 · 连续性提取开关（默认 false · opt-in · fire-and-forget · 不阻塞主流程） */}
+        <label className="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" className="mt-1" checked={s.enableContinuityExtraction === true}
+                 onChange={(e) => s.set({ enableContinuityExtraction: e.target.checked })} />
+          <div>
+            <div className="text-body-m font-medium text-fg-primary">启用连续性自动提取（v8 schema · MM5）</div>
+            <div className="text-caption-m text-fg-muted mt-1">
+              <code className="code px-1 bg-elevated rounded">novel.7</code> 章节润色完成后<strong>自动调 LLM 提取</strong>
+              4 类连续性元素（伏笔 / 角色弧光 / 世界观规则 / 节奏诊断），落入
+              <code className="code px-1 bg-elevated rounded">v8 dexie schema</code> 4 张表。Home 页「连续性看板」按钮可查看
+              统计 + 分布。<strong>fire-and-forget 不阻塞 polish loop</strong> · 失败仅记 console.warn。
+              单次 ≈ 1k tokens（用 modelLite · 提取任务稳定不发散）。
+            </div>
+          </div>
+        </label>
       </section>
     </div>
   );
