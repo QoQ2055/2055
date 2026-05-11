@@ -234,7 +234,7 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
               <div className="space-y-3">
                 <div>
                   <div className="text-xs text-fg-secondary mb-1.5">单集时长</div>
-                  <div className="flex flex-wrap gap-1.5">
+                  <div className="flex flex-wrap items-center gap-1.5">
                     {DURATIONS.map((d) => (
                       <button
                         key={d.value}
@@ -251,6 +251,24 @@ export function AdaptIntakeWizard(p: AdaptIntakeWizardProps) {
                         {d.label}
                       </button>
                     ))}
+                    <div className="inline-flex items-center gap-1 ml-1">
+                      <input
+                        type="number"
+                        min={0.1}
+                        max={240}
+                        step={0.5}
+                        value={durationMin}
+                        onChange={(e) => {
+                          const v = parseFloat(e.target.value);
+                          if (Number.isFinite(v) && v > 0 && v <= 240) setDurationMin(v);
+                        }}
+                        className="w-16 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        placeholder="自定义"
+                        aria-label="自定义时长 (分钟)"
+                        title="任意分钟数 · 0.1 - 240"
+                      />
+                      <span className="text-tight-xs text-fg-muted">分钟</span>
+                    </div>
                   </div>
                 </div>
 

@@ -445,11 +445,31 @@ export function Express() {
           </div>
           <div>
             <label className="label">目标时长</label>
-            <ChoiceRow
-              value={String(ctx.durationMin ?? '')}
-              options={DURATIONS.map((d) => ({ value: String(d.value), label: d.label, hint: d.hint }))}
-              onChange={(v) => project.setCtx({ durationMin: parseFloat(v) })}
-            />
+            <div className="flex flex-wrap items-center gap-2">
+              <ChoiceRow
+                value={String(ctx.durationMin ?? '')}
+                options={DURATIONS.map((d) => ({ value: String(d.value), label: d.label, hint: d.hint }))}
+                onChange={(v) => project.setCtx({ durationMin: parseFloat(v) })}
+              />
+              <div className="inline-flex items-center gap-1">
+                <input
+                  type="number"
+                  min={0.1}
+                  max={240}
+                  step={0.5}
+                  value={ctx.durationMin ?? ''}
+                  onChange={(e) => {
+                    const v = parseFloat(e.target.value);
+                    if (Number.isFinite(v) && v > 0 && v <= 240) project.setCtx({ durationMin: v });
+                  }}
+                  className="w-16 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  placeholder="自定义"
+                  aria-label="自定义时长 (分钟)"
+                  title="任意分钟数 · 0.1 - 240"
+                />
+                <span className="text-tight-xs text-fg-muted">分钟</span>
+              </div>
+            </div>
           </div>
           <div>
             <label className="label">目标平台</label>
