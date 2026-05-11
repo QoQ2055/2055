@@ -247,6 +247,84 @@ function shouldInjectCreationConstraints(stageId: StageId, step: ManifestStep): 
 }
 
 /**
+ * 思考与输出分离铁律 · 上游 CineForge V1.1 v10 hotfix2 (2026-05-09) · 全 stage 适用.
+ *
+ * 问题原型：thinking 模型 (DeepSeek R1 / Kimi K2.6) 天然倾向把答案写进 reasoning_content ·
+ * 用户根本看不到 · 体验是“agent 什么也没说就直接保存了”. 上游明确反向矫正:
+ * 内容写正文 (text content) · reasoning_content 仅写 ≤ 50 字的下一步动作计划.
+ */
+const THINKING_OUTPUT_DISCIPLINE_ADDENDUM = `
+# 思考与输出分离铁律 (CineForge V1.1 hotfix2)
+
+**所有给用户看的正文必须走普通正文输出 (text content) · reasoning_content / thinking 仅用于内部规划.**
+
+## 严禁
+- 把最终内容 (剧本 / 场景 / 资产 prompt / 单元 prompt / 镜头表 / 制作包) 塞进 reasoning_content
+- 在 reasoning_content 里写整段场景描述 / 第一层 / 第二层 / 详细布陈
+- 在 reasoning_content 里给用户解释答案 (用户根本看不到)
+
+## 必须
+- reasoning_content / thinking ≤ 50 字 · 仅写“接下来要做什么”的简短计划
+- 例如: "按 step3 出 5 个人物卡" (12 字)
+- 又如: "选 A 方案 · 下一步出梗概" (10 字)
+- 反例: 整段场景描述 + 第一层 + ... + 第四层 (582 字)
+
+## 思考模型特别提醒 (DeepSeek R1 / Kimi K2.6 / 等)
+你如果是 thinking 模型· 天然倾向把答案写进 reasoning. **明确反向**: 内容写正文 · thinking 极简.
+
+理由: 用户看的是正文区 · thinking 是折叠的“调试区”. 内容塞 thinking → 用户看到“什么也没说就保存了”.
+`;
+
+function shouldInjectThinkingDiscipline(_stageId: StageId, _step: ManifestStep): boolean {
+  // 全局适用 · 所有 stage / step 都可能遇到 thinking 模型 · 不能选择性放过
+  return true;
+}
+
+/**
+ * 原文 grounding 铁律 · 上游 CineForge V1.1 v10 hotfix3 (2026-05-10) · 仅派生 stage 适用.
+ *
+ * 问题原型：agent 看见 fullScript / 上游 artifact 在 prompt 里 · 但写时不去打开原文 ·
+ * 凭“印象 + 概要”出 prompt → 原文里描述弱但剧情重要的动作全部漏掉.
+ * 上游修法：强制 verbatim 复制 · 无法靠记忆完成 · 用户能立即对照验证.
+ *
+ * 适用阶段 (派生型 · 基于已有剧本派生 visual / prop / shot):
+ *   - assets · 资产分卡 (从剧本派生角色 / 道具 / 场景)
+ *   - storyboard · 分镜单元 + 单元 prompt (从剧本派生 shot)
+ *   - 未来 shotlist (从剧本派生制作包)
+ *
+ * 不适用 (创作型 · 从无到有 · 没原文可锚):
+ *   - screenplay · 剧本初稿创作
+ *   - novel · 小说创作
+ *   - adapt · 改编 (已有 ADAPTATION_SCREENPLAY_ADDENDUM 处理原作 grounding)
+ */
+const ORIGINAL_GROUNDING_ADDENDUM = `
+# 原文 grounding 铁律 (CineForge V1.1 hotfix3)
+
+**你正在做“基于已有剧本派生”的内容 (资产 / 单元 / 镜头表 / 拆解). 写每段前必须先 verbatim 锚原文.**
+
+## 强制 verbatim 复制
+1. 写每个资产 / 单元 / 拆解段落**之前**, 必须先输出 \`**原文锚**:\` 段
+2. 原文锚 = 从上方剧本原文 / 上游 artifact 中**一字不改复制粘贴** · 100-300 字
+3. **绝对禁止**："..." / "略" / "(中间省略)" / "类似" / "大意是" / "可以理解为" / 同义改写
+4. 列**剧情原子 / 视觉元素清单**时, 每条必须能在上面原文锚里找到出处
+5. 写最终 prompt / 资产时, 必须覆盖原子清单的每一条
+
+## 禁止避粘话术
+- “我已经看过原文了”
+- “原文我记得是...”
+- “如剧本所述...” (不加具体原句)
+
+**agent 不许说这些· 必须真复制.** 用户能立即通过对照上方剧本 / artifact 验证你粘的是不是原句.
+
+理由: 防止“丢剧情” — 看见原文在 prompt 里但写时不去打开 · 凭印象出 prompt → 原文里描述弱但剧情重要的动作全漏掉.
+`;
+
+function shouldInjectOriginalGrounding(stageId: StageId, _step: ManifestStep): boolean {
+  // 仅派生 stage · 资产分卡 / 分镜单元 · 未来 shotlist 阶段在这里扩充
+  return stageId === 'assets' || stageId === 'storyboard';
+}
+
+/**
  * 题材锚点注入：根据 ctx.genres 查找对应锚点配置，合并去重后拼接为
  * 一段 system prompt 段落。多题材组合（最多 3 个）时按以下规则合并：
  *   - mustInclude / mustAvoid: 全集合并去重（强约束累加）
@@ -444,6 +522,18 @@ export async function composeMessages(inp: ComposeInput): Promise<ChatMessage[]>
   // （结构化产物 vs 叙事正文，二选一）。提炼自天命平台规范，详见上方常量注释。
   if (shouldInjectCreationConstraints(stageId, step)) {
     sys = sys + '\n\n' + GLOBAL_CREATION_CONSTRAINTS;
+  }
+
+  // CineForge V1.1 hotfix2 · 思考与输出分离铁律 · 全 stage 注入
+  // (thinking 模型天然倾向把答案写进 reasoning · 不能按 stage 选择性放过)
+  if (shouldInjectThinkingDiscipline(stageId, step)) {
+    sys = sys + '\n\n' + THINKING_OUTPUT_DISCIPLINE_ADDENDUM;
+  }
+
+  // CineForge V1.1 hotfix3 · 原文 grounding 铁律 · 仅派生 stage (assets / storyboard) 注入
+  // (创作型 stage 没原文可锚 · screenplay / novel / adapt 豁免)
+  if (shouldInjectOriginalGrounding(stageId, step)) {
+    sys = sys + '\n\n' + ORIGINAL_GROUNDING_ADDENDUM;
   }
 
   // ---- user composition (unchanged logic per stage) ----
