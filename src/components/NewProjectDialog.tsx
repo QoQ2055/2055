@@ -14,9 +14,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Sparkles, BookCopy, Loader2, X, Wand2, Rocket, Edit3, ArrowLeft,
+  // MM1 PR-8 · formatId picker icons · 与 Home.tsx 格式卡片一致 (Film/Clapperboard/Zap/Layers)
+  Film, Clapperboard, Zap, Layers, Lightbulb, Eye,
 } from 'lucide-react';
 import clsx from 'clsx';
 import type { ProjectContext, CreateMode, ProjectMode } from '../pipeline/types';
+// MM1 PR-8 · 复用 4 格式 UI manifest · 与 Home.tsx/formats 入口卡片同源
+// Screen id 差异处理 by formatIdFromManifest 映射 ProjectContext.formatId
+import { ALL_FORMATS, type FormatManifest } from '../data/formats';
 import { GenreAnchorPreview } from './GenreAnchorPreview';
 import { Input, Textarea } from './ui';
 import {
@@ -61,6 +66,12 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
   // adaptation mode
   const [adaptSourceType, setAdaptSourceType] = useState<string>('novel_long');
 
+  // MM1 PR-8 · formatId picker (仅 mode='original' 时有意义 · 决定创建后跳哪个 4-路由)
+  // narrative_short = 叙事短片 · feature = 电影长片 · concept_short = 极短片 · series = 剧集
+  const [formatId, setFormatId] = useState<NonNullable<ProjectContext['formatId']>>('narrative_short');
+  // concept_short 下的二级路径 · what-if | how-to-tell | mixed · undefined=未选 (会由 PathSelector 兑现)
+  const [ultrashortMode, setUltrashortMode] = useState<ProjectContext['ultrashortMode']>(undefined);
+
   // novel mode
   const [novelPlatform, setNovelPlatform] = useState<string>('qidian');
   const [novelScale, setNovelScale] = useState<string>('long');
@@ -94,6 +105,9 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
       setNovelChaptersTouched(false);
       setNovelLogline('');
       setNovelHook('');
+      // MM1 PR-8 · reset formatId 回 default (narrative_short) + 清 ultrashortMode
+      setFormatId('narrative_short');
+      setUltrashortMode(undefined);
     }
   }, [p.open]);
 
@@ -178,6 +192,10 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
         protagonistGender,
         platform,
         coreConflict: coreConflict.trim(),
+        // MM1 PR-8 · 格式选择 · 决定创建后跳哪条 4-路由 + screenplay/1.json 走哪个分支
+        formatId,
+        // concept_short 方才写 ultrashortMode · 其他格式留空 (避免污染 narrative/feature/series ctx)
+        ultrashortMode: formatId === 'concept_short' ? ultrashortMode : undefined,
       };
     } else if (mode === 'express') {
       ctx = {
@@ -287,6 +305,8 @@ export function NewProjectDialog(p: NewProjectDialogProps) {
               platform={platform} setPlatform={setPlatform}
               coreConflict={coreConflict} setCoreConflict={setCoreConflict}
               previewConcept={previewConcept}
+              formatId={formatId} setFormatId={setFormatId}
+              ultrashortMode={ultrashortMode} setUltrashortMode={setUltrashortMode}
             />
           ) : mode === 'adaptation' ? (
             <AdaptForm
@@ -413,6 +433,11 @@ interface OriginalFormProps {
   platform: string; setPlatform: (v: string) => void;
   coreConflict: string; setCoreConflict: (v: string) => void;
   previewConcept: string;
+  // MM1 PR-8 · 格式选择 · 上层持有 state 以便 reset + handleSubmit 写入 ctx
+  formatId: NonNullable<ProjectContext['formatId']>;
+  setFormatId: (v: NonNullable<ProjectContext['formatId']>) => void;
+  ultrashortMode: ProjectContext['ultrashortMode'];
+  setUltrashortMode: (v: ProjectContext['ultrashortMode']) => void;
 }
 
 function OriginalForm(f: OriginalFormProps) {
@@ -427,6 +452,24 @@ function OriginalForm(f: OriginalFormProps) {
           autoFocus
         />
       </Field>
+
+      {/* MM1 PR-8 · formatId picker · 4 选 1 · 决定创建后跳哪个工作台 */}
+      <FormatPicker
+        formatId={f.formatId}
+        onPick={(next) => {
+          f.setFormatId(next);
+          // 切换到非 concept_short 时清子路径状态 · 避免残留
+          if (next !== 'concept_short') f.setUltrashortMode(undefined);
+        }}
+      />
+
+      {/* MM1 PR-8 · concept_short 才显示子层 ultrashortMode picker (与 /ultrashort-film 的 PathSelector 同购买) */}
+      {f.formatId === 'concept_short' && (
+        <UltrashortPathInlinePicker
+          value={f.ultrashortMode}
+          onChange={f.setUltrashortMode}
+        />
+      )}
 
       <Field
         label={`题材融合（已选 ${f.genres.length}/${MAX_GENRES}）`}
@@ -942,5 +985,129 @@ function Field({ label, required, hint, children }:
       {children}
       {hint && <div className="text-tight-sm text-fg-muted mt-1">{hint}</div>}
     </div>
+  );
+}
+
+/* ─────────────────── MM1 PR-8 · formatId / ultrashortMode picker ──────────────────── */
+
+/**
+ * FormatManifest.id ('feature' | 'short' | 'ultrashort' | 'series') 与
+ * ProjectContext.formatId ('narrative_short' | 'feature' | 'concept_short' | 'series')
+ * 不一致 · 此函数提供 1:1 映射 · 仅在本组件使用。
+ */
+function formatIdFromManifest(m: FormatManifest): NonNullable<ProjectContext['formatId']> {
+  switch (m.id) {
+    case 'short':      return 'narrative_short';
+    case 'feature':    return 'feature';
+    case 'ultrashort': return 'concept_short';
+    case 'series':     return 'series';
+  }
+}
+
+function pickFormatIcon(id: FormatManifest['id']) {
+  switch (id) {
+    case 'short':      return Film;
+    case 'feature':    return Clapperboard;
+    case 'ultrashort': return Zap;
+    case 'series':     return Layers;
+  }
+}
+
+/** 4 选 1 格式卡片 · 决定创建后跳哪个工作台 + screenplay/1.json 走哪个分支 */
+function FormatPicker({
+  formatId,
+  onPick,
+}: {
+  formatId: NonNullable<ProjectContext['formatId']>;
+  onPick: (id: NonNullable<ProjectContext['formatId']>) => void;
+}) {
+  // 与 4 路由展示顺序对齐：叙事短片 → 电影长片 → 极短片 → 剧集
+  const order: FormatManifest['id'][] = ['short', 'feature', 'ultrashort', 'series'];
+  const sorted = order.map((id) => ALL_FORMATS.find((f) => f.id === id)!).filter(Boolean);
+  return (
+    <Field label="剧本格式" required hint="决定创建后进入哪个工作台 · 也决定 screenplay/1.json 走哪个分支生成首步产物">
+      <div className="grid grid-cols-2 gap-2">
+        {sorted.map((m) => {
+          const ctxId = formatIdFromManifest(m);
+          const active = formatId === ctxId;
+          const Icon = pickFormatIcon(m.id);
+          return (
+            <button
+              key={m.id}
+              type="button"
+              onClick={() => onPick(ctxId)}
+              className={clsx(
+                'text-left rounded-md border p-3 transition-colors',
+                active
+                  ? 'border-primary-300/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+                  : 'border-border-subtle hover:border-border-default hover:bg-surface',
+              )}
+            >
+              <div className="flex items-center gap-1.5 text-sm font-medium">
+                <Icon className="size-4 text-primary-300" />
+                {m.nameZh}
+                <span className="ml-auto text-tight-xs text-fg-muted">{m.duration}</span>
+              </div>
+              <div className="text-tight-sm text-fg-muted mt-1 leading-snug line-clamp-2">
+                {m.description}
+              </div>
+            </button>
+          );
+        })}
+      </div>
+    </Field>
+  );
+}
+
+/** 3 选 1 子路径卡片 · 仅在 formatId='concept_short' 时显示 · 与 /ultrashort-film 的 PathSelector 同语言 */
+function UltrashortPathInlinePicker({
+  value,
+  onChange,
+}: {
+  value: ProjectContext['ultrashortMode'];
+  onChange: (v: ProjectContext['ultrashortMode']) => void;
+}) {
+  const opts: Array<{
+    id: NonNullable<ProjectContext['ultrashortMode']>;
+    label: string;
+    desc: string;
+    icon: typeof Lightbulb;
+  }> = [
+    { id: 'what-if',     label: 'What-If 高概念',  desc: '反常识假设 + 推演荒诞后果 · 5 种组合方式', icon: Lightbulb },
+    { id: 'how-to-tell', label: 'How-to-Tell 形式', desc: '形式即内容 · 5 种创意方法 · 视角/格式/时间/尺度/规则', icon: Eye },
+    { id: 'mixed',       label: '混合 · 三方案对比', desc: '让 AI 分支 A/B/C 各产 1 套 · 看完再决定', icon: Layers },
+  ];
+  return (
+    <Field
+      label="超短片创作路径"
+      required
+      hint="3 选 1 · 也可创建后在 /ultrashort-film 路由顶部「切换路径」"
+    >
+      <div className="grid grid-cols-3 gap-2">
+        {opts.map((o) => {
+          const active = value === o.id;
+          const Icon = o.icon;
+          return (
+            <button
+              key={o.id}
+              type="button"
+              onClick={() => onChange(o.id)}
+              className={clsx(
+                'text-left rounded-md border p-3 transition-colors',
+                active
+                  ? 'border-primary-300/60 bg-primary-500/10 ring-1 ring-primary-500/30'
+                  : 'border-border-subtle hover:border-border-default hover:bg-surface',
+              )}
+            >
+              <div className="flex items-center gap-1.5 text-sm font-medium">
+                <Icon className="size-4 text-primary-300" />
+                {o.label}
+              </div>
+              <div className="text-tight-sm text-fg-muted mt-1 leading-snug">{o.desc}</div>
+            </button>
+          );
+        })}
+      </div>
+    </Field>
   );
 }

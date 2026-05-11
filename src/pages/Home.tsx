@@ -34,6 +34,22 @@ import { useProjectDialog } from '../store/projectDialog';
 import type { ProjectContext, SourceChunk } from '../pipeline/types';
 import { getProjectModeMeta, getModeMeta, getProjectMode } from '../data/projectModes';
 
+/**
+ * MM1 PR-8 · 创建后按 formatId 决定路由（仅 mode='original' 且 formatId 已设时生效）。
+ * 与 NewProjectDialog 的 FormatPicker 同购买 · 让用户在向导内的格式选择真正落地。
+ * 其他模式 / 缺省时返回 null · 调用方 fallback 到 mode defaultRoute（保持历史行为）。
+ */
+function formatToRoute(ctx: ProjectContext): string | null {
+  if (getProjectMode(ctx) !== 'original') return null;
+  switch (ctx.formatId) {
+    case 'narrative_short': return '/short-film';
+    case 'feature':         return '/feature-film';
+    case 'concept_short':   return '/ultrashort-film';
+    case 'series':          return '/series';
+    default:                return null; // formatId 未设 (历史项目兼容)
+  }
+}
+
 export function Home() {
   const [projects, setProjects] = useState<Project[]>([]);
   const apiKey = useSettings((s) => s.apiKey);
@@ -97,8 +113,11 @@ export function Home() {
       startNewActive(ctx);
       await refreshList();
       closeAllDialogs();
-      // Route to the new project's mode-specific default workbench.
-      navigate(getProjectModeMeta(ctx).defaultRoute);
+      // MM1 PR-8 · 路由跳转
+      // 原创模式 + ctx.formatId 已设 → 按 formatId 跳 4-路由（让 NewProjectDialog 的格式选择真正生效）
+      // 其他模式 (adaptation/express/novel) 走 mode defaultRoute 不变。
+      const fmtRoute = formatToRoute(ctx);
+      navigate(fmtRoute ?? getProjectModeMeta(ctx).defaultRoute);
     } catch (e: any) {
       toast.error('创建失败：' + (e.message ?? e));
     } finally {
