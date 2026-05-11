@@ -2,9 +2,63 @@
 // Uses fetch + ReadableStream + SSE manual parsing. Zero extra deps.
 
 export interface ChatMessage {
-  role: 'system' | 'user' | 'assistant';
+  /**
+   * 'tool' role added (OpenAI tool-call protocol). When `role === 'tool'`,
+   * `tool_call_id` MUST be the id of the assistant's preceding tool_call,
+   * and `content` is the JSON-stringified tool execution result.
+   */
+  role: 'system' | 'user' | 'assistant' | 'tool';
   content: string;
+  /** Required when role === 'tool'. Pairs the result with the tool_call.id. */
+  tool_call_id?: string;
+  /**
+   * Present on assistant messages that requested tool execution. The runner
+   * MUST replay the previous assistant message *with* this field intact when
+   * looping back, otherwise the API rejects the trailing tool messages.
+   */
+  tool_calls?: ToolCall[];
+  /** Optional name (mostly used by legacy function-role messages). */
+  name?: string;
 }
+
+/**
+ * OpenAI-compatible tool definition (DeepSeek V4 supports this verbatim).
+ * `parameters` is a JSON Schema object describing the tool arguments.
+ * Build via zod -> json-schema or hand-written constants in PR-D.
+ */
+export interface ToolDefinition {
+  type: 'function';
+  function: {
+    name: string;
+    description: string;
+    parameters: Record<string, unknown>;
+  };
+}
+
+/**
+ * Tool-call payload returned by the model. `arguments` is the model-emitted
+ * JSON string (NOT pre-parsed) - the runner is responsible for JSON.parse +
+ * zod validation. id is opaque (e.g. 'call_abc123') and must be echoed back
+ * verbatim in the next round's tool message tool_call_id.
+ */
+export interface ToolCall {
+  id: string;
+  type: 'function';
+  function: { name: string; arguments: string };
+}
+
+/**
+ * tool_choice forms (OpenAI compatible):
+ *  - 'auto'      : model decides freely (default when tools provided)
+ *  - 'none'      : disable tool use even if tools are present
+ *  - 'required'  : force at least one tool call
+ *  - {type:'function', function:{name}} : force a specific tool
+ */
+export type ToolChoice =
+  | 'auto'
+  | 'none'
+  | 'required'
+  | { type: 'function'; function: { name: string } };
 
 export interface ChatRequest {
   baseUrl: string;
@@ -45,6 +99,23 @@ export interface ChatRequest {
    * stream is still accumulated into `ChatResult.reasoningContent`.
    */
   onReasoningDelta?: (chunk: string, full: string) => void;
+  // ─────────── Tool-calling (PR-C, Phase 1) ───────────
+  /**
+   * OpenAI-compatible tool definitions to expose to the model. When set,
+   * the model may emit `tool_calls` instead of (or alongside) plain content.
+   * The runner is responsible for executing handlers and appending
+   * `role: 'tool'` messages on the next round (see PR-F).
+   */
+  tools?: ToolDefinition[];
+  /** Tool selection policy. Defaults to 'auto' on the API side when omitted. */
+  tool_choice?: ToolChoice;
+  /**
+   * Streaming callback for tool_call deltas. Receives the full accumulated
+   * tool_calls array on every delta (cheap to compare-and-update UI). Only
+   * fires when the API emits `delta.tool_calls`. Final aggregated calls are
+   * also returned in `ChatResult.toolCalls`.
+   */
+  onToolCallDelta?: (calls: ToolCall[]) => void;
 }
 
 export interface ChatResult {
@@ -57,6 +128,12 @@ export interface ChatResult {
    * is true AND the API returned `delta.reasoning_content`. Otherwise `undefined`.
    */
   reasoningContent?: string;
+  /**
+   * Aggregated tool_calls emitted by the model in this round. `undefined`
+   * when the model did not request any tool. When present, the runner MUST
+   * dispatch handlers, then loop back with role:'tool' messages.
+   */
+  toolCalls?: ToolCall[];
 }
 
 export async function chatStream(req: ChatRequest): Promise<ChatResult> {
@@ -74,6 +151,8 @@ export async function chatStream(req: ChatRequest): Promise<ChatResult> {
     max_tokens: req.max_tokens ?? 8192,
     stream: true,
     ...(req.stop && req.stop.length ? { stop: req.stop } : {}),
+    ...(req.tools && req.tools.length ? { tools: req.tools } : {}),
+    ...(req.tool_choice !== undefined ? { tool_choice: req.tool_choice } : {}),
   };
   if (!thinkingEnabled) {
     body.temperature = req.temperature ?? 0.7;
@@ -113,6 +192,13 @@ export async function chatStream(req: ChatRequest): Promise<ChatResult> {
   let reasoningFull = '';
   let finishReason: string | null = null;
   let usage: ChatResult['usage'];
+  /**
+   * tool_calls accumulator. Indexed by `delta.tool_calls[].index` (NOT array
+   * push) because OpenAI streams arguments fragment-by-fragment and may emit
+   * them out of order across multiple deltas (in practice always in-order
+   * but the spec allows interleaving for parallel tool calls).
+   */
+  const toolCallsAcc: Record<number, ToolCall> = {};
 
   while (true) {
     const { value, done } = await reader.read();
@@ -141,6 +227,39 @@ export async function chatStream(req: ChatRequest): Promise<ChatResult> {
           full += contentDelta;
           req.onDelta?.(contentDelta, full);
         }
+        // Tool-call streaming (OpenAI tool-call protocol). Each delta carries
+        // a partial fragment per index; we accumulate id / name / arguments.
+        const toolCallsDelta: Array<{
+          index?: number;
+          id?: string;
+          type?: string;
+          function?: { name?: string; arguments?: string };
+        }> | undefined = delta?.tool_calls;
+        if (toolCallsDelta && toolCallsDelta.length > 0) {
+          for (const tc of toolCallsDelta) {
+            const tcIdx = typeof tc.index === 'number' ? tc.index : 0;
+            if (!toolCallsAcc[tcIdx]) {
+              toolCallsAcc[tcIdx] = {
+                id: tc.id ?? '',
+                type: 'function',
+                function: { name: '', arguments: '' },
+              };
+            }
+            if (tc.id) toolCallsAcc[tcIdx].id = tc.id;
+            if (tc.function?.name) toolCallsAcc[tcIdx].function.name += tc.function.name;
+            if (tc.function?.arguments) {
+              toolCallsAcc[tcIdx].function.arguments += tc.function.arguments;
+            }
+          }
+          if (req.onToolCallDelta) {
+            req.onToolCallDelta(
+              Object.keys(toolCallsAcc)
+                .map((k) => Number(k))
+                .sort((a, b) => a - b)
+                .map((i) => toolCallsAcc[i]),
+            );
+          }
+        }
         if (choice?.finish_reason) finishReason = choice.finish_reason;
         if (json.usage) usage = json.usage;
       } catch {
@@ -149,11 +268,21 @@ export async function chatStream(req: ChatRequest): Promise<ChatResult> {
     }
   }
 
+  // Aggregate tool_calls (sorted by index for stable ordering).
+  const toolCallsArray: ToolCall[] = Object.keys(toolCallsAcc)
+    .map((k) => Number(k))
+    .sort((a, b) => a - b)
+    .map((i) => toolCallsAcc[i])
+    // Defensive filter: drop entries that never received a function name
+    // (rare API edge-case where a delta announces an index but never fills it).
+    .filter((tc) => tc.function.name.length > 0);
+
   return {
     content: full,
     finishReason,
     usage,
     durationMs: performance.now() - t0,
     ...(reasoningFull ? { reasoningContent: reasoningFull } : {}),
+    ...(toolCallsArray.length > 0 ? { toolCalls: toolCallsArray } : {}),
   };
 }
