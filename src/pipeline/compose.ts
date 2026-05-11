@@ -325,6 +325,52 @@ function shouldInjectOriginalGrounding(stageId: StageId, _step: ManifestStep): b
 }
 
 /**
+ * 输出末尾完成信号 · 上游 CineForge 完成话术对齐 · 除 JSON step 外全 stage 注入.
+ *
+ * 上游 CineForge 原本话术:
+ *   ✅ 第 X 步完成: [步骤名] → 下一步: [下一步名] → 你可以: [通过] / ...
+ *
+ * fili-web 退化版 (去掉 emoji / 去掉 "下一步" / 去掉 "你可以" 按钮列):
+ *   --- 第 X 步完成 · 步骤名 ---
+ *
+ * 退化理由：
+ * - emoji 装饰 与现有 ANTI_DECORATION_ADDENDUM 冲突
+ * - “下一步 / 你可以”是 chat 模式词· fili-web UI 是按钮驱动 · 词重复
+ * - 但保留 "第 X 步完成" 核心 · UI / 日志 / 评分 / 自动归档可靠这个信号切片
+ */
+function buildCompletionPhraseAddendum(step: ManifestStep): string {
+  return `
+# 输出末尾完成信号 (CineForge 完成话术 · fili-web 退化版)
+
+你输出本步全部内容后, **必须**在最后单独用一行输出以下完成信号 (一字不改):
+
+--- 第 ${step.index} 步完成 · ${step.title} ---
+
+## 严禁
+- 在完成信号下方再加任何内容 (解释 / 致谢 / 提醒 / 总结 / "下一步...")
+- 改写信号格式 (中文括号 / 全角破折号 / emoji / 以及 \`✅\` / \`→\` 等装饰)
+- 放在内容中间或顶部 (必须是输出的**最后一行**)
+- 在信号上下加装饰 (如 \`### --- ... ---\` / \`> --- ... ---\` / \`**...**\`)
+
+## 必须
+- 步骤号 \`${step.index}\` 使用阿拉伯数字 (不写 "一二三")
+- 步骤名 \`${step.title}\` 一字不改 · 与上方任务定义严格匹配
+- 信号前留 1 个空行 · 信号后无任何字符 (含空行)
+- 使用半角 \`---\` (三个连字符) 不是全角 \`－\` 或其他 unicode 字符
+
+## 上下文
+这个信号是 UI 渲染 / 日志切片 / 评分按钮校准 / 自动归档的可靠标志位 ·
+格式漂移会导致全链路解析失败 · 请严格遵守.`;
+}
+
+function shouldInjectCompletionPhrase(step: ManifestStep): boolean {
+  // JSON 输出 step 豁免 · 加文字尾巴会污染 JSON 解析
+  if (step.outFormat === 'json') return false;
+  // markdown / text 输出 · 全 stage 适用
+  return true;
+}
+
+/**
  * 题材锚点注入：根据 ctx.genres 查找对应锚点配置，合并去重后拼接为
  * 一段 system prompt 段落。多题材组合（最多 3 个）时按以下规则合并：
  *   - mustInclude / mustAvoid: 全集合并去重（强约束累加）
@@ -534,6 +580,12 @@ export async function composeMessages(inp: ComposeInput): Promise<ChatMessage[]>
   // (创作型 stage 没原文可锚 · screenplay / novel / adapt 豁免)
   if (shouldInjectOriginalGrounding(stageId, step)) {
     sys = sys + '\n\n' + ORIGINAL_GROUNDING_ADDENDUM;
+  }
+
+  // CineForge 完成话术对齐 (fili-web 退化版) · 除 JSON step 外全 stage 注入
+  // (LLM 输出最后一行必须是 "--- 第 X 步完成 · 步骤名 ---" · 供 UI / 日志切片)
+  if (shouldInjectCompletionPhrase(step)) {
+    sys = sys + '\n\n' + buildCompletionPhraseAddendum(step);
   }
 
   // ---- user composition (unchanged logic per stage) ----
