@@ -549,7 +549,7 @@ function OriginalForm(f: OriginalFormProps) {
         </Field>
       </div>
 
-      <Field label="单集时长" hint="点预设档位或直接输入任意分钟数 (0.1 - 240)">
+      <Field label="单集时长" hint="点预设档位或直接输入任意秒数 (6 - 14400 · 0.1 分钟至 4 小时)">
         <div className="flex flex-wrap items-center gap-1.5">
           {DURATIONS.map((d) => (
             <button
@@ -570,20 +570,22 @@ function OriginalForm(f: OriginalFormProps) {
           <div className="inline-flex items-center gap-1 ml-1">
             <input
               type="number"
-              min={0.1}
-              max={240}
-              step={0.5}
-              value={f.durationMin}
+              min={6}
+              max={14400}
+              step={1}
+              value={f.durationMin ? Math.round(f.durationMin * 60) : ''}
               onChange={(e) => {
-                const v = parseFloat(e.target.value);
-                if (Number.isFinite(v) && v > 0 && v <= 240) f.setDurationMin(v);
+                const sec = parseFloat(e.target.value);
+                if (Number.isFinite(sec) && sec >= 6 && sec <= 14400) {
+                  f.setDurationMin(sec / 60);
+                }
               }}
-              className="w-16 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+              className="w-20 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
               placeholder="自定义"
-              aria-label="自定义时长 (分钟)"
-              title="任意分钟数 · 0.1 - 240"
+              aria-label="自定义时长 (秒)"
+              title="任意秒数 · 6 - 14400 (= 0.1 分钟至 4 小时)"
             />
-            <span className="text-tight-xs text-fg-muted">分钟</span>
+            <span className="text-tight-xs text-fg-muted">秒</span>
           </div>
         </div>
       </Field>

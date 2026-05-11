@@ -454,20 +454,22 @@ export function Express() {
               <div className="inline-flex items-center gap-1">
                 <input
                   type="number"
-                  min={0.1}
-                  max={240}
-                  step={0.5}
-                  value={ctx.durationMin ?? ''}
+                  min={6}
+                  max={14400}
+                  step={1}
+                  value={ctx.durationMin ? Math.round(ctx.durationMin * 60) : ''}
                   onChange={(e) => {
-                    const v = parseFloat(e.target.value);
-                    if (Number.isFinite(v) && v > 0 && v <= 240) project.setCtx({ durationMin: v });
+                    const sec = parseFloat(e.target.value);
+                    if (Number.isFinite(sec) && sec >= 6 && sec <= 14400) {
+                      project.setCtx({ durationMin: sec / 60 });
+                    }
                   }}
-                  className="w-16 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                  className="w-20 bg-surface border border-border-subtle rounded-md px-2 py-1 text-xs focus:outline-none focus:border-primary-300 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   placeholder="自定义"
-                  aria-label="自定义时长 (分钟)"
-                  title="任意分钟数 · 0.1 - 240"
+                  aria-label="自定义时长 (秒)"
+                  title="任意秒数 · 6 - 14400 (= 0.1 分钟至 4 小时)"
                 />
-                <span className="text-tight-xs text-fg-muted">分钟</span>
+                <span className="text-tight-xs text-fg-muted">秒</span>
               </div>
             </div>
           </div>
