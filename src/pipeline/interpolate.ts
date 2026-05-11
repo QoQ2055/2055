@@ -273,6 +273,20 @@ export function applyProjectContext(text: string, ctx: ProjectContext): string {
     .replace(/单集时长:\s*\d+\s*分钟/g, `单集时长: ${ctx.durationMin}分钟`)
     .replace(/创作模式:\s*[^\n]+/g, `创作模式: ${ctx.mode}`);
 
+  // MM1 PR-7 · 仅 concept_short 时附加 ultrashortMode 行（让 system prompt 走分支 A/B/C）。
+  // formatId !== 'concept_short' 时不附加 · 避免污染 narrative/feature/series user msg。
+  if (formatId === 'concept_short') {
+    // 'mixed' 与 undefined 同等：让 system prompt 走分支 C（混合 3 方案）
+    const m = ctx.ultrashortMode;
+    const mode = (m && m !== 'mixed') ? m : '(none · branch C mixed)';
+    // 在"体量:"行之后插入 ultrashortMode 行（若 user prompt 已含此行则替换）
+    if (/ultrashortMode:\s*[^\n]+/.test(out)) {
+      out = out.replace(/ultrashortMode:\s*[^\n]+/g, `ultrashortMode: ${mode}`);
+    } else {
+      out = out.replace(/(体量:\s*concept_short)/, `$1\n- ultrashortMode: ${mode}`);
+    }
+  }
+
   // 追加结构化字段块（v2，让模型精确感知题材融合 / 平台 / 主角性别 / 核心冲突）
   const struct = buildStructuredFields(ctx);
   if (struct) out += '\n\n' + struct;

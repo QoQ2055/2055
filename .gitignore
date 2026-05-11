@@ -14,6 +14,11 @@ public/prompts/novel/*
 !public/prompts/novel/3.3.json
 # v6 epic · ACE-lite Reflector prompt · gap-c R1 不豁免（NEW prompt · 非修改）
 !public/prompts/novel/9.json
+# MM1 PR-7 · ultrashort 自创 prompt（基于 format-ultrashort.md SKILL 摘要 · MIT @山音）
+!public/prompts/ultrashort/
+public/prompts/ultrashort/*
+!public/prompts/ultrashort/2.json
+!public/prompts/ultrashort/3.json
 
 # TS incremental build cache
 *.tsbuildinfo

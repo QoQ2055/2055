@@ -10,7 +10,7 @@
 
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { ArtifactMap, NodeArtifact, ProjectContext, SourceChunk } from '../pipeline/types';
+import type { ArtifactMap, NodeArtifact, ProjectContext, SourceChunk, StageId } from '../pipeline/types';
 import {
   db,
   liveArtifactsAll,
@@ -37,9 +37,9 @@ export interface ProjectStore {
   upsertArtifact: (a: NodeArtifact) => void;
   overrideArtifactContent: (nodeId: string, content: string) => void;
   clearArtifact: (nodeId: string) => void;
-  clearStage: (stageId: 'screenplay' | 'adapt' | 'assets' | 'storyboard') => void;
+  clearStage: (stageId: StageId) => void;
   // Mark this nodeId and all downstream (within same stage by index) as stale.
-  invalidateFrom: (stageId: 'screenplay' | 'adapt' | 'assets' | 'storyboard', fromIndex: number) => void;
+  invalidateFrom: (stageId: StageId, fromIndex: number) => void;
   setPassed: (nodeId: string, value: boolean) => void;
   resetAll: () => void;
 }

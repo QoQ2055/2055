@@ -2,7 +2,7 @@
 
 import type { ChatMessage } from '../llm/deepseek';
 
-export type StageId = 'screenplay' | 'adapt' | 'assets' | 'storyboard' | 'novel';
+export type StageId = 'screenplay' | 'adapt' | 'assets' | 'storyboard' | 'novel' | 'ultrashort';
 export type StageMode = 'serial' | 'gate-then-parallel' | 'plan-then-loop';
 export type OutFormat = 'markdown' | 'json' | 'text';
 
@@ -112,6 +112,17 @@ export interface ProjectContext {
    * 4 路由通过 setCtx({ formatId }) 切换 · 见 pages/ShortFilm.tsx 等。
    */
   formatId?: 'narrative_short' | 'feature' | 'concept_short' | 'series';
+  /**
+   * MM1 PR-7 · concept_short 不双路径选择 (仅 formatId='concept_short' 时有意义)。
+   * what-if = Part A (高概念假设 + 推演型)。5 种组合方式：
+   *   graft / displacement / metaphor / juxtaposition / ruleReverse
+   * how-to-tell = Part B (反常叙事形式型)。5 种创意方法：
+   *   povShift / formatMock / timeSurgery / scaleJump / ruleLimit
+   * mixed       = 混合分支 C (1 What-If + 1 How-to-Tell + 1 hybrid 供用户选 · 用户主动选择)
+   * undefined   = 未选择路径 (初始状态 · PathSelector 渲染状态)
+   * interpolate.ts 在 'mixed' 时不注入 ultrashortMode · 让 system prompt 走分支 C。
+   */
+  ultrashortMode?: 'what-if' | 'how-to-tell' | 'mixed';
   // ─────── 小说创作专用字段（projectMode='novel' 时必填） ───────
   /** 小说平台范式：'qidian' | 'fanqie' | 'jjwxc' | 'zongheng' | 'kindle' | 'web_free' */
   novelPlatform?: string;

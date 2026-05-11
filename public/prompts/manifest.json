@@ -307,6 +307,40 @@
           "usrLen": 200
         }
       ]
+    },
+    {
+      "id": "ultrashort",
+      "nameZh": "极短片",
+      "mode": "serial",
+      "steps": [
+        {
+          "id": "ultrashort.1",
+          "index": 1,
+          "title": "概念锻造 / 形式发现",
+          "prompt": "prompts/screenplay/1.json",
+          "outFormat": "markdown",
+          "sysLen": 9138,
+          "usrLen": 169
+        },
+        {
+          "id": "ultrashort.2",
+          "index": 2,
+          "title": "结构与视听设计",
+          "prompt": "prompts/ultrashort/2.json",
+          "outFormat": "markdown",
+          "sysLen": 4979,
+          "usrLen": 291
+        },
+        {
+          "id": "ultrashort.3",
+          "index": 3,
+          "title": "全片剧本",
+          "prompt": "prompts/ultrashort/3.json",
+          "outFormat": "markdown",
+          "sysLen": 3080,
+          "usrLen": 314
+        }
+      ]
     }
   ]
 }
