@@ -1,6 +1,7 @@
 // Pipeline manifest & runtime types.
 
-import type { ChatMessage } from '../llm/deepseek';
+import type { ChatMessage, ToolChoice } from '../llm/deepseek';
+import type { ToolName } from './tools/types';
 
 export type StageId = 'screenplay' | 'adapt' | 'assets' | 'storyboard' | 'novel' | 'ultrashort';
 export type StageMode = 'serial' | 'gate-then-parallel' | 'plan-then-loop';
@@ -35,6 +36,28 @@ export interface ManifestStep {
    * stricter LLM compliance. Set 'text' to opt out explicitly.
    */
   responseFormat?: 'text' | 'json_object';
+  // ─────────── Tool-calling (PR-F, Phase 1 step 4/5) ───────────
+  /**
+   * Tools exposed to the model on this step. When set AND the caller passes
+   * a `toolContext` to runStep, the runner switches to `chatStreamWithTools`
+   * which loops chatStream + dispatch up to `toolMaxRounds` times. When
+   * unset (default) the runner uses plain chatStream — zero behaviour change
+   * for every existing manifest.
+   *
+   * Names are validated against the central registry at dispatch time; an
+   * unknown name produces an `ok:false` tool result the model can react to,
+   * but it is the manifest author's responsibility to keep this list aligned
+   * with `src/pipeline/tools/types.ts` ToolName union.
+   */
+  tools?: ToolName[];
+  /** OpenAI-compatible tool selection policy. Forwarded verbatim. */
+  toolChoice?: ToolChoice;
+  /**
+   * Hard ceiling on tool-call rounds (default 5; min 1). The cap is a defence
+   * against runaway loops; on hit the result is marked `truncated:true` and
+   * runner.ts surfaces a meta flag for UI to warn the user.
+   */
+  toolMaxRounds?: number;
 }
 
 export interface ManifestStage {

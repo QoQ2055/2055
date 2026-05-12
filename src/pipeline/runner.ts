@@ -1,12 +1,18 @@
 // Single-step runner: load payload → compose messages → call DeepSeek (streaming)
 // → validate → return NodeArtifact.
 
-import { chatStream } from '../llm/deepseek';
+import { chatStream, type ChatResult } from '../llm/deepseek';
+import {
+  chatStreamWithTools,
+  type ChatStreamWithToolsResult,
+} from '../llm/chatStreamWithTools';
 import { estimateCost } from '../llm/cost';
 import type { SettingsState } from '../store/settings';
 import { loadPayload } from './manifest';
 import { composeMessages } from './compose';
 import { recordRun } from '../store/db';
+import { getTool } from './tools/registry';
+import type { ToolContext } from './tools/context';
 // composeMessages / loadPayload 在 phase2 loop 调试日志中复用
 import type {
   ArtifactMap,
@@ -39,6 +45,21 @@ export interface RunStepOptions {
    * and by any future caller that needs precise temperature control.
    */
   temperatureOverride?: number;
+  // ─────────── Tool-calling (PR-F, Phase 1 step 4/5) ───────────
+  /**
+   * IO context for tool dispatch. When provided AND `step.tools` is non-empty,
+   * runStep switches to the `chatStreamWithTools` loop. When absent (current
+   * default for ALL existing callers) the runner uses plain `chatStream` —
+   * zero behaviour change.
+   */
+  toolContext?: ToolContext;
+  /** Fires at the start of each tool-call round (only on tool path). */
+  onToolRoundStart?: (round: number) => void;
+  /** Fires after each round's tool dispatches complete (only on tool path). */
+  onToolResults?: (
+    round: number,
+    results: Array<{ ok: boolean; message?: string; data?: unknown }>,
+  ) => void;
 }
 
 export async function runStep(opts: RunStepOptions): Promise<NodeArtifact> {
@@ -77,7 +98,14 @@ export async function runStep(opts: RunStepOptions): Promise<NodeArtifact> {
     const responseFormatReq: 'text' | 'json_object' | undefined =
       step.responseFormat ?? (step.outFormat === 'json' ? 'json_object' : undefined);
 
-    const res = await chatStream({
+    // PR-F: branch on tool-calling. The two paths share the same downstream
+    // shape (content / finishReason / usage / durationMs) so subsequent code
+    // is path-agnostic. Tool path additionally returns rounds/totalUsage/
+    // toolDispatches/truncated — captured into NodeArtifact.meta below.
+    const useToolPath =
+      Array.isArray(step.tools) && step.tools.length > 0 && opts.toolContext !== undefined;
+
+    const baseReq = {
       baseUrl: settings.baseUrl,
       apiKey: settings.apiKey,
       model: resolvedModel,
@@ -89,7 +117,42 @@ export async function runStep(opts: RunStepOptions): Promise<NodeArtifact> {
       onDelta,
       ...(thinkingReq ? { thinking: thinkingReq } : {}),
       ...(responseFormatReq ? { responseFormat: responseFormatReq } : {}),
-    });
+    };
+
+    let res: ChatResult;
+    let toolLoopMeta: {
+      rounds: number;
+      truncated: boolean;
+      dispatchCount: number;
+      failedDispatchCount: number;
+    } | undefined;
+
+    if (useToolPath) {
+      const toolDefs = step.tools!.map((name) => getTool(name));
+      const toolRes: ChatStreamWithToolsResult = await chatStreamWithTools({
+        ...baseReq,
+        tools: toolDefs,
+        ...(step.toolChoice ? { tool_choice: step.toolChoice } : {}),
+        ctx: opts.toolContext!,
+        maxRounds: step.toolMaxRounds ?? 5,
+        ...(opts.onToolRoundStart ? { onRoundStart: opts.onToolRoundStart } : {}),
+        ...(opts.onToolResults ? { onToolResults: opts.onToolResults } : {}),
+      });
+      res = toolRes;
+      // Aggregate usage across rounds (last-round usage would understate cost).
+      if (toolRes.totalUsage) {
+        res.usage = toolRes.totalUsage;
+      }
+      toolLoopMeta = {
+        rounds: toolRes.rounds,
+        truncated: toolRes.truncated,
+        dispatchCount: toolRes.toolDispatches.length,
+        failedDispatchCount: toolRes.toolDispatches.filter((d) => !d.result.ok).length,
+      };
+    } else {
+      res = await chatStream(baseReq);
+    }
+
     // OpenAI-compatible: stop marker is stripped on hit. Re-append if any
     // node has an active stop sequence and finishReason indicates a hit.
     res.content = restoreStopMarker(res.content, res.finishReason, stop);
@@ -138,6 +201,7 @@ export async function runStep(opts: RunStepOptions): Promise<NodeArtifact> {
       meta: {
         modelTier,
         modelUsed: resolvedModel,
+        ...(toolLoopMeta ? { toolLoop: toolLoopMeta } : {}),
       },
     };
   } catch (e: any) {
