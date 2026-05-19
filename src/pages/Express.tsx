@@ -32,6 +32,7 @@ import { SelfCheckPanel } from '../components/SelfCheckPanel';
 import { ConsistencyPanel } from '../components/ConsistencyPanel';
 import { ProgressBanner, type ProgressSegment } from '../components/ProgressBanner';
 import type { SelfCheckReport } from '../pipeline/selfCheck';
+import { parseStoryboardPlan } from '../pipeline/storyboardPlan';
 
 interface RunState { status: NodeStatus; streamed: string; error?: string }
 
@@ -97,6 +98,12 @@ export function Express() {
     () => manifest?.stages.find((s) => s.id === 'storyboard') ?? null,
     [manifest],
   );
+  const storyboardPlanUnitCount = useMemo(() => {
+    const art = project.artifacts['storyboard.1'];
+    if (!art) return 0;
+    try { return parseStoryboardPlan(art.content).units.length; }
+    catch { return 0; }
+  }, [project.artifacts['storyboard.1']?.content]);
 
   /* ── helpers ─────────────────────────────────────────────────── */
 
@@ -220,6 +227,40 @@ export function Express() {
     abortRef.current = ctrl;
     try {
       await runOne('storyboard', step, ctrl, { resume: false });
+    } catch { /* surfaced */ }
+    finally { setChainBusy(false); }
+  }
+
+  async function runStoryboardFirstFive() {
+    if (!sbStage || chainBusy) return;
+    const liveSb1 = useProject.getState().artifacts['storyboard.1'];
+    if (!liveSb1) return;
+    const step = sbStage.steps.find((s) => s.index === 2)!;
+    const units = parseStoryboardPlan(liveSb1.content).units.slice(0, 5).map((u) => u.unitIndex);
+    if (!units.length) return;
+    setChainBusy(true);
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    try {
+      await runOne('storyboard', step, ctrl, { onlyUnits: units, resume: true });
+    } catch { /* surfaced */ }
+    finally { setChainBusy(false); }
+  }
+
+  async function runStoryboardRemaining() {
+    if (!sbStage || chainBusy) return;
+    const liveSb1 = useProject.getState().artifacts['storyboard.1'];
+    if (!liveSb1) return;
+    const step = sbStage.steps.find((s) => s.index === 2)!;
+    const units = parseStoryboardPlan(liveSb1.content).units.slice(5).map((u) => u.unitIndex);
+    if (!units.length) return;
+    setChainBusy(true);
+    abortRef.current?.abort();
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
+    try {
+      await runOne('storyboard', step, ctrl, { onlyUnits: units, resume: true });
     } catch { /* surfaced */ }
     finally { setChainBusy(false); }
   }
@@ -717,7 +758,7 @@ export function Express() {
         <Section
           step={4}
           title="生成分镜"
-          subtitle="Phase A-D 单元规划 → Phase E-G 逐单元 Seedance prompt"
+          subtitle="B 表 12-15s 重切 → 四步法单元规划 → COPY/NOTE 双区 Seedance prompt"
           ready={!!sb2}
           locked={!importReady}
           headerActions={(
@@ -733,15 +774,37 @@ export function Express() {
         >
           <div className="flex items-center justify-between mb-2">
             <p className="text-tight-sm text-fg-muted">
-              storyboard.2 会读取 storyboard.1 的 <code>&lt;plan-json&gt;</code> 块逐单元生成
+              storyboard.2 会读取 storyboard.1 的 <code>&lt;plan-json&gt;</code> 块逐单元生成；卡片可单独复制 <code>COPY 区</code>
             </p>
-            <button
-              className="btn-primary text-xs"
-              onClick={runStoryboardAll}
-              disabled={chainBusy || !importReady}
-            >
-              <Play className="size-3.5" /> 一键运行 2 步
-            </button>
+            <div className="flex items-center gap-1.5">
+              {storyboardPlanUnitCount > 5 && (
+                <>
+                  <button
+                    className="btn-outline text-xs"
+                    onClick={runStoryboardFirstFive}
+                    disabled={chainBusy || !importReady || !sb1}
+                    title="按当前 storyboard.1 计划，只生成 UNIT 1-5"
+                  >
+                    <Play className="size-3.5" /> 前 5 单元
+                  </button>
+                  <button
+                    className="btn-outline text-xs"
+                    onClick={runStoryboardRemaining}
+                    disabled={chainBusy || !importReady || !sb1}
+                    title="按当前 storyboard.1 计划，生成 UNIT 6 及之后"
+                  >
+                    <ChevronRight className="size-3.5" /> 继续剩余
+                  </button>
+                </>
+              )}
+              <button
+                className="btn-primary text-xs"
+                onClick={runStoryboardAll}
+                disabled={chainBusy || !importReady}
+              >
+                <Play className="size-3.5" /> 一键运行 2 步
+              </button>
+            </div>
           </div>
           {sb1 && (
             <StoryboardPlanDiagnostics

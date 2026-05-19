@@ -197,7 +197,7 @@
           "title": "Phase A-D 单元规划",
           "prompt": "prompts/storyboard/1.json",
           "outFormat": "markdown",
-          "sysLen": 18471,
+          "sysLen": 19941,
           "usrLen": 5096
         },
         {
@@ -206,7 +206,7 @@
           "title": "Phase E-G 逐单元 Seedance prompt",
           "prompt": "prompts/storyboard/2.json",
           "outFormat": "markdown",
-          "sysLen": 44524,
+          "sysLen": 48955,
           "usrLen": 4117
         }
       ]

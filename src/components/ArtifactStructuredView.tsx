@@ -101,6 +101,23 @@ function splitBySeparator(content: string): Section[] {
   });
 }
 
+function extractCopyZone(content: string): string | null {
+  const lines = content
+    .replace(/^<!--[\s\S]*?-->\s*/m, '')
+    .replace(/^##\s+UNIT\s+\d+[^\n]*\n+/im, '')
+    .split(/\r?\n/);
+  const start = lines.findIndex((line) => /COPY\s*区/i.test(line));
+  if (start < 0) return null;
+  const end = lines.findIndex((line, idx) => idx > start && /NOTE\s*区/i.test(line));
+  const body = lines
+    .slice(start + 1, end >= 0 ? end : undefined)
+    .join('\n')
+    .replace(/^\s*(?:-{3,}|={3,}|_{3,})\s*/g, '')
+    .replace(/\s*(?:-{3,}|={3,}|_{3,})\s*$/g, '')
+    .trim();
+  return body.length > 0 ? body : null;
+}
+
 function inferSections(content: string, nodeId: string): Section[] {
   const trimmed = content.trim();
   if (!trimmed) return [];
@@ -378,6 +395,7 @@ export function ArtifactStructuredView({
         ) : filtered.map((s) => {
           const i = s._i;
           const isCollapsed = collapsed.has(i);
+          const copyZone = nodeId.startsWith('storyboard.2') ? extractCopyZone(s.body) : null;
           return (
             <div
               key={i}
@@ -402,6 +420,7 @@ export function ArtifactStructuredView({
                 <span className="text-tight-xs text-fg-muted flex-none">
                   {s.body.length.toLocaleString()} 字
                 </span>
+                {copyZone && <CopyButton text={copyZone} label="COPY区" className="flex-none" />}
                 <CopyButton text={s.body} className="flex-none" />
               </div>
               {!isCollapsed && (

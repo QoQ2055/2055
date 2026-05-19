@@ -444,14 +444,37 @@ export function buildPhase2UnitUser(args: {
 }): string {
   const { unit, plan, screenplayParagraphs, assetList } = args;
   const refSet = new Set(unit.sectionRefs);
+  const previousUnit = plan.units.find((u) => u.unitIndex === unit.unitIndex - 1);
+  const nextUnit = plan.units.find((u) => u.unitIndex === unit.unitIndex + 1);
 
   const unitInfo = {
     unitIndex: unit.unitIndex,
+    totalUnits: plan.units.length,
     durationSec: unit.durationSec,
     sceneType: unit.sceneType,
     subShotCount: unit.subShotCount,
     summary: unit.summary,
     sectionRefs: unit.sectionRefs,
+    previousUnit: previousUnit
+      ? {
+          unitIndex: unit.unitIndex - 1,
+          summary: previousUnit.summary,
+          plannedExitState: previousUnit.plannedExitState,
+        }
+      : null,
+    nextUnit: nextUnit
+      ? {
+          unitIndex: unit.unitIndex + 1,
+          summary: nextUnit.summary,
+          plannedEntryState: nextUnit.plannedEntryState,
+        }
+      : null,
+    batchHint: {
+      firstBatchEnd: Math.min(5, plan.units.length),
+      remainingAfterFirstBatch: Math.max(0, plan.units.length - 5),
+      isFirstBatchBoundary: unit.unitIndex === 5 && plan.units.length > 5,
+      isFinalUnit: unit.unitIndex === plan.units.length,
+    },
   };
 
   // 本单元对应原文片段：拼接 paragraphIndex 中匹配 sectionRefs 的段
