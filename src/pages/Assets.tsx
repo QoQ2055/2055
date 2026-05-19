@@ -445,8 +445,16 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
   const belongsTo = item.belongsTo ?? item.belong_to ?? item.location ?? item.所属 ?? '';
   const era       = item.era ?? item.时代 ?? '';
   const aiPrompt: string = item.aiPrompt ?? item.ai_prompt ?? item.prompt ?? '';
-  const visualAnchor = item.visualAnchor ?? item.visual_anchor ?? '';
+  const visualAnchor = item.visualAnchor ?? item.visual_anchor ?? item.scenePositioning ?? '';
+  const sourceAnchor = item.sourceAnchor ?? item.source_anchor ?? item.originalAnchor ?? item.原文锚 ?? '';
+  const visualElements = Array.isArray(item.visualElements)
+    ? item.visualElements
+    : Array.isArray(item.visual_elements)
+      ? item.visual_elements
+      : [];
   const dramatic = item.dramaticFunction ?? item.dramatic_function ?? '';
+  const layoutGuide = item.layoutGuide ?? item.layout_guide;
+  const fusionLayers = item.fusionLayers ?? item.fusion_layers ?? item.layers;
 
   function copy(text: string) {
     navigator.clipboard.writeText(text).then(() => {
@@ -475,11 +483,32 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
       </header>
 
       <div className="px-4 py-3 flex-1 space-y-2">
+        {sourceAnchor && (
+          <p className="text-xs text-fg-secondary line-clamp-3">
+            <strong className="text-fg-secondary">原文锚：</strong>{sourceAnchor}
+          </p>
+        )}
         {visualAnchor && (
-          <p className="text-xs text-fg-secondary line-clamp-2"><strong className="text-fg-secondary">锚点：</strong>{visualAnchor}</p>
+          <p className="text-xs text-fg-secondary line-clamp-2"><strong className="text-fg-secondary">视觉锚：</strong>{visualAnchor}</p>
         )}
         {dramatic && (
           <p className="text-xs text-fg-secondary line-clamp-2"><strong>戏剧功能：</strong>{dramatic}</p>
+        )}
+        {visualElements.length > 0 && (
+          <div className="rounded border border-border-subtle bg-canvas/40 p-2">
+            <div className="text-tight-xs text-fg-muted mb-1">视觉元素扫描</div>
+            <ul className="text-tight-sm text-fg-secondary space-y-0.5 list-disc pl-4">
+              {visualElements.slice(0, 4).map((v: unknown, idx: number) => (
+                <li key={idx} className="line-clamp-1">{String(v)}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {fusionLayers && (
+          <CompactJsonBlock title="四层/七层结构" value={fusionLayers} maxChars={360} />
+        )}
+        {layoutGuide && (
+          <CompactJsonBlock title="角色版式" value={layoutGuide} maxChars={260} />
         )}
         {aiPrompt && (
           <div className="rounded bg-canvas/60 border border-border-subtle p-2 max-h-32 overflow-auto">
@@ -528,6 +557,20 @@ function AssetCard({ item, tab }: { item: any; tab: Tab }) {
           </dl>
         </div>
       )}
+    </div>
+  );
+}
+
+// ----------------------------------------------------------------------------
+
+function CompactJsonBlock({ title, value, maxChars }: { title: string; value: unknown; maxChars: number }) {
+  const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
+  return (
+    <div className="rounded border border-border-subtle bg-canvas/40 p-2">
+      <div className="text-tight-xs text-fg-muted mb-1">{title}</div>
+      <pre className="text-tight-sm whitespace-pre-wrap break-words text-fg-secondary">
+        {text.length > maxChars ? text.slice(0, maxChars) + '…' : text}
+      </pre>
     </div>
   );
 }

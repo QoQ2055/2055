@@ -1,4 +1,4 @@
-﻿{
+{
   "version": "1.0",
   "sourceDir": "F:\\下载文件\\八步",
   "generated": "2026-04-27T15:43:40.646Z",
@@ -154,7 +154,7 @@
           "title": "资产扫描（完整性闸）",
           "prompt": "prompts/assets/1.json",
           "outFormat": "markdown",
-          "sysLen": 1367,
+          "sysLen": 2188,
           "usrLen": 2771
         },
         {
@@ -163,7 +163,7 @@
           "title": "角色资产 V3.0",
           "prompt": "prompts/assets/2.json",
           "outFormat": "json",
-          "sysLen": 1971,
+          "sysLen": 2262,
           "usrLen": 2771
         },
         {
@@ -172,7 +172,7 @@
           "title": "场景资产 V3.0",
           "prompt": "prompts/assets/3.json",
           "outFormat": "json",
-          "sysLen": 2105,
+          "sysLen": 1969,
           "usrLen": 2771
         },
         {
@@ -181,7 +181,7 @@
           "title": "道具资产 V3.0",
           "prompt": "prompts/assets/4.json",
           "outFormat": "json",
-          "sysLen": 1664,
+          "sysLen": 2040,
           "usrLen": 2771
         }
       ]
