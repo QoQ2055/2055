@@ -181,7 +181,7 @@
           "title": "道具资产 V3.0",
           "prompt": "prompts/assets/4.json",
           "outFormat": "json",
-          "sysLen": 2040,
+          "sysLen": 2551,
           "usrLen": 2771
         }
       ]
