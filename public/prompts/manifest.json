@@ -163,7 +163,7 @@
           "title": "角色资产 V3.0",
           "prompt": "prompts/assets/2.json",
           "outFormat": "json",
-          "sysLen": 2262,
+          "sysLen": 3038,
           "usrLen": 2771
         },
         {
